@@ -1,0 +1,9 @@
+Release/
+Debug/
+*.opensdf
+*.sdf
+*.VC.opendb
+.suo
+*.VC.db
+*/ipch/
+.vscode/

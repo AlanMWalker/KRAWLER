@@ -9,6 +9,13 @@
 #include "targetver.h"
 
 #include <iostream>
+#include <assert.h>
+
+#include <SFML\Graphics.hpp>
+
+
+#include "KPrimitiveTypedefs.h"
+#include "Utilities\KEngineMacros.h"
 
 #endif
 

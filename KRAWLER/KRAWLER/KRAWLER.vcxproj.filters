@@ -30,6 +30,9 @@
     <ClInclude Include="source.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\KPrimitiveTypedefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\stdafx.cpp">

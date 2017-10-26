@@ -1,6 +1,8 @@
 #ifndef KRAWLER_H
 #define KRAWLER_H
 
+#include "KPrimitiveTypedefs.h"
+
 namespace Krawler
 {
 	enum KInitStatus
@@ -26,7 +28,10 @@ namespace Krawler
 
 	struct KWindowInitialise
 	{
-
+		uint32 width; // Width of the window 
+		uint32 height; // Height of the window
+		std::string windowTitle; //title of the window
+		bool consoleWindow; // Is the console window enabled on your build
 	};
 
 	KInitStatus InitialiseEngine(const KWindowInitialise& windowInit);

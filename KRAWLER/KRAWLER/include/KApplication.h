@@ -31,11 +31,14 @@ namespace Krawler
 			return pApplication;
 		}
 
-		~KApplication();
+		~KApplication() = default;
+		KApplication(const KApplication&& a);
 
 		void setupApplication(const KApplicationInitialise& appInit);
 		void runApplication();
+
 	private:
+
 		KApplication();
 
 		sf::RenderWindow* mp_rWindow = nullptr;

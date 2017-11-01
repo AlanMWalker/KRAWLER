@@ -2,12 +2,11 @@
 //
 
 #include "stdafx.h"
-#include "vld.h"
+//#include "vld.h"
 
 #include "Krawler.h"
 #include "KApplication.h"
 
-#include "source.h"
 using namespace Krawler;
 
 int main(void)
@@ -17,10 +16,14 @@ int main(void)
 	init.height = 480; 
 	init.maxFps = 60; 
 	init.windowTitle = "Hello KRAWLER!";
-	init.windowStyle = Fullscreen;
+	init.windowStyle = Windowed_Resizeable;
+	
 	StartupEngine(&init);
+	
 	RunApplication();
+	
 	ShutdownEngine();
+	NULL 
 	return 0;
 }
 

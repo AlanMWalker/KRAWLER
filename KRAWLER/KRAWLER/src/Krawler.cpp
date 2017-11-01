@@ -15,12 +15,15 @@ KInitStatus Krawler::StartupEngine(KApplicationInitialise * windowInit)
 
 void Krawler::ShutdownEngine()
 {
+	// Cleanup applicaiton
+	auto app = KApplication::getApplicationInstance();
+	SAFE_FREE(app);
 }
 
 void Krawler::RunApplication()
 {
 	auto app = KApplication::getApplicationInstance();
-	SAFE_FREE(app);
+	
 
 	KApplication::getApplicationInstance()->runApplication();
 }

@@ -4,10 +4,6 @@
 using namespace Krawler;
 using namespace sf;
 
-KApplication::~KApplication()
-{
-}
-
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
 {
 	mp_rWindow = new RenderWindow;
@@ -30,7 +26,7 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	}
 
 	mp_rWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
-
+	mp_rWindow->setFramerateLimit(m_targetFPS);
 }
 
 void KApplication::runApplication()
@@ -48,6 +44,7 @@ void KApplication::runApplication()
 
 		mp_rWindow->clear(Color::Black);
 		mp_rWindow->display();
+		
 	}
 }
 

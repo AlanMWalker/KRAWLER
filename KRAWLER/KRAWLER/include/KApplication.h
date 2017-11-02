@@ -1,6 +1,7 @@
 #ifndef KAPPLICATION_H
 #define KAPPLICATION_H
 
+#include "Krawler.h"
 
 namespace Krawler
 {

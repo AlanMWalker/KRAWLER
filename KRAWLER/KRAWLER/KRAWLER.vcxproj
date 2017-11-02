@@ -145,7 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\KApplication.h" />
-    <ClInclude Include="include\KPrimitiveTypedefs.h" />
+    <ClInclude Include="include\GameObject\KGameObject.h" />
     <ClInclude Include="include\Krawler.h" />
     <ClInclude Include="include\Maths\KMaths.hpp" />
     <ClInclude Include="include\Maths\KMathsUtilities.h" />
@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source.cpp" />
+    <ClCompile Include="src\GameObject\KGameObject.cpp" />
     <ClCompile Include="src\KApplication.cpp" />
     <ClCompile Include="src\Krawler.cpp" />
     <ClCompile Include="src\LogicState\KLogicState.cpp" />

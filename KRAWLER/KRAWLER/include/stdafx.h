@@ -13,7 +13,6 @@
 
 #include <SFML\Graphics.hpp>
 
-#include "KPrimitiveTypedefs.h"
 #include "Utilities\KEngineMacros.h"
 #include "Utilities\KDebug.h"
 

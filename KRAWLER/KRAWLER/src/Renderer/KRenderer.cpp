@@ -61,8 +61,9 @@ bool Krawler::Renderer::KRenderer::isInRenderQueue(const std::wstring & identifi
 	return found;
 }
 
-void Krawler::Renderer::KRenderer::removeFromRenderQueue()
+void Krawler::Renderer::KRenderer::removeFromRenderQueue(KGameObject* pObj)
 {
+	m_renderQueue.erase(std::find(m_renderQueue.begin(), m_renderQueue.end(), pObj));
 }
 
 void Krawler::Renderer::KRenderer::sortByRenderLayer()

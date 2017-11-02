@@ -49,6 +49,7 @@ int WINAPI WinMain(
 	objC.setSize(Vec2f(500, 500));
 	objC.setFillColour(sf::Color::Red);
 	objC.setRenderLayer(-2);
+	
 	inst->getRenderer()->addToRendererQueue(&objA);
 	inst->getRenderer()->addToRendererQueue(&objB);
 	inst->getRenderer()->addToRendererQueue(&objC);

@@ -27,10 +27,25 @@
     <ClInclude Include="include\Krawler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source.h">
+    <ClInclude Include="include\KPrimitiveTypedefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\KPrimitiveTypedefs.h">
+    <ClInclude Include="include\Utilities\KEngineMacros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Maths\KMaths.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Maths\KMathsUtilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Maths\KMathVector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KApplication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Utilities\KDebug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,5 +59,22 @@
     <ClCompile Include="source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Utilities\KEngineMacros.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KApplication.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities\KDebug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="include\Maths\KMathsUtilities.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="include\Maths\KMathVector.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

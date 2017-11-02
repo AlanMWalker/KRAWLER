@@ -1,6 +1,8 @@
 #ifndef KPRIMITIVE_TYPEDEFS_H
 #define KPRIMITIVE_TYPEDEFS_H
 
+#include <SFML\System\Vector2.hpp>
+
 namespace Krawler
 {
 	using int8 = signed char;
@@ -14,5 +16,13 @@ namespace Krawler
 
 	using int64 = signed   __int64;
 	using uint64 = unsigned __int64;
+
+	using Vec2f = sf::Vector2f;
+	using Vec2i = sf::Vector2i;
+	using Vec2u = sf::Vector2u;
+	using Vec2d = sf::Vector2u;
+
+	using Point = sf::Vector2f;
 }
+
 #endif

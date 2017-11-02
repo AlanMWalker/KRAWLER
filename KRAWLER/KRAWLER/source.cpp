@@ -5,19 +5,39 @@
 #include "vld.h"
 
 #include "Krawler.h"
-#include "source.h"
+#include "KApplication.h"
+
+
 using namespace Krawler;
 
+#define ENABLE_WIN32 1
+
+#ifndef ENABLE_WIN32
 int main(void)
+#else
+int WINAPI WinMain(
+	_In_ HINSTANCE hInstance,
+	_In_ HINSTANCE hPrevInstance,
+	_In_ LPSTR     lpCmdLine,
+	_In_ int       nCmdShow
+)
+#endif
 {
-	Krawler::KInitStatus k();
-	KINIT_CHECK(k);
+	KApplicationInitialise init;
+	init.width = 640;
+	init.height = 480;
+	init.gameFps = 60;
+	init.physicsFps = 100;
+	init.windowTitle = "Hello KRAWLER!";
+	init.windowStyle = Windowed_Resizeable;
 
-	return 0;
+	StartupEngine(&init);
+
+	RunApplication();
+
+	ShutdownEngine();
+
+	return EXIT_SUCCESS;
 }
 
-Krawler::KInitStatus k()
-{
-	return KInitStatus::Failure;
-}
 

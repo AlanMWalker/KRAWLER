@@ -48,10 +48,12 @@ void KApplication::runApplication()
 	Time currentTime;
 	Time accumulator;
 	Time time;
+	sf::Clock deltaClock;
+
 
 	while (mp_rWindow->isOpen())
 	{
-		const float delta = m_deltaClock.getElapsedTime().asSeconds();
+		m_gameDelta = deltaClock.getElapsedTime().asSeconds();
 		Time frameTime;
 		updateFrameTime(currentTime, lastTime, frameTime, accumulator);
 
@@ -84,7 +86,7 @@ void KApplication::runApplication()
 		KPrintf(L"Normal Tick\n");
 
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
-		
+
 		mp_rWindow->clear(Color::Black);
 		mp_rWindow->display();
 	}

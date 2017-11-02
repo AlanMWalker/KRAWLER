@@ -37,10 +37,11 @@ namespace Krawler
 		void setupApplication(const KApplicationInitialise& appInit);
 		void runApplication();
 		void cleanupApplication();
-		
+
 		sf::RenderWindow* const getRenderWindow() { return mp_rWindow; }
 
 		float getElapsedTime() const;
+		float getDelta() const { return m_gameDelta; }
 
 	private:
 
@@ -53,8 +54,8 @@ namespace Krawler
 		uint32 m_physicsFPS;
 
 		sf::Clock m_elapsedClock;
-		sf::Clock m_deltaClock;
 
+		float m_gameDelta = 0.0f;
 		float m_physicsDelta = 0.0f;
 	};
 }

@@ -1,18 +1,21 @@
 #ifndef KENGINE_MACROS_H
 #define KENGINE_MACROS_H
 
-#define SAFE_FREE(ptr) if( ptr != nullptr)	\
+#define KFREE(ptr) if( ptr != nullptr)	\
 						{					\
 							delete ptr;		\
 							ptr = nullptr;	\
 						}
 
-#define SAFE_FREE_ARR(ptr) if( ptr != nullptr)	\
+#define KFREE_ARR(ptr) if( ptr != nullptr)	\
 						{						\
 							delete[] ptr;		\
 							ptr = nullptr;		\
 						}
 
-#define CHECK(v) assert(v)
+#define KCHECK(v) assert(v)
+
+
+#define KCAST(type, expr) static_cast<type> (expr)
 
 #endif 

@@ -8,7 +8,16 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 {
 	mp_rWindow = new RenderWindow;
 
-	m_targetFPS = appInit.maxFps;
+	//setup game fps values
+	m_gameFPS = appInit.gameFps;
+	m_physicsFPS = appInit.physicsFps;
+
+	//setup the target update fps for the physics engine
+	if (m_physicsFPS != 0)
+	{
+		m_physicsDelta = 1.0f / KCAST(float, appInit.physicsFps);
+	}
+
 	int32 style = 0;
 
 	switch (appInit.windowStyle)
@@ -29,19 +38,24 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	}
 
 	mp_rWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
-	mp_rWindow->setFramerateLimit(m_targetFPS);
+	mp_rWindow->setFramerateLimit(m_gameFPS);
 }
 
 void KApplication::runApplication()
 {
-	Clock currentTime;
-	Clock newTime;
-	
-	Time
+	Time lastTime(m_elapsedClock.getElapsedTime());
+	Time currentTime;
+	Time accumulator;
+	Time time;
 
 	while (mp_rWindow->isOpen())
 	{
+		const float delta = m_deltaClock.getElapsedTime().asSeconds();
+		Time frameTime;
+		updateFrameTime(currentTime, lastTime, frameTime, accumulator);
+
 		Event evnt;
+
 		while (mp_rWindow->pollEvent(evnt))
 		{
 			if (evnt.type == Event::Closed)
@@ -50,12 +64,45 @@ void KApplication::runApplication()
 			}
 		}
 
+		if (frameTime > seconds(0.25f))
+		{
+			frameTime = seconds(0.25f);
+		}
+
+		while (accumulator.asSeconds() > m_physicsDelta)
+		{
+			//previousState = currentState;
+			//Physics tick
+			mp_rWindow->clear(Color::Red);
+			mp_rWindow->display();
+
+			time += seconds(m_physicsDelta);
+			accumulator -= seconds(m_physicsDelta);
+		}
+
+		const float alpha = accumulator.asSeconds() / m_physicsDelta;
+		KPrintf(TEXT("Alpha: %f "), alpha);
 		mp_rWindow->clear(Color::Black);
 		mp_rWindow->display();
-		
 	}
+}
+
+void Krawler::KApplication::cleanupApplication()
+{
+	KFREE(mp_rWindow);
 }
 
 KApplication::KApplication()
 {
+}
+
+inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator) const
+{
+	currentTime = m_elapsedClock.getElapsedTime();
+
+	frameTime = currentTime - lastTime;
+
+	lastTime = currentTime;
+
+	accumulator += frameTime;
 }

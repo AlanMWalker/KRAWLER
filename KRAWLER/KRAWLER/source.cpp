@@ -2,29 +2,42 @@
 //
 
 #include "stdafx.h"
-//#include "vld.h"
+#include "vld.h"
 
 #include "Krawler.h"
 #include "KApplication.h"
 
+
 using namespace Krawler;
 
+#define ENABLE_WIN32 1
+
+#ifndef ENABLE_WIN32
 int main(void)
+#else
+int WINAPI WinMain(
+	_In_ HINSTANCE hInstance,
+	_In_ HINSTANCE hPrevInstance,
+	_In_ LPSTR     lpCmdLine,
+	_In_ int       nCmdShow
+)
+#endif
 {
 	KApplicationInitialise init;
-	init.width = 640; 
-	init.height = 480; 
-	init.maxFps = 60; 
+	init.width = 640;
+	init.height = 480;
+	init.gameFps = 60;
+	init.physicsFps = 100;
 	init.windowTitle = "Hello KRAWLER!";
 	init.windowStyle = Windowed_Resizeable;
-	
+
 	StartupEngine(&init);
-	
+
 	RunApplication();
-	
+
 	ShutdownEngine();
-	NULL 
-	return 0;
+
+	return EXIT_SUCCESS;
 }
 
 

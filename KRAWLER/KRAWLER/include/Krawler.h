@@ -6,7 +6,6 @@
 
 #include "Maths\KMaths.hpp"
 
-
 namespace Krawler
 {
 	struct KApplicationInitialise;
@@ -18,6 +17,7 @@ namespace Krawler
 		Nullptr = -2
 	};
 
+	
 
 #define KINIT_CHECK(func)																															\
 			Krawler::KInitStatus status = func();																									\

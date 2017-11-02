@@ -27,9 +27,6 @@
     <ClInclude Include="include\Krawler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="source.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\KPrimitiveTypedefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>

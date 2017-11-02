@@ -157,7 +157,6 @@
     <ClInclude Include="include\targetver.h" />
     <ClInclude Include="include\Utilities\KDebug.h" />
     <ClInclude Include="include\Utilities\KEngineMacros.h" />
-    <ClInclude Include="source.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source.cpp" />

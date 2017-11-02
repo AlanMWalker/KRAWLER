@@ -13,13 +13,16 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 
 	switch (appInit.windowStyle)
 	{
+
 	default:
 	case KWindowStyle::Windowed_Fixed_Size:
 		style |= (Style::Default & Style::Resize);
 		break;
+
 	case KWindowStyle::Windowed_Resizeable:
 		style |= Style::Default;
 		break;
+
 	case KWindowStyle::Fullscreen:
 		style |= Style::Fullscreen;
 		break;
@@ -31,6 +34,11 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 
 void KApplication::runApplication()
 {
+	Clock currentTime;
+	Clock newTime;
+	
+	Time
+
 	while (mp_rWindow->isOpen())
 	{
 		Event evnt;

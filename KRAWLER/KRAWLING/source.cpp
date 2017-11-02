@@ -2,10 +2,11 @@
 //
 
 #include "stdafx.h"
-//#include "vld.h"
+#include "vld.h"
 
 int main(void)
 {
+	
 	return 0;
 }
 

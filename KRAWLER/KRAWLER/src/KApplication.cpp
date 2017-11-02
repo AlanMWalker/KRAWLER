@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "KApplication.h"
+#include "LogicState\KLogicStateDirector.h"
 
 using namespace Krawler;
+using namespace Krawler::LogicState;
 using namespace sf;
 
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
@@ -39,6 +41,9 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 
 	mp_rWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
 	mp_rWindow->setFramerateLimit(m_gameFPS);
+
+	mp_logicStateDirector = new KLogicStateDirector;
+
 }
 
 void KApplication::runApplication()
@@ -76,24 +81,23 @@ void KApplication::runApplication()
 		{
 			//previousState = currentState;
 			//Physics tick
-			mp_rWindow->clear(Color::Red);
-			mp_rWindow->display();
-
 			time += seconds(m_physicsDelta);
 			accumulator -= seconds(m_physicsDelta);
-			KPrintf(L"Physics Tick\n");
 		}
-		KPrintf(L"Normal Tick\n");
-
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
+		
+		mp_logicStateDirector->tickActiveLogicState();
 
 		mp_rWindow->clear(Color::Black);
+
 		mp_rWindow->display();
 	}
 }
 
 void Krawler::KApplication::cleanupApplication()
 {
+	mp_logicStateDirector->cleanupLogicStateDirector();
+	KFREE(mp_logicStateDirector);
 	KFREE(mp_rWindow);
 }
 

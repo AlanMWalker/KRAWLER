@@ -6,9 +6,11 @@
 
 #include "Krawler.h"
 #include "KApplication.h"
+#include "LogicState\KLogicStateDirector.h"
 
 
 using namespace Krawler;
+using namespace Krawler::LogicState;
 
 #define ENABLE_WIN32 1
 
@@ -32,6 +34,14 @@ int WINAPI WinMain(
 	init.windowStyle = Windowed_Resizeable;
 
 	StartupEngine(&init);
+
+	auto inst = KApplication::getApplicationInstance();
+
+	KLogicStateInitialiser stateInit;
+	stateInit.stateIdentifier = L"play";
+	inst->getLogicStateDirector()->registerLogicState(new KLogicState, &stateInit);
+	inst->getLogicStateDirector()->setActiveLogicState(TEXT("play"));
+
 
 	RunApplication();
 

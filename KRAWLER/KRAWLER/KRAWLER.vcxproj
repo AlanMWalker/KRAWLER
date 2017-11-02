@@ -144,15 +144,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\KApplication.h" />
     <ClInclude Include="include\KPrimitiveTypedefs.h" />
     <ClInclude Include="include\Krawler.h" />
     <ClInclude Include="include\Maths\KMaths.hpp" />
     <ClInclude Include="include\Maths\KMathsUtilities.h" />
     <ClInclude Include="include\Maths\KMathVector.h" />
+    <ClInclude Include="include\LogicState\KLogicState.h" />
+    <ClInclude Include="include\LogicState\KLogicStateDirector.h" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\targetver.h" />
     <ClInclude Include="include\Utilities\KDebug.h" />
@@ -162,6 +161,8 @@
     <ClCompile Include="source.cpp" />
     <ClCompile Include="src\KApplication.cpp" />
     <ClCompile Include="src\Krawler.cpp" />
+    <ClCompile Include="src\LogicState\KLogicState.cpp" />
+    <ClCompile Include="src\LogicState\KLogicStateDirector.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -1,8 +1,15 @@
 #ifndef KAPPLICATION_H
 #define KAPPLICATION_H
 
+
 namespace Krawler
 {
+	//Forward Declerations
+	namespace LogicState
+	{
+		class KLogicStateDirector;
+	}
+
 	enum KWindowStyle : uint8
 	{
 		Windowed_Fixed_Size,
@@ -31,7 +38,6 @@ namespace Krawler
 
 			return pApplication;
 		}
-
 		~KApplication() = default;
 
 		void setupApplication(const KApplicationInitialise& appInit);
@@ -39,7 +45,8 @@ namespace Krawler
 		void cleanupApplication();
 
 		sf::RenderWindow* const getRenderWindow() { return mp_rWindow; }
-
+		Krawler::LogicState::KLogicStateDirector* const getLogicStateDirector() { return mp_logicStateDirector; }
+		
 		float getElapsedTime() const;
 		float getDelta() const { return m_gameDelta; }
 
@@ -49,6 +56,8 @@ namespace Krawler
 		inline void updateFrameTime(sf::Time& currentTime, sf::Time& lastTime, sf::Time& frameTime, sf::Time& accumulator) const;
 
 		sf::RenderWindow* mp_rWindow = nullptr;
+		Krawler::LogicState::KLogicStateDirector* mp_logicStateDirector = nullptr;
+
 
 		uint32 m_gameFPS;
 		uint32 m_physicsFPS;

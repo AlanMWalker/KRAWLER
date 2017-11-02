@@ -9,15 +9,16 @@
 namespace Krawler
 {
 	struct KApplicationInitialise;
-	
+
 	enum KInitStatus
 	{
 		Success = 0,
 		Failure = -1,
-		Nullptr = -2
+		Nullptr = -2,
+		MissingResource = -3
 	};
 
-	
+
 
 #define KINIT_CHECK(func)																															\
 			Krawler::KInitStatus status = func();																									\
@@ -28,15 +29,15 @@ namespace Krawler
 				{																																	\
 					case Krawler::KInitStatus::Failure: std::cout << "General Failure!" << std::endl; break;										\
 					case Krawler::KInitStatus::Nullptr: std::cout << "Null pointer!" << std::endl; break;											\
+					case Krawler::KInitStatus::MissingResource: std::cout << "Missing Resource!" << std::endl; break;								\
 				}																																	\
 			}
 
 
 
 	KInitStatus StartupEngine(KApplicationInitialise* windowInit);
-	void ShutdownEngine();
 
-	//void RegisterStateQueue();
+	void ShutdownEngine();
 	void RunApplication();
 
 

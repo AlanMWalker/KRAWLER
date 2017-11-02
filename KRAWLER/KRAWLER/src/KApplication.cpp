@@ -43,6 +43,7 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 
 void KApplication::runApplication()
 {
+	m_elapsedClock.restart();
 	Time lastTime(m_elapsedClock.getElapsedTime());
 	Time currentTime;
 	Time accumulator;
@@ -78,10 +79,12 @@ void KApplication::runApplication()
 
 			time += seconds(m_physicsDelta);
 			accumulator -= seconds(m_physicsDelta);
+			KPrintf(L"Physics Tick\n");
 		}
+		KPrintf(L"Normal Tick\n");
 
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
-		KPrintf(TEXT("Alpha: %f "), alpha);
+		
 		mp_rWindow->clear(Color::Black);
 		mp_rWindow->display();
 	}
@@ -90,6 +93,11 @@ void KApplication::runApplication()
 void Krawler::KApplication::cleanupApplication()
 {
 	KFREE(mp_rWindow);
+}
+
+float Krawler::KApplication::getElapsedTime() const
+{
+	return m_elapsedClock.getElapsedTime().asSeconds();
 }
 
 KApplication::KApplication()

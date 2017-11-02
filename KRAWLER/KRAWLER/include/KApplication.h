@@ -37,6 +37,10 @@ namespace Krawler
 		void setupApplication(const KApplicationInitialise& appInit);
 		void runApplication();
 		void cleanupApplication();
+		
+		sf::RenderWindow* const getRenderWindow() { return mp_rWindow; }
+
+		float getElapsedTime() const;
 
 	private:
 

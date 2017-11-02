@@ -24,8 +24,8 @@ int WINAPI WinMain(
 #endif
 {
 	KApplicationInitialise init;
-	init.width = 640;
-	init.height = 480;
+	init.width = 1024;
+	init.height = 720;
 	init.gameFps = 60;
 	init.physicsFps = 100;
 	init.windowTitle = "Hello KRAWLER!";

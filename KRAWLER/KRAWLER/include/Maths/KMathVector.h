@@ -70,10 +70,6 @@ __forceinline std::ostream& operator<< (std::ostream& OStream, const sf::Vector2
 template<typename T>
 __forceinline std::istream& operator >> (std::istream& IStream, sf::Vector2<T>& Vector);
 
-using Vec2d = sf::Vector2<double>;
-using Vec2f = sf::Vector2f;
-using Vec2i = sf::Vector2i;
-
 #include "KMathVector.inl"
 
 #endif

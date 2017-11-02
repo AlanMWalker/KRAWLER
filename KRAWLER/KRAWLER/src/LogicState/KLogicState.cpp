@@ -7,7 +7,7 @@ using namespace Krawler::LogicState;
 
 using namespace std;
 
-KInitStatus KLogicState::setupState(const KLogicStateInitialiser&  initaliser)
+KInitStatus KLogicState::setupState(const KLogicStateInitialiser& initaliser)
 {
 	m_stateIdentifier = initaliser.stateIdentifier;
 	mb_isPhysicsEnabled = initaliser.bIsPhysicsEngineEnabled;

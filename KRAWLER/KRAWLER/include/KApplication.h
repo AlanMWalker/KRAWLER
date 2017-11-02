@@ -1,6 +1,7 @@
 #ifndef KAPPLICATION_H
 #define KAPPLICATION_H
 
+#include "Renderer\KRenderer.h"
 
 namespace Krawler
 {
@@ -46,7 +47,8 @@ namespace Krawler
 
 		sf::RenderWindow* const getRenderWindow() { return mp_rWindow; }
 		Krawler::LogicState::KLogicStateDirector* const getLogicStateDirector() { return mp_logicStateDirector; }
-		
+		Krawler::Renderer::KRenderer* const getRenderer() { return mp_renderer; }
+
 		float getElapsedTime() const;
 		float getDelta() const { return m_gameDelta; }
 
@@ -57,7 +59,7 @@ namespace Krawler
 
 		sf::RenderWindow* mp_rWindow = nullptr;
 		Krawler::LogicState::KLogicStateDirector* mp_logicStateDirector = nullptr;
-
+		Krawler::Renderer::KRenderer* mp_renderer = nullptr;
 
 		uint32 m_gameFPS;
 		uint32 m_physicsFPS;

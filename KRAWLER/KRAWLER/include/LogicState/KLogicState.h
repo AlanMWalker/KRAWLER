@@ -1,8 +1,6 @@
 #ifndef KLOGIC_STATE_H
 #define KLOGIC_STATE_H
 
-#include "Krawler.h"
-
 namespace Krawler
 {
 	namespace LogicState
@@ -13,7 +11,7 @@ namespace Krawler
 		struct KLogicStateInitialiser
 		{
 			bool bIsPhysicsEngineEnabled = true;
-			std::wstring stateIdentifier = TEXT("State");
+			std::wstring stateIdentifier = TEXT("State-") + GenerateUUID();
 			KLogicStateDirector* pStateDirector = nullptr;
 		};
 

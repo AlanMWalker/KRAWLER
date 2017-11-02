@@ -4,6 +4,7 @@
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
+using namespace Krawler::Renderer;
 using namespace sf;
 
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
@@ -43,7 +44,7 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	mp_rWindow->setFramerateLimit(m_gameFPS);
 
 	mp_logicStateDirector = new KLogicStateDirector;
-
+	mp_renderer = new KRenderer;
 }
 
 void KApplication::runApplication()
@@ -87,10 +88,9 @@ void KApplication::runApplication()
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
 		
 		mp_logicStateDirector->tickActiveLogicState();
-
-		mp_rWindow->clear(Color::Black);
-
-		mp_rWindow->display();
+		
+		mp_renderer->render();
+		
 	}
 }
 
@@ -99,6 +99,7 @@ void Krawler::KApplication::cleanupApplication()
 	mp_logicStateDirector->cleanupLogicStateDirector();
 	KFREE(mp_logicStateDirector);
 	KFREE(mp_rWindow);
+	KFREE(mp_renderer);
 }
 
 float Krawler::KApplication::getElapsedTime() const

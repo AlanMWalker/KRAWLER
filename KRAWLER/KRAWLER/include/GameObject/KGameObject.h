@@ -1,8 +1,6 @@
 #ifndef KGAME_OBJECT_H
 #define KGAME_OBJECT_H
 
-#include "Krawler.h"
-
 namespace Krawler
 {
 	class KGameObject : public sf::Transformable, public sf::Drawable
@@ -27,9 +25,11 @@ namespace Krawler
 		void setTextureRect(const sf::IntRect& textureRect);
 		void setFillColour(const sf::Color& colour);
 		void setName(const std::string& objName);
-		void setRenderLayer(sf::Int32 renderLayer) { m_renderLayer = renderLayer; }
+		void setRenderLayer(sf::Int32 renderLayer) { m_renderLayer = renderLayer; } // Increasing render layer is closer to screen, decreasing is further from screen
 		void setObjectInactive() { mb_isGOActive = false; }
 		void setObjectActive() { mb_isGOActive = true; }
+
+		std::wstring getObjectName() const { return m_objName; }
 
 	private:
 

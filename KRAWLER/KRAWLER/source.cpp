@@ -35,6 +35,8 @@ int WINAPI WinMain(
 
 	StartupEngine(&init);
 
+	KGameObject objA, objB, objC;
+
 	auto inst = KApplication::getApplicationInstance();
 
 	KLogicStateInitialiser stateInit;
@@ -42,6 +44,14 @@ int WINAPI WinMain(
 	inst->getLogicStateDirector()->registerLogicState(new KLogicState, &stateInit);
 	inst->getLogicStateDirector()->setActiveLogicState(TEXT("play"));
 
+	objA.setSize(Vec2f(100.f, 100.f));
+	objB.setSize(Vec2f(150, 200));
+	objC.setSize(Vec2f(500, 500));
+	objC.setFillColour(sf::Color::Red);
+	objC.setRenderLayer(-2);
+	inst->getRenderer()->addToRendererQueue(&objA);
+	inst->getRenderer()->addToRendererQueue(&objB);
+	inst->getRenderer()->addToRendererQueue(&objC);
 
 	RunApplication();
 

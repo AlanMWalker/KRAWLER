@@ -12,7 +12,7 @@
 #endif 
 
 #include <SFML\Graphics.hpp>
-
+#include "Krawler.h"
 #include "Utilities\KEngineMacros.h"
 #include "Utilities\KDebug.h"
 

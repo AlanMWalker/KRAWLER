@@ -1,6 +1,10 @@
 #ifndef KLOGIC_STATE_H
 #define KLOGIC_STATE_H
 
+#include <string> 
+#include <Windows.h>
+#include "Krawler.h"
+
 namespace Krawler
 {
 	namespace LogicState
@@ -20,14 +24,14 @@ namespace Krawler
 		public:
 
 			//ctor & dtor
-			KLogicState() = default;
-			virtual ~KLogicState() = default;
+			KRAWLER_API KLogicState() = default;
+			KRAWLER_API virtual ~KLogicState() = default;
 
 			//Mutators
-			virtual Krawler::KInitStatus setupState(const KLogicStateInitialiser&  initaliser);
-			virtual void cleanupState();
+			KRAWLER_API virtual Krawler::KInitStatus setupState(const KLogicStateInitialiser&  initaliser);
+			KRAWLER_API virtual void cleanupState();
 
-			virtual void tick();
+			KRAWLER_API virtual void tick();
 
 			//Proposed functions (yet undecided)
 			//void onEnterState();
@@ -36,7 +40,7 @@ namespace Krawler
 
 
 			//Accessors
-			std::wstring getStateIdentifier() const { return m_stateIdentifier; }
+			KRAWLER_API std::wstring getStateIdentifier() const { return m_stateIdentifier; }
 		protected:
 
 			KLogicStateDirector* mp_stateDirector = nullptr;

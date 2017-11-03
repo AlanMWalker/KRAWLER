@@ -2,6 +2,7 @@
 #define KRENDERER_H
 
 #include "GameObject\KGameObject.h"
+#include "Krawler.h"
 
 namespace Krawler
 {

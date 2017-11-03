@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "LogicState\KLogicState.h"
 #include "LogicState\KLogicStateDirector.h"
 

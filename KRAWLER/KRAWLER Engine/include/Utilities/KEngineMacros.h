@@ -1,6 +1,8 @@
 #ifndef KENGINE_MACROS_H
 #define KENGINE_MACROS_H
 
+#include <assert.h>
+
 #define KFREE(ptr) if( ptr != nullptr)	\
 						{					\
 							delete ptr;		\

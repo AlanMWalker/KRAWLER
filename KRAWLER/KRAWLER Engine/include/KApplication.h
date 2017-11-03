@@ -1,8 +1,9 @@
 #ifndef KAPPLICATION_H
 #define KAPPLICATION_H
 
+#include "Krawler.h"
 #include "Renderer\KRenderer.h"
-
+#include <SFML\Graphics.hpp> 
 namespace Krawler
 {
 	//Forward Declerations
@@ -24,7 +25,7 @@ namespace Krawler
 		uint32 height; // Height of the window
 		uint32 gameFps = 60; // Game FPS (render & update)
 		uint32 physicsFps = 100; // fps for physics engine to update at
-		std::string windowTitle; //title of the window
+		std::wstring windowTitle; //title of the window
 		bool consoleWindow; // Is the console window enabled on your build
 		KWindowStyle windowStyle = Windowed_Fixed_Size; // Window style
 	};
@@ -33,24 +34,24 @@ namespace Krawler
 	{
 	public:
 
-		static KApplication* const getApplicationInstance()
+		KRAWLER_API static KApplication* const getApplicationInstance()
 		{
 			static KApplication* pApplication = new KApplication();
 
 			return pApplication;
 		}
-		~KApplication() = default;
+		KRAWLER_API ~KApplication() = default;
 
-		void setupApplication(const KApplicationInitialise& appInit);
-		void runApplication();
-		void cleanupApplication();
+		KRAWLER_API void setupApplication(const KApplicationInitialise& appInit);
+		KRAWLER_API void runApplication();
+		KRAWLER_API void cleanupApplication();
 
-		sf::RenderWindow* const getRenderWindow() { return mp_rWindow; }
-		Krawler::LogicState::KLogicStateDirector* const getLogicStateDirector() { return mp_logicStateDirector; }
-		Krawler::Renderer::KRenderer* const getRenderer() { return mp_renderer; }
+		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return mp_rWindow; }
+		KRAWLER_API Krawler::LogicState::KLogicStateDirector* const getLogicStateDirector() { return mp_logicStateDirector; }
+		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return mp_renderer; }
 
-		float getElapsedTime() const;
-		float getDelta() const { return m_gameDelta; }
+		KRAWLER_API float getElapsedTime() const;
+		KRAWLER_API float getDelta() const { return m_gameDelta; }
 
 	private:
 

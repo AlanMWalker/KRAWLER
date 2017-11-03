@@ -4,6 +4,7 @@
 #include "Krawler.h" 
 #include "LogicState\KLogicState.h"
 
+
 namespace Krawler
 {
 	namespace LogicState
@@ -13,16 +14,16 @@ namespace Krawler
 		{
 		public:
 
-			KLogicStateDirector() = default;
-			~KLogicStateDirector() = default;
+			KRAWLER_API KLogicStateDirector() = default;
+			KRAWLER_API ~KLogicStateDirector() = default;
 
-			void registerLogicState(KLogicState* plogicState, KLogicStateInitialiser* pInitialiser);
-			void tickActiveLogicState();
-			void setActiveLogicState(const std::wstring& identifier);
-			void cleanupLogicStateDirector();
+			KRAWLER_API void registerLogicState(KLogicState* plogicState, KLogicStateInitialiser* pInitialiser);
+			KRAWLER_API void tickActiveLogicState();
+			KRAWLER_API void setActiveLogicState(const std::wstring& identifier);
+			KRAWLER_API void cleanupLogicStateDirector();
 
 
-			bool doesLogicStateExist(const std::wstring& identifier) const;
+			KRAWLER_API bool doesLogicStateExist(const std::wstring& identifier) const;
 
 		private:
 

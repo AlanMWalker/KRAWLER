@@ -1,9 +1,15 @@
 #ifndef KRAWLER_H
 #define KRAWLER_H
 
+#include "KrawlerLib.h"
 #include "Utilities\KEngineMacros.h"
-
 #include "Maths\KMaths.hpp"
+
+#include "Utilities\KEngineMacros.h"
+#include "Utilities\KDebug.h"
+
+#include <map>
+#include <Windows.h>
 
 namespace Krawler
 {
@@ -53,12 +59,12 @@ namespace Krawler
 
 
 
-	KInitStatus StartupEngine(KApplicationInitialise* windowInit);
+	KRAWLER_API KInitStatus StartupEngine(KApplicationInitialise* windowInit);
 
-	void ShutdownEngine();
-	void RunApplication();
+	KRAWLER_API void ShutdownEngine();
+	KRAWLER_API void RunApplication();
 
-	std::wstring GenerateUUID();
+	KRAWLER_API std::wstring GenerateUUID();
 
 };
 

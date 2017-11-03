@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "KApplication.h"
 #include "LogicState\KLogicStateDirector.h"
 
@@ -28,7 +28,7 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 
 	default:
 	case KWindowStyle::Windowed_Fixed_Size:
-		style |= (Style::Default & Style::Resize);
+		style |= (Style::Close | Style::Titlebar);
 		break;
 
 	case KWindowStyle::Windowed_Resizeable:
@@ -86,11 +86,11 @@ void KApplication::runApplication()
 			accumulator -= seconds(m_physicsDelta);
 		}
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
-		
+
 		mp_logicStateDirector->tickActiveLogicState();
-		
+
 		mp_renderer->render();
-		
+
 	}
 }
 

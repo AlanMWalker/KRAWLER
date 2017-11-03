@@ -1,4 +1,4 @@
-#include "stdafx.h"	
+	
 #include "Renderer\KRenderer.h"
 #include "KApplication.h"
 

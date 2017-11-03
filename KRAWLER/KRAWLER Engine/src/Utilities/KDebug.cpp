@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Utilities\KDebug.h"
 
 void Krawler::KPrintf(const wchar_t* szFormat, ...)

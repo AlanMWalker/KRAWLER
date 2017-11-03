@@ -1,4 +1,4 @@
-#include "stdafx.h"	
+	
 #include "GameObject\KGameObject.h"
 
 #define VERT_PER_QUAD 4

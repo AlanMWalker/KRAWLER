@@ -1,4 +1,4 @@
-#include "stdafx.h"	
+	
 #include "Krawler.h"
 #include "KApplication.h"
 

@@ -1,8 +1,6 @@
 #ifndef STDAFX_H
 #define STDAFX_H
 
-#include "targetver.h"
-
 #include <iostream>
 #include <string>
 #include <assert.h>
@@ -15,5 +13,11 @@
 #include "Krawler.h"
 #include "Utilities\KEngineMacros.h"
 #include "Utilities\KDebug.h"
+
+#ifdef KRAWLER_EXPORTS
+#define KRAWLER_API __declspec(dllexport)   
+#else  
+#define KRAWLER_API __declspec(dllimport)   
+#endif  
 
 #endif

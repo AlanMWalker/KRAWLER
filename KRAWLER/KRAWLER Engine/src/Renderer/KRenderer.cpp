@@ -43,6 +43,7 @@ void Krawler::Renderer::KRenderer::render()
 
 bool Krawler::Renderer::KRenderer::isInRenderQueue(KGameObject* pGameObj) const
 {
+	KCHECK(pGameObj);
 	auto p = find(m_renderQueue.begin(), m_renderQueue.end(), pGameObj);
 	return (p != m_renderQueue.end());
 }
@@ -63,7 +64,45 @@ bool Krawler::Renderer::KRenderer::isInRenderQueue(const std::wstring & identifi
 
 void Krawler::Renderer::KRenderer::removeFromRenderQueue(KGameObject* pObj)
 {
+	KCHECK(pObj);
+	if (!pObj)
+	{
+		return;
+	}
+
+	if (!isInRenderQueue(pObj))
+	{
+		return;
+	}
+
 	m_renderQueue.erase(std::find(m_renderQueue.begin(), m_renderQueue.end(), pObj));
+}
+
+void Krawler::Renderer::KRenderer::removeFromRenderQueue(const std::wstring & identifier)
+{
+	if (!isInRenderQueue(identifier))
+	{
+		return;
+	}
+
+	int32 idx = 0;
+	bool found = false;
+	while (idx < KCAST(int32, m_renderQueue.size()))
+	{
+		if (m_renderQueue[idx]->getObjectName() == identifier)
+		{
+			found = true;
+			break;
+		}
+		++idx;
+	}
+
+	if (!found)
+	{
+		return;
+	}
+	auto a = std::find(m_renderQueue.begin(), m_renderQueue.end(), m_renderQueue[idx]);
+	m_renderQueue.erase(a);
 }
 
 void Krawler::Renderer::KRenderer::sortByRenderLayer()

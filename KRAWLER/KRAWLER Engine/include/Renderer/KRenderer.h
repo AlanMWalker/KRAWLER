@@ -20,8 +20,9 @@ namespace Krawler
 
 			bool isInRenderQueue(KGameObject* pGameObj) const;
 			bool isInRenderQueue(const std::wstring& identifier) const;
-			
+
 			void removeFromRenderQueue(KGameObject* pObj);
+			void removeFromRenderQueue(const std::wstring& identifier);
 
 		private:
 

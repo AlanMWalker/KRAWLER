@@ -21,6 +21,8 @@ namespace Krawler
 		KRAWLER_API sf::FloatRect getFixedGlobalBounds() const;
 		KRAWLER_API sf::FloatRect getLocalBounds() const;
 
+		KRAWLER_API Vec2f getCentrePosition() const;
+
 		KRAWLER_API sf::Int32 getRenderLayer() const { return m_renderLayer; }
 		KRAWLER_API bool isGameObjectActive() const { return mb_isGOActive; }
 
@@ -45,7 +47,7 @@ namespace Krawler
 		sf::VertexArray m_vertArray;
 		sf::IntRect m_texRect = sf::IntRect();
 
-		std::wstring m_objName = TEXT("GO-") + GenerateUUID();
+		std::wstring m_objName = KTEXT("GO-") + GenerateUUID();
 
 		Vec2f m_size = Vec2f(1.0f, 1.0f);
 

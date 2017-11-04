@@ -8,6 +8,7 @@
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
+
 int main(void)
 {
 	KApplicationInitialise initApp;

@@ -45,6 +45,15 @@
     <ClCompile Include="src\Utilities\KEngineMacros.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Physics\KPhysicsBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\KPhysicsCollisions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\KPhysicsScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\KApplication.h">
@@ -81,6 +90,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\KrawlerLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Physics\KPhysicsStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Physics\KPhysicsBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Physics\KPhysicsCollisions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Physics\KPhysicsScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

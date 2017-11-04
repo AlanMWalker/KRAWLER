@@ -1,4 +1,4 @@
-	
+
 #include "GameObject\KGameObject.h"
 
 #define VERT_PER_QUAD 4
@@ -58,6 +58,17 @@ sf::FloatRect KGameObject::getLocalBounds() const
 	localBounds.height = m_size.y;
 
 	return localBounds;
+}
+
+Vec2f Krawler::KGameObject::getCentrePosition() const
+{
+	if (getOrigin() == Vec2f(0.0f, 0.0f))
+	{
+		const FloatRect bounds = getFixedGlobalBounds();
+		return getPosition() + Vec2f(bounds.width / 2.0f, bounds.height / 2.0f);
+	}
+
+	return getPosition();
 }
 
 void KGameObject::setSize(const Vec2f & size)

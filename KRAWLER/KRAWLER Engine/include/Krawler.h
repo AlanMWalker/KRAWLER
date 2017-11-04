@@ -9,7 +9,6 @@
 #include "Utilities\KDebug.h"
 
 #include <map>
-#include <Windows.h>
 
 namespace Krawler
 {

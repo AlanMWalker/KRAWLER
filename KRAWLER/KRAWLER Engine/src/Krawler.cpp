@@ -1,4 +1,4 @@
-	
+
 #include "Krawler.h"
 #include "KApplication.h"
 
@@ -7,6 +7,7 @@
 #define UUID_PREFIX L"18-5E-0F-45-8D-BA"
 
 using namespace Krawler;
+using namespace Krawler::Maths;
 
 extern "C"
 {
@@ -18,6 +19,8 @@ KInitStatus Krawler::StartupEngine(KApplicationInitialise * windowInit)
 {
 	KApplication* const app = KApplication::getApplicationInstance();
 	app->setupApplication(*windowInit);
+
+	InitRand();
 
 	return KInitStatus::Success;
 }
@@ -33,7 +36,7 @@ void Krawler::ShutdownEngine()
 void Krawler::RunApplication()
 {
 	auto app = KApplication::getApplicationInstance();
-	
+
 
 	KApplication::getApplicationInstance()->runApplication();
 }

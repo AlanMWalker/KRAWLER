@@ -168,6 +168,9 @@
     <ClCompile Include="src\Krawler.cpp" />
     <ClCompile Include="src\LogicState\KLogicState.cpp" />
     <ClCompile Include="src\LogicState\KLogicStateDirector.cpp" />
+    <ClCompile Include="src\Physics\KPhysicsBody.cpp" />
+    <ClCompile Include="src\Physics\KPhysicsCollisions.cpp" />
+    <ClCompile Include="src\Physics\KPhysicsScene.cpp" />
     <ClCompile Include="src\Renderer\KRenderer.cpp" />
     <ClCompile Include="src\Utilities\KDebug.cpp" />
     <ClCompile Include="src\Utilities\KEngineMacros.cpp" />
@@ -182,6 +185,10 @@
     <ClInclude Include="include\Maths\KMaths.hpp" />
     <ClInclude Include="include\Maths\KMathsUtilities.h" />
     <ClInclude Include="include\Maths\KMathVector.h" />
+    <ClInclude Include="include\Physics\KPhysicsBody.h" />
+    <ClInclude Include="include\Physics\KPhysicsCollisions.h" />
+    <ClInclude Include="include\Physics\KPhysicsScene.h" />
+    <ClInclude Include="include\Physics\KPhysicsStructs.h" />
     <ClInclude Include="include\Renderer\KRenderer.h" />
     <ClInclude Include="include\Utilities\KDebug.h" />
     <ClInclude Include="include\Utilities\KEngineMacros.h" />

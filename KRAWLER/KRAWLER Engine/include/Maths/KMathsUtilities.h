@@ -3,6 +3,7 @@
 
 #include <cstdlib>	
 #include <ctime>
+#include "KrawlerLib.h"
 
 namespace Krawler
 {
@@ -15,36 +16,36 @@ namespace Krawler
 		const float PI_BY_2{ PI  * 2.f };
 
 		template<typename T>
-		T Degrees(T Theta);
+		KRAWLER_API T Degrees(T Theta);
 
 		template<typename T>
-		T Radians(T Theta);
+		KRAWLER_API	T Radians(T Theta);
 
 		template<typename T>
-		inline T Clamp(T Min, T Max, T Value);
+		KRAWLER_API inline T Clamp(T Min, T Max, T Value);
 
 		template <typename T>
-		T Max(T A, T B);
+		KRAWLER_API	T Max(T A, T B);
 
 		template <typename T>
-		T Min(T Value, T Min);
+		KRAWLER_API T Min(T Value, T Min);
 
 		template<typename T>
-		T Lerp(T A, T B, float t);
+		KRAWLER_API T Lerp(T A, T B, float t);
 
-		static __forceinline void InitRand()
+		KRAWLER_API __forceinline void InitRand()
 		{
 			srand(static_cast<unsigned>(time(0)));
 		}
 
 		//Random float between 0 - 1
-		static __forceinline float RandFloat()
+		KRAWLER_API	__forceinline float RandFloat()
 		{
 			return (static_cast<float> (rand()) / static_cast<float>(RAND_MAX));
 		}
 
 		//Random float between 0 and Max
-		static __forceinline float RandFloat(float Max)
+		KRAWLER_API __forceinline float RandFloat(float Max)
 		{
 			if (Max != 0)
 			{
@@ -54,7 +55,7 @@ namespace Krawler
 		}
 
 		//Random float between max & min
-		static __forceinline float RandFloat(float Min, float Max)
+		KRAWLER_API __forceinline float RandFloat(float Min, float Max)
 		{
 			if (Max - Min != 0)
 			{
@@ -63,7 +64,7 @@ namespace Krawler
 			return{ 0.f };
 		}
 
-		static __forceinline signed int RandInt(signed int val)
+		KRAWLER_API __forceinline signed int RandInt(signed int val)
 		{
 			return rand() % val;
 		}

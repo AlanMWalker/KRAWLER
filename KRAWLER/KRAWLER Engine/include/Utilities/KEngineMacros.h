@@ -20,4 +20,5 @@
 
 #define KCAST(type, expr) static_cast<type> (expr)
 
+#define KTEXT(str) L##str
 #endif 

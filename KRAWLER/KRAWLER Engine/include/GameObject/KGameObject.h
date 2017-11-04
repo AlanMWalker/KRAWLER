@@ -6,6 +6,10 @@
 
 namespace Krawler
 {
+	namespace Physics
+	{
+		class KPhysicsBody;
+	}
 
 	class KGameObject : public sf::Transformable, public sf::Drawable
 	{
@@ -21,6 +25,8 @@ namespace Krawler
 		KRAWLER_API sf::FloatRect getFixedGlobalBounds() const;
 		KRAWLER_API sf::FloatRect getLocalBounds() const;
 
+		KRAWLER_API Vec2f getCentrePosition() const;
+
 		KRAWLER_API sf::Int32 getRenderLayer() const { return m_renderLayer; }
 		KRAWLER_API bool isGameObjectActive() const { return mb_isGOActive; }
 
@@ -32,8 +38,12 @@ namespace Krawler
 		KRAWLER_API void setRenderLayer(sf::Int32 renderLayer) { m_renderLayer = renderLayer; } // Increasing render layer is closer to screen, decreasing is further from screen
 		KRAWLER_API void setObjectInactive() { mb_isGOActive = false; }
 		KRAWLER_API void setObjectActive() { mb_isGOActive = true; }
+		KRAWLER_API void setPhysicsBody(Physics::KPhysicsBody* pBody);
+
+
 
 		KRAWLER_API std::wstring getObjectName() const { return m_objName; }
+		KRAWLER_API Physics::KPhysicsBody* const getPhysicsBody() { return mp_physicsBody; }
 
 	private:
 
@@ -41,11 +51,12 @@ namespace Krawler
 		void updateTextureCoords();
 
 		sf::Texture* mp_texture = nullptr;
+		Physics::KPhysicsBody* mp_physicsBody = nullptr;
 
 		sf::VertexArray m_vertArray;
 		sf::IntRect m_texRect = sf::IntRect();
 
-		std::wstring m_objName = TEXT("GO-") + GenerateUUID();
+		std::wstring m_objName = KTEXT("GO-") + GenerateUUID();
 
 		Vec2f m_size = Vec2f(1.0f, 1.0f);
 

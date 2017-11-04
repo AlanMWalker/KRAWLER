@@ -42,6 +42,8 @@ namespace Krawler
 		}
 		KRAWLER_API ~KApplication() = default;
 
+		KRAWLER_API KInitStatus initialiseStateDirector();
+
 		KRAWLER_API void setupApplication(const KApplicationInitialise& appInit);
 		KRAWLER_API void runApplication();
 		KRAWLER_API void cleanupApplication();
@@ -52,6 +54,8 @@ namespace Krawler
 
 		KRAWLER_API float getElapsedTime() const;
 		KRAWLER_API float getDelta() const { return m_gameDelta; }
+		KRAWLER_API float getPhysicsDelta() const { return m_physicsDelta; }
+
 
 	private:
 

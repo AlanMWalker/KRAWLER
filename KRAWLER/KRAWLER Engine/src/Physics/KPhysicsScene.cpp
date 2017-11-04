@@ -243,3 +243,9 @@ void KPhysicsScene::handleCollisionPairs()
 		}
 	}
 }
+
+KRAWLER_API extern bool Krawler::Physics::AABBvsAABB(const sf::FloatRect & rectA, const sf::FloatRect & rectB)
+{
+	return(rectA.left + rectA.width > rectB.left && rectA.left < rectB.left + rectB.width) &&
+		(rectA.top + rectA.height > rectB.top && rectA.top < rectB.top + rectB.height);
+}

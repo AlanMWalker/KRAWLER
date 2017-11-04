@@ -13,12 +13,7 @@ namespace Krawler
 {
 	namespace Physics
 	{
-		KRAWLER_API bool AABBvsAABB(const sf::FloatRect & rectA, const sf::FloatRect & rectB)
-		{
-			//return rectA.intersects(rectB);
-			return(rectA.left + rectA.width > rectB.left && rectA.left < rectB.left + rectB.width) &&
-				(rectA.top + rectA.height > rectB.top && rectA.top < rectB.top + rectB.height);
-		}
+		KRAWLER_API extern bool AABBvsAABB(const sf::FloatRect & rectA, const sf::FloatRect & rectB);
 
 		class KPhysicsScene
 		{
@@ -32,7 +27,7 @@ namespace Krawler
 			KRAWLER_API void setPlayerPointer(KPhysicsBody* p) { m_player = p; }
 			KRAWLER_API void setPixelsToMetresScale(float scale);
 
-			KRAWLER_API KPhysicsBody* addBody(KGameObject* object, float mass = 1.f, bool subjectToGravity = false);
+			KRAWLER_API KPhysicsBody* addBody(KGameObject* object, float mass = 1.f, bool subjectToGravity = true);
 			KRAWLER_API void removeFromScene(KPhysicsBody* pBody); // (TODO : REQUIRES TESTING) will remove a body from the scene for the duration of the game
 
 			KRAWLER_API void cleanupScene(); // deinit function for PhysicsScene

@@ -25,6 +25,11 @@ KInitStatus Krawler::StartupEngine(KApplicationInitialise * windowInit)
 	return KInitStatus::Success;
 }
 
+KRAWLER_API KInitStatus Krawler::InitialiseStateDirector()
+{
+	return KApplication::getApplicationInstance()->initialiseStateDirector();
+}
+
 void Krawler::ShutdownEngine()
 {
 	// Cleanup applicaiton

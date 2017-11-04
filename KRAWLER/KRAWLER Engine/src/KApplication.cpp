@@ -7,6 +7,11 @@ using namespace Krawler::LogicState;
 using namespace Krawler::Renderer;
 using namespace sf;
 
+KRAWLER_API KInitStatus Krawler::KApplication::initialiseStateDirector()
+{
+	return mp_logicStateDirector->initaliseLogicStates();
+}
+
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
 {
 	mp_rWindow = new RenderWindow;
@@ -82,6 +87,7 @@ void KApplication::runApplication()
 		{
 			//previousState = currentState;
 			//Physics tick
+			mp_logicStateDirector->fixedTick();
 			time += seconds(m_physicsDelta);
 			accumulator -= seconds(m_physicsDelta);
 		}

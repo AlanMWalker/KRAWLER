@@ -4,9 +4,16 @@
 #include <string> 
 #include <Windows.h>
 #include "Krawler.h"
+#include <vector>
 
 namespace Krawler
 {
+	//forward declerations
+	class KGameObject;
+	namespace Physics
+	{
+		class KPhysicsScene;
+	}
 	namespace LogicState
 	{
 
@@ -25,13 +32,15 @@ namespace Krawler
 
 			//ctor & dtor
 			KRAWLER_API KLogicState() = default;
-			KRAWLER_API virtual ~KLogicState() = default;
+			KRAWLER_API virtual ~KLogicState();
 
 			//Mutators
 			KRAWLER_API virtual Krawler::KInitStatus setupState(const KLogicStateInitialiser&  initaliser);
 			KRAWLER_API virtual void cleanupState();
-
+			KRAWLER_API void fixedTick();
 			KRAWLER_API virtual void tick();
+
+			KRAWLER_API KGameObject* addGameObject(const Vec2f& size, bool render = true);
 
 			//Proposed functions (yet undecided)
 			//void onEnterState();
@@ -44,8 +53,11 @@ namespace Krawler
 		protected:
 
 			KLogicStateDirector* mp_stateDirector = nullptr;
+			Physics::KPhysicsScene* mp_physicsScene = nullptr;
 
 		private:
+
+			std::vector<KGameObject*> m_gameObjects;
 
 			std::wstring m_stateIdentifier;
 			bool mb_isPhysicsEnabled = true;

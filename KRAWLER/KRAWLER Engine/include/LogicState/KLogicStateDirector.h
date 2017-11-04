@@ -17,8 +17,10 @@ namespace Krawler
 			KRAWLER_API KLogicStateDirector() = default;
 			KRAWLER_API ~KLogicStateDirector() = default;
 
+			KInitStatus initaliseLogicStates();
 			KRAWLER_API void registerLogicState(KLogicState* plogicState, KLogicStateInitialiser* pInitialiser);
 			KRAWLER_API void tickActiveLogicState();
+			void fixedTick();
 			KRAWLER_API void setActiveLogicState(const std::wstring& identifier);
 			KRAWLER_API void cleanupLogicStateDirector();
 
@@ -28,6 +30,7 @@ namespace Krawler
 		private:
 
 			std::map<std::wstring, KLogicState*> m_logicStateMap;
+			std::map<std::wstring, KLogicStateInitialiser> m_logicStateInitialisers;
 			KLogicStateData m_currentState;
 		};
 	}

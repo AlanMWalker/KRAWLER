@@ -1,10 +1,12 @@
 
 #include "GameObject\KGameObject.h"
+#include "Physics\KPhysicsBody.h"
 
 #define VERT_PER_QUAD 4
 
 using namespace sf;
 using namespace Krawler;
+using namespace Krawler::Physics; 
 
 KGameObject::KGameObject()
 {
@@ -110,6 +112,12 @@ void KGameObject::setFillColour(const sf::Color & colour)
 
 void KGameObject::setName(const std::string & objName)
 {
+}
+
+KRAWLER_API void Krawler::KGameObject::setPhysicsBody(KPhysicsBody * pBody)
+{
+	KCHECK(pBody);
+	mp_physicsBody = pBody;
 }
 
 //private functions 

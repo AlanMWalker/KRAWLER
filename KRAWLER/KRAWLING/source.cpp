@@ -10,6 +10,7 @@
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
+using namespace Krawler::Input;
 
 class Friendy : public KLogicState
 {
@@ -42,7 +43,7 @@ public:
 	virtual void tick() override
 	{
 		body->resetForce();
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		if(KInput::MouseJustPressed(sf::Mouse::Left))
 		{
 			Vec2f pos(sf::Mouse::getPosition(*KApplication::getApplicationInstance()->getRenderWindow()));
 			KGameObject* a = addGameObject(Vec2f(10, 10));
@@ -63,7 +64,7 @@ int main(void)
 	initApp.windowStyle = Windowed_Fixed_Size;
 	initApp.gameFps = 60;
 	initApp.physicsFps = 100;
-	initApp.windowTitle = TEXT("Hello World!");
+	initApp.windowTitle = KTEXT("Hello World!");
 
 	StartupEngine(&initApp);
 

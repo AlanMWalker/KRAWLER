@@ -14,7 +14,7 @@ KRAWLER_API KInitStatus Krawler::KApplication::initialiseStateDirector()
 
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
 {
-	mp_rWindow = new RenderWindow;
+	mp_renderWindow = new RenderWindow;
 
 	//setup game fps values
 	m_gameFPS = appInit.gameFps;
@@ -45,11 +45,14 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 		break;
 	}
 
-	mp_rWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
-	mp_rWindow->setFramerateLimit(m_gameFPS);
+	mp_renderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
+	mp_renderWindow->setFramerateLimit(m_gameFPS);
 
 	mp_logicStateDirector = new KLogicStateDirector;
 	mp_renderer = new KRenderer;
+
+	Input::KInput::SetWindow(mp_renderWindow);
+
 }
 
 void KApplication::runApplication()
@@ -62,19 +65,23 @@ void KApplication::runApplication()
 	sf::Clock deltaClock;
 
 	bool bHasFocus = true;
-	while (mp_rWindow->isOpen())
+
+	while (mp_renderWindow->isOpen())
 	{
+
 		m_gameDelta = deltaClock.getElapsedTime().asSeconds();
 		Time frameTime;
 		updateFrameTime(currentTime, lastTime, frameTime, accumulator);
 
 		Event evnt;
 
-		while (mp_rWindow->pollEvent(evnt))
+		Input::KInput::Update();
+
+		while (mp_renderWindow->pollEvent(evnt))
 		{
 			if (evnt.type == Event::Closed)
 			{
-				mp_rWindow->close();
+				mp_renderWindow->close();
 			}
 			if (evnt.type == Event::GainedFocus)
 			{
@@ -83,6 +90,10 @@ void KApplication::runApplication()
 			if (evnt.type == Event::LostFocus)
 			{
 				bHasFocus = false;
+			}
+			if (bHasFocus)
+			{
+				Input::KInput::HandleEvent(evnt);
 			}
 		}
 
@@ -103,10 +114,12 @@ void KApplication::runApplication()
 		++m_frames;
 
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
+
 		if (bHasFocus)
 		{
 			mp_logicStateDirector->tickActiveLogicState();
 		}
+
 		mp_renderer->render();
 
 	}
@@ -116,7 +129,7 @@ void Krawler::KApplication::cleanupApplication()
 {
 	mp_logicStateDirector->cleanupLogicStateDirector();
 	KFREE(mp_logicStateDirector);
-	KFREE(mp_rWindow);
+	KFREE(mp_renderWindow);
 	KFREE(mp_renderer);
 }
 
@@ -139,8 +152,6 @@ inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& last
 		return;
 	}
 
-
-
 	currentTime = m_elapsedClock.getElapsedTime();
 
 	if (currentTime - lastTime > milliseconds(5) && m_frames > 10)
@@ -161,6 +172,4 @@ inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& last
 	lastTime = currentTime;
 
 	accumulator += frameTime;
-
-
 }

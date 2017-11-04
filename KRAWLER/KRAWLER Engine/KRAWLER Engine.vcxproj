@@ -164,6 +164,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\GameObject\KGameObject.cpp" />
+    <ClCompile Include="src\Input\KInput.cpp" />
     <ClCompile Include="src\KApplication.cpp" />
     <ClCompile Include="src\Krawler.cpp" />
     <ClCompile Include="src\LogicState\KLogicState.cpp" />
@@ -178,6 +179,7 @@
   <ItemGroup>
     <ClInclude Include="include\GameObject\KGameObject.h" />
     <ClInclude Include="include\KApplication.h" />
+    <ClInclude Include="include\Input\KInput.h" />
     <ClInclude Include="include\Krawler.h" />
     <ClInclude Include="include\KrawlerLib.h" />
     <ClInclude Include="include\LogicState\KLogicState.h" />

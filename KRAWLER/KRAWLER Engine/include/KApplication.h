@@ -3,7 +3,11 @@
 
 #include "Krawler.h"
 #include "Renderer\KRenderer.h"
-#include <SFML\Graphics.hpp> 
+#include "Input\KInput.h"
+
+#include <SFML\Graphics\RenderWindow.hpp> 
+#include <SFML\System\Clock.hpp> 
+
 namespace Krawler
 {
 	//Forward Declerations
@@ -48,7 +52,7 @@ namespace Krawler
 		KRAWLER_API void runApplication();
 		KRAWLER_API void cleanupApplication();
 
-		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return mp_rWindow; }
+		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return mp_renderWindow; }
 		KRAWLER_API Krawler::LogicState::KLogicStateDirector* const getLogicStateDirector() { return mp_logicStateDirector; }
 		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return mp_renderer; }
 
@@ -62,7 +66,7 @@ namespace Krawler
 		KApplication();
 		inline void updateFrameTime(sf::Time& currentTime, sf::Time& lastTime, sf::Time& frameTime, sf::Time& accumulator) ;
 
-		sf::RenderWindow* mp_rWindow = nullptr;
+		sf::RenderWindow* mp_renderWindow = nullptr;
 		Krawler::LogicState::KLogicStateDirector* mp_logicStateDirector = nullptr;
 		Krawler::Renderer::KRenderer* mp_renderer = nullptr;
 

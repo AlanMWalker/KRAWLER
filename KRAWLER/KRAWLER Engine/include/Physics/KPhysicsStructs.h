@@ -10,15 +10,15 @@ namespace Krawler
 	{
 		class KPhysicsBody;
 
-		struct MassData
+		struct KMassData
 		{
-			MassData() :
+			KMassData() :
 				mass(0.0f), invMass(1.0f)
 			{
 
 			}
 
-			MassData(float inMass)
+			KMassData(float inMass)
 			{
 				setMass(inMass);
 			}
@@ -41,14 +41,14 @@ namespace Krawler
 			float invMass;
 		};
 
-		struct MaterialData
+		struct KMaterialData
 		{
-			MaterialData()
+			KMaterialData()
 				: restitution(1.0f), density(1.0f), gravityScale(1.0f)
 			{
 				//ctor
 			}
-			MaterialData(float inDensity, float inRestitution, float inGravityScale)
+			KMaterialData(float inDensity, float inRestitution, float inGravityScale)
 				: density(inDensity), restitution(inRestitution), gravityScale(inGravityScale)
 			{
 
@@ -59,7 +59,7 @@ namespace Krawler
 			float gravityScale;
 		};
 
-		struct CollisionData
+		struct KCollisionData
 		{
 			KPhysicsBody* bodyA;
 			KPhysicsBody* bodyB;

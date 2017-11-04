@@ -39,9 +39,7 @@ namespace Krawler
 		KRAWLER_API void setObjectInactive() { mb_isGOActive = false; }
 		KRAWLER_API void setObjectActive() { mb_isGOActive = true; }
 		KRAWLER_API void setPhysicsBody(Physics::KPhysicsBody* pBody);
-
-
-
+		
 		KRAWLER_API std::wstring getObjectName() const { return m_objName; }
 		KRAWLER_API Physics::KPhysicsBody* const getPhysicsBody() { return mp_physicsBody; }
 

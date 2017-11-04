@@ -8,13 +8,13 @@ namespace Krawler
 {
 	namespace Physics
 	{
-		bool CirclevsCircleCollision(CollisionData& collData);
+		bool CirclevsCircleCollision(KCollisionData& collData);
 
-		bool AABBvsAABBCollision(CollisionData& collData);
+		bool AABBvsAABBCollision(KCollisionData& collData);
 
-		bool AABBvsCircleCollision(CollisionData & collData);
+		bool AABBvsCircleCollision(KCollisionData & collData);
 
-		bool CircleVsAABBCollision(CollisionData & collData);
+		bool CircleVsAABBCollision(KCollisionData & collData);
 	}
 }
 #endif 

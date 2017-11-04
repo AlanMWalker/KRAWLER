@@ -92,7 +92,7 @@ bool KPhysicsScene::doesAABBIntersect(const sf::FloatRect & aabb)
 
 //private functions
 
-void KPhysicsScene::resolveCollision(const CollisionData& collData)
+void KPhysicsScene::resolveCollision(const KCollisionData& collData)
 {
 	KPhysicsBody* bodyA = collData.bodyA;
 	KPhysicsBody* bodyB = collData.bodyB;
@@ -139,7 +139,7 @@ void KPhysicsScene::resolveCollision(const CollisionData& collData)
 }
 
 
-void KPhysicsScene::correctPosition(const CollisionData& collData)
+void KPhysicsScene::correctPosition(const KCollisionData& collData)
 {
 	KPhysicsBody* bodyA = collData.bodyA;
 	KPhysicsBody* bodyB = collData.bodyB;
@@ -232,7 +232,7 @@ void KPhysicsScene::handleCollisionPairs()
 {
 	for (auto& pair : m_uniquePairs)
 	{
-		CollisionData data;
+		KCollisionData data;
 		data.bodyA = pair.first;
 		data.bodyB = pair.second;
 

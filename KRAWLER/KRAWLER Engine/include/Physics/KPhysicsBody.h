@@ -76,18 +76,18 @@ namespace Krawler
 
 
 			KRAWLER_API bool isBodyInUse() const { return mb_isBodyInUse; }
-			KRAWLER_API const MaterialData& getMaterialData() { return m_materialData; }
+			KRAWLER_API const KMaterialData& getMaterialData() { return m_materialData; }
 			KRAWLER_API const std::wstring getGameObjectName() const;
 
 		private:
-
+			
 			KGameObject* mp_gameObject = nullptr;
 
 			Vec2f m_velocity;
 			Vec2f m_force;
 
-			MassData m_massData;
-			MaterialData m_materialData;
+			KMassData m_massData;
+			KMaterialData m_materialData;
 
 			KPhysicsBodyShapeType m_shapeType = KPhysicsBodyShapeType::Rectangle;
 

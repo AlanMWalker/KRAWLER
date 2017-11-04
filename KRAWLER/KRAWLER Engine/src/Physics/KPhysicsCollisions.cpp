@@ -7,7 +7,7 @@ using namespace Krawler;
 using namespace Krawler::Maths;
 using namespace Krawler::Physics;
 
-bool Krawler::Physics::CirclevsCircleCollision(CollisionData & collData)
+bool Krawler::Physics::CirclevsCircleCollision(KCollisionData & collData)
 {
 	//Setup pointers to physics bodies
 	KPhysicsBody* const bodyA = collData.bodyA;
@@ -49,7 +49,7 @@ bool Krawler::Physics::CirclevsCircleCollision(CollisionData & collData)
 	return true;
 }
 
-bool Krawler::Physics::AABBvsAABBCollision(CollisionData & collData)
+bool Krawler::Physics::AABBvsAABBCollision(KCollisionData & collData)
 {
 	//Setup pointers to physics bodies
 	KPhysicsBody* const bodyA = collData.bodyA;
@@ -108,7 +108,7 @@ bool Krawler::Physics::AABBvsAABBCollision(CollisionData & collData)
 	return false;
 }
 
-bool Krawler::Physics::AABBvsCircleCollision(CollisionData & collData)
+bool Krawler::Physics::AABBvsCircleCollision(KCollisionData & collData)
 {
 	//Setup pointers to physics bodies
 	KPhysicsBody* const bodyA = collData.bodyA;
@@ -181,7 +181,7 @@ bool Krawler::Physics::AABBvsCircleCollision(CollisionData & collData)
 	return true;
 }
 
-bool Krawler::Physics::CircleVsAABBCollision(CollisionData & collData)
+bool Krawler::Physics::CircleVsAABBCollision(KCollisionData & collData)
 {
 	//Setup pointers to physics bodies
 	KPhysicsBody* const bodyA = collData.bodyA;

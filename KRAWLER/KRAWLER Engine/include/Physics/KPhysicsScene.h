@@ -38,8 +38,8 @@ namespace Krawler
 			KRAWLER_API int32 getPhysicsBodyCount() const { return KCAST(signed, m_bodies.size()); }
 		private:
 
-			void resolveCollision(const CollisionData&);
-			void correctPosition(const CollisionData&);
+			void resolveCollision(const KCollisionData&);
+			void correctPosition(const KCollisionData&);
 			void impulseResolution(KPhysicsBody& bodyA, KPhysicsBody& bodyB, Vec2f collisionNormal, float dp);
 
 			void generateCollisionPairs();
@@ -47,7 +47,7 @@ namespace Krawler
 
 			const float RESTITUTION = 0.3f;
 
-			bool(*m_collisionFunctions[2][2])(CollisionData&) = {
+			bool(*m_collisionFunctions[2][2])(KCollisionData&) = {
 				{AABBvsAABBCollision, AABBvsCircleCollision},
 				{CircleVsAABBCollision, CirclevsCircleCollision},
 			};

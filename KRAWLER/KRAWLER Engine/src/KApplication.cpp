@@ -61,7 +61,7 @@ void KApplication::runApplication()
 	Time time;
 	sf::Clock deltaClock;
 
-
+	bool bHasFocus = true;
 	while (mp_rWindow->isOpen())
 	{
 		m_gameDelta = deltaClock.getElapsedTime().asSeconds();
@@ -76,11 +76,19 @@ void KApplication::runApplication()
 			{
 				mp_rWindow->close();
 			}
+			if (evnt.type == Event::GainedFocus)
+			{
+				bHasFocus = true;
+			}
+			if (evnt.type == Event::LostFocus)
+			{
+				bHasFocus = false;
+			}
 		}
 
-		if (frameTime > seconds(0.25f))
+		if (frameTime > seconds(m_physicsDelta * 4))
 		{
-			frameTime = seconds(0.25f);
+			frameTime = seconds(m_physicsDelta * 4);
 		}
 
 		while (accumulator.asSeconds() > m_physicsDelta)
@@ -91,10 +99,14 @@ void KApplication::runApplication()
 			time += seconds(m_physicsDelta);
 			accumulator -= seconds(m_physicsDelta);
 		}
+
+		++m_frames;
+
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
-
-		mp_logicStateDirector->tickActiveLogicState();
-
+		if (bHasFocus)
+		{
+			mp_logicStateDirector->tickActiveLogicState();
+		}
 		mp_renderer->render();
 
 	}
@@ -117,13 +129,38 @@ KApplication::KApplication()
 {
 }
 
-inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator) const
+inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator)
 {
+	if (mb_isFirstUpdate)
+	{
+		m_frames = 0;
+		mb_isFirstUpdate = false;
+		lastTime = currentTime;
+		return;
+	}
+
+
+
 	currentTime = m_elapsedClock.getElapsedTime();
+
+	if (currentTime - lastTime > milliseconds(5) && m_frames > 10)
+	{
+		const float fps = (KCAST(float, m_frames) / (currentTime - lastTime).asSeconds()) / 10.0f;
+
+		const float ms = 1.0f / fps;
+		KPrintf(KTEXT("FPS: %f( %f ms per frame)\n"), fps, ms);
+		//m_fpsText.setString(std::to_string(ms) + " ms/frame\n " + "FPS: " + std::to_string(fps));
+		//
+		//lastTime = currentTime;
+		m_frames = 0;
+
+	}
 
 	frameTime = currentTime - lastTime;
 
 	lastTime = currentTime;
 
 	accumulator += frameTime;
+
+
 }

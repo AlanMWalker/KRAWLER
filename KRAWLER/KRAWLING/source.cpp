@@ -6,6 +6,7 @@
 #include <LogicState\KLogicStateDirector.h>
 #include <LogicState\KLogicState.h>
 #include <Physics\KPhysicsScene.h>
+#include <Utilities\KDebug.h>
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
@@ -18,6 +19,8 @@ public:
 	}
 	~Friendy() {}
 
+	Krawler::Physics::KPhysicsBody* body = nullptr;
+
 	virtual Krawler::KInitStatus setupState(const KLogicStateInitialiser&  initaliser) override
 	{
 		auto status = KLogicState::setupState(initaliser);
@@ -28,16 +31,17 @@ public:
 
 		mp_physicsScene->setGravity(Vec2f(0.0f, 9.81));
 
-		KGameObject* a = addGameObject(Vec2f(1024, 10));
+		auto a = addGameObject(Vec2f(1024, 10));
 		a->setPosition(0.0f, 700);
-		auto kpBody = mp_physicsScene->addBody(a, 10000.0f,false);
-		a->setPhysicsBody(kpBody);
+		body = mp_physicsScene->addBody(a, 10000.0f, false);
+		a->setPhysicsBody(body);
 
 		return Success;
 	}
 
 	virtual void tick() override
 	{
+		body->resetForce();
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			Vec2f pos(sf::Mouse::getPosition(*KApplication::getApplicationInstance()->getRenderWindow()));
@@ -45,6 +49,7 @@ public:
 			a->setPosition(pos);
 			auto kpBody = mp_physicsScene->addBody(a, 1.0f);
 			a->setPhysicsBody(kpBody);
+			Krawler::KPrintf(KTEXT("%d bodies in scene\n"), mp_physicsScene->getPhysicsBodyCount());
 		}
 	}
 };

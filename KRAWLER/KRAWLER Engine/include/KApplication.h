@@ -60,7 +60,7 @@ namespace Krawler
 	private:
 
 		KApplication();
-		inline void updateFrameTime(sf::Time& currentTime, sf::Time& lastTime, sf::Time& frameTime, sf::Time& accumulator) const;
+		inline void updateFrameTime(sf::Time& currentTime, sf::Time& lastTime, sf::Time& frameTime, sf::Time& accumulator) ;
 
 		sf::RenderWindow* mp_rWindow = nullptr;
 		Krawler::LogicState::KLogicStateDirector* mp_logicStateDirector = nullptr;
@@ -69,10 +69,14 @@ namespace Krawler
 		uint32 m_gameFPS;
 		uint32 m_physicsFPS;
 
+		int32 m_frames = 0;
+
 		sf::Clock m_elapsedClock;
 
 		float m_gameDelta = 0.0f;
 		float m_physicsDelta = 0.0f;
+		
+		bool mb_isFirstUpdate = true;
 	};
 }
 #endif

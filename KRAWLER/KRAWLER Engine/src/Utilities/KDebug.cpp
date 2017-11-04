@@ -4,7 +4,7 @@
 void Krawler::KPrintf(const wchar_t* szFormat, ...)
 {
 #ifndef _DEBUG
-	return;
+	//return;
 #endif 
 	wchar_t szBuff[1024];
 	va_list arg;

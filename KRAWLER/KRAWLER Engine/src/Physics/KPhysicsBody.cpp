@@ -18,6 +18,8 @@ Krawler::Physics::KPhysicsBody::~KPhysicsBody()
 
 void Krawler::Physics::KPhysicsBody::step(float delta, float pixelsToMetres)
 {
+	m_prevPosition = mp_gameObject->getPosition();
+
 	Vec2f acceleration = (m_massData.invMass * m_force) * delta;
 
 	Vec2f moveMetresPerSecond = (m_velocity + (acceleration / 2.0f)) * delta;
@@ -35,6 +37,11 @@ void Krawler::Physics::KPhysicsBody::step(float delta, float pixelsToMetres)
 void Krawler::Physics::KPhysicsBody::setMass(float m)
 {
 	m_massData.setMass(m);
+}
+
+KRAWLER_API void Krawler::Physics::KPhysicsBody::setPosition(Vec2f pos)
+{
+	mp_gameObject->setPosition(pos);
 }
 
 void Krawler::Physics::KPhysicsBody::moveBody(Vec2f translation)

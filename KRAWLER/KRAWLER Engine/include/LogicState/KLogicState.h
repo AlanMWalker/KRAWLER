@@ -50,6 +50,8 @@ namespace Krawler
 
 			//Accessors
 			KRAWLER_API std::wstring getStateIdentifier() const { return m_stateIdentifier; }
+
+			void physicsLerp(float alpha);
 		protected:
 
 			KLogicStateDirector* mp_stateDirector = nullptr;

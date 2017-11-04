@@ -76,3 +76,12 @@ KRAWLER_API KGameObject * Krawler::LogicState::KLogicState::addGameObject(const 
 	}
 	return pObj;
 }
+
+void Krawler::LogicState::KLogicState::physicsLerp(float alpha)
+{
+	if (!mb_isPhysicsEnabled)
+	{
+		return;
+	}
+	mp_physicsScene->LerpPositions(alpha);
+}

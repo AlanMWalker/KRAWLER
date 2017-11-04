@@ -35,7 +35,7 @@ namespace Krawler
 			//Query
 			KRAWLER_API bool doesAABBIntersect(const sf::FloatRect& aabb);
 			KRAWLER_API float getPixelsToMetresScale() const { return m_pixelsToMetres; }
-
+			KRAWLER_API int32 getPhysicsBodyCount() const { return KCAST(signed, m_bodies.size()); }
 		private:
 
 			void resolveCollision(const CollisionData&);

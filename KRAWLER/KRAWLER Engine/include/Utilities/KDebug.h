@@ -7,7 +7,7 @@
 
 namespace Krawler
 {
-	void KPrintf(const wchar_t* szFormat, ...);
+	KRAWLER_API void KPrintf(const wchar_t* szFormat, ...);
 
 	namespace Profiler
 	{

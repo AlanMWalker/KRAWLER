@@ -60,6 +60,7 @@ namespace Krawler
 		KRAWLER_API float getDelta() const { return m_gameDelta; }
 		KRAWLER_API float getPhysicsDelta() const { return m_physicsDelta; }
 
+		KRAWLER_API Vec2u getWindowSize() const;
 
 	private:
 

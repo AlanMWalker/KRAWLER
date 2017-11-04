@@ -32,8 +32,8 @@ public:
 
 		mp_physicsScene->setGravity(Vec2f(0.0f, 9.81));
 
-		auto a = addGameObject(Vec2f(1024, 10));
-		a->setPosition(0.0f, 700);
+		auto a = addGameObject(Vec2f(KApplication::getApplicationInstance()->getWindowSize().x, 10));
+		a->setPosition(0.0f, KApplication::getApplicationInstance()->getWindowSize().y - 10);
 		body = mp_physicsScene->addBody(a, 10000.0f, false);
 		a->setPhysicsBody(body);
 
@@ -59,8 +59,8 @@ int main(void)
 {
 	KApplicationInitialise initApp;
 	initApp.consoleWindow = true;
-	initApp.width = 1024;
-	initApp.height = 720;
+	initApp.width = 640;
+	initApp.height = 480;
 	initApp.windowStyle = Windowed_Fixed_Size;
 	initApp.gameFps = 60;
 	initApp.physicsFps = 100;

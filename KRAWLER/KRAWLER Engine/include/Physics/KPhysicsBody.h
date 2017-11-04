@@ -54,6 +54,8 @@ namespace Krawler
 			KRAWLER_API void setVelocity(Vec2f v) { m_velocity = v; }; //set the velocity of the body( to kick the body off at a velocity at the start)
 			KRAWLER_API void setRestitution(float e) { m_materialData.restitution = e; } //set the restitution of this body
 
+			KRAWLER_API void setPosition(Vec2f pos);
+
 			KRAWLER_API void setBodyUnusued() {
 				mb_isBodyInUse = false;
 				resetVelocity();
@@ -73,18 +75,19 @@ namespace Krawler
 			KRAWLER_API float getMass() const { return m_massData.mass; }  //Access mass
 			KRAWLER_API float getInverseMass() const { return m_massData.invMass; } // Access the inverse mass of the body (which is stored)
 			KRAWLER_API KPhysicsBodyShapeType getShapeType() const { return m_shapeType; }
-
+			KRAWLER_API Vec2f getPreviousPosition()const { return m_prevPosition; }
 
 			KRAWLER_API bool isBodyInUse() const { return mb_isBodyInUse; }
 			KRAWLER_API const KMaterialData& getMaterialData() { return m_materialData; }
 			KRAWLER_API const std::wstring getGameObjectName() const;
 
 		private:
-			
+
 			KGameObject* mp_gameObject = nullptr;
 
 			Vec2f m_velocity;
 			Vec2f m_force;
+			Vec2f m_prevPosition;
 
 			KMassData m_massData;
 			KMaterialData m_materialData;

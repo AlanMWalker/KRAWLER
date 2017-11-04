@@ -27,6 +27,8 @@ namespace Krawler
 
 			KRAWLER_API bool doesLogicStateExist(const std::wstring& identifier) const;
 
+			void physicsLerp(float alpha);
+
 		private:
 
 			std::map<std::wstring, KLogicState*> m_logicStateMap;

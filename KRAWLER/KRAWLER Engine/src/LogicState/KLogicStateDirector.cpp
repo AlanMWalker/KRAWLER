@@ -81,3 +81,8 @@ bool Krawler::LogicState::KLogicStateDirector::doesLogicStateExist(const std::ws
 	bool exists = m_logicStateMap.find(identifier) != m_logicStateMap.end();
 	return exists;
 }
+
+void Krawler::LogicState::KLogicStateDirector::physicsLerp(float alpha)
+{
+	m_currentState.second->physicsLerp(alpha);
+}

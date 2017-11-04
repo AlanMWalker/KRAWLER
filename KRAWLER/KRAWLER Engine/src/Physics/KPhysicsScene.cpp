@@ -90,6 +90,22 @@ bool KPhysicsScene::doesAABBIntersect(const sf::FloatRect & aabb)
 	return false;
 }
 
+void Krawler::Physics::KPhysicsScene::LerpPositions(float alpha)
+{
+	if (alpha == 0.0f)
+		return;
+	for (auto& body : m_bodies)
+	{
+		const Vec2f currentPos = body->getGameObject().getPosition();
+		const Vec2f lastPos = body->getPreviousPosition();
+		//TODO handle oriented bodies in this process once they're integrated into physics
+
+		//currentState * alpha +  previousState * (1.0 - alpha);
+		const Vec2f newPos = (currentPos * alpha) + (lastPos * (1.0f - alpha));
+		body->setPosition(newPos);
+	}
+}
+
 //private functions
 
 void KPhysicsScene::resolveCollision(const KCollisionData& collData)

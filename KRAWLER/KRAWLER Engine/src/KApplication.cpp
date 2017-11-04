@@ -114,6 +114,8 @@ void KApplication::runApplication()
 		++m_frames;
 
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
+		KPrintf(KTEXT("Alpha Value: %f \n"), alpha);
+		mp_logicStateDirector->physicsLerp(alpha);
 
 		if (bHasFocus)
 		{
@@ -136,6 +138,11 @@ void Krawler::KApplication::cleanupApplication()
 float Krawler::KApplication::getElapsedTime() const
 {
 	return m_elapsedClock.getElapsedTime().asSeconds();
+}
+
+KRAWLER_API Vec2u Krawler::KApplication::getWindowSize() const
+{
+	return mp_renderWindow->getSize();
 }
 
 KApplication::KApplication()

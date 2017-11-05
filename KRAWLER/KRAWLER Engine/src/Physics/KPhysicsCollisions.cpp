@@ -29,6 +29,7 @@ bool Krawler::Physics::CirclevsCircleCollision(KCollisionData & collData)
 
 	if (GetSquareLength(n) > (sumofRadii*sumofRadii)) //if distance between circles > sum of radii, no collision
 	{
+		collData.contactCount = 0;
 		return false;
 	}
 
@@ -39,11 +40,13 @@ bool Krawler::Physics::CirclevsCircleCollision(KCollisionData & collData)
 		//penetration distance is the difference between radial sum & actual distance
 		collData.penetration = sumofRadii - distance;
 		collData.collisionNormal = (bCentre - aCentre) / distance;
+		collData.contacts[0] = collData.collisionNormal * aRadius + aCentre;
 	}
 	else
 	{
 		collData.penetration = aRadius;
 		collData.collisionNormal = Vec2f(1.0f, 0.0f);
+		collData.contacts[0] = aCentre;
 	}
 
 	return true;
@@ -252,6 +255,18 @@ bool Krawler::Physics::CircleVsAABBCollision(KCollisionData & collData)
 		collData.collisionNormal = normal / distance;
 		collData.penetration = aRadius - distance;
 	}
+
+	return true;
+}
+
+bool Krawler::Physics::PolygonvsPolygon(KCollisionData & collData)
+{
+	collData.contactCount = 0;
+
+	KPhysicsBody* const bodyA = collData.bodyA;
+	KPhysicsBody* const bodyB = collData.bodyB;
+
+
 
 	return true;
 }

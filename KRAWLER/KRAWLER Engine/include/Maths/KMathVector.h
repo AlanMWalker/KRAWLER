@@ -29,6 +29,21 @@ KRAWLER_API __forceinline sf::Vector2<T> Normalise(const sf::Vector2<T>& Vector)
 template<typename T>
 KRAWLER_API __forceinline T DotProduct(const sf::Vector2<T>& Vector1, const sf::Vector2<T>& Vector2);
 
+///Get the cross product of a 2 vectors in 2D 
+///Param: 
+///Returns: float
+KRAWLER_API float __forceinline CrossProduct(const sf::Vector2<float>& Vector1, const sf::Vector2<float>& Vector2);
+
+///Get the cross product of a 2D vector and a scalar
+///Param:
+///Returns: Vec2f
+KRAWLER_API sf::Vector2<float> __forceinline CrossProduct(const sf::Vector2<float>& Vector1, float Scalar);
+
+///Get the cross product of a scalar and a 2D vector 
+///Param:
+///Returns: Vec2f
+KRAWLER_API sf::Vector2<float> __forceinline CrossProduct(float Scalar, const sf::Vector2<float>& Vector1);
+
 ///Get the length of a vector
 ///Param: ref Vector2
 ///Return: type of vector 

@@ -48,8 +48,6 @@ namespace Krawler
 			void generateCollisionPairs();
 			void handleCollisionPairs();
 
-			const float RESTITUTION = 0.3f;
-
 			bool(*m_collisionFunctions[2][2])(KCollisionData&) = {
 				{AABBvsAABBCollision, AABBvsCircleCollision},
 				{CircleVsAABBCollision, CirclevsCircleCollision},

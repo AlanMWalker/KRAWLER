@@ -145,6 +145,11 @@ KRAWLER_API Vec2u Krawler::KApplication::getWindowSize() const
 	return mp_renderWindow->getSize();
 }
 
+KRAWLER_API void Krawler::KApplication::closeApplication()
+{
+	mp_renderWindow->close();
+}
+
 KApplication::KApplication()
 {
 }

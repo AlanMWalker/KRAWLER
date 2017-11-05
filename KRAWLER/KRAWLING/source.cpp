@@ -35,6 +35,8 @@ public:
 		auto a = addGameObject(Vec2f(KApplication::getApplicationInstance()->getWindowSize().x, 10));
 		a->setPosition(0.0f, KApplication::getApplicationInstance()->getWindowSize().y - 10);
 		body = mp_physicsScene->addBody(a, 10000.0f, false);
+		body->setIsStatic(true);
+		body->setRestitution(0.4f);
 		a->setPhysicsBody(body);
 
 		return Success;
@@ -43,14 +45,22 @@ public:
 	virtual void tick() override
 	{
 		body->resetForce();
-		if(KInput::MouseJustPressed(sf::Mouse::Left))
+		if (KInput::MouseJustPressed(sf::Mouse::Left))
 		{
 			Vec2f pos(sf::Mouse::getPosition(*KApplication::getApplicationInstance()->getRenderWindow()));
 			KGameObject* a = addGameObject(Vec2f(10, 10));
+			a->setOrigin(a->getHalfLocalBounds());
 			a->setPosition(pos);
-			auto kpBody = mp_physicsScene->addBody(a, 1.0f);
+			Physics::KPhysicsBody* kpBody = mp_physicsScene->addBody(a, 1.0f);
+			kpBody->setRestitution(0.4f);
+			kpBody->applyTorque(9000.0f);
+			kpBody->applyForce(Vec2f(8000, 0.f));
 			a->setPhysicsBody(kpBody);
 			Krawler::KPrintf(KTEXT("%d bodies in scene\n"), mp_physicsScene->getPhysicsBodyCount());
+		}
+		if (KInput::JustPressed(sf::Keyboard::Key::Escape))
+		{
+			KApplication::getApplicationInstance()->closeApplication();
 		}
 	}
 };

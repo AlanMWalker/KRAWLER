@@ -62,6 +62,8 @@ namespace Krawler
 
 		KRAWLER_API Vec2u getWindowSize() const;
 
+		KRAWLER_API void closeApplication();
+
 	private:
 
 		KApplication();

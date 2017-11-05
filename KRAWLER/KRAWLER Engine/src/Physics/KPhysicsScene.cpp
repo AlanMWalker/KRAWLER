@@ -21,10 +21,6 @@ void KPhysicsScene::step(float delta)
 			b->applyForce(m_gravity * b->getMass() *b->getMaterialData().gravityScale);
 		}
 	}
-
-	generateCollisionPairs(); //Broadphase pairs 
-	handleCollisionPairs();
-
 	for (auto& b : m_bodies)
 	{
 		if (!b->isBodyInUse())
@@ -34,7 +30,17 @@ void KPhysicsScene::step(float delta)
 		//std::async(std::launch::async, &KPhysicsBody::step, b, delta, m_pixelsToMetres);
 		b->step(delta, m_pixelsToMetres);
 	}
-
+	generateCollisionPairs(); //Broadphase pairs 
+	handleCollisionPairs();
+	for (auto& b : m_bodies)
+	{
+		if (!b->isStaticBody())
+		{
+			continue;
+		}
+		b->resetForce();
+		b->resetVelocity();
+	}
 }
 
 void KPhysicsScene::setPixelsToMetresScale(float scale)
@@ -136,8 +142,9 @@ void KPhysicsScene::resolveCollision(const KCollisionData& collData)
 	float jt = -DotProduct(relativeVelocity, tangent);
 	jt = jt / (bodyA->getInverseMass() + bodyB->getInverseMass());
 
-	float mu{ 0.3f }; //static coefficient
-	float dMu{ 0.25f }; //dynamic coefficient
+	const float mu = GetLength(Vec2f(bodyA->getMaterialData().staticFriction, bodyB->getMaterialData().staticFriction)); //static coefficient
+
+	const float dMu = GetLength(Vec2f(bodyA->getMaterialData().dynamicFriction, bodyB->getMaterialData().dynamicFriction)); //dynamic coefficient
 
 	Vec2f frictionImpulse;
 	if (abs(jt) < j * mu)
@@ -150,8 +157,17 @@ void KPhysicsScene::resolveCollision(const KCollisionData& collData)
 	}
 
 
-	bodyA->setVelocity(bodyA->getVelocity() - (frictionImpulse * bodyA->getInverseMass()));
-	bodyB->setVelocity(bodyB->getVelocity() + (frictionImpulse * bodyB->getInverseMass()));
+	if (!bodyA->isStaticBody())
+	{
+		bodyA->applyImpulse(-frictionImpulse, tangent);
+		//bodyA->setVelocity(bodyA->getVelocity() - (frictionImpulse * bodyA->getInverseMass()));
+	}
+	if (!bodyB->isStaticBody())
+	{
+		bodyB->applyImpulse(frictionImpulse, tangent);
+
+		//bodyB->setVelocity(bodyB->getVelocity() + (frictionImpulse * bodyB->getInverseMass()));
+	}
 }
 
 

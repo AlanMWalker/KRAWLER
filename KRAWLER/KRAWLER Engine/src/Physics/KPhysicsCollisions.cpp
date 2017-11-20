@@ -266,7 +266,21 @@ bool Krawler::Physics::PolygonvsPolygon(KCollisionData & collData)
 	KPhysicsBody* const bodyA = collData.bodyA;
 	KPhysicsBody* const bodyB = collData.bodyB;
 
-
+	/* 
+	Algorithm stages: 
+	- Find axes of least separation & for shape A
+	{ 
+		Algorithm stages: 
+			* Setup a best distance with a value of -FLT_MAX
+			* setup a bestIndex
+			* For loop from 0 to vertex-count-1
+				- Get a normal from a and transform it into world space
+				- Get 
+	}
+	- Find axes of least separation & for shape B
+	- Determine reference and incident face
+	- Clipping 
+	*/
 
 	return true;
 }

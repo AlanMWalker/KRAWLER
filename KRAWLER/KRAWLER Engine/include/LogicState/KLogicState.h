@@ -37,7 +37,7 @@ namespace Krawler
 			//Mutators
 			KRAWLER_API virtual Krawler::KInitStatus setupState(const KLogicStateInitialiser&  initaliser);
 			KRAWLER_API virtual void cleanupState();
-			KRAWLER_API void fixedTick();
+			KRAWLER_API virtual void fixedTick();
 			KRAWLER_API virtual void tick();
 
 			KRAWLER_API KGameObject* addGameObject(const Vec2f& size, bool render = true);

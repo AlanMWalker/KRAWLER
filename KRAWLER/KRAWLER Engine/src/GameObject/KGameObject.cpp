@@ -116,8 +116,9 @@ void KGameObject::setFillColour(const sf::Color & colour)
 	m_vertArray[3].color = colour;
 }
 
-void KGameObject::setName(const std::string & objName)
+void KGameObject::setName(const std::wstring & objName)
 {
+	m_objName = objName;
 }
 
 KRAWLER_API void Krawler::KGameObject::setPhysicsBody(KPhysicsBody * pBody)

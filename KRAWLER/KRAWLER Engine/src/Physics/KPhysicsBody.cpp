@@ -33,6 +33,11 @@ void Krawler::Physics::KPhysicsBody::step(float delta, float pixelsToMetres)
 	mp_gameObject->setRotation(Maths::Degrees(m_physicsState.orientation));
 	//m_gameObject->move(m_velocity * delta * METRES_TO_PIXELS);
 
+	if (m_velocity.x < (1.0e-5f))
+		m_velocity.x = 0.0f;
+	if (m_velocity.y < (1.0e-5f))
+		m_velocity.y = 0.0f;
+
 	m_force = Vec2f(0.f, 0.f);
 	m_physicsState.torque = 0.0f;
 }

@@ -30,8 +30,10 @@ void KPhysicsScene::step(float delta)
 		//std::async(std::launch::async, &KPhysicsBody::step, b, delta, m_pixelsToMetres);
 		b->step(delta, m_pixelsToMetres);
 	}
+
 	generateCollisionPairs(); //Broadphase pairs 
 	handleCollisionPairs();
+
 	for (auto& b : m_bodies)
 	{
 		if (!b->isStaticBody())
@@ -98,8 +100,13 @@ bool KPhysicsScene::doesAABBIntersect(const sf::FloatRect & aabb)
 
 void Krawler::Physics::KPhysicsScene::LerpPositions(float alpha)
 {
-	if (alpha == 0.0f)
+	static bool bIsFirstAlpha = true;
+
+	if (bIsFirstAlpha)
+	{
+		bIsFirstAlpha = false;
 		return;
+	}
 	for (auto& body : m_bodies)
 	{
 		const Vec2f currentPos = body->getGameObject().getPosition();
@@ -176,10 +183,7 @@ void KPhysicsScene::correctPosition(const KCollisionData& collData)
 	KPhysicsBody* bodyA = collData.bodyA;
 	KPhysicsBody* bodyB = collData.bodyB;
 
-	const float percent = 0.15f; //percentange amount to correct by (80%)
-	const float slop = 0.1f; //if the penetration is above this value, then correct 
-
-	Vec2f correction = Max(collData.penetration - slop, 0.0f) / (bodyA->getInverseMass() + bodyB->getInverseMass()) *percent * collData.collisionNormal;
+	Vec2f correction = Max(collData.penetration - m_slop, 0.0f) / (bodyA->getInverseMass() + bodyB->getInverseMass()) * m_correctionPercentage * collData.collisionNormal;
 	bodyA->moveBody(-bodyA->getInverseMass() * correction);
 	bodyB->moveBody(bodyB->getInverseMass() * correction);
 }
@@ -196,7 +200,7 @@ void KPhysicsScene::impulseResolution(KPhysicsBody & bodyA, KPhysicsBody & bodyB
 	bodyB.setVelocity(bodyB.getVelocity() + (impulse * bodyB.getInverseMass()));
 
 	/* Friction Application */
-	Vec2f relativeVelocity = { bodyB.getVelocity() - bodyA.getVelocity() };
+	Vec2f relativeVelocity = bodyB.getVelocity() - bodyA.getVelocity();
 
 	//get the tangent vector
 	Vec2f tangent = relativeVelocity - (DotProduct(relativeVelocity, collisionNormal) * collisionNormal);

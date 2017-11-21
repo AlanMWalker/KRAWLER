@@ -1,4 +1,4 @@
-	
+
 #include "Renderer\KRenderer.h"
 #include "KApplication.h"
 
@@ -8,6 +8,12 @@ using namespace Krawler;
 using namespace Krawler::Renderer;
 
 using namespace std;
+
+Krawler::Renderer::KRenderer::KRenderer()
+	: m_renderingType(KRendererType::Default), m_renderQueue(0), mp_tiledMap(nullptr)
+{
+
+}
 
 Krawler::Renderer::KRenderer::~KRenderer()
 {
@@ -28,14 +34,17 @@ void Krawler::Renderer::KRenderer::addToRendererQueue(KGameObject * pGameObj)
 void Krawler::Renderer::KRenderer::render()
 {
 	sf::RenderWindow* const target = KApplication::getApplicationInstance()->getRenderWindow();
-
-	sortByRenderLayer();
-
 	target->clear();
 
-	for (auto& obj : m_renderQueue)
+	switch (m_renderingType)
 	{
-		target->draw(*obj);
+	default:
+	case Default:
+		defaultRender();
+		break;
+	case Raycast:
+		raycastRender();
+		break;
 	}
 
 	target->display();
@@ -105,10 +114,40 @@ void Krawler::Renderer::KRenderer::removeFromRenderQueue(const std::wstring & id
 	m_renderQueue.erase(a);
 }
 
+KRAWLER_API void Krawler::Renderer::KRenderer::setActiveTiledMap(TiledMap::KTiledMap * pTiledMap)
+{
+	if (pTiledMap != nullptr)
+	{
+		mp_tiledMap = pTiledMap;
+		mb_hasTiledMap = true;
+	}
+}
+
 void Krawler::Renderer::KRenderer::sortByRenderLayer()
 {
 	std::sort(m_renderQueue.begin(), m_renderQueue.end(), [](KGameObject* objA, KGameObject* objB)
 	{
 		return objA->getRenderLayer() < objB->getRenderLayer();
 	});
+}
+
+void Krawler::Renderer::KRenderer::defaultRender()
+{
+	sf::RenderWindow* const target = KApplication::getApplicationInstance()->getRenderWindow();
+
+	sortByRenderLayer();
+
+	if (mb_hasTiledMap)
+	{
+		target->draw(*mp_tiledMap);
+	}
+
+	for (auto& obj : m_renderQueue)
+	{
+		target->draw(*obj);
+	}
+}
+
+void Krawler::Renderer::KRenderer::raycastRender()
+{
 }

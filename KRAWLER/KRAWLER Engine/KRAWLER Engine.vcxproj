@@ -173,6 +173,7 @@
     <ClCompile Include="src\Physics\KPhysicsCollisions.cpp" />
     <ClCompile Include="src\Physics\KPhysicsScene.cpp" />
     <ClCompile Include="src\Renderer\KRenderer.cpp" />
+    <ClCompile Include="src\TiledMap\KTiledMap.cpp" />
     <ClCompile Include="src\Utilities\KDebug.cpp" />
     <ClCompile Include="src\Utilities\KEngineMacros.cpp" />
   </ItemGroup>
@@ -192,6 +193,7 @@
     <ClInclude Include="include\Physics\KPhysicsScene.h" />
     <ClInclude Include="include\Physics\KPhysicsStructs.h" />
     <ClInclude Include="include\Renderer\KRenderer.h" />
+    <ClInclude Include="include\TiledMap\KTiledMap.h" />
     <ClInclude Include="include\Utilities\KDebug.h" />
     <ClInclude Include="include\Utilities\KEngineMacros.h" />
   </ItemGroup>

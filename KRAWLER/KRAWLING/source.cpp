@@ -6,6 +6,7 @@
 #include <LogicState\KLogicStateDirector.h>
 #include <LogicState\KLogicState.h>
 #include <Physics\KPhysicsScene.h>
+#include <TiledMap\KTiledMap.h>
 #include <Utilities\KDebug.h>
 
 using namespace Krawler;
@@ -20,10 +21,6 @@ public:
 
 	~TestState() {}
 
-	Krawler::Physics::KPhysicsBody* body = nullptr;
-	Krawler::Physics::KPhysicsBody* pBodyJustAdded = nullptr;
-	bool bBodyJustAdded = false;
-
 	virtual Krawler::KInitStatus setupState(const KLogicStateInitialiser&  initaliser) override
 	{
 		auto status = KLogicState::setupState(initaliser);
@@ -32,21 +29,7 @@ public:
 			return status;
 		}
 
-		mp_physicsScene->setGravity(Vec2f(0.0f, 9.81));
-
-		auto a = addGameObject(Vec2f(KApplication::getApplicationInstance()->getWindowSize().x, 10));
-
-		a->setFillColour(sf::Color(rand() % 256, rand() % 256, rand() % 256));
-
-		a->setPosition(0.0f, KApplication::getApplicationInstance()->getWindowSize().y - 10);
-		body = mp_physicsScene->addBody(a, 10000.0f, false);
-		body->setIsStatic(true);
-		body->setRestitution(0.9f);
-		a->setPhysicsBody(body);
-
-		mp_physicsScene->setPercentageCorrection(0.2f);
-		mp_physicsScene->setSlop(0.09f);
-
+		
 		return Success;
 	}
 
@@ -54,18 +37,7 @@ public:
 	{
 		if (KInput::MouseJustPressed(sf::Mouse::Left))
 		{
-			const Vec2f mousePos(KInput::GetMousePosition());
-			const Vec2f randSize(Maths::RandFloat(10, 20), Maths::RandFloat(10, 20));
-			KGameObject* const a = addGameObject(randSize);
-			a->setFillColour(sf::Color(rand() % 256, rand() % 256, rand() % 256));
 
-			a->setOrigin(a->getHalfLocalBounds());
-			a->setPosition(mousePos);
-			pBodyJustAdded = mp_physicsScene->addBody(a, 1.0f);
-			a->setPhysicsBody(pBodyJustAdded);
-			pBodyJustAdded->setRestitution(0.9f);
-			bBodyJustAdded = true;
-			Krawler::KPrintf(KTEXT("%d bodies in scene\n"), mp_physicsScene->getPhysicsBodyCount());
 		}
 		if (KInput::JustPressed(sf::Keyboard::Key::Escape))
 		{
@@ -75,18 +47,7 @@ public:
 
 	virtual void fixedTick() override
 	{
-		KLogicState::fixedTick(); // tick physics engine 
-		body->resetForce();
-
-		if (bBodyJustAdded)
-		{
-			//pBodyJustAdded->setRestitution(0.0f);
-			pBodyJustAdded->setMass(Maths::RandFloat(1.0f, 10.0f));
-			//pBodyJustAdded->applyTorque(9000.0f);
-			pBodyJustAdded->applyForce(Vec2f(Maths::RandFloat(-5000, 5000), 0.f));
-
-			bBodyJustAdded = false;
-		}
+		
 	}
 };
 
@@ -114,8 +75,13 @@ int main(void)
 
 	InitialiseStateDirector();
 
+	TiledMap::KTiledMap map;
+	map.setupTiledMap(KTEXT("test.dat"));
+	application->getRenderer()->setActiveTiledMap(&map);
 	RunApplication();
 	ShutdownEngine();
+
+	map.cleanupTiledMap();
 
 	return 0;
 }

@@ -150,4 +150,75 @@ void Krawler::Renderer::KRenderer::defaultRender()
 
 void Krawler::Renderer::KRenderer::raycastRender()
 {
+	/* Hackjob raycast test*/
+	Vec2i playerGridPos(5, 5);
+	Vec2f playerPos(playerGridPos * 32);
+	Vec2f playerDir(1.0f, 0.0f);
+	Vec2f plane(0.0f, 0.66f);
+	Vec2f rayPos(playerPos);
+	const float w = (float)KApplication::getApplicationInstance()->getRenderWindow()->getSize().x;
+	const float h = (float)KApplication::getApplicationInstance()->getRenderWindow()->getSize().y;
+
+	for (int x = 0; x < w; ++x)
+	{
+		float cameraX = 2 * x / w - 1;
+		Vec2f sideDist;
+		Vec2f deltaDist;
+		Vec2f rayDir(playerDir + plane * cameraX);
+		Vec2i mapPos(rayPos.x, rayPos.y);
+
+		deltaDist.x = sqrtf(1 + (rayDir.y * rayDir.y) / (rayDir.x * rayDir.x));
+		deltaDist.y = sqrtf(1 + (rayDir.x * rayDir.x) / (rayDir.y * rayDir.y));
+
+		Vec2i stepDirection;
+
+		bool hit = false;
+		int side;
+
+		if (rayDir.x != 0)
+		{
+			stepDirection.x = rayDir.x / fabs(rayDir.x);
+
+			if (stepDirection.x < 0)
+			{
+				sideDist.x = (rayPos.x - mapPos.x) * deltaDist.x;
+			}
+			else
+			{
+				sideDist.x = (mapPos.x + 1.0 - rayPos.x) * deltaDist.x;
+
+			}
+		}
+		if (rayDir.y != 0)
+		{
+			stepDirection.y = rayDir.y / fabs(rayDir.y);
+
+			if (stepDirection.y < 0)
+			{
+				sideDist.y = (rayPos.y - mapPos.y) * deltaDist.y;
+			}
+			else
+			{
+				sideDist.y = (mapPos.y + 1.0 - rayPos.y) * deltaDist.y;
+			}
+		}
+
+		while (hit == false)
+		{
+			if (sideDist.x < sideDist.y)
+			{
+				sideDist.x += deltaDist.x;
+				mapPos.x += stepDirection.x;
+				side = 0;
+			}
+			else
+			{
+				sideDist.y += deltaDist.y;
+				mapY += stepDirection.y;
+			}
+		}
+
+
+	}
+
 }

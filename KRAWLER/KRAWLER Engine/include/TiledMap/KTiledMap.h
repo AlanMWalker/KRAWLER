@@ -10,6 +10,8 @@
 
 #define MAP_FILE_FORMAT KTEXT(".dat")
 
+//TODO support .tmx map file format which will enable use of Tiled
+
 namespace Krawler
 {
 	namespace TiledMap

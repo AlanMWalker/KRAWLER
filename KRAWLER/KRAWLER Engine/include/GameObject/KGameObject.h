@@ -26,6 +26,7 @@ namespace Krawler
 		KRAWLER_API sf::FloatRect getLocalBounds() const;
 		KRAWLER_API Vec2f getHalfLocalBounds() const;
 
+		//Fix to account for non 0,0 origins
 		KRAWLER_API Vec2f getCentrePosition() const;
 
 		KRAWLER_API sf::Int32 getRenderLayer() const { return m_renderLayer; }

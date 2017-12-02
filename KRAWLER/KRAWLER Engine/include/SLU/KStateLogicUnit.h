@@ -28,8 +28,8 @@ namespace Krawler
 
 			KRAWLER_API virtual KInitStatus initialiseUnit();
 			KRAWLER_API virtual void tickUnit() = 0;
-			KRAWLER_API virtual void fixedTickUnit() = 0;
-			KRAWLER_API virtual void cleanupUnit() = 0;
+			KRAWLER_API virtual void fixedTickUnit() {};
+			KRAWLER_API virtual void cleanupUnit() {};
 
 			KRAWLER_API std::wstring getUnitTag() const { return m_unitTag; }
 			KRAWLER_API bool hasUnitBeenInitialised() const { return m_bHasBeenInitialised; }

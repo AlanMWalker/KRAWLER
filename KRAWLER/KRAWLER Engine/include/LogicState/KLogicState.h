@@ -23,7 +23,7 @@ namespace Krawler
 		struct KLogicStateInitialiser
 		{
 			bool bIsPhysicsEngineEnabled = true;
-			std::wstring stateIdentifier = TEXT("State-") + GenerateUUID();
+			std::wstring stateIdentifier = std::wstring(KTEXT("State-")) + GenerateUUID();
 			KLogicStateDirector* pStateDirector = nullptr;
 		};
 
@@ -51,16 +51,16 @@ namespace Krawler
 
 			//Accessors
 			KRAWLER_API std::wstring getStateIdentifier() const { return m_stateIdentifier; }
-
 			void physicsLerp(float alpha);
 		protected:
 
 			KLogicStateDirector* mp_stateDirector = nullptr;
 			Physics::KPhysicsScene* mp_physicsScene = nullptr;
 			SLU::KStateLogicUnitAdministrator* mp_stateLogicAdmin = nullptr;
+			std::vector<KGameObject*> m_gameObjects;
+
 		private:
 
-			std::vector<KGameObject*> m_gameObjects;
 
 			std::wstring m_stateIdentifier;
 			bool mb_isPhysicsEnabled = true;

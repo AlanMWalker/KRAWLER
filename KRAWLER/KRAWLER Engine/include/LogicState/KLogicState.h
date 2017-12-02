@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include "Krawler.h"
 #include <vector>
+#include <SLU\KStateLogicUnit.h>
 
 namespace Krawler
 {
@@ -56,7 +57,7 @@ namespace Krawler
 
 			KLogicStateDirector* mp_stateDirector = nullptr;
 			Physics::KPhysicsScene* mp_physicsScene = nullptr;
-
+			SLU::KStateLogicUnitAdministrator* mp_stateLogicAdmin = nullptr;
 		private:
 
 			std::vector<KGameObject*> m_gameObjects;

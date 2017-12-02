@@ -8,6 +8,7 @@
 #include <Physics\KPhysicsScene.h>
 #include <TiledMap\KTiledMap.h>
 #include <Utilities\KDebug.h>
+#include <SLU\KStateLogicUnit.h>
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
@@ -72,6 +73,7 @@ int main(void)
 
 	application->getLogicStateDirector()->registerLogicState(dynamic_cast<KLogicState*>(state), &initState);
 	application->getLogicStateDirector()->setActiveLogicState(initState.stateIdentifier);
+	
 
 	InitialiseStateDirector();
 

@@ -112,33 +112,7 @@ int main(void)
 
 	application->getLogicStateDirector()->registerLogicState(dynamic_cast<KLogicState*>(state), &initState);
 	application->getLogicStateDirector()->setActiveLogicState(initState.stateIdentifier);
-	SLU::KStateLogicUnitAdministrator admin;
-
-	class testUnit : public SLU::KGameObjectLogicUnit
-	{
-	public:
-		testUnit(SLU::KStateLogicUnitAdministrator& admin)
-			: KGameObjectLogicUnit(KTEXT("testUnit"), admin)
-		{
-		}
-		virtual KInitStatus initialiseUnit()
-		{
-			return Success;
-		}
-
-		virtual void tickUnit()
-		{
-
-		}
-
-		virtual void fixedTickUnit()
-		{
-
-		}
-
-		virtual void cleanupUnit()
-		{}
-	};
+	
 
 	InitialiseStateDirector();
 

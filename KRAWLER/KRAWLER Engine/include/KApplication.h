@@ -44,6 +44,7 @@ namespace Krawler
 
 			return pApplication;
 		}
+
 		KRAWLER_API ~KApplication() = default;
 
 		KRAWLER_API KInitStatus initialiseStateDirector();
@@ -62,10 +63,14 @@ namespace Krawler
 
 		KRAWLER_API Vec2u getWindowSize() const;
 
+		KRAWLER_API void closeApplication();
+
 	private:
 
 		KApplication();
-		inline void updateFrameTime(sf::Time& currentTime, sf::Time& lastTime, sf::Time& frameTime, sf::Time& accumulator) ;
+
+		__forceinline void updateFrameTime(sf::Time& currentTime, sf::Time& lastTime, sf::Time& frameTime, sf::Time& accumulator);
+		__forceinline void outputFPS(const sf::Time& currentTime, sf::Time& fpsLastTime);
 
 		sf::RenderWindow* mp_renderWindow = nullptr;
 		Krawler::LogicState::KLogicStateDirector* mp_logicStateDirector = nullptr;
@@ -80,7 +85,7 @@ namespace Krawler
 
 		float m_gameDelta = 0.0f;
 		float m_physicsDelta = 0.0f;
-		
+
 		bool mb_isFirstUpdate = true;
 	};
 }

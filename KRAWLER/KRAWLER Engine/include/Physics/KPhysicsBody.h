@@ -45,6 +45,16 @@ namespace Krawler
 			{
 				m_force += force;
 			}
+			KRAWLER_API void applyImpulse(const Vec2f& impulse, const Vec2f& contactVector)
+			{
+				m_velocity += m_massData.invMass * impulse;
+				m_physicsState.angularVelocity += (1.0f / 10.0f) * CrossProduct(impulse, contactVector);
+			}
+
+			KRAWLER_API void applyTorque(float torque)
+			{
+				m_physicsState.torque += torque;
+			}
 
 			KRAWLER_API void setMass(float m);
 			KRAWLER_API void resetForce() { m_force = Vec2f{ 0.f, 0.f }; }
@@ -53,7 +63,7 @@ namespace Krawler
 			KRAWLER_API void setSubjectToGravity(const bool b) { mb_actsUnderGravity = b; } //set if the body is subject to gravity (Will respond to masses in the scene)
 			KRAWLER_API void setVelocity(Vec2f v) { m_velocity = v; }; //set the velocity of the body( to kick the body off at a velocity at the start)
 			KRAWLER_API void setRestitution(float e) { m_materialData.restitution = e; } //set the restitution of this body
-
+			KRAWLER_API void setIsStatic(bool bIsStatic) { mb_isStatic = bIsStatic; }
 			KRAWLER_API void setPosition(Vec2f pos);
 
 			KRAWLER_API void setBodyUnusued() {
@@ -68,6 +78,7 @@ namespace Krawler
 			//void addCollidedBody(KPhysicsBody* b);
 
 			//accessors
+			KRAWLER_API bool isStaticBody() const { return mb_isStatic; }
 			KRAWLER_API const KGameObject& getGameObject() const { return *mp_gameObject; }
 			KRAWLER_API bool isSubjectToGravity() const { return mb_actsUnderGravity; } //is this body subject to gravity
 			KRAWLER_API Vec2f getVelocity() const { return m_velocity; } //Get the velocity of this body 
@@ -85,6 +96,8 @@ namespace Krawler
 
 			KGameObject* mp_gameObject = nullptr;
 
+			KPhysicsStateData m_physicsState;
+
 			Vec2f m_velocity;
 			Vec2f m_force;
 			Vec2f m_prevPosition;
@@ -96,6 +109,7 @@ namespace Krawler
 
 			bool mb_actsUnderGravity;
 			bool mb_isBodyInUse = true; //Is this body currently being used
+			bool mb_isStatic = false;
 		};
 	} //end physics
 }//end krawler

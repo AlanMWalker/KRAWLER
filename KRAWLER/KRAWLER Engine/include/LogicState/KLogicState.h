@@ -5,6 +5,7 @@
 #include <Windows.h>
 #include "Krawler.h"
 #include <vector>
+#include <SLU\KStateLogicUnit.h>
 
 namespace Krawler
 {
@@ -37,7 +38,7 @@ namespace Krawler
 			//Mutators
 			KRAWLER_API virtual Krawler::KInitStatus setupState(const KLogicStateInitialiser&  initaliser);
 			KRAWLER_API virtual void cleanupState();
-			KRAWLER_API void fixedTick();
+			KRAWLER_API virtual void fixedTick();
 			KRAWLER_API virtual void tick();
 
 			KRAWLER_API KGameObject* addGameObject(const Vec2f& size, bool render = true);
@@ -56,7 +57,7 @@ namespace Krawler
 
 			KLogicStateDirector* mp_stateDirector = nullptr;
 			Physics::KPhysicsScene* mp_physicsScene = nullptr;
-
+			SLU::KStateLogicUnitAdministrator* mp_stateLogicAdmin = nullptr;
 		private:
 
 			std::vector<KGameObject*> m_gameObjects;

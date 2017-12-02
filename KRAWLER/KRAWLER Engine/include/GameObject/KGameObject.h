@@ -24,6 +24,7 @@ namespace Krawler
 		KRAWLER_API sf::FloatRect getAlignedGlobalBounds() const;
 		KRAWLER_API sf::FloatRect getFixedGlobalBounds() const;
 		KRAWLER_API sf::FloatRect getLocalBounds() const;
+		KRAWLER_API Vec2f getHalfLocalBounds() const;
 
 		KRAWLER_API Vec2f getCentrePosition() const;
 
@@ -34,14 +35,16 @@ namespace Krawler
 		KRAWLER_API void setTexture(sf::Texture* texPtr, bool resetTextureRect = true);
 		KRAWLER_API void setTextureRect(const sf::IntRect& textureRect);
 		KRAWLER_API void setFillColour(const sf::Color& colour);
-		KRAWLER_API void setName(const std::string& objName);
+		KRAWLER_API void setName(const std::wstring& objName);
 		KRAWLER_API void setRenderLayer(sf::Int32 renderLayer) { m_renderLayer = renderLayer; } // Increasing render layer is closer to screen, decreasing is further from screen
 		KRAWLER_API void setObjectInactive() { mb_isGOActive = false; }
 		KRAWLER_API void setObjectActive() { mb_isGOActive = true; }
 		KRAWLER_API void setPhysicsBody(Physics::KPhysicsBody* pBody);
-		
+
 		KRAWLER_API std::wstring getObjectName() const { return m_objName; }
 		KRAWLER_API Physics::KPhysicsBody* const getPhysicsBody() { return mp_physicsBody; }
+
+		const sf::VertexArray& getVertArray() const { return m_vertArray; }
 
 	private:
 

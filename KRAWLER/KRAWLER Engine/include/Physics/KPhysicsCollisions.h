@@ -15,6 +15,9 @@ namespace Krawler
 		bool AABBvsCircleCollision(KCollisionData & collData);
 
 		bool CircleVsAABBCollision(KCollisionData & collData);
+
+		bool PolygonvsPolygon(KCollisionData& collData);
+
 	}
 }
 #endif 

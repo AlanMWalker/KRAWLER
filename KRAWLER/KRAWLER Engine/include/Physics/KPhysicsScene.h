@@ -27,6 +27,9 @@ namespace Krawler
 			KRAWLER_API void setPlayerPointer(KPhysicsBody* p) { m_player = p; }
 			KRAWLER_API void setPixelsToMetresScale(float scale);
 
+			KRAWLER_API void setPercentageCorrection(float correction) { m_correctionPercentage = correction; }
+			KRAWLER_API void setSlop(float slop) { m_slop = slop; }
+
 			KRAWLER_API KPhysicsBody* addBody(KGameObject* object, float mass = 1.f, bool subjectToGravity = true);
 			KRAWLER_API void removeFromScene(KPhysicsBody* pBody); // (TODO : REQUIRES TESTING) will remove a body from the scene for the duration of the game
 
@@ -48,9 +51,8 @@ namespace Krawler
 			void generateCollisionPairs();
 			void handleCollisionPairs();
 
-			const float RESTITUTION = 0.3f;
-
-			bool(*m_collisionFunctions[2][2])(KCollisionData&) = {
+			bool(*m_collisionFunctions[2][2])(KCollisionData&) =
+			{
 				{AABBvsAABBCollision, AABBvsCircleCollision},
 				{CircleVsAABBCollision, CirclevsCircleCollision},
 			};
@@ -60,9 +62,10 @@ namespace Krawler
 			KPhysicsBody* m_player = nullptr;
 
 			Vec2f m_gravity;
-			float m_pixelsToMetres = 1.f;
+			float m_pixelsToMetres = 1.0f;
 
-
+			float m_correctionPercentage = 0.8f;
+			float m_slop = 0.1f;
 		};
 	}
 }

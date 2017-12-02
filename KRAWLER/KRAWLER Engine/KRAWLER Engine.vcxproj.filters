@@ -57,6 +57,9 @@
     <ClCompile Include="src\Input\KInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\SLU\KStateLogicUnit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\KApplication.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Input\KInput.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SLU\KStateLogicUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

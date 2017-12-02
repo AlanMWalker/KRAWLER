@@ -58,9 +58,10 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 void KApplication::runApplication()
 {
 	m_elapsedClock.restart();
-	Time lastTime(m_elapsedClock.getElapsedTime());
-	Time currentTime;
-	Time accumulator;
+	Time lastTime(m_elapsedClock.getElapsedTime()); // Updated with previous frames time
+	Time fpsLastTime; //For FPS counter 
+	Time currentTime; //Constantly updated time value
+	Time accumulator; //time accumulator for fixed step 
 	Time time;
 	sf::Clock deltaClock;
 
@@ -72,6 +73,8 @@ void KApplication::runApplication()
 		m_gameDelta = deltaClock.getElapsedTime().asSeconds();
 		Time frameTime;
 		updateFrameTime(currentTime, lastTime, frameTime, accumulator);
+
+		outputFPS(currentTime, fpsLastTime);
 
 		Event evnt;
 
@@ -114,7 +117,6 @@ void KApplication::runApplication()
 		++m_frames;
 
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
-		KPrintf(KTEXT("Alpha Value: %f \n"), alpha);
 		mp_logicStateDirector->physicsLerp(alpha);
 
 		if (bHasFocus)
@@ -145,38 +147,45 @@ KRAWLER_API Vec2u Krawler::KApplication::getWindowSize() const
 	return mp_renderWindow->getSize();
 }
 
+KRAWLER_API void Krawler::KApplication::closeApplication()
+{
+	mp_renderWindow->close();
+}
+
 KApplication::KApplication()
 {
 }
 
 inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator)
 {
-	if (mb_isFirstUpdate)
-	{
-		m_frames = 0;
-		mb_isFirstUpdate = false;
-		lastTime = currentTime;
-		return;
-	}
-
 	currentTime = m_elapsedClock.getElapsedTime();
-
-	if (currentTime - lastTime > milliseconds(5) && m_frames > 10)
-	{
-		const float fps = (KCAST(float, m_frames) / (currentTime - lastTime).asSeconds()) / 10.0f;
-
-		const float ms = 1.0f / fps;
-		KPrintf(KTEXT("FPS: %f( %f ms per frame)\n"), fps, ms);
-		//m_fpsText.setString(std::to_string(ms) + " ms/frame\n " + "FPS: " + std::to_string(fps));
-		//
-		//lastTime = currentTime;
-		m_frames = 0;
-
-	}
 
 	frameTime = currentTime - lastTime;
 
 	lastTime = currentTime;
 
 	accumulator += frameTime;
+}
+
+void Krawler::KApplication::outputFPS(const sf::Time & currentTime, sf::Time & fpsLastTime)
+{
+	if (mb_isFirstUpdate)
+	{
+		m_frames = 0;
+		mb_isFirstUpdate = false;
+		fpsLastTime = currentTime;
+		return;
+	}
+
+	if (currentTime - fpsLastTime > seconds(0.25f) && m_frames > 10)
+	{
+		const float fps = (KCAST(float, m_frames) / (currentTime - fpsLastTime).asSeconds());
+
+		const float ms = 1.0f / fps;
+		KPrintf(KTEXT("FPS: %f( %f ms per frame)\n"), fps, ms);
+		//m_fpsText.setString(std::to_string(ms) + " ms/frame\n " + "FPS: " + std::to_string(fps));
+		//
+		fpsLastTime = currentTime;
+		m_frames = 0;
+	}
 }

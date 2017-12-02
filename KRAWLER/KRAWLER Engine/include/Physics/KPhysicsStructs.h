@@ -57,6 +57,8 @@ namespace Krawler
 			float restitution;
 			float density;
 			float gravityScale;
+			float staticFriction = 0.3f;
+			float dynamicFriction = 0.15f;
 		};
 
 		struct KCollisionData
@@ -65,6 +67,22 @@ namespace Krawler
 			KPhysicsBody* bodyB;
 			float penetration = 0.0f;
 			Krawler::Vec2f collisionNormal;
+
+			Vec2f contacts[2];
+			uint32 contactCount = 0;
+		};
+
+		struct KPhysicsStateData
+		{
+			Vec2f currentVelocity;
+			Vec2f lastVelocity;
+
+			Vec2f force;
+			KMassData mass;
+
+			float orientation = 0.0f; // Radians
+			float angularVelocity = 0.0f;
+			float torque = 0.0f;
 		};
 	}
 }

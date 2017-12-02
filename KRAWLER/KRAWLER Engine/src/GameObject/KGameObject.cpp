@@ -6,7 +6,7 @@
 
 using namespace sf;
 using namespace Krawler;
-using namespace Krawler::Physics; 
+using namespace Krawler::Physics;
 
 KGameObject::KGameObject()
 {
@@ -62,6 +62,12 @@ sf::FloatRect KGameObject::getLocalBounds() const
 	return localBounds;
 }
 
+KRAWLER_API Vec2f Krawler::KGameObject::getHalfLocalBounds() const
+{
+	const FloatRect r = getLocalBounds();
+	return Vec2f(r.width / 2.0f, r.height / 2.0f);
+}
+
 Vec2f Krawler::KGameObject::getCentrePosition() const
 {
 	if (getOrigin() == Vec2f(0.0f, 0.0f))
@@ -110,8 +116,9 @@ void KGameObject::setFillColour(const sf::Color & colour)
 	m_vertArray[3].color = colour;
 }
 
-void KGameObject::setName(const std::string & objName)
+void KGameObject::setName(const std::wstring & objName)
 {
+	m_objName = objName;
 }
 
 KRAWLER_API void Krawler::KGameObject::setPhysicsBody(KPhysicsBody * pBody)

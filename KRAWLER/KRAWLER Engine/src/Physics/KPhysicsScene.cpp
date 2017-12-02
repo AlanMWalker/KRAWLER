@@ -21,10 +21,6 @@ void KPhysicsScene::step(float delta)
 			b->applyForce(m_gravity * b->getMass() *b->getMaterialData().gravityScale);
 		}
 	}
-
-	generateCollisionPairs(); //Broadphase pairs 
-	handleCollisionPairs();
-
 	for (auto& b : m_bodies)
 	{
 		if (!b->isBodyInUse())
@@ -35,6 +31,18 @@ void KPhysicsScene::step(float delta)
 		b->step(delta, m_pixelsToMetres);
 	}
 
+	generateCollisionPairs(); //Broadphase pairs 
+	handleCollisionPairs();
+
+	for (auto& b : m_bodies)
+	{
+		if (!b->isStaticBody())
+		{
+			continue;
+		}
+		b->resetForce();
+		b->resetVelocity();
+	}
 }
 
 void KPhysicsScene::setPixelsToMetresScale(float scale)
@@ -92,8 +100,13 @@ bool KPhysicsScene::doesAABBIntersect(const sf::FloatRect & aabb)
 
 void Krawler::Physics::KPhysicsScene::LerpPositions(float alpha)
 {
-	if (alpha == 0.0f)
+	static bool bIsFirstAlpha = true;
+
+	if (bIsFirstAlpha)
+	{
+		bIsFirstAlpha = false;
 		return;
+	}
 	for (auto& body : m_bodies)
 	{
 		const Vec2f currentPos = body->getGameObject().getPosition();
@@ -136,8 +149,9 @@ void KPhysicsScene::resolveCollision(const KCollisionData& collData)
 	float jt = -DotProduct(relativeVelocity, tangent);
 	jt = jt / (bodyA->getInverseMass() + bodyB->getInverseMass());
 
-	float mu{ 0.3f }; //static coefficient
-	float dMu{ 0.25f }; //dynamic coefficient
+	const float mu = GetLength(Vec2f(bodyA->getMaterialData().staticFriction, bodyB->getMaterialData().staticFriction)); //static coefficient
+
+	const float dMu = GetLength(Vec2f(bodyA->getMaterialData().dynamicFriction, bodyB->getMaterialData().dynamicFriction)); //dynamic coefficient
 
 	Vec2f frictionImpulse;
 	if (abs(jt) < j * mu)
@@ -150,8 +164,17 @@ void KPhysicsScene::resolveCollision(const KCollisionData& collData)
 	}
 
 
-	bodyA->setVelocity(bodyA->getVelocity() - (frictionImpulse * bodyA->getInverseMass()));
-	bodyB->setVelocity(bodyB->getVelocity() + (frictionImpulse * bodyB->getInverseMass()));
+	if (!bodyA->isStaticBody())
+	{
+		bodyA->applyImpulse(-frictionImpulse, tangent);
+		//bodyA->setVelocity(bodyA->getVelocity() - (frictionImpulse * bodyA->getInverseMass()));
+	}
+	if (!bodyB->isStaticBody())
+	{
+		bodyB->applyImpulse(frictionImpulse, tangent);
+
+		//bodyB->setVelocity(bodyB->getVelocity() + (frictionImpulse * bodyB->getInverseMass()));
+	}
 }
 
 
@@ -160,10 +183,7 @@ void KPhysicsScene::correctPosition(const KCollisionData& collData)
 	KPhysicsBody* bodyA = collData.bodyA;
 	KPhysicsBody* bodyB = collData.bodyB;
 
-	const float percent = 0.15f; //percentange amount to correct by (80%)
-	const float slop = 0.1f; //if the penetration is above this value, then correct 
-
-	Vec2f correction = Max(collData.penetration - slop, 0.0f) / (bodyA->getInverseMass() + bodyB->getInverseMass()) *percent * collData.collisionNormal;
+	Vec2f correction = Max(collData.penetration - m_slop, 0.0f) / (bodyA->getInverseMass() + bodyB->getInverseMass()) * m_correctionPercentage * collData.collisionNormal;
 	bodyA->moveBody(-bodyA->getInverseMass() * correction);
 	bodyB->moveBody(bodyB->getInverseMass() * correction);
 }
@@ -180,7 +200,7 @@ void KPhysicsScene::impulseResolution(KPhysicsBody & bodyA, KPhysicsBody & bodyB
 	bodyB.setVelocity(bodyB.getVelocity() + (impulse * bodyB.getInverseMass()));
 
 	/* Friction Application */
-	Vec2f relativeVelocity = { bodyB.getVelocity() - bodyA.getVelocity() };
+	Vec2f relativeVelocity = bodyB.getVelocity() - bodyA.getVelocity();
 
 	//get the tangent vector
 	Vec2f tangent = relativeVelocity - (DotProduct(relativeVelocity, collisionNormal) * collisionNormal);

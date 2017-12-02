@@ -20,6 +20,7 @@ KInitStatus KLogicState::setupState(const KLogicStateInitialiser& initaliser)
 	m_stateIdentifier = initaliser.stateIdentifier;
 	mb_isPhysicsEnabled = initaliser.bIsPhysicsEngineEnabled;
 	mp_stateDirector = initaliser.pStateDirector;
+	mp_stateLogicAdmin = new SLU::KStateLogicUnitAdministrator(this);
 
 	if (mb_isPhysicsEnabled)
 	{
@@ -35,6 +36,8 @@ void KLogicState::cleanupState()
 	{
 		KFREE(pObj);
 	}
+	
+	mp_stateLogicAdmin->cleanupAllUnits();
 
 	if (mb_isPhysicsEnabled)
 	{
@@ -42,6 +45,7 @@ void KLogicState::cleanupState()
 		KFREE(mp_physicsScene);
 	}
 	mp_stateDirector = nullptr;
+	KFREE(mp_stateLogicAdmin);
 }
 
 void Krawler::LogicState::KLogicState::fixedTick()
@@ -51,7 +55,7 @@ void Krawler::LogicState::KLogicState::fixedTick()
 		return;
 	}
 	const KApplication* const instance = KApplication::getApplicationInstance();
-	
+
 	KCHECK(instance);
 
 	mp_physicsScene->step(instance->getPhysicsDelta());

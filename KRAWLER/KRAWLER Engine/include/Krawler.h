@@ -27,7 +27,7 @@ namespace Krawler
 	using Vec2f = sf::Vector2f;
 	using Vec2i = sf::Vector2i;
 	using Vec2u = sf::Vector2u;
-	using Vec2d = sf::Vector2u;
+	using Vec2d = sf::Vector2<double>;
 
 	using Point = sf::Vector2f;
 
@@ -59,7 +59,7 @@ namespace Krawler
 
 
 	KRAWLER_API KInitStatus StartupEngine(KApplicationInitialise* windowInit);
-	KRAWLER_API KInitStatus InitialiseStateDirector();
+	KRAWLER_API KInitStatus InitialiseSubmodules();
 	KRAWLER_API void ShutdownEngine();
 	KRAWLER_API void RunApplication();
 

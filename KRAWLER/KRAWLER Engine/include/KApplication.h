@@ -4,7 +4,7 @@
 #include "Krawler.h"
 #include "Renderer\KRenderer.h"
 #include "Input\KInput.h"
-
+#include <fstream>
 #include <SFML\Graphics\RenderWindow.hpp> 
 #include <SFML\System\Clock.hpp> 
 
@@ -25,6 +25,12 @@ namespace Krawler
 
 	struct KApplicationInitialise
 	{
+		KRAWLER_API KApplicationInitialise(bool loadPreset = false)
+		{
+			if (loadPreset)
+				loadFromEnginePreset();
+		}
+
 		uint32 width; // Width of the window 
 		uint32 height; // Height of the window
 		uint32 gameFps = 60; // Game FPS (render & update)
@@ -32,7 +38,11 @@ namespace Krawler
 		std::wstring windowTitle; //title of the window
 		bool consoleWindow; // Is the console window enabled on your build
 		KWindowStyle windowStyle = Windowed_Fixed_Size; // Window style
+
+		KRAWLER_API void loadFromEnginePreset();
+
 	};
+	KRAWLER_API std::wifstream& operator >> (std::wifstream& os, KApplicationInitialise& data);
 
 	class KApplication
 	{

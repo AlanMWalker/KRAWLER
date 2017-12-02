@@ -1,4 +1,5 @@
 #include "Input\KInput.h"
+#include "KApplication.h"
 
 using namespace Krawler;
 using namespace Krawler::Input;
@@ -154,4 +155,12 @@ void KInput::SetMouseLocked(bool mouseLocked)
 		m_mousePosition = sf::Vector2i(mp_window->getSize()) / 2;
 		sf::Mouse::setPosition(m_mousePosition, *mp_window);
 	}
+}
+
+Vec2f Krawler::Input::KInput::GetMouseWorldPosition()
+{
+	auto pRenderWindow = KApplication::getApplicationInstance()->getRenderWindow();
+	Vec2f worldPos = pRenderWindow->mapPixelToCoords(m_mousePosition);
+
+	return worldPos;
 }

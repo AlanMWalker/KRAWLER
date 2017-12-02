@@ -1,6 +1,7 @@
 
 #include "Krawler.h"
 #include "KApplication.h"
+#include "AssetLoader\KAssetLoader.h"
 
 #include <future>
 
@@ -19,19 +20,21 @@ KInitStatus Krawler::StartupEngine(KApplicationInitialise * windowInit)
 {
 	KApplication* const app = KApplication::getApplicationInstance();
 	app->setupApplication(*windowInit);
+	KAssetLoader::getAssetLoader();
 
 	InitRand();
 
 	return KInitStatus::Success;
 }
 
-KRAWLER_API KInitStatus Krawler::InitialiseStateDirector()
+KRAWLER_API KInitStatus Krawler::InitialiseSubmodules()
 {
 	return KApplication::getApplicationInstance()->initialiseStateDirector();
 }
 
 void Krawler::ShutdownEngine()
 {
+	KAssetLoader::getAssetLoader().cleanupAssetLoader();
 	// Cleanup applicaiton
 	auto app = KApplication::getApplicationInstance();
 	app->cleanupApplication();

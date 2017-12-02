@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetName>KRAWLER</TargetName>
+    <TargetName>KRAWLERD</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -163,6 +163,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\AssetLoader\KAssetLoader.cpp" />
     <ClCompile Include="src\GameObject\KGameObject.cpp" />
     <ClCompile Include="src\Input\KInput.cpp" />
     <ClCompile Include="src\KApplication.cpp" />
@@ -179,6 +180,7 @@
     <ClCompile Include="src\Utilities\KEngineMacros.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
     <ClInclude Include="include\GameObject\KGameObject.h" />
     <ClInclude Include="include\KApplication.h" />
     <ClInclude Include="include\Input\KInput.h" />

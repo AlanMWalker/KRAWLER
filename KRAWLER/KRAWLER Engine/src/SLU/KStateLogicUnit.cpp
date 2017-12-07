@@ -52,18 +52,35 @@ KStateLogicUnitAdministrator::~KStateLogicUnitAdministrator()
 
 KRAWLER_API KInitStatus KStateLogicUnitAdministrator::initAllUnits()
 {
+	m_bIsProcessingInit = true;
 	for (auto pair : m_logicUnits)
 	{
 		KINIT_CHECK(pair.second->initialiseUnit());
 		if (status != Success)
 			return status;
 	}
+
+	for (auto& pair : m_delayedInitUnits)
+	{
+		KINIT_CHECK(pair.second->initialiseUnit());
+		if (status != Success)
+			return status;
+		m_logicUnits.emplace(pair);
+	}
+	m_delayedInitUnits.clear();
 	return KInitStatus::Success;
 }
 
 KRAWLER_API void KStateLogicUnitAdministrator::addUnit(KStateLogicUnit * pUnit)
 {
-	m_logicUnits.emplace(pUnit->getUnitTag(), pUnit);
+	if (!m_bIsProcessingInit)
+	{
+		m_logicUnits.emplace(pUnit->getUnitTag(), pUnit);
+	}
+	else
+	{
+		m_delayedInitUnits.emplace(pUnit->getUnitTag(), pUnit);
+	}
 }
 
 KRAWLER_API void KStateLogicUnitAdministrator::removeUnit(KStateLogicUnit * pUnit)
@@ -99,4 +116,21 @@ KRAWLER_API void KStateLogicUnitAdministrator::fixedTickAllUnits()
 	{
 		pair.second->fixedTickUnit();
 	}
+}
+
+KGameObjectLogicUnit * Krawler::SLU::KStateLogicUnitAdministrator::getGameLogicUnitByGameObjectName(const std::wstring & objectName)
+{
+
+	auto findResult = std::find_if(m_logicUnits.begin(), m_logicUnits.end(), [&objectName](const std::pair<std::wstring, KStateLogicUnit*>& entry) -> bool
+	{
+		KGameObjectLogicUnit* castedLogicUnit = dynamic_cast<KGameObjectLogicUnit*>(entry.second);
+		if (!castedLogicUnit)
+		{
+			return false;
+		}
+
+		return castedLogicUnit->getGameObjectName() == objectName;
+	});
+
+	return (findResult != m_logicUnits.end()) ? dynamic_cast<KGameObjectLogicUnit*>((*findResult).second) : nullptr;
 }

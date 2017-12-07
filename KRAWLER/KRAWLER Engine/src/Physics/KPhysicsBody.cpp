@@ -27,10 +27,10 @@ void Krawler::Physics::KPhysicsBody::step(float delta, float pixelsToMetres)
 	mp_gameObject->move(moveMetresPerSecond / pixelsToMetres);
 	//m_gameObject->move((m_velocity + (acceleration / 2.0f))* delta);
 	m_velocity += acceleration;
-	const float inverseMomentofinertia = 0.01f;
-	m_physicsState.angularVelocity += m_physicsState.torque * (1.0f * inverseMomentofinertia * delta);
-	m_physicsState.orientation += m_physicsState.angularVelocity * delta;
-	mp_gameObject->setRotation(Maths::Degrees(m_physicsState.orientation));
+	//const float inverseMomentofinertia = 0.01f;
+	//m_physicsState.angularVelocity += m_physicsState.torque * (1.0f * inverseMomentofinertia * delta);
+	//m_physicsState.orientation += m_physicsState.angularVelocity * delta;
+	//mp_gameObject->setRotation(Maths::Degrees(m_physicsState.orientation));
 	//m_gameObject->move(m_velocity * delta * METRES_TO_PIXELS);
 
 	if (m_velocity.x < (1.0e-5f))

@@ -1,6 +1,7 @@
-
 #include "KApplication.h"
 #include "LogicState\KLogicStateDirector.h"
+
+#include <future>
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
@@ -68,9 +69,11 @@ void KApplication::runApplication()
 
 	bool bHasFocus = true;
 
+	mp_renderWindow->setActive(false);
+	std::thread	rThread(&KRenderer::render, mp_renderer);
+
 	while (mp_renderWindow->isOpen())
 	{
-
 		m_gameDelta = deltaClock.restart().asSeconds();
 		Time frameTime;
 		updateFrameTime(currentTime, lastTime, frameTime, accumulator);
@@ -125,9 +128,9 @@ void KApplication::runApplication()
 			mp_logicStateDirector->tickActiveLogicState();
 		}
 
-		mp_renderer->render();
-
+		//mp_renderer->render();
 	}
+	rThread.join();
 }
 
 void Krawler::KApplication::cleanupApplication()
@@ -220,6 +223,7 @@ std::wifstream& Krawler::operator >> (std::wifstream& os, KApplicationInitialise
 	os.get();
 	//os >> data.windowTitle;
 	os.getline(str, 100);
+	data.windowTitle = str;
 	os >> data.consoleWindow;
 	int style = 0;
 	os >> style;

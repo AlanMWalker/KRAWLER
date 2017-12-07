@@ -68,7 +68,7 @@ namespace Krawler
 		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return mp_renderer; }
 
 		KRAWLER_API float getElapsedTime() const;
-		KRAWLER_API float getDelta() const { return m_gameDelta; }
+		KRAWLER_API float getDeltaTime() const { return m_gameDelta; }
 		KRAWLER_API float getPhysicsDelta() const { return m_physicsDelta; }
 
 		KRAWLER_API Vec2u getWindowSize() const;

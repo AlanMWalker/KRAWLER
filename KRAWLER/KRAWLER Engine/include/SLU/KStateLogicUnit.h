@@ -36,7 +36,7 @@ namespace Krawler
 
 		protected:
 
-			KRAWLER_API KStateLogicUnitAdministrator& getStateAdmin() { return mr_logicUnitAdmin; }
+			KRAWLER_API KStateLogicUnitAdministrator* getStateAdmin() { return &mr_logicUnitAdmin; }
 
 		private:
 
@@ -60,9 +60,11 @@ namespace Krawler
 
 			KRAWLER_API void setGameObject(KGameObject* pGameObj) { mp_gameObj = pGameObj; }
 
+			KRAWLER_API std::wstring getGameObjectName() { return mp_gameObj->getObjectName(); }
+
 		protected:
 
-			KRAWLER_API KGameObject& getGameObj() { return *mp_gameObj; }
+			KRAWLER_API KGameObject* getGameObj() { return mp_gameObj; }
 
 		private:
 
@@ -91,11 +93,14 @@ namespace Krawler
 			template<typename T = KStateLogicUnit>
 			std::vector<T*> getStateLogicUnitsList(std::wstring tag = NO_LOGIC_UNIT_TAG) const;
 
-			LogicState::KLogicState& getLogicState() { return *mp_logicState; }
+			KRAWLER_API LogicState::KLogicState& getLogicState() { return *mp_logicState; }
+
+			KRAWLER_API KGameObjectLogicUnit* getGameLogicUnitByGameObjectName(const std::wstring& objectName);
 
 		private:
-
+			bool m_bIsProcessingInit = false;
 			std::map<std::wstring, KStateLogicUnit*> m_logicUnits;
+			std::map<std::wstring, KStateLogicUnit*> m_delayedInitUnits;
 			LogicState::KLogicState* mp_logicState;
 		};
 
@@ -131,7 +136,7 @@ namespace Krawler
 		template<typename T>
 		inline std::vector<T*> KStateLogicUnitAdministrator::getStateLogicUnitsList(std::wstring tag) const
 		{
-			std::vector<T> results(0);
+			std::vector<T*> results(0);
 			if (tag == NO_LOGIC_UNIT_TAG)
 			{
 				// find by cast

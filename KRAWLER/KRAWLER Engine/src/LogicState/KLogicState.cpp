@@ -3,6 +3,7 @@
 #include "LogicState\KLogicStateDirector.h"
 #include "Physics\KPhysicsScene.h"
 #include "KApplication.h"
+#include <algorithm>
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
@@ -20,7 +21,7 @@ KInitStatus KLogicState::setupState(const KLogicStateInitialiser& initaliser)
 	m_stateIdentifier = initaliser.stateIdentifier;
 	mb_isPhysicsEnabled = initaliser.bIsPhysicsEngineEnabled;
 	mp_stateDirector = initaliser.pStateDirector;
-	mp_stateLogicAdmin = new SLU::KStateLogicUnitAdministrator(this);
+	mp_slAdmin = new SLU::KStateLogicUnitAdministrator(this);
 
 	if (mb_isPhysicsEnabled)
 	{
@@ -36,8 +37,8 @@ void KLogicState::cleanupState()
 	{
 		KFREE(pObj);
 	}
-	
-	mp_stateLogicAdmin->cleanupAllUnits();
+
+	mp_slAdmin->cleanupAllUnits();
 
 	if (mb_isPhysicsEnabled)
 	{
@@ -45,7 +46,8 @@ void KLogicState::cleanupState()
 		KFREE(mp_physicsScene);
 	}
 	mp_stateDirector = nullptr;
-	KFREE(mp_stateLogicAdmin);
+	mp_slAdmin->cleanupAllUnits();
+	KFREE(mp_slAdmin);
 }
 
 void Krawler::LogicState::KLogicState::fixedTick()
@@ -63,6 +65,7 @@ void Krawler::LogicState::KLogicState::fixedTick()
 
 void KLogicState::tick()
 {
+	mp_slAdmin->tickAllUnits();
 }
 
 KRAWLER_API KGameObject * Krawler::LogicState::KLogicState::addGameObject(const Vec2f& size, bool render)
@@ -88,4 +91,14 @@ void Krawler::LogicState::KLogicState::physicsLerp(float alpha)
 		return;
 	}
 	mp_physicsScene->LerpPositions(alpha);
+}
+
+KRAWLER_API KGameObject * Krawler::LogicState::KLogicState::getGameObjectByName(const std::wstring & name) const
+{
+	auto findResult = std::find_if(m_gameObjects.begin(), m_gameObjects.end(), [&name](KGameObject* pObj) -> bool
+	{
+		return pObj->getObjectName() == name;
+	});
+
+	return *findResult;
 }

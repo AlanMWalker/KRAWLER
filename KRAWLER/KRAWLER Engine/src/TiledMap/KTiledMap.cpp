@@ -1,4 +1,6 @@
 #include "TiledMap\KTiledMap.h"
+#include "AssetLoader\KAssetLoader.h"
+#include <SFML\Graphics\Texture.hpp>
 
 #include <fstream>
 
@@ -16,7 +18,7 @@ KTiledMap::KTiledMap()
 void Krawler::TiledMap::KTiledMap::draw(sf::RenderTarget & rTarget, RenderStates rStates) const
 {
 	rStates.transform *= getTransform();
-	//rStates.texture = 
+	rStates.texture = mp_texture;
 	rTarget.draw(m_vertArray, rStates);
 }
 
@@ -99,4 +101,55 @@ KTiledMapLoadResult KTiledMap::setupTiledMap(const std::wstring & filename)
 
 	mapFile.close();
 	return KTiledMapLoadResult::Map_Load_Success;
+}
+
+KRAWLER_API KTiledMapLoadResult Krawler::TiledMap::KTiledMap::setupTiledMapFromArray(int * tileIDs, Vec2i mapDimensions, Vec2i tileDimensions)
+{
+	m_mapWidth = mapDimensions.x;
+	m_mapHeight = mapDimensions.y;
+	m_tileWidth = tileDimensions.x;
+	m_tileHeight = tileDimensions.y;;
+
+	mp_mapData = new KMapTile[m_mapWidth * m_mapHeight];
+	m_vertArray.resize(m_mapWidth * m_mapHeight * 4);
+
+	for (int32 j = 0; j < m_mapHeight; ++j)
+	{
+		for (int32 i = 0; i < m_mapWidth; ++i)
+		{
+			const int index = i + j * m_mapWidth;
+
+			int tileId = 0;
+
+			tileId = tileIDs[index];
+
+			Vertex* const pQuad = &m_vertArray[index * 4];
+
+			pQuad[0].position = Vec2f((float)i  * m_tileWidth, (float)j * m_tileHeight);
+			pQuad[1].position = Vec2f((float)(i + 1) * m_tileWidth, (float)j * m_tileHeight);
+			pQuad[2].position = Vec2f((float)(i + 1)* m_tileWidth, (float)(j + 1)* m_tileHeight);
+			pQuad[3].position = Vec2f((float)i  * m_tileWidth, (float)(j + 1)* m_tileHeight);
+
+			mp_mapData[index].xPos = i;
+			mp_mapData[index].yPos = j;
+
+			int tu = tileId % (mp_texture->getSize().x / m_tileWidth);
+			int tv = tileId / (mp_texture->getSize().x / m_tileWidth);
+
+			pQuad[0].texCoords = sf::Vector2f(tu * m_tileWidth, tv * m_tileHeight);
+			pQuad[1].texCoords = sf::Vector2f((tu + 1) * m_tileWidth, tv * m_tileHeight);
+			pQuad[2].texCoords = sf::Vector2f((tu + 1) * m_tileWidth, (tv + 1) * m_tileHeight);
+			pQuad[3].texCoords = sf::Vector2f(tu * m_tileWidth, (tv + 1) * m_tileHeight);
+
+		}
+	}
+
+
+	return KTiledMapLoadResult::Map_Load_Success;
+}
+
+void Krawler::TiledMap::KTiledMap::setTexture(const std::wstring & textureFileName)
+{
+	mp_texture = KAssetLoader::getAssetLoader().loadTexture(textureFileName);
+	//mp_texture->setSmooth(true);
 }

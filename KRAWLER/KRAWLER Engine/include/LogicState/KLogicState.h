@@ -36,7 +36,7 @@ namespace Krawler
 			KRAWLER_API virtual ~KLogicState();
 
 			//Mutators
-			KRAWLER_API virtual Krawler::KInitStatus setupState(const KLogicStateInitialiser&  initaliser);
+			KRAWLER_API virtual Krawler::KInitStatus setupState(const KLogicStateInitialiser&  initialiser);
 			KRAWLER_API virtual void cleanupState();
 			KRAWLER_API virtual void fixedTick();
 			KRAWLER_API virtual void tick();
@@ -52,11 +52,14 @@ namespace Krawler
 			//Accessors
 			KRAWLER_API std::wstring getStateIdentifier() const { return m_stateIdentifier; }
 			void physicsLerp(float alpha);
+
+			KRAWLER_API KGameObject* getGameObjectByName(const std::wstring& name) const;
+
 		protected:
 
 			KLogicStateDirector* mp_stateDirector = nullptr;
 			Physics::KPhysicsScene* mp_physicsScene = nullptr;
-			SLU::KStateLogicUnitAdministrator* mp_stateLogicAdmin = nullptr;
+			SLU::KStateLogicUnitAdministrator* mp_slAdmin = nullptr;
 			std::vector<KGameObject*> m_gameObjects;
 
 		private:

@@ -28,6 +28,7 @@ namespace Krawler
 		{
 			int xPos;
 			int yPos;
+			int tileID;
 			bool blocked;
 		};
 
@@ -46,6 +47,9 @@ namespace Krawler
 
 			KRAWLER_API void cleanupTiledMap(); // cleanup function
 			KRAWLER_API KTiledMapLoadResult setupTiledMap(const  std::wstring& filename);
+			KRAWLER_API KTiledMapLoadResult setupTiledMapFromArray(int* tileIDs, Vec2i mapDimensions, Vec2i tileDimensions);
+
+			KRAWLER_API void setTexture(const std::wstring& textureFileName);
 
 		private:
 
@@ -57,6 +61,8 @@ namespace Krawler
 			KMapTile* mp_mapData;
 
 			sf::VertexArray m_vertArray;
+
+			sf::Texture* mp_texture = nullptr;
 
 		};
 	}

@@ -143,7 +143,6 @@ void KGameObject::initialiseVertexArray()
 	m_vertArray[1].position = Vec2f(m_size.x, 0.0f);
 	m_vertArray[2].position = m_size;
 	m_vertArray[3].position = Vec2f(0.0f, m_size.y);
-
 }
 
 void KGameObject::updateTextureCoords()

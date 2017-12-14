@@ -4,10 +4,10 @@
 void Krawler::KPrintf(const wchar_t* szFormat, ...)
 {
 #ifdef RELEASE_CANDIDATE
-	return
+	return;
 #endif
 
-		wchar_t szBuff[1024];
+	wchar_t szBuff[1024];
 	va_list arg;
 	va_start(arg, szFormat);
 	_vsnwprintf_s(szBuff, sizeof(szBuff), szFormat, arg);

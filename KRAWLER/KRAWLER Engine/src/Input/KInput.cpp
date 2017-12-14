@@ -159,7 +159,7 @@ void KInput::SetMouseLocked(bool mouseLocked)
 
 Vec2f Krawler::Input::KInput::GetMouseWorldPosition()
 {
-	auto pRenderWindow = KApplication::getApplicationInstance()->getRenderWindow();
+	auto pRenderWindow = KApplication::getApp()->getRenderWindow();
 	Vec2f worldPos = pRenderWindow->mapPixelToCoords(m_mousePosition);
 
 	return worldPos;

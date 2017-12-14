@@ -1,7 +1,10 @@
 #include "AssetLoader\KAssetLoader.h"
 
+#include <future>
+
 using namespace sf;
 using namespace Krawler;
+using namespace std;
 
 Krawler::KAssetLoader::~KAssetLoader()
 {
@@ -30,42 +33,46 @@ KRAWLER_API void Krawler::KAssetLoader::cleanupAssetLoader()
 
 sf::Texture * Krawler::KAssetLoader::loadTexture(const std::wstring & fileName)
 {
-	auto fileIterator = m_texturesMap.find(m_rootFolder + fileName);
-	if (fileIterator != m_texturesMap.end())
-	{
-		return fileIterator->second;
-	}
+	//auto fileIterator = m_texturesMap.find(m_rootFolder + fileName);
+	//if (fileIterator != m_texturesMap.end())
+	//{
+	//	return fileIterator->second;
+	//}
+	//
+	//Texture t;
+	//sf::String s(m_rootFolder + fileName);
+	//
+	//if (!t.loadFromFile(s.toAnsiString()))
+	//{
+	//	return nullptr;
+	//}
+	//
+	//m_texturesMap.emplace(s, new Texture(t));
 
-	Texture t;
-	sf::String s(m_rootFolder + fileName);
-
-	if (!t.loadFromFile(s.toAnsiString()))
-	{
-		return nullptr;
-	}
-
-	m_texturesMap.emplace(s, new Texture(t));
-
-	return m_texturesMap[m_rootFolder + fileName];
+	//return m_texturesMap[m_rootFolder + fileName];
+	auto p = std::async(&KAssetLoader::loadTextureASYNC, this, fileName);
+	return p.get();
 }
 
-sf::SoundBuffer * Krawler::KAssetLoader::loadSoundBuffer(const std::wstring & fileName)
+sf::SoundBuffer* Krawler::KAssetLoader::loadSoundBuffer(const std::wstring & fileName)
 {
 	auto fileIterator = m_soundBufferMap.find(m_rootFolder + fileName);
 	if (fileIterator != m_soundBufferMap.end())
 	{
-		return fileIterator->second;
+		return (fileIterator->second);
 	}
 
-	SoundBuffer sb;
+	SoundBuffer* sb = new SoundBuffer;
 	sf::String s(m_rootFolder + fileName);
 
-	if (!sb.loadFromFile(s.toAnsiString()))
+	if (!sb->loadFromFile(s.toAnsiString()))
 	{
+		delete sb;
+		KPrintf(KTEXT("Failed to load sound %ws\n"), s.toWideString().c_str());
 		return nullptr;
 	}
 
-	m_soundBufferMap.emplace(s, new SoundBuffer(sb));
+	m_soundBufferMap.emplace(s, sb);
 
 	return m_soundBufferMap[m_rootFolder + fileName];
 }
@@ -89,4 +96,25 @@ sf::Font * Krawler::KAssetLoader::loadFont(const std::wstring & fileName)
 	m_fontMap.emplace(s, new Font(f));
 
 	return m_fontMap[m_rootFolder + fileName];
+}
+
+sf::Texture * Krawler::KAssetLoader::loadTextureASYNC(const std::wstring & fileName)
+{
+	auto fileIterator = m_texturesMap.find(m_rootFolder + fileName);
+	if (fileIterator != m_texturesMap.end())
+	{
+		return fileIterator->second;
+	}
+
+	Texture t;
+	sf::String s(m_rootFolder + fileName);
+
+	if (!t.loadFromFile(s.toAnsiString()))
+	{
+		return nullptr;
+	}
+
+	m_texturesMap.emplace(s, new Texture(t));
+
+	return m_texturesMap[m_rootFolder + fileName];
 }

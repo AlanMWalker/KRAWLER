@@ -5,6 +5,7 @@
 #include <SFML\Graphics\Texture.hpp>
 #include <SFML\Graphics\Font.hpp>
 #include <SFML\Audio\SoundBuffer.hpp>
+#include <unordered_map>
 
 namespace Krawler
 {
@@ -32,9 +33,11 @@ namespace Krawler
 		KAssetLoader() = default;
 
 		std::wstring m_rootFolder;
-		std::map <std::wstring, sf::Texture*> m_texturesMap;
-		std::map <std::wstring, sf::Font*> m_fontMap;
-		std::map <std::wstring, sf::SoundBuffer*> m_soundBufferMap;
+		std::unordered_map <std::wstring, sf::Texture*> m_texturesMap;
+		std::unordered_map <std::wstring, sf::Font*> m_fontMap;
+		std::unordered_map <std::wstring, sf::SoundBuffer*> m_soundBufferMap;
+
+		sf::Texture* loadTextureASYNC(const std::wstring& fileName);
 
 	};
 }

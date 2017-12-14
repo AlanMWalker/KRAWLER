@@ -48,7 +48,7 @@ namespace Krawler
 	{
 	public:
 
-		KRAWLER_API static KApplication* const getApplicationInstance()
+		KRAWLER_API static KApplication* const getApp()
 		{
 			static KApplication* pApplication = new KApplication();
 

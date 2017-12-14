@@ -56,7 +56,7 @@ void Krawler::LogicState::KLogicState::fixedTick()
 	{
 		return;
 	}
-	const KApplication* const instance = KApplication::getApplicationInstance();
+	const KApplication* const instance = KApplication::getApp();
 
 	KCHECK(instance);
 
@@ -79,7 +79,7 @@ KRAWLER_API KGameObject * Krawler::LogicState::KLogicState::addGameObject(const 
 	m_gameObjects.push_back(pObj);
 	if (render)
 	{
-		KApplication::getApplicationInstance()->getRenderer()->addToRendererQueue(pObj);
+		KApplication::getApp()->getRenderer()->addToRendererQueue(pObj);
 	}
 	return pObj;
 }

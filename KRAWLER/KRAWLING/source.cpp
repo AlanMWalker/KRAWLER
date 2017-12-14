@@ -42,7 +42,7 @@ public:
 		}
 		if (KInput::JustPressed(sf::Keyboard::Key::Escape))
 		{
-			KApplication::getApplicationInstance()->closeApplication();
+			KApplication::getApp()->closeApplication();
 		}
 	}
 
@@ -66,7 +66,7 @@ int main(void)
 	StartupEngine(&initApp);
 
 	TestState* state = new TestState;
-	auto application = KApplication::getApplicationInstance();
+	auto application = KApplication::getApp();
 
 	KLogicStateInitialiser initState;
 	initState.bIsPhysicsEngineEnabled = true;
@@ -75,7 +75,7 @@ int main(void)
 	application->getLogicStateDirector()->setActiveLogicState(initState.stateIdentifier);
 	
 
-	InitialiseStateDirector();
+	InitialiseSubmodules();
 
 	TiledMap::KTiledMap map;
 	map.setupTiledMap(KTEXT("test.dat"));

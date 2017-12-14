@@ -35,13 +35,12 @@ void Krawler::Renderer::KRenderer::addToRendererQueue(KGameObject * pGameObj)
 
 void Krawler::Renderer::KRenderer::render()
 {
-	sf::RenderWindow* const target = KApplication::getApplicationInstance()->getRenderWindow();
+	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
 	mp_defaultFont.loadFromFile("res\\seriphim.ttf");
 
 	while (target->isOpen())
 	{
 		target->clear();
-
 		switch (m_renderingType)
 		{
 		default:
@@ -154,7 +153,7 @@ void Krawler::Renderer::KRenderer::sortByRenderLayer()
 
 void Krawler::Renderer::KRenderer::defaultRender()
 {
-	sf::RenderWindow* const target = KApplication::getApplicationInstance()->getRenderWindow();
+	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
 
 	sortByRenderLayer();
 
@@ -180,5 +179,5 @@ void Krawler::Renderer::KRenderer::raycastRender()
 
 Vec2f Krawler::Renderer::KRenderer::screenToWorld(const Vec2i & vec) const
 {
-	return KApplication::getApplicationInstance()->getRenderWindow()->mapPixelToCoords(vec);
+	return KApplication::getApp()->getRenderWindow()->mapPixelToCoords(vec);
 }

@@ -41,10 +41,8 @@ namespace Krawler
 		MissingResource = -3
 	};
 
-
-
 #define KINIT_CHECK(func)																															\
-			Krawler::KInitStatus status = func;																									\
+			Krawler::KInitStatus status = func;																										\
 			if(status != Krawler::KInitStatus::Success)																								\
 			{																																		\
 				std::cout << "Failed to initialise function in: " << __FILE__ << " at line " << __LINE__ << " due to ";								\
@@ -56,10 +54,9 @@ namespace Krawler
 				}																																	\
 			}
 
-
-
 	KRAWLER_API KInitStatus StartupEngine(KApplicationInitialise* windowInit);
 	KRAWLER_API KInitStatus InitialiseSubmodules();
+
 	KRAWLER_API void ShutdownEngine();
 	KRAWLER_API void RunApplication();
 

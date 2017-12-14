@@ -1,5 +1,6 @@
 Release/
 Debug/
+RC/
 *.opensdf
 *.sdf
 *.VC.opendb

@@ -1,6 +1,7 @@
 
 #include "Krawler.h"
 #include "KApplication.h"
+#include "AssetLoader\KAssetLoader.h"
 
 #include <future>
 
@@ -17,33 +18,35 @@ extern "C"
 
 KInitStatus Krawler::StartupEngine(KApplicationInitialise * windowInit)
 {
-	KApplication* const app = KApplication::getApplicationInstance();
+	KApplication* const app = KApplication::getApp();
 	app->setupApplication(*windowInit);
+	KAssetLoader::getAssetLoader();
 
 	InitRand();
 
 	return KInitStatus::Success;
 }
 
-KRAWLER_API KInitStatus Krawler::InitialiseStateDirector()
+KRAWLER_API KInitStatus Krawler::InitialiseSubmodules()
 {
-	return KApplication::getApplicationInstance()->initialiseStateDirector();
+	return KApplication::getApp()->initialiseStateDirector();
 }
 
 void Krawler::ShutdownEngine()
 {
+	KAssetLoader::getAssetLoader().cleanupAssetLoader();
 	// Cleanup applicaiton
-	auto app = KApplication::getApplicationInstance();
+	auto app = KApplication::getApp();
 	app->cleanupApplication();
 	KFREE(app);
 }
 
 void Krawler::RunApplication()
 {
-	auto app = KApplication::getApplicationInstance();
+	auto app = KApplication::getApp();
 
 
-	KApplication::getApplicationInstance()->runApplication();
+	KApplication::getApp()->runApplication();
 }
 
 std::wstring Krawler::GenerateUUID()

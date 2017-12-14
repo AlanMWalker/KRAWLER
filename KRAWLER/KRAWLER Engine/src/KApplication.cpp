@@ -1,11 +1,13 @@
-
 #include "KApplication.h"
 #include "LogicState\KLogicStateDirector.h"
+
+#include <future>
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
 using namespace Krawler::Renderer;
 using namespace sf;
+using namespace std;
 
 KRAWLER_API KInitStatus Krawler::KApplication::initialiseStateDirector()
 {
@@ -67,10 +69,12 @@ void KApplication::runApplication()
 
 	bool bHasFocus = true;
 
+	mp_renderWindow->setActive(false);
+	std::thread	rThread(&KRenderer::render, mp_renderer);
+
 	while (mp_renderWindow->isOpen())
 	{
-
-		m_gameDelta = deltaClock.getElapsedTime().asSeconds();
+		m_gameDelta = deltaClock.restart().asSeconds();
 		Time frameTime;
 		updateFrameTime(currentTime, lastTime, frameTime, accumulator);
 
@@ -124,9 +128,9 @@ void KApplication::runApplication()
 			mp_logicStateDirector->tickActiveLogicState();
 		}
 
-		mp_renderer->render();
-
+		//mp_renderer->render();
 	}
+	rThread.join();
 }
 
 void Krawler::KApplication::cleanupApplication()
@@ -189,3 +193,40 @@ void Krawler::KApplication::outputFPS(const sf::Time & currentTime, sf::Time & f
 		m_frames = 0;
 	}
 }
+
+void Krawler::KApplicationInitialise::loadFromEnginePreset()
+{
+	//LOAD PRESET ENGINE CONFIG
+	wifstream engConfig;
+
+	engConfig.open("kconfig.cfg", ios::in);
+	if (engConfig.fail())
+	{
+		KPrintf(KTEXT("Error! Couldn't find engine preset config"));
+		return;
+	}
+	KApplicationInitialise temp;
+	engConfig >> temp;
+	(*this) = temp;
+
+	engConfig.close();
+}
+
+std::wifstream& Krawler::operator >> (std::wifstream& os, KApplicationInitialise& data)
+{
+	wchar_t str[100];
+
+	os >> data.width;
+	os >> data.height;
+	os >> data.gameFps;
+	os >> data.physicsFps;
+	os.get();
+	//os >> data.windowTitle;
+	os.getline(str, 100);
+	data.windowTitle = str;
+	os >> data.consoleWindow;
+	int style = 0;
+	os >> style;
+	data.windowStyle = (KWindowStyle)style;
+	return os;
+};

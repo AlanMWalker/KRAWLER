@@ -1,17 +1,25 @@
-	
+
 #include "Renderer\KRenderer.h"
 #include "KApplication.h"
 
 #include <algorithm>
 
+#include <SFML\Graphics.hpp>
+#include <AssetLoader\KAssetLoader.h>
 using namespace Krawler;
 using namespace Krawler::Renderer;
 
 using namespace std;
 
+Krawler::Renderer::KRenderer::KRenderer()
+	: m_renderingType(KRendererType::Default), m_renderQueue(0), mp_tiledMap(nullptr)
+{
+}
+
 Krawler::Renderer::KRenderer::~KRenderer()
 {
 	m_renderQueue.clear();
+	m_screenText.clear();
 }
 
 void Krawler::Renderer::KRenderer::addToRendererQueue(KGameObject * pGameObj)
@@ -27,18 +35,33 @@ void Krawler::Renderer::KRenderer::addToRendererQueue(KGameObject * pGameObj)
 
 void Krawler::Renderer::KRenderer::render()
 {
-	sf::RenderWindow* const target = KApplication::getApplicationInstance()->getRenderWindow();
+	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
+	mp_defaultFont.loadFromFile("res\\seriphim.ttf");
 
-	sortByRenderLayer();
-
-	target->clear();
-
-	for (auto& obj : m_renderQueue)
+	while (target->isOpen())
 	{
-		target->draw(*obj);
-	}
+		target->clear();
+		switch (m_renderingType)
+		{
+		default:
+		case Default:
+			defaultRender();
+			break;
+		case Raycast:
+			raycastRender();
+			break;
+		}
 
-	target->display();
+		for (auto& text : m_screenText)
+		{
+			sf::Text t(text.second.getString(), mp_defaultFont);
+			t.setCharacterSize(text.second.getCharacterSize());
+			t.setPosition(screenToWorld(text.first));
+			target->draw(t);
+		}
+
+		target->display();
+	}
 }
 
 bool Krawler::Renderer::KRenderer::isInRenderQueue(KGameObject* pGameObj) const
@@ -105,10 +128,56 @@ void Krawler::Renderer::KRenderer::removeFromRenderQueue(const std::wstring & id
 	m_renderQueue.erase(a);
 }
 
+KRAWLER_API void Krawler::Renderer::KRenderer::clearRenderQueue()
+{
+	m_renderQueue.clear();
+	m_screenText.clear();
+}
+
+KRAWLER_API void Krawler::Renderer::KRenderer::setActiveTiledMap(TiledMap::KTiledMap * pTiledMap)
+{
+	if (pTiledMap != nullptr)
+	{
+		mp_tiledMap = pTiledMap;
+		mb_hasTiledMap = true;
+	}
+}
+
 void Krawler::Renderer::KRenderer::sortByRenderLayer()
 {
 	std::sort(m_renderQueue.begin(), m_renderQueue.end(), [](KGameObject* objA, KGameObject* objB)
 	{
 		return objA->getRenderLayer() < objB->getRenderLayer();
 	});
+}
+
+void Krawler::Renderer::KRenderer::defaultRender()
+{
+	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
+
+	sortByRenderLayer();
+
+	if (mb_hasTiledMap)
+	{
+		target->draw(*mp_tiledMap);
+	}
+
+	for (auto& obj : m_renderQueue)
+	{
+		if (!obj->isGameObjectActive())
+		{
+			continue;
+		}
+		target->draw(*obj);
+	}
+}
+
+void Krawler::Renderer::KRenderer::raycastRender()
+{
+
+}
+
+Vec2f Krawler::Renderer::KRenderer::screenToWorld(const Vec2i & vec) const
+{
+	return KApplication::getApp()->getRenderWindow()->mapPixelToCoords(vec);
 }

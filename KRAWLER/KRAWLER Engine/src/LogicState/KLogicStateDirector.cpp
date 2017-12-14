@@ -34,11 +34,10 @@ void Krawler::LogicState::KLogicStateDirector::registerLogicState(KLogicState * 
 	{
 		return;
 	}
-
+	pInitialiser->pStateDirector = this;
 	KLogicStateData data;
 	data.first = pInitialiser->stateIdentifier;
 	data.second = plogicState;
-
 	m_logicStateMap.emplace(data);
 	m_logicStateInitialisers.emplace(std::pair<std::wstring, KLogicStateInitialiser>(pInitialiser->stateIdentifier, *pInitialiser));
 

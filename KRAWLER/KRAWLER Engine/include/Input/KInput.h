@@ -18,6 +18,8 @@ namespace Krawler
 {
 	namespace Input
 	{
+		using KKey = sf::Keyboard::Key;
+
 		class KInput
 		{
 		public:
@@ -35,8 +37,15 @@ namespace Krawler
 
 			KRAWLER_API static void SetMouseLocked(bool mouseLocked);
 
+			// Returns mouse position in screen space
 			KRAWLER_API static Krawler::Vec2i GetMousePosition() { return m_mousePosition; }
+			
+			// Returns mouse move delta
 			KRAWLER_API static Krawler::Vec2i GetMouseDelta() { return m_mouseDelta; }
+			
+			// Returns mouse position in world space
+			KRAWLER_API static Krawler::Vec2f GetMouseWorldPosition();
+
 			KRAWLER_API static float GetMouseScrollDelta() { return m_mouseScrollDelta; }
 
 			KRAWLER_API static std::wstring GetTextEntered() { return m_textEntered; }

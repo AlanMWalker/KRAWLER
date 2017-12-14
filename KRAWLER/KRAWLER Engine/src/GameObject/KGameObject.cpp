@@ -98,7 +98,7 @@ void KGameObject::setTexture(Texture * texPtr, bool resetTextureRect)
 		IntRect defaultRect;
 		defaultRect.top = defaultRect.left = 0;
 		defaultRect.width = static_cast<signed>(texPtr->getSize().x);
-		defaultRect.height = static_cast<signed>(texPtr->getSize().x);
+		defaultRect.height = static_cast<signed>(texPtr->getSize().y);
 		setTextureRect(defaultRect);
 	}
 }
@@ -106,6 +106,7 @@ void KGameObject::setTexture(Texture * texPtr, bool resetTextureRect)
 void KGameObject::setTextureRect(const IntRect& textureRect)
 {
 	m_texRect = textureRect;
+	updateTextureCoords();
 }
 
 void KGameObject::setFillColour(const sf::Color & colour)
@@ -142,7 +143,6 @@ void KGameObject::initialiseVertexArray()
 	m_vertArray[1].position = Vec2f(m_size.x, 0.0f);
 	m_vertArray[2].position = m_size;
 	m_vertArray[3].position = Vec2f(0.0f, m_size.y);
-
 }
 
 void KGameObject::updateTextureCoords()

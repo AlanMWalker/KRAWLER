@@ -3,15 +3,20 @@
 
 void Krawler::KPrintf(const wchar_t* szFormat, ...)
 {
-#ifndef _DEBUG
-	//return;
-#endif 
+#ifdef RELEASE_CANDIDATE
+	return;
+#endif
+
 	wchar_t szBuff[1024];
 	va_list arg;
 	va_start(arg, szFormat);
 	_vsnwprintf_s(szBuff, sizeof(szBuff), szFormat, arg);
 	va_end(arg);
 	OutputDebugString(szBuff);
+
+#ifdef _DEBUG
+	wprintf(L"%s", szBuff);
+#endif 
 }
 
 inline std::chrono::high_resolution_clock::time_point Krawler::Profiler::StartFunctionTimer()

@@ -1,0 +1,76 @@
+#include "stdafx.h"
+#include <iostream> 
+#include <vector>
+using namespace std;
+
+class Entity;
+class Component
+{
+public:
+
+	Component(Entity* pEntity)
+		: m_pEntity(pEntity)
+	{
+	}
+
+	~Component()
+	{
+	}
+
+	virtual bool init();
+	virtual void tick();
+	virtual void fixedTick();
+	virtual void reset();
+	virtual void cleanup();
+
+private:
+
+	Entity* m_pEntity = nullptr;
+};
+
+class SpriteComponent : public Component
+{
+public:
+
+	SpriteComponent() = default;
+	~SpriteComponent() = default;
+
+private:
+
+};
+
+class PhysComponent : public Component
+{
+public:
+
+	PhysComponent() = default;
+	~PhysComponent() = default;
+
+private:
+
+};
+
+class Entity
+{
+public:
+
+	Entity() = default;
+	~Entity() = default;
+
+	void addComponent();
+	void removeComponent();
+
+private:
+
+	vector<Component*> m_components;
+
+};
+
+int main(int argc, char* argv[])
+{
+	Entity entity;
+	entity.addComponent(new SpriteComponent); 
+	entity.addComponent(new PhysComponent);
+	return 0;
+}
+

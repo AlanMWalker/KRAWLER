@@ -8,3 +8,5 @@ RC/
 *.VC.db
 */ipch/
 .vscode/
+*.~
+*.un~

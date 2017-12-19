@@ -53,6 +53,6 @@ std::wstring Krawler::GenerateUUID()
 {
 	const auto epochTime = std::chrono::system_clock::now().time_since_epoch(); // time since unix epoch
 	const sf::Int64 timeInMS = std::chrono::duration_cast<std::chrono::nanoseconds>(epochTime).count();
-	std::this_thread::sleep_for(std::chrono::nanoseconds(5));//sleep to ensure time elapse
+	//std::this_thread::sleep_for(std::chrono::nanoseconds(5));//sleep to ensure time elapse
 	return UUID_PREFIX + std::wstring(L"-") + std::to_wstring(timeInMS);
 }

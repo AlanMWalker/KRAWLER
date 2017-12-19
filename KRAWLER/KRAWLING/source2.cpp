@@ -83,16 +83,17 @@ public:
 		m_bUpdateTransform = true;
 	}
 
-	Vector2f& getPosition() const
+	Vector2f getPosition() const
 	{
-		const float* pMatrix = m_transform.getMatrix();
+		const float* pMatrix = !m_pParent ? m_transform.getMatrix() : m_combined.getMatrix();
 
 		return Vector2f(pMatrix[12], pMatrix[13]);
 	}
 
 	float getRoation() const
 	{
-		return m_rotation;
+		const float rot = !m_pParent ? acos(m_transform.getMatrix()[0]) : acos(m_transform.getMatrix()[0]);
+		return rot * 180 / 3.141592654f;
 	}
 
 	__forceinline void move(const Vector2f& trans)
@@ -133,6 +134,9 @@ public:
 	SpriteComponent(Entity* pEntity) : Component(pEntity, "sprite"), m_pTexture(nullptr), m_pTransform(nullptr) {}
 	SpriteComponent(Entity* pEntity, Vector2f size) : Component(pEntity, "sprite"), m_pTexture(nullptr), m_pTransform(nullptr), m_size(size) {}
 	~SpriteComponent() = default;
+
+	// set texture
+	// set texture rect 
 
 	virtual bool init() override;
 	void tick()
@@ -359,6 +363,7 @@ void PhysComponent::tick()
 				pTransformComponent->rotate(40.0f * deltaTime);
 			if (Keyboard::isKeyPressed(Keyboard::Left))
 				pTransformComponent->rotate(-40.0f* deltaTime);
+
 		}
 		return;
 	}
@@ -370,6 +375,7 @@ void PhysComponent::tick()
 
 	m_force = Vector2f(0.0f, 0.0f);
 
+	pTransformComponent->rotate(-40.0f* deltaTime);
 
 	pTransformComponent->move(m_velocity * deltaTime);
 }
@@ -392,7 +398,7 @@ void TransformComponent::tick()
 			}
 		}
 	}
-	std::cout << getEntity()->getTag() << " = " << getPosition().x << " : " << getPosition().y << std::endl;
+	std::cout << getEntity()->getTag() << " = " << " ROT(" << getRoation() << ") " << getPosition().x << " : " << getPosition().y << std::endl;
 }
 const Transform & TransformComponent::getTransform() const
 {

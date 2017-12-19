@@ -59,11 +59,17 @@
     </ClCompile>
     <ClCompile Include="src\TiledMap\KTiledMap.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>    
+    </ClCompile>
     <ClCompile Include="src\SLU\KStateLogicUnit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Component\KComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entity\KEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -121,11 +127,17 @@
     </ClInclude>
     <ClInclude Include="include\TiledMap\KTiledMap.h">
       <Filter>Header Files</Filter>
-    </ClInclude>    
+    </ClInclude>
     <ClInclude Include="include\SLU\KStateLogicUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Entity\KEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Component\KComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

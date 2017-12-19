@@ -43,6 +43,11 @@ namespace Krawler
 
 		// virtual void onEnterScene(); //TODO requires scene class!!
 		// virtual void onExitScene(); // TODO requires scene class!!
+		
+		//Param: wstring tag 
+		//Return: n/a
+		//Info: 
+		KRAWLER_API void setComponentTag(const std::wstring& tag) { m_componentTag = tag; }
 
 		//Param: n/a
 		//Return: n/a 

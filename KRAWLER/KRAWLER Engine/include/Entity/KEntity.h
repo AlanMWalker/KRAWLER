@@ -51,13 +51,22 @@ namespace Krawler
 		//Info: 
 		KRAWLER_API bool removeComponent(KComponentBase* pComponent); 
 
+		//Param: string containing new tag
+		//Return: n/a
+		//Info: 
+		KRAWLER_API void setEntityTag(const std::wstring& tag)  { m_entityTag = tag; }
+
 		//Param: Type of component being requested
 		//Return: Pointer to the component requested, if not found will return nullptr
 		//Info: Query by component types uses a dynamic_cast<> to evaluate whether a pointer of the requested type is 
 		//stored.
 		template<typename TComponent>
 		KRAWLER_API TComponent* const getComponent();
-
+		
+		//Param: n/a 
+		//Return: wstring tag of entity
+		//Info:   
+		KRAWLER_API const std::wstring& getEntityTag() const { return m_entityTag; }
 		
 	private:
 		std::vector<KComponentBase*> m_componentVector; 

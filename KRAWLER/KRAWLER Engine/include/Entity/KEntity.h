@@ -15,28 +15,28 @@ namespace Krawler
 	{
 	public:
 
-		KRAWLER_API KEntity(); 
+		KRAWLER_API KEntity();
 		KRAWLER_API ~KEntity() = default;
 
 		//Param: n/a 
 		//Return: KInitStatus (success if init fine)
 		//Info: initialise all components attached to an entity, if one retuns a failure entire init sequence will be halted
-		KRAWLER_API KInitStatus init(); 
+		KRAWLER_API KInitStatus init();
 
 		//Param: n/a 
 		//Return: n/a
 		//Info: Cleanup all components attached to an entity
-		KRAWLER_API void cleanUp(); 
+		KRAWLER_API void cleanUp();
 
 		//Param: n/a 
 		//Return: n/a
 		//Info: tick all components attached to an entity
 		KRAWLER_API void tick();
-		
+
 		//Param: n/a 
 		//Return: n/a
 		//Info: fixed-tick all components attached to an entity
-		KRAWLER_API void fixedTick(); 
+		KRAWLER_API void fixedTick();
 
 		// void onEnterScene(); 
 		// void onExitScene();
@@ -49,12 +49,12 @@ namespace Krawler
 		//Param: pointer to componenet to be removed 
 		//Return: true if component removed, false if it wasn't
 		//Info: 
-		KRAWLER_API bool removeComponent(KComponentBase* pComponent); 
+		KRAWLER_API bool removeComponent(KComponentBase* pComponent);
 
 		//Param: string containing new tag
 		//Return: n/a
 		//Info: 
-		KRAWLER_API void setEntityTag(const std::wstring& tag)  { m_entityTag = tag; }
+		KRAWLER_API void setEntityTag(const std::wstring& tag) { m_entityTag = tag; }
 
 		//Param: Type of component being requested
 		//Return: Pointer to the component requested, if not found will return nullptr
@@ -62,17 +62,17 @@ namespace Krawler
 		//stored.
 		template<typename TComponent>
 		KRAWLER_API TComponent* const getComponent();
-		
+
 		//Param: n/a 
 		//Return: wstring tag of entity
 		//Info:   
 		KRAWLER_API const std::wstring& getEntityTag() const { return m_entityTag; }
-		
+
 	private:
-		std::vector<KComponentBase*> m_componentVector; 
+		std::vector<KComponentBase*> m_componentVector;
 		std::wstring m_entityTag;
 	};
-	
+
 	template<typename TComponent>
 	inline TComponent * const KEntity::getComponent()
 	{

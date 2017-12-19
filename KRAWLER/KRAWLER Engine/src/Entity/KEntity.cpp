@@ -10,22 +10,47 @@ KEntity::KEntity()
 
 KInitStatus KEntity::init()
 {
+	for (auto& pComponent : m_componentVector)
+	{
+		KCHECK(pComponent);
+		KINIT_CHECK(pComponent->init());
+		if (status != KInitStatus::Success)
+		{
+			return status;
+		}
+	}
+
 	return KInitStatus::Success;
 }
 
 void KEntity::cleanUp()
 {
+	for (auto& pComp : m_componentVector)
+	{
+		KCHECK(pComp);
 
+		pComp->cleanUp();
+		KFREE(pComp);
+	}
+	m_componentVector.clear();
 }
 
 void KEntity::tick()
 {
-
+	for (auto& pComp : m_componentVector)
+	{
+		KCHECK(pComp);
+		pComp->tick();
+	}
 }
 
 void KEntity::fixedTick()
 {
-
+	for (auto& pComp : m_componentVector)
+	{
+		KCHECK(pComp);
+		pComp->fixedTick();
+	}
 }
 
 bool KEntity::addComponent(KComponentBase* pComponent)

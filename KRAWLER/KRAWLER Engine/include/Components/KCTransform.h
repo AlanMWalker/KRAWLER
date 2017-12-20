@@ -19,7 +19,7 @@ namespace Krawler
 
 			KRAWLER_API virtual void tick() override;
 
-			KRAWLER_API const sf::Transform& getTransform() const;
+			KRAWLER_API const sf::Transform& getTransform();
 			KRAWLER_API void setParent(KEntity* pEntity);
 
 			KRAWLER_API void setRotation(float angleInDeg);
@@ -45,6 +45,10 @@ namespace Krawler
 			KRAWLER_API void scale(float sx, float sy);
 			KRAWLER_API void scale(const Vec2f& scale);
 
+			//get local scale
+			//get local rot
+			// get local trans
+
 		private:
 
 			void reconstructTransform();
@@ -59,6 +63,10 @@ namespace Krawler
 			Vec2f m_origin;
 			Vec2f m_scale;
 			Vec2f m_trans;
+
+			Vec2f m_worldPos;
+			Vec2f m_worldScale;
+			float m_worldRot;
 
 			bool m_bHasParent;
 			bool m_bUpdateTransform;

@@ -153,7 +153,7 @@ int main(void)
 {
 	srand(time(NULL));
 	QTree tree(0, FloatRect(0, 0, 1000, 1000));
-	for (int i = 0; i < 1000; ++i)
+	for (int i = 0; i < 10000; ++i)
 	{
 		tree.insert(FloatRect(rand() % 1000, rand() % 1000, 32, 32));
 	}

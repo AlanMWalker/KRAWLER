@@ -78,6 +78,9 @@
     <ClCompile Include="src\Components\KCSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Components\KCBoxCollider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\KApplication.h">
@@ -131,9 +134,6 @@
     <ClInclude Include="include\Input\KInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TiledMap\KTiledMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\SLU\KStateLogicUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -150,6 +150,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Components\KCSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Components\KCBoxCollider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TiledMap\KTiledMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,7 +8,7 @@
 
 #include "Utilities\KEngineMacros.h"
 #include "Utilities\KDebug.h"
-
+#include <SFML\Graphics\Color.hpp>
 #include <map>
 
 namespace Krawler
@@ -24,13 +24,14 @@ namespace Krawler
 
 	using int64 = signed   __int64;
 	using uint64 = unsigned __int64;
-	
+
 	using Vec2f = sf::Vector2f;
 	using Vec2i = sf::Vector2i;
 	using Vec2u = sf::Vector2u;
 	using Vec2d = sf::Vector2<double>;
-	
+
 	using Point = sf::Vector2f;
+	using Colour = sf::Color;
 
 	struct KApplicationInitialise;
 

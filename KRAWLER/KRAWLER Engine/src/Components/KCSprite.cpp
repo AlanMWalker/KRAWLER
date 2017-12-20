@@ -36,3 +36,11 @@ void KCSprite::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const
 
 	rTarget.draw(m_vertexArray, rStates);
 }
+
+KRAWLER_API void KCSprite::setColour(const Colour & col)
+{
+	for (int i = 0; i < 4; ++i)
+	{
+		m_vertexArray[i].color = col;
+	}
+}

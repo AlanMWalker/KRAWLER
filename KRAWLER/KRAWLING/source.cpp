@@ -15,6 +15,7 @@
 #include <KEntity.h>
 #include <Components\KCTransform.h>
 #include <Components\KCSprite.h>
+#include <Components\KCBoxCollider.h>
 
 #include <SFML\Graphics.hpp>
 
@@ -95,10 +96,19 @@ int main(void)
 
 	KEntity e;
 	e.addComponent(new Components::KCSprite(&e, Vec2f(100, 100)));
+	e.addComponent(new Components::KCBoxCollider(&e, Vec2f(50, 50)));
 	e.getComponent<Components::KCTransform>()->setTranslation(Vec2f(100.0f, 100.0f));
-
 	e.init();
 
+	KEntity v;
+	v.addComponent(new Components::KCSprite(&v, Vec2f(100, 100)));
+	v.addComponent(new Components::KCBoxCollider(&v, Vec2f(100, 100)));
+	v.getComponent<Components::KCTransform>()->setTranslation(Vec2f(20.0f, 5.0f));
+	v.getComponent<Components::KCTransform>()->setOrigin(Vec2f(50.0f, 50.0f));
+	//v.getComponent<Components::KCTransform>()->rotate(10);
+	v.getComponent<Components::KCTransform>()->setParent(&e);
+	v.init();
+	v.getComponent<Components::KCSprite>()->setColour(Colour::Magenta);
 	sf::RenderWindow rw;
 	rw.setActive(true);
 	rw.create(sf::VideoMode(640, 480), "Testing ECS");
@@ -113,21 +123,63 @@ int main(void)
 				rw.close();
 			KInput::HandleEvent(evnt);
 		}
-		if (KInput::Pressed(KKey::Right))
+		Components::KCTransform* pTrans = v.getComponent<Components::KCTransform>();
+		float dt = 0.016f;
+
+		if (KInput::Pressed(KKey::D))
 		{
-			e.getComponent<Components::KCTransform>()->move(50.0f * 0.016f, 0.0f);
+			pTrans->move(50.0f * dt, 0.0f);
+		}
+
+		if (KInput::Pressed(KKey::A))
+		{
+			pTrans->move(-50.0f * dt, 0.0f);
+		}
+
+		if (KInput::Pressed(KKey::W))
+		{
+			pTrans->move(0.0f, -50.0f*dt);
+		}
+
+		if (KInput::Pressed(KKey::S))
+		{
+			pTrans->move(0.0f, 50.0f*dt);
+		}
+
+		if (KInput::Pressed(KKey::Q))
+		{
+			pTrans->rotate(-50.0f*dt);
+		}
+
+
+		if (KInput::Pressed(KKey::E))
+		{
+			pTrans->rotate(50.0f*dt);
 		}
 		e.tick();
-		rw.clear();
-		auto p = e.getComponent<Components::KCSprite>();
+		v.tick();
 
-		rw.draw(*p);
+		if (e.getComponent<Components::KCBoxCollider>()->checkIntersects(v.getComponent<Components::KCBoxCollider>()))
+		{
+			e.getComponent<Components::KCSprite>()->setColour(Colour::Red);
+		}
+		else
+		{
+			e.getComponent<Components::KCSprite>()->setColour(Colour::Blue);
+
+		}
+
+		rw.clear();
+		auto pE = e.getComponent<Components::KCSprite>();
+		auto pV = v.getComponent<Components::KCSprite>();
+
+		rw.draw(*pE);
+		rw.draw(*pV);
 		rw.display();
 		KInput::Update();
 	}
 	e.cleanUp();
-
-	system("pause");
+	v.cleanUp();
 	return 0;
 }
 

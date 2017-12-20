@@ -5,7 +5,7 @@ using namespace Krawler::Components;
 
 KCTransform::KCTransform(KEntity* pEntity)
 	: KComponentBase(pEntity), m_pParentTransform(nullptr), m_bHasParent(false),
-	m_rotation(0.0f), m_origin(0.0f, 0.0f), m_scale(1.0f, 1.0f), m_trans(0.0, 0.0f)
+	m_rotation(0.0f), m_origin(0.0f, 0.0f), m_scale(1.0f, 1.0f), m_trans(1.0, 0.0f)
 {
 
 }
@@ -20,11 +20,16 @@ void Krawler::Components::KCTransform::tick()
 
 	if (m_bHasParent)
 	{
-		m_parentedTransform = m_pParentTransform->getTransform() * m_transform;
+		m_parentedTransform = m_transform* m_pParentTransform->getTransform();
 	}
+
+	m_worldRot = getRotation();
+	m_worldPos = getPosition();
+	m_worldScale = getScale();
+
 }
 
-const sf::Transform & Krawler::Components::KCTransform::getTransform() const
+const sf::Transform & Krawler::Components::KCTransform::getTransform()
 {
 	if (m_bHasParent)
 	{
@@ -116,6 +121,7 @@ void Krawler::Components::KCTransform::move(float dx, float dy)
 void Krawler::Components::KCTransform::move(const Vec2f & trans)
 {
 	setTranslation(m_trans + trans);
+	m_bUpdateTransform = true;
 }
 
 void Krawler::Components::KCTransform::rotate(float angleInDeg)
@@ -149,4 +155,8 @@ void Krawler::Components::KCTransform::reconstructTransform()
 
 	m_transform = sf::Transform(scaleCosX, scaleSineY, transX, -scaleSineX, scaleCosY, transY,
 		0.0f, 0.0f, 0.0f);
+	if (m_bHasParent)
+	{
+		m_parentedTransform = m_pParentTransform->getTransform() * m_transform;
+	}
 }

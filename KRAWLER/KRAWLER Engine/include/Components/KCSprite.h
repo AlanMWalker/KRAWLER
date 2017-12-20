@@ -24,7 +24,7 @@ namespace Krawler
 			KRAWLER_API void setRenderLayer(int32 renderLayer) { m_renderLayer = renderLayer; }
 
 			KRAWLER_API int32 getRenderLayer() const { return m_renderLayer; }
-
+			KRAWLER_API void setColour(const Colour& col);
 			//TODO set col
 			//TODO set texture rect
 			//TODO set texture
@@ -33,7 +33,7 @@ namespace Krawler
 
 			sf::VertexArray m_vertexArray;
 			sf::Vector2f m_size;
-			
+
 			sf::Texture* m_pTexture;
 			KCTransform* m_pTransform;
 

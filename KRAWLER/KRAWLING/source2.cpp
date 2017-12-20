@@ -1,424 +1,163 @@
 #include "stdafx.h"
-#include <iostream> 
-#include <vector>
 #include <SFML\Graphics.hpp>
-#include <future>
-#include <chrono>
+#include <iostream>
+#include <vector>
 
 using namespace std;
 using namespace sf;
-using namespace std::chrono;
 
-const static float deltaTime = 0.016;
-
-class Entity;
-class Component
+class QTree
 {
 public:
-
-	Component(Entity* pEntity, const string& tag)
-		: m_compTag(tag), m_pEntity(pEntity)
+	QTree(int level, const FloatRect& bounds)
 	{
+		m_nodes = new QTree*[4]{ nullptr };
+		m_bounds = bounds;
+		m_level = level;
 	}
 
-	~Component()
+	~QTree()
 	{
-	}
-
-	virtual bool init() { return true; }
-	virtual void tick() {}
-	virtual void fixedTick() {}
-	virtual void reset() {}
-	virtual void cleanup() {}
-
-	const std::string& getTag() const { return m_compTag; };
-
-protected:
-	Entity* const getEntity() { return m_pEntity; }
-private:
-	std::string m_compTag;
-	Entity* m_pEntity = nullptr;
-};
-
-class TransformComponent : public Component
-{
-public:
-
-	TransformComponent(Entity* pEntity)
-		: Component(pEntity, "transform"), m_bUpdateTransform(true), m_origin(0.0f, 0.0f), m_trans(0.0f, 0.0f), m_scale(1.0f, 1.0f), m_rotation(0.0f)
-	{
-		reconstructTransform();
-	}
-	~TransformComponent()
-	{
-
-	}
-
-	__forceinline void setPosition(const Vector2f& pos)
-	{
-		m_trans = pos;
-		m_bUpdateTransform = true;
-	}
-
-	__forceinline void setPosition(float x, float y)
-	{
-		m_trans.x = x;
-		m_trans.y = y;
-		m_bUpdateTransform = true;
-	}
-
-	__forceinline void setRotation(float angleInDeg)
-	{
-		m_rotation = angleInDeg;
-		if (m_rotation > 360.0f)
+		for (int i = 0; i < 4; ++i)
 		{
-			m_rotation = fmod(m_rotation, 360.0f);
+			delete m_nodes[i];
 		}
-		m_bUpdateTransform = true;
+		delete[] m_nodes;
 	}
 
-	__forceinline void setOrigin(const Vector2f& origin)
+	void clear()
 	{
-		m_origin = origin;
-		m_bUpdateTransform = true;
-	}
-
-	Vector2f getPosition() const
-	{
-		const float* pMatrix = !m_pParent ? m_transform.getMatrix() : m_combined.getMatrix();
-
-		return Vector2f(pMatrix[12], pMatrix[13]);
-	}
-
-	float getRoation() const
-	{
-		const float rot = !m_pParent ? acos(m_transform.getMatrix()[0]) : acos(m_transform.getMatrix()[0]);
-		return rot * 180 / 3.141592654f;
-	}
-
-	__forceinline void move(const Vector2f& trans)
-	{
-		//m_transform.translate(trans);
-		setPosition(m_trans + trans);
-	}
-
-	__forceinline void rotate(float angleInDegrees)
-	{
-		setRotation(m_rotation + angleInDegrees);
-	}
-
-	virtual void tick() override;
-
-	const Transform& getTransform() const;
-	void setParent(Entity* pEntity) { m_pParent = pEntity; }
-private:
-
-	__forceinline void reconstructTransform();
-	Entity* m_pParent = nullptr;
-
-	sf::Transform m_transform;
-	sf::Transform m_combined;
-
-	float m_rotation;
-	Vector2f m_origin;
-	Vector2f m_scale;
-	Vector2f m_trans;
-
-	bool m_bUpdateTransform;
-};
-
-class SpriteComponent : public Component, public Drawable
-{
-public:
-
-	SpriteComponent(Entity* pEntity) : Component(pEntity, "sprite"), m_pTexture(nullptr), m_pTransform(nullptr) {}
-	SpriteComponent(Entity* pEntity, Vector2f size) : Component(pEntity, "sprite"), m_pTexture(nullptr), m_pTransform(nullptr), m_size(size) {}
-	~SpriteComponent() = default;
-
-	// set texture
-	// set texture rect 
-
-	virtual bool init() override;
-	void tick()
-	{
-
-	}
-
-	virtual void draw(RenderTarget& rRenderTarget, RenderStates renderStates) const override
-	{
-		renderStates.transform *= *m_pTransform;
-		renderStates.texture = m_pTexture;
-		rRenderTarget.draw(m_vertArray, renderStates);
-	}
-
-private:
-	Vector2f m_size;
-	VertexArray m_vertArray;
-	const Transform* m_pTransform;
-	Texture* m_pTexture;
-};
-
-class PhysComponent : public Component
-{
-public:
-
-	PhysComponent(Entity* pEntity) : Component(pEntity, "physics") {}
-	~PhysComponent() = default;
-
-	virtual void tick();
-
-	void applyForce(const Vector2f& force) { m_force += force; }
-	void setMass(float mass) { m_mass = mass; }
-
-private:
-
-	Vector2f m_velocity;
-	Vector2f m_force;
-	float m_mass = 10.0f;
-};
-
-class Entity
-{
-public:
-
-	Entity()
-	{
-		m_components.push_back(new TransformComponent(this));
-	}
-
-	~Entity()
-	{
-		for (auto& comp : m_components)
+		m_objects.clear();
+		for (int i = 0; i < 4; ++i)
 		{
-			delete comp;
+			m_nodes[i]->clear();
+			m_nodes[i] = nullptr;
 		}
+	}
 
-		m_components.clear();
-	};
-
-	void addComponent(Component* pEntity) { m_components.push_back(pEntity); }
-	void removeComponent();
-
-	template<typename TComponent = Component >
-	TComponent* getComponentByTag(const string& tag)
+	void insert(const FloatRect& bounds)
 	{
-		auto findResult = std::find_if(m_components.begin(), m_components.end(),
-			[&tag](Component* comp)
+		if (m_nodes[0])
 		{
-			if (dynamic_cast<TComponent*> (comp) == nullptr)
+			int index = getIndex(bounds);
+
+			if (index != -1)
 			{
-				return false;
+				m_nodes[index]->insert(bounds);
 			}
-
-			return comp->getTag() == tag;
-		});
-		if (findResult == m_components.end())
-		{
-			return nullptr;
 		}
-		return dynamic_cast<TComponent*> (*findResult);
-	}
 
-	bool init()
-	{
-		for (Component* pComponent : m_components)
+		m_objects.push_back(bounds);
+		if (m_objects.size() > MAX_OBJ && m_level < MAX_LEVELS)
 		{
-			pComponent->init();
-		}
-		return true;
-	}
-
-	void tick()
-	{
-		for (Component* pComponent : m_components)
-		{
-			pComponent->tick();
-		}
-	}
-
-	const string& getTag() const { return m_tag; }
-	void setTag(const string& tag) { m_tag = tag; }
-private:
-	string m_tag;
-	vector<Component*> m_components;
-
-};
-
-#define CREATE_GAME_OBJECT(size, pEntity)														\
-					pEntity->addComponent(new SpriteComponent(pEntity, size));					\
-					pEntity->addComponent(new PhysComponent(pEntity));							\
-
-#define NUMBER_OF_ENTITIES 5
-
-int main(int argc, char* argv[])
-{
-	srand(time(NULL));
-	Entity entityArray[NUMBER_OF_ENTITIES];
-
-	for (int i = 0; i < NUMBER_OF_ENTITIES; ++i)
-	{
-		Entity* pEntity = &entityArray[i];
-
-		CREATE_GAME_OBJECT(Vector2f(10, 10), pEntity);
-	}
-	entityArray[0].setTag("Bobby");
-	entityArray[1].setTag("Mary");
-	//entityArray[1].getComponentByTag<TransformComponent>("transform")->move(Vector2f(10.0f, 10.0f));
-	entityArray[1].getComponentByTag<TransformComponent>("transform")->setParent(&entityArray[0]);
-	RenderWindow renderWindow;
-
-	renderWindow.create(VideoMode(960u, 540u), "Entity Component System");
-	renderWindow.setVerticalSyncEnabled(true);
-
-	auto t1 = high_resolution_clock::now();
-	int idx = 0;
-
-	for (Entity& e : entityArray)
-	{
-		e.init();
-		PhysComponent* pPhys = e.getComponentByTag<PhysComponent>("physics");
-		pPhys->applyForce(Vector2f(0.0f, -40000));
-	}
-	auto t2 = high_resolution_clock::now();
-
-	auto result = duration_cast<std::chrono::milliseconds>(t2 - t1);
-	std::cout << "Execution time " << (result.count() / NUMBER_OF_ENTITIES) << " ms " << endl;
-
-
-	for (Entity& e : entityArray)
-	{
-		if (e.getTag() == "Mary")
-			continue;
-		int xPos = rand() % 900;
-		int yPos = rand() % 500;
-		(e.getComponentByTag<TransformComponent>("transform"))->setPosition(xPos, yPos);
-	}
-
-	while (renderWindow.isOpen())
-	{
-		Event evnt;
-		while (renderWindow.pollEvent(evnt))
-		{
-			if (evnt.type == Event::Closed)
+			if (m_nodes[0] == nullptr)
 			{
-				renderWindow.close();
+				split();
 			}
-			if (evnt.type == Event::KeyPressed)
+			int i = 0;
+			while (i < (signed)m_objects.size())
 			{
-				if (evnt.key.code == Keyboard::Escape)
+				const int idx = getIndex(m_objects[i]);
+				if (idx != -1)
 				{
-					renderWindow.close();
+					auto cpy = m_objects[i];
+					auto it = std::find(m_objects.begin(), m_objects.end(), m_objects[i]);
+					m_nodes[idx]->insert(cpy);
+					m_objects.erase(it);
+				}
+				else
+				{
+					++i;
 				}
 			}
 		}
+	}
 
-		renderWindow.clear();
-
-		for (Entity& e : entityArray)
+	std::vector<FloatRect> retrieve(std::vector<FloatRect>& rObj, const FloatRect& bounds)
+	{
+		int idx = getIndex(bounds);
+		if (idx != -1 && m_nodes[0])
 		{
-			e.tick();
-			SpriteComponent* sc = e.getComponentByTag<SpriteComponent>("sprite");
-			renderWindow.draw(*sc);
+			m_nodes[idx]->retrieve(rObj, bounds);
 		}
 
-		renderWindow.display();
-	}
-	//system("pause");
-	return 0;
-}
-
-bool SpriteComponent::init()
-{
-	const float size = 10.0f;
-	m_vertArray.setPrimitiveType(Quads);
-	m_vertArray.resize(4);
-
-	m_vertArray[0].position = Vector2f(0.0f, 0.0f);
-	m_vertArray[1].position = Vector2f(m_size.x, 0.0f);
-	m_vertArray[2].position = Vector2f(m_size.x, m_size.y);
-	m_vertArray[3].position = Vector2f(0.0f, m_size.y);
-
-	const Color randCol(rand() % 256, rand() % 256, rand() % 256, 255);
-
-	m_vertArray[0].color = randCol;
-	m_vertArray[1].color = randCol;
-	m_vertArray[2].color = randCol;
-	m_vertArray[3].color = randCol;
-
-	TransformComponent* pTransform = getEntity()->getComponentByTag<TransformComponent>("transform");
-	m_pTransform = &pTransform->getTransform();
-	return true;
-}
-
-void PhysComponent::tick()
-{
-	TransformComponent* pTransformComponent;
-	pTransformComponent = getEntity()->getComponentByTag<TransformComponent>("transform");
-
-	if (getEntity()->getTag() != "Bobby")
-	{
-		if (getEntity()->getTag() == "Mary")
+		for (auto& obj : m_objects)
 		{
-			if (Keyboard::isKeyPressed(Keyboard::Right))
-				pTransformComponent->rotate(40.0f * deltaTime);
-			if (Keyboard::isKeyPressed(Keyboard::Left))
-				pTransformComponent->rotate(-40.0f* deltaTime);
-
+			rObj.push_back(obj);
 		}
-		return;
+		return rObj;
 	}
 
-	pTransformComponent->setOrigin(Vector2f(5.0f, 5.0f));
+private:
 
-	m_velocity += (Vector2f(0.0f, 9.81f) * deltaTime);
-	m_velocity += ((1.0f / m_mass) *  m_force * deltaTime) / 2.0f;
-
-	m_force = Vector2f(0.0f, 0.0f);
-
-	pTransformComponent->rotate(-40.0f* deltaTime);
-
-	pTransformComponent->move(m_velocity * deltaTime);
-}
-
-void TransformComponent::tick()
-{
-	if (m_bUpdateTransform)
+	void split()
 	{
-		reconstructTransform();
-		m_bUpdateTransform = false;
+		const int subWidth = (int)m_bounds.width / 2.0f;
+		const int subHeight = (int)m_bounds.height / 2.0f;
+		const int x = (int)m_bounds.left;
+		const int y = (int)m_bounds.top;
+
+		m_nodes[0] = new QTree(m_level + 1, FloatRect(x + subWidth, y, subWidth, subHeight));
+		m_nodes[1] = new QTree(m_level + 1, FloatRect(x, y, subWidth, subHeight));
+		m_nodes[2] = new QTree(m_level + 1, FloatRect(x, y + subHeight, subWidth, subHeight));
+		m_nodes[3] = new QTree(m_level + 1, FloatRect(x + subWidth, y + subHeight, subWidth, subHeight));
 	}
-	if (m_pParent)
+
+	int getIndex(const FloatRect& bounds)
 	{
-		m_combined = m_pParent->getComponentByTag<TransformComponent>("transform")->getTransform() * m_transform;
-		if (getEntity()->getTag() == "Mary")
+		int index = -1;
+
+		const float vMidpoint = m_bounds.left + m_bounds.width / 2.0f;
+		const float hMidpoint = m_bounds.top + m_bounds.height / 2.0f;
+
+		const bool topQuadrant = (bounds.top < hMidpoint) && (bounds.top + bounds.height < hMidpoint);
+		const bool botQuadrant = (bounds.top > hMidpoint);
+
+		if (bounds.left < vMidpoint && bounds.left + bounds.width < vMidpoint)
 		{
-			if (Keyboard::isKeyPressed(Keyboard::Right))
+			if (topQuadrant)
 			{
-				move(Vector2f(10.0f * 0.016f, 0.0f));
+				index = 1;
+			}
+			else if (botQuadrant)
+			{
+				index = 2;
 			}
 		}
+		else if (bounds.left > vMidpoint)
+		{
+			if (topQuadrant)
+			{
+				index = 0;
+			}
+			else if (botQuadrant)
+			{
+				index = 3;
+			}
+		}
+		return index;
 	}
-	std::cout << getEntity()->getTag() << " = " << " ROT(" << getRoation() << ") " << getPosition().x << " : " << getPosition().y << std::endl;
-}
-const Transform & TransformComponent::getTransform() const
-{
-	if (!m_pParent)
-		return m_transform;
-	return m_combined;
-}
-void TransformComponent::reconstructTransform()
-{
-	const float angle = -m_rotation * 3.141592654f / 180.f;
-	const float cosine = static_cast<float>(std::cos(angle));
-	const float sine = static_cast<float>(std::sin(angle));
-	const float sxc = m_scale.x * cosine;
-	const float syc = m_scale.y * cosine;
-	const float sxs = m_scale.x * sine;
-	const float sys = m_scale.y * sine;
-	const float tx = -m_origin.x * sxc - m_origin.y * sys + m_trans.x;
-	const float ty = m_origin.x * sxs - m_origin.y * syc + m_trans.y;
 
-	m_transform = Transform(sxc, sys, tx,
-		-sxs, syc, ty,
-		0.f, 0.f, 1.f);
+	int MAX_OBJ = 10;
+	int MAX_LEVELS = 5;
+
+	int m_level;
+	FloatRect m_bounds;
+	std::vector <FloatRect> m_objects;
+	QTree** m_nodes;
+
+
+};
+
+int main(void)
+{
+	srand(time(NULL));
+	QTree tree(0, FloatRect(0, 0, 1000, 1000));
+	for (int i = 0; i < 1000; ++i)
+	{
+		tree.insert(FloatRect(rand() % 1000, rand() % 1000, 32, 32));
+	}
+	std::vector<FloatRect> tr;
+	tree.retrieve(tr, FloatRect(10, 10, 32, 32));
+	return 0;
 }

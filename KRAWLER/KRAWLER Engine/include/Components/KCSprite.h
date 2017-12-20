@@ -25,9 +25,9 @@ namespace Krawler
 
 			KRAWLER_API int32 getRenderLayer() const { return m_renderLayer; }
 
-			//set col
-			//set texture rect
-			//set texture
+			//TODO set col
+			//TODO set texture rect
+			//TODO set texture
 
 		private:
 

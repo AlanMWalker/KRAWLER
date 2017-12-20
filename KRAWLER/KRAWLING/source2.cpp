@@ -151,13 +151,18 @@ private:
 
 int main(void)
 {
-	srand(time(NULL));
+	/*srand(time(NULL));
 	QTree tree(0, FloatRect(0, 0, 1000, 1000));
 	for (int i = 0; i < 10000; ++i)
 	{
 		tree.insert(FloatRect(rand() % 1000, rand() % 1000, 32, 32));
 	}
 	std::vector<FloatRect> tr;
-	tree.retrieve(tr, FloatRect(10, 10, 32, 32));
+	tree.retrieve(tr, FloatRect(10, 10, 32, 32));*/
+	sf::Transform tA, tB; 
+
+	tA.translate(10, 10);
+	tA.rotate(45);
+	tB = tA*tB;
 	return 0;
 }

@@ -20,13 +20,12 @@ void Krawler::Components::KCTransform::tick()
 
 	if (m_bHasParent)
 	{
-		m_parentedTransform = m_transform* m_pParentTransform->getTransform();
+		m_parentedTransform = m_pParentTransform->getTransform() * m_transform;
 	}
 
 	m_worldRot = getRotation();
 	m_worldPos = getPosition();
 	m_worldScale = getScale();
-
 }
 
 const sf::Transform & Krawler::Components::KCTransform::getTransform()
@@ -152,11 +151,7 @@ void Krawler::Components::KCTransform::reconstructTransform()
 	const float scaleCosX = m_scale.x * cosAngle, scaleCosY = m_scale.y * cosAngle;
 	const float transX = -m_origin.x * scaleCosX - m_origin.y * scaleSineY + m_trans.x;
 	const float transY = m_origin.x * scaleSineX - m_origin.y * scaleCosY + m_trans.y;
-
+	
 	m_transform = sf::Transform(scaleCosX, scaleSineY, transX, -scaleSineX, scaleCosY, transY,
-		0.0f, 0.0f, 0.0f);
-	if (m_bHasParent)
-	{
-		m_parentedTransform = m_pParentTransform->getTransform() * m_transform;
-	}
+		0.0f, 0.0f, 1.0f);
 }

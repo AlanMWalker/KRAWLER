@@ -96,17 +96,17 @@ int main(void)
 
 	KEntity e;
 	e.addComponent(new Components::KCSprite(&e, Vec2f(100, 100)));
-	e.addComponent(new Components::KCBoxCollider(&e, Vec2f(50, 50)));
+	e.addComponent(new Components::KCBoxCollider(&e, Vec2f(100, 100)));
 	e.getComponent<Components::KCTransform>()->setTranslation(Vec2f(100.0f, 100.0f));
 	e.init();
 
 	KEntity v;
-	v.addComponent(new Components::KCSprite(&v, Vec2f(100, 100)));
-	v.addComponent(new Components::KCBoxCollider(&v, Vec2f(100, 100)));
-	v.getComponent<Components::KCTransform>()->setTranslation(Vec2f(20.0f, 5.0f));
-	v.getComponent<Components::KCTransform>()->setOrigin(Vec2f(50.0f, 50.0f));
+	v.addComponent(new Components::KCSprite(&v, Vec2f(50, 50)));
+	v.addComponent(new Components::KCBoxCollider(&v, Vec2f(50, 50)));
+	//v.getComponent<Components::KCTransform>()->setTranslation(Vec2f(20.0f, 5.0f));
+	v.getComponent<Components::KCTransform>()->setOrigin(Vec2f(25, 25));
 	//v.getComponent<Components::KCTransform>()->rotate(10);
-	v.getComponent<Components::KCTransform>()->setParent(&e);
+	//v.getComponent<Components::KCTransform>()->setParent(&e);
 	v.init();
 	v.getComponent<Components::KCSprite>()->setColour(Colour::Magenta);
 	sf::RenderWindow rw;
@@ -123,7 +123,10 @@ int main(void)
 				rw.close();
 			KInput::HandleEvent(evnt);
 		}
-		Components::KCTransform* pTrans = v.getComponent<Components::KCTransform>();
+
+		Components::KCTransform* pTrans = e.getComponent<Components::KCTransform>();
+		Components::KCTransform* pVTrans = v.getComponent<Components::KCTransform>();
+		pVTrans->setTranslation(Vec2f((KInput::GetMousePosition())));
 		float dt = 0.016f;
 
 		if (KInput::Pressed(KKey::D))
@@ -148,14 +151,25 @@ int main(void)
 
 		if (KInput::Pressed(KKey::Q))
 		{
-			pTrans->rotate(-50.0f*dt);
+			pVTrans->rotate(-50.0f*dt);
 		}
 
 
 		if (KInput::Pressed(KKey::E))
 		{
+			pVTrans->rotate(50.0f*dt);
+		}
+
+		if (KInput::Pressed(KKey::R))
+		{
+			pTrans->rotate(-50.0f*dt);
+		}
+		if (KInput::Pressed(KKey::T))
+		{
 			pTrans->rotate(50.0f*dt);
 		}
+
+
 		e.tick();
 		v.tick();
 

@@ -52,7 +52,7 @@ namespace Krawler
 		//Param: n/a
 		//Return: n/a 
 		//Info: Tick component (to be overridden if a component updates)
-		KRAWLER_API const std::wstring& getComponentTag() const { return m_componentTag; };
+		KRAWLER_API const std::wstring& getComponentTag() const { return m_componentTag; }
 
 	protected:
 

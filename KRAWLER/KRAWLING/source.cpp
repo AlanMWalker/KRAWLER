@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "vld.h"
+#include <future>
 
 #include <Krawler.h>
 #include <KApplication.h>
@@ -13,6 +14,9 @@
 
 #include <KEntity.h>
 #include <Components\KCTransform.h>
+#include <Components\KCSprite.h>
+
+#include <SFML\Graphics.hpp>
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
@@ -58,53 +62,71 @@ public:
 
 int main(void)
 {
-	KApplicationInitialise initApp;
-	initApp.consoleWindow = true;
-	initApp.width = 640;
-	initApp.height = 480;
-	initApp.windowStyle = Windowed_Fixed_Size;
-	initApp.gameFps = 30;
-	initApp.physicsFps = 100;
-	initApp.windowTitle = KTEXT("Hello World!");
-
-	StartupEngine(&initApp);
-
-	TestState* state = new TestState;
-	auto application = KApplication::getApp();
-
-	KLogicStateInitialiser initState;
-	initState.bIsPhysicsEngineEnabled = true;
-
-	application->getLogicStateDirector()->registerLogicState(dynamic_cast<KLogicState*>(state), &initState);
-	application->getLogicStateDirector()->setActiveLogicState(initState.stateIdentifier);
-
-
-	InitialiseSubmodules();
-
-	TiledMap::KTiledMap map;
-	map.setupTiledMap(KTEXT("test.dat"));
-	application->getRenderer()->setActiveTiledMap(&map);
-	RunApplication();
-	ShutdownEngine();
-
-	map.cleanupTiledMap();
+	//KApplicationInitialise initApp;
+	//initApp.consoleWindow = true;
+	//initApp.width = 640;
+	//initApp.height = 480;
+	//initApp.windowStyle = Windowed_Fixed_Size;
+	//initApp.gameFps = 30;
+	//initApp.physicsFps = 100;
+	//initApp.windowTitle = KTEXT("Hello World!");
+	//
+	//StartupEngine(&initApp);
+	//
+	//TestState* state = new TestState;
+	//auto application = KApplication::getApp();
+	//
+	//KLogicStateInitialiser initState;
+	//initState.bIsPhysicsEngineEnabled = true;
+	//
+	//application->getLogicStateDirector()->registerLogicState(dynamic_cast<KLogicState*>(state), &initState);
+	//application->getLogicStateDirector()->setActiveLogicState(initState.stateIdentifier);
+	//
+	//
+	//InitialiseSubmodules();
+	//
+	//TiledMap::KTiledMap map;
+	//map.setupTiledMap(KTEXT("test.dat"));
+	//application->getRenderer()->setActiveTiledMap(&map);
+	//RunApplication();
+	//ShutdownEngine();
+	//
+	//map.cleanupTiledMap();
 
 	KEntity e;
-	KEntity e2;
-	e2.getComponent <Components::KCTransform>()->setParent(&e);
-	e2.getComponent <Components::KCTransform>()->setScale(0.5f, 0.5f);
-	auto transform = e.getComponent<Components::KCTransform>();
-	transform->setScale(Vec2f(10, 10));
-	transform->setRotation(100);
-	transform->setTranslation(10, 10);
-	transform->tick();
-	e2.getComponent <Components::KCTransform>()->tick();
-	auto p = transform->getTransform().getMatrix();
-	auto p2 = e2.getComponent <Components::KCTransform>()->getTransform().getMatrix();
-	float rota = transform->getRotation();
-	float rot = e2.getComponent<Components::KCTransform>()->getRotation();
-	auto scale = transform->getScale();
-	auto scale2 = e2.getComponent<Components::KCTransform>()->getScale();
+	e.addComponent(new Components::KCSprite(&e, Vec2f(100, 100)));
+	e.getComponent<Components::KCTransform>()->setTranslation(Vec2f(100.0f, 100.0f));
+
+	e.init();
+
+	sf::RenderWindow rw;
+	rw.setActive(true);
+	rw.create(sf::VideoMode(640, 480), "Testing ECS");
+	KInput::SetWindow(&rw);
+	rw.setVerticalSyncEnabled(true);
+	while (rw.isOpen())
+	{
+		sf::Event evnt;
+		while (rw.pollEvent(evnt))
+		{
+			if (evnt.type == evnt.Closed)
+				rw.close();
+			KInput::HandleEvent(evnt);
+		}
+		if (KInput::Pressed(KKey::Right))
+		{
+			e.getComponent<Components::KCTransform>()->move(50.0f * 0.016f, 0.0f);
+		}
+		e.tick();
+		rw.clear();
+		auto p = e.getComponent<Components::KCSprite>();
+
+		rw.draw(*p);
+		rw.display();
+		KInput::Update();
+	}
+	e.cleanUp();
+
 	system("pause");
 	return 0;
 }

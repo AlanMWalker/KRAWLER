@@ -3,28 +3,27 @@
 
 using namespace Krawler;
 
-Krawler::KComponentBase::KComponentBase(KEntity * pEntity)
+KComponentBase::KComponentBase(KEntity * pEntity)
 	: m_pEntity(pEntity), m_componentTag(GenerateUUID())
 {
 }
-
-Krawler::KComponentBase::~KComponentBase()
+KComponentBase::~KComponentBase()
 {
 }
 
-KInitStatus Krawler::KComponentBase::init()
+KInitStatus KComponentBase::init()
 {
 	return KInitStatus::Success;
 }
 
-void Krawler::KComponentBase::cleanUp()
+void KComponentBase::cleanUp()
 {
 }
 
-void Krawler::KComponentBase::fixedTick()
+void KComponentBase::fixedTick()
 {
 }
 
-void Krawler::KComponentBase::tick()
+void KComponentBase::tick()
 {
 }

@@ -240,6 +240,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp" />
+    <ClCompile Include="src\Components\KCSprite.cpp" />
     <ClCompile Include="src\KComponent.cpp" />
     <ClCompile Include="src\KEntity.cpp" />
     <ClCompile Include="src\GameObject\KGameObject.cpp" />
@@ -260,6 +261,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
+    <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\KComponent.h" />
     <ClInclude Include="include\KEntity.h" />
     <ClInclude Include="include\GameObject\KGameObject.h" />

@@ -1,11 +1,13 @@
-#include "Entity\KEntity.h"	
+#include "KEntity.h"	
+#include "Components\KCTransform.h"
 
 using namespace Krawler;
+using namespace Krawler::Components;
 
 KEntity::KEntity()
 	: m_componentVector(1, nullptr), m_entityTag(GenerateUUID())
 {
-	// pushback transform component here
+	m_componentVector[0] = new KCTransform(this);
 }
 
 KInitStatus KEntity::init()

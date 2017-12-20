@@ -66,10 +66,13 @@
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\KComponent.cpp">
+    <ClCompile Include="src\KEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Entity\KEntity.cpp">
+    <ClCompile Include="src\KComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Components\KCTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,10 +137,13 @@
     <ClInclude Include="include\AssetLoader\KAssetLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Entity\KEntity.h">
+    <ClInclude Include="include\KEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Component\KComponent.h">
+    <ClInclude Include="include\KComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Components\KCTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

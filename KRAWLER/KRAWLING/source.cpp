@@ -10,6 +10,10 @@
 #include <Utilities\KDebug.h>
 #include <SLU\KStateLogicUnit.h>
 
+
+#include <KEntity.h>
+#include <Components\KCTransform.h>
+
 using namespace Krawler;
 using namespace Krawler::LogicState;
 using namespace Krawler::Input;
@@ -30,7 +34,7 @@ public:
 			return status;
 		}
 
-		
+
 		return Success;
 	}
 
@@ -48,7 +52,7 @@ public:
 
 	virtual void fixedTick() override
 	{
-		
+
 	}
 };
 
@@ -73,7 +77,7 @@ int main(void)
 
 	application->getLogicStateDirector()->registerLogicState(dynamic_cast<KLogicState*>(state), &initState);
 	application->getLogicStateDirector()->setActiveLogicState(initState.stateIdentifier);
-	
+
 
 	InitialiseSubmodules();
 
@@ -85,6 +89,23 @@ int main(void)
 
 	map.cleanupTiledMap();
 
+	KEntity e;
+	KEntity e2;
+	e2.getComponent <Components::KCTransform>()->setParent(&e);
+	e2.getComponent <Components::KCTransform>()->setScale(0.5f, 0.5f);
+	auto transform = e.getComponent<Components::KCTransform>();
+	transform->setScale(Vec2f(10, 10));
+	transform->setRotation(100);
+	transform->setTranslation(10, 10);
+	transform->tick();
+	e2.getComponent <Components::KCTransform>()->tick();
+	auto p = transform->getTransform().getMatrix();
+	auto p2 = e2.getComponent <Components::KCTransform>()->getTransform().getMatrix();
+	float rota = transform->getRotation();
+	float rot = e2.getComponent<Components::KCTransform>()->getRotation();
+	auto scale = transform->getScale();
+	auto scale2 = e2.getComponent<Components::KCTransform>()->getScale();
+	system("pause");
 	return 0;
 }
 

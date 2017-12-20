@@ -16,22 +16,22 @@ namespace Krawler
 		const float PI_BY_2{ PI  * 2.f };
 
 		template<typename T>
-		KRAWLER_API T Degrees(T Theta);
+		T Degrees(T Theta);
 
 		template<typename T>
-		KRAWLER_API	T Radians(T Theta);
+		T Radians(T Theta);
 
 		template<typename T>
-		KRAWLER_API inline T Clamp(T Min, T Max, T Value);
+		inline T Clamp(T Min, T Max, T Value);
 
 		template <typename T>
-		KRAWLER_API	T Max(T A, T B);
+		T Max(T A, T B);
 
 		template <typename T>
-		KRAWLER_API T Min(T Value, T Min);
+		T Min(T Value, T Min);
 
 		template<typename T>
-		KRAWLER_API T Lerp(T A, T B, float t);
+		T Lerp(T A, T B, float t);
 
 		KRAWLER_API __forceinline void InitRand()
 		{

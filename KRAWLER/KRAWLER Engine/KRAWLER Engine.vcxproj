@@ -240,12 +240,13 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp" />
-    <ClCompile Include="src\Component\KComponent.cpp" />
-    <ClCompile Include="src\Entity\KEntity.cpp" />
+    <ClCompile Include="src\KComponent.cpp" />
+    <ClCompile Include="src\KEntity.cpp" />
     <ClCompile Include="src\GameObject\KGameObject.cpp" />
     <ClCompile Include="src\Input\KInput.cpp" />
     <ClCompile Include="src\KApplication.cpp" />
     <ClCompile Include="src\Krawler.cpp" />
+    <ClCompile Include="src\Components\KCTransform.cpp" />
     <ClCompile Include="src\LogicState\KLogicState.cpp" />
     <ClCompile Include="src\LogicState\KLogicStateDirector.cpp" />
     <ClCompile Include="src\Physics\KPhysicsBody.cpp" />
@@ -259,12 +260,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
-    <ClInclude Include="include\Component\KComponent.h" />
-    <ClInclude Include="include\Entity\KEntity.h" />
+    <ClInclude Include="include\KComponent.h" />
+    <ClInclude Include="include\KEntity.h" />
     <ClInclude Include="include\GameObject\KGameObject.h" />
     <ClInclude Include="include\KApplication.h" />
     <ClInclude Include="include\Input\KInput.h" />
     <ClInclude Include="include\Krawler.h" />
+    <ClInclude Include="include\Components\KCTransform.h" />
     <ClInclude Include="include\KrawlerLib.h" />
     <ClInclude Include="include\LogicState\KLogicState.h" />
     <ClInclude Include="include\LogicState\KLogicStateDirector.h" />

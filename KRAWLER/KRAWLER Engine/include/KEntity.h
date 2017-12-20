@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Krawler.h"
-#include "Component\KComponent.h"
+#include "KComponent.h"
 
 namespace Krawler
 {
@@ -61,7 +61,7 @@ namespace Krawler
 		//Info: Query by component types uses a dynamic_cast<> to evaluate whether a pointer of the requested type is 
 		//stored.
 		template<typename TComponent>
-		KRAWLER_API TComponent* const getComponent();
+		TComponent* const getComponent();
 
 		//Param: n/a 
 		//Return: wstring tag of entity
@@ -80,7 +80,7 @@ namespace Krawler
 		for (auto& pComp : m_componentVector)
 		{
 			auto pTComp = dynamic_cast<TComponent*>(pComp);
-			if (pTComp == nulltpr)
+			if (pTComp == nullptr)
 			{
 				continue;
 			}

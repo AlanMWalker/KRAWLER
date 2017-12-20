@@ -1,5 +1,5 @@
-#include "Component\KComponent.h"
-#include "Entity\KEntity.h"
+#include "KComponent.h"
+#include "KEntity.h"
 
 using namespace Krawler;
 

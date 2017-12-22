@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "vld.h"
 #include <future>
+#include <list>
 
 #include <Krawler.h>
 #include <KApplication.h>
@@ -18,10 +19,12 @@
 #include <Components\KCBoxCollider.h>
 
 #include <SFML\Graphics.hpp>
+#include <KScene.h>
 
 using namespace Krawler;
 using namespace Krawler::LogicState;
 using namespace Krawler::Input;
+using namespace Krawler::Components;
 
 class TestState : public KLogicState
 {
@@ -61,6 +64,7 @@ public:
 	}
 };
 
+
 int main(void)
 {
 	//KApplicationInitialise initApp;
@@ -94,24 +98,56 @@ int main(void)
 	//
 	//map.cleanupTiledMap();
 
-	KEntity e;
-	e.addComponent(new Components::KCSprite(&e, Vec2f(100, 100)));
-	e.addComponent(new Components::KCBoxCollider(&e, Vec2f(100, 100)));
-	e.getComponent<Components::KCTransform>()->setTranslation(Vec2f(100.0f, 100.0f));
-	e.init();
+	//e.addComponent(new Components::KCSprite(&e, Vec2f(100, 100)));
+	//e.addComponent(new Components::KCBoxCollider(&e, Vec2f(100, 100)));
+	//e.getComponent<Components::KCTransform>()->setTranslation(Vec2f(100.0f, 100.0f));
+	//e.init();
 
-	KEntity v;
-	v.addComponent(new Components::KCSprite(&v, Vec2f(50, 50)));
-	v.addComponent(new Components::KCBoxCollider(&v, Vec2f(50, 50)));
-	//v.getComponent<Components::KCTransform>()->setTranslation(Vec2f(20.0f, 5.0f));
-	v.getComponent<Components::KCTransform>()->setOrigin(Vec2f(25, 25));
-	//v.getComponent<Components::KCTransform>()->rotate(10);
-	//v.getComponent<Components::KCTransform>()->setParent(&e);
-	v.init();
-	v.getComponent<Components::KCSprite>()->setColour(Colour::Magenta);
+	//KEntity v;
+	//v.addComponent(new Components::KCSprite(&v, Vec2f(50, 50)));
+	//v.addComponent(new Components::KCBoxCollider(&v, Vec2f(50, 50)));
+	////v.getComponent<Components::KCTransform>()->setTranslation(Vec2f(20.0f, 5.0f));
+	//v.getComponent<Components::KCTransform>()->setOrigin(Vec2f(25, 25));
+	////v.getComponent<Components::KCTransform>()->rotate(10);
+	////v.getComponent<Components::KCTransform>()->setParent(&e);
+	//v.init();
+	//v.getComponent<Components::KCSprite>()->setColour(Colour::Magenta);
+	srand((unsigned)time(NULL));
+	//auto mode = sf::VideoMode::getFullscreenModes()[0];
+	auto mode = sf::VideoMode(640, 480);
+
+	//qtree.retrieve(ent, &entities[4]);
+
 	sf::RenderWindow rw;
 	rw.setActive(true);
-	rw.create(sf::VideoMode(640, 480), "Testing ECS");
+	rw.create(mode, "Testing ECS", sf::Style::Close);
+
+	auto callback = [](KEntity* pEntity) -> void
+	{
+		static int x = 0;
+		KPrintf(L"oo a collision! %d\n", ++x);
+		//DoMe(pEntity);
+	};
+	KScene scene(std::wstring(KTEXT("SceneA")), Rectf(0.0f, 0.0f, mode.width, mode.height));
+	std::vector<KEntity*> allocd;
+	for (int i = 0; i < 10; ++i)
+	{
+		KEntity* pEntity = scene.addEntityToScene();
+		allocd.push_back(pEntity);
+		allocd.back()->addComponent(new KCSprite(pEntity, Vec2f(10, 10)));
+		allocd.back()->addComponent(new KCBoxCollider(pEntity, Vec2f(10, 10)));
+	}
+
+	allocd[0]->getComponent<KCBoxCollider>()->subscribeCollisionCallback(callback);
+
+	scene.initScene();
+
+	for (auto& ent : allocd)
+	{
+		ent->getComponent<KCTransform>()->setTranslation(Vec2f(rand() % mode.width, rand() % mode.height));
+	}
+
+
 	KInput::SetWindow(&rw);
 	rw.setVerticalSyncEnabled(true);
 	while (rw.isOpen())
@@ -120,80 +156,34 @@ int main(void)
 		while (rw.pollEvent(evnt))
 		{
 			if (evnt.type == evnt.Closed)
+			{
 				rw.close();
+			}
+			if (evnt.type == evnt.KeyPressed)
+			{
+				if (evnt.key.code == KKey::Escape)
+				{
+					rw.close();
+				}
+			}
 			KInput::HandleEvent(evnt);
 		}
-
-		Components::KCTransform* pTrans = e.getComponent<Components::KCTransform>();
-		Components::KCTransform* pVTrans = v.getComponent<Components::KCTransform>();
-		pVTrans->setTranslation(Vec2f((KInput::GetMousePosition())));
-		float dt = 0.016f;
-
-		if (KInput::Pressed(KKey::D))
-		{
-			pTrans->move(50.0f * dt, 0.0f);
-		}
-
-		if (KInput::Pressed(KKey::A))
-		{
-			pTrans->move(-50.0f * dt, 0.0f);
-		}
-
-		if (KInput::Pressed(KKey::W))
-		{
-			pTrans->move(0.0f, -50.0f*dt);
-		}
-
-		if (KInput::Pressed(KKey::S))
-		{
-			pTrans->move(0.0f, 50.0f*dt);
-		}
-
-		if (KInput::Pressed(KKey::Q))
-		{
-			pVTrans->rotate(-50.0f*dt);
-		}
-
-
-		if (KInput::Pressed(KKey::E))
-		{
-			pVTrans->rotate(50.0f*dt);
-		}
-
-		if (KInput::Pressed(KKey::R))
-		{
-			pTrans->rotate(-50.0f*dt);
-		}
-		if (KInput::Pressed(KKey::T))
-		{
-			pTrans->rotate(50.0f*dt);
-		}
-
-
-		e.tick();
-		v.tick();
-
-		if (e.getComponent<Components::KCBoxCollider>()->checkIntersects(v.getComponent<Components::KCBoxCollider>()))
-		{
-			e.getComponent<Components::KCSprite>()->setColour(Colour::Red);
-		}
-		else
-		{
-			e.getComponent<Components::KCSprite>()->setColour(Colour::Blue);
-
-		}
-
+		allocd[0]->getComponent<KCTransform>()->setTranslation(KInput::GetMouseWorldPosition());
+		scene.tick();
+		scene.fixedTick();
 		rw.clear();
-		auto pE = e.getComponent<Components::KCSprite>();
-		auto pV = v.getComponent<Components::KCSprite>();
-
-		rw.draw(*pE);
-		rw.draw(*pV);
+		for (auto& ent : allocd)
+		{
+			auto pSprite = ent->getComponent<KCSprite>();
+			if (pSprite)
+			{
+				rw.draw(*pSprite);
+			}
+		}
 		rw.display();
 		KInput::Update();
 	}
-	e.cleanUp();
-	v.cleanUp();
+	scene.cleanUpScene();
 	return 0;
 }
 

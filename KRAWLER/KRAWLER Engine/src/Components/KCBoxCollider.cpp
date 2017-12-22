@@ -29,15 +29,22 @@ void KCBoxCollider::tick()
 	{
 		m_globalVertices[i] = pTransform->getTransform().transformPoint(m_localVertices[i]);
 	}
+	updateAABB();
 }
 
 KRAWLER_API bool Krawler::Components::KCBoxCollider::checkIntersects(KCBoxCollider * pCollider)
 {
+	//KCTransform* const pTransformA = getEntity()->getComponent<KCTransform>();
+	//KCTransform* const pTransformB = pCollider->getEntity()->getComponent<KCTransform>();
+
+	//sf::FloatRect boxA = pTransformA->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));
+	//sf::FloatRect boxB = pTransformB->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));
+
+	return m_aabb.intersects(pCollider->getBounds());
+}
+
+void Krawler::Components::KCBoxCollider::updateAABB()
+{
 	KCTransform* const pTransformA = getEntity()->getComponent<KCTransform>();
-	KCTransform* const pTransformB = pCollider->getEntity()->getComponent<KCTransform>();
-
-	sf::FloatRect boxA = pTransformA->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));
-	sf::FloatRect boxB = pTransformB->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));
-
-	return boxA.intersects(boxB);
+	m_aabb = pTransformA->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));
 }

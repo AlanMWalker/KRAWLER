@@ -24,7 +24,7 @@ namespace Krawler
 		{
 		public:
 
-			KRAWLER_API static void SetWindow(sf::Window* window);
+			KRAWLER_API static void SetWindow(sf::RenderWindow* window);
 			KRAWLER_API static void Update();
 			KRAWLER_API static void HandleEvent(const sf::Event& evt);
 
@@ -58,7 +58,7 @@ namespace Krawler
 			static void EventMouseScrollMoved(float delta);
 			static void EventTextEntered(sf::Uint32 charCode);
 
-			static sf::Window* mp_window;
+			static sf::RenderWindow* mp_window;
 
 			static std::set<sf::Keyboard::Key> m_keysJustPressed;
 			static std::set<sf::Keyboard::Key> m_keysPressed;

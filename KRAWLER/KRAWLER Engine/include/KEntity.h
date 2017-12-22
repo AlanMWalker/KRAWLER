@@ -68,9 +68,14 @@ namespace Krawler
 		//Info:   
 		KRAWLER_API const std::wstring& getEntityTag() const { return m_entityTag; }
 
+		KRAWLER_API bool isEntitiyInUse() const { return m_bIsInUse; }
+
+		KRAWLER_API void setIsInUse(bool bInUse) { m_bIsInUse = bInUse; }
+	
 	private:
 		std::vector<KComponentBase*> m_componentVector;
 		std::wstring m_entityTag;
+		bool m_bIsInUse;
 	};
 
 	template<typename TComponent>

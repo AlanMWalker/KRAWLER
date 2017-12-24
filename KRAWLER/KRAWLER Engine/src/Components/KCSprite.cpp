@@ -32,7 +32,7 @@ KInitStatus KCSprite::init()
 void KCSprite::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const
 {
 	rStates.transform *= m_pTransform->getTransform();
-	//rStates.texture = m_pTexture;
+	rStates.texture = m_pTexture;
 
 	rTarget.draw(m_vertexArray, rStates);
 }
@@ -43,4 +43,14 @@ KRAWLER_API void KCSprite::setColour(const Colour & col)
 	{
 		m_vertexArray[i].color = col;
 	}
+}
+
+KRAWLER_API void Krawler::Components::KCSprite::setTextureRect(const Recti & texRect)
+{
+	KCHECK(m_vertexArray.getVertexCount() > 0);
+
+	m_vertexArray[0].texCoords = Vec2f((float)(texRect.left), (float)(texRect.top));
+	m_vertexArray[1].texCoords = Vec2f((float)(texRect.left + texRect.width), (float)(texRect.top));
+	m_vertexArray[2].texCoords = Vec2f((float)(texRect.left + texRect.width), (float)(texRect.top + texRect.height));
+	m_vertexArray[3].texCoords = Vec2f((float)(texRect.left), (float)(texRect.top + texRect.height));
 }

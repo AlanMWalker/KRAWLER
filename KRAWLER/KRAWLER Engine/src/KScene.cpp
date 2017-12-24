@@ -251,14 +251,14 @@ Krawler::KSceneDirector::KSceneDirector()
 {
 }
 
-KInitStatus Krawler::KSceneDirector::initScenes()
+KInitStatus KSceneDirector::initScenes()
 {
 	for (auto& pScene : m_scenes)
 	{
 		KINIT_CHECK(pScene->initScene());
 		if (status != Success)
 		{
-			return Success;
+			return status;
 		}
 	}
 
@@ -272,7 +272,7 @@ KInitStatus Krawler::KSceneDirector::initScenes()
 
 	m_pCurrentScene = m_scenes[0];
 
-	KInitStatus::Success;
+	return KInitStatus::Success;
 }
 
 void KSceneDirector::cleanupScenes()
@@ -302,7 +302,7 @@ void KSceneDirector::fixedTickActiveScene()
 	m_pCurrentScene->tick();
 }
 
-KRAWLER_API void Krawler::KSceneDirector::setCurrentScene(std::wstring sceneName)
+void KSceneDirector::setCurrentScene(std::wstring sceneName)
 {
 	auto findResult = std::find_if(m_scenes.begin(), m_scenes.end(), [&sceneName](KScene* pScene) -> bool
 	{
@@ -324,7 +324,6 @@ int32 KSceneDirector::addScene(KScene * pScene)
 	}
 
 	m_scenes.push_back(pScene);
-
 	return EXIT_SUCCESS;
 }
 

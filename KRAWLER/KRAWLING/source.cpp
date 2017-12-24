@@ -64,6 +64,26 @@ public:
 	}
 };
 
+void renderThread(std::vector<KEntity*>& entities, sf::RenderWindow* pRenderWindow)
+{
+	KCHECK(pRenderWindow);
+	KCSprite* pSpriteComp = nullptr;
+
+	while (pRenderWindow->isOpen())
+	{
+		pRenderWindow->clear();
+		for (auto& entity : entities)
+		{
+			pSpriteComp = entity->getComponent<KCSprite>();
+			if (!pSpriteComp)
+			{
+				continue;
+			}
+			pRenderWindow->draw(*pSpriteComp);
+		}
+		pRenderWindow->display();
+	}
+}
 
 int main(void)
 {
@@ -98,38 +118,27 @@ int main(void)
 	//
 	//map.cleanupTiledMap();
 
-	//e.addComponent(new Components::KCSprite(&e, Vec2f(100, 100)));
-	//e.addComponent(new Components::KCBoxCollider(&e, Vec2f(100, 100)));
-	//e.getComponent<Components::KCTransform>()->setTranslation(Vec2f(100.0f, 100.0f));
-	//e.init();
-
-	//KEntity v;
-	//v.addComponent(new Components::KCSprite(&v, Vec2f(50, 50)));
-	//v.addComponent(new Components::KCBoxCollider(&v, Vec2f(50, 50)));
-	////v.getComponent<Components::KCTransform>()->setTranslation(Vec2f(20.0f, 5.0f));
-	//v.getComponent<Components::KCTransform>()->setOrigin(Vec2f(25, 25));
-	////v.getComponent<Components::KCTransform>()->rotate(10);
-	////v.getComponent<Components::KCTransform>()->setParent(&e);
-	//v.init();
-	//v.getComponent<Components::KCSprite>()->setColour(Colour::Magenta);
 	srand((unsigned)time(NULL));
 	//auto mode = sf::VideoMode::getFullscreenModes()[0];
 	auto mode = sf::VideoMode(640, 480);
 
 	//qtree.retrieve(ent, &entities[4]);
 
+	std::thread renderThread;
 	sf::RenderWindow rw;
-	rw.setActive(true);
 	rw.create(mode, "Testing ECS", sf::Style::Close);
 
 	auto callback = [](KEntity* pEntity) -> void
 	{
 		static int x = 0;
-		KPrintf(L"oo a collision! %d\n", ++x);
+		KPrintf(KTEXT("oo a collision! %d\n"), ++x);
 		//DoMe(pEntity);
 	};
+
 	KScene scene(std::wstring(KTEXT("SceneA")), Rectf(0.0f, 0.0f, mode.width, mode.height));
+
 	std::vector<KEntity*> allocd;
+
 	for (int i = 0; i < 10; ++i)
 	{
 		KEntity* pEntity = scene.addEntityToScene();
@@ -147,9 +156,10 @@ int main(void)
 		ent->getComponent<KCTransform>()->setTranslation(Vec2f(rand() % mode.width, rand() % mode.height));
 	}
 
-
-	KInput::SetWindow(&rw);
 	rw.setVerticalSyncEnabled(true);
+	rw.setActive(false);
+	renderThread = std::thread(::renderThread, allocd, &rw);
+	KInput::SetWindow(&rw);
 	while (rw.isOpen())
 	{
 		sf::Event evnt;
@@ -171,18 +181,9 @@ int main(void)
 		allocd[0]->getComponent<KCTransform>()->setTranslation(KInput::GetMouseWorldPosition());
 		scene.tick();
 		scene.fixedTick();
-		rw.clear();
-		for (auto& ent : allocd)
-		{
-			auto pSprite = ent->getComponent<KCSprite>();
-			if (pSprite)
-			{
-				rw.draw(*pSprite);
-			}
-		}
-		rw.display();
 		KInput::Update();
 	}
+	renderThread.join();
 	scene.cleanUpScene();
 	return 0;
 }

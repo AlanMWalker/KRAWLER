@@ -63,7 +63,7 @@ namespace Krawler
 		KRAWLER_API ~KScene() = default;
 
 		//override but call base impl before returning from derived 
-		KRAWLER_API virtual KInitStatus initScene();
+		KRAWLER_API virtual KInitStatus initScene(); //init components
 
 		//override but call base impl before returning from derived 
 		KRAWLER_API void cleanUpScene();
@@ -82,7 +82,7 @@ namespace Krawler
 		KRAWLER_API KEntity* addEntityToScene();
 
 		//Will aim to always give a contiguous block. Nullptr if none available or failed
-		KRAWLER_API KEntity* addEntitiesToScene(int32 number, int32& numberAllocated);
+		KRAWLER_API KEntity* addEntitiesToScene(uint32 number, int32& numberAllocated);
 
 		KRAWLER_API KEntity* findEntityByTag(const std::wstring& tag);
 

@@ -17,7 +17,7 @@ bool KQuadTree::insert(KEntity* pEntity)
 		return false;
 	}
 
-	if (m_points.size() < MAX_ENTITIES)
+	if ((signed)m_points.size() < MAX_ENTITIES)
 	{
 		m_points.push_back(pEntity);
 		return true;
@@ -194,9 +194,9 @@ KEntity* KScene::addEntityToScene()
 	return &m_entities[m_entitiesInUse++];
 }
 
-KEntity* KScene::addEntitiesToScene(int32 number, int32 & numberAllocated)
+KEntity* KScene::addEntitiesToScene(uint32 number, int32 & numberAllocated)
 {
-	if (m_entitiesInUse + (unsigned)number <= MAX_NUMBER_OF_ENTITIES) //if there is enough entities in the scene
+	if (m_entitiesInUse + number <= MAX_NUMBER_OF_ENTITIES) //if there is enough entities in the scene
 	{
 		numberAllocated = number; // if the number of entities
 		KEntity* const pEntity = &m_entities[m_entitiesInUse];

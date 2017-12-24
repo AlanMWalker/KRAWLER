@@ -41,8 +41,16 @@ namespace Krawler
 		//Info: Tick component (to be overridden if a component updates)
 		KRAWLER_API virtual void tick();
 
-		// virtual void onEnterScene(); //TODO requires scene class!!
-		// virtual void onExitScene(); // TODO requires scene class!!
+		//Param: n/a
+		//Return: n/a 
+		//Info: onEnterScene setup component (to be overridden if a component updates)
+		KRAWLER_API virtual void onEnterScene(); 
+		
+
+		//Param: n/a
+		//Return: n/a 
+		//Info: onExitScene setup cleanup component (to be overridden if a component updates)
+		KRAWLER_API virtual void onExitScene(); // TODO requires scene class!!
 
 		//Param: wstring tag 
 		//Return: n/a

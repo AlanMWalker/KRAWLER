@@ -184,6 +184,22 @@ void Krawler::KScene::fixedTick()
 	//tick physics scene
 }
 
+void KScene::onEnterScene()
+{
+	for (auto& entity : m_entities)
+	{
+		entity.onEnterScene();
+	}
+}
+
+void KScene::onExitScene()
+{
+	for (auto& entity : m_entities)
+	{
+		entity.onExitScene();
+	}
+}
+
 KEntity* KScene::addEntityToScene()
 {
 	if (m_entitiesInUse + 1 > MAX_NUMBER_OF_ENTITIES)
@@ -226,4 +242,101 @@ KRAWLER_API KEntity * Krawler::KScene::findEntityByTag(const std::wstring & tag)
 		return nullptr;
 	}
 	return &(*find);
+}
+
+//-- KSCENEDIRECTOR -- \\
+
+Krawler::KSceneDirector::KSceneDirector()
+	: m_pCurrentScene(nullptr)
+{
+}
+
+KInitStatus Krawler::KSceneDirector::initScenes()
+{
+	for (auto& pScene : m_scenes)
+	{
+		KINIT_CHECK(pScene->initScene());
+		if (status != Success)
+		{
+			return Success;
+		}
+	}
+
+	KCHECK(m_scenes.size() > 0); // check we have scenes available
+
+	if (m_scenes.size() == 0)
+	{
+		KPrintf(KTEXT("Failed to initialise scene director! No scenes added"));
+		return Failure;
+	}
+
+	m_pCurrentScene = m_scenes[0];
+
+	KInitStatus::Success;
+}
+
+void KSceneDirector::cleanupScenes()
+{
+	for (auto& pScene : m_scenes)
+	{
+		pScene->cleanUpScene();
+		KFREE(pScene);
+	}
+	m_scenes.clear();
+}
+
+void KSceneDirector::tickActiveScene()
+{
+	static bool bIsFirstTick = true;
+
+	if (bIsFirstTick)
+	{
+		m_pCurrentScene->onEnterScene();
+		bIsFirstTick = false;
+	}
+	m_pCurrentScene->tick();
+}
+
+void KSceneDirector::fixedTickActiveScene()
+{
+	m_pCurrentScene->tick();
+}
+
+KRAWLER_API void Krawler::KSceneDirector::setCurrentScene(std::wstring sceneName)
+{
+	auto findResult = std::find_if(m_scenes.begin(), m_scenes.end(), [&sceneName](KScene* pScene) -> bool
+	{
+		return pScene->getSceneName() == sceneName;
+	});
+	if (findResult == m_scenes.end())
+	{
+		return;
+	}
+	m_pCurrentScene = *findResult;
+}
+
+int32 KSceneDirector::addScene(KScene * pScene)
+{
+	KCHECK(pScene);
+	if (!pScene)
+	{
+		return EXIT_FAILURE;
+	}
+
+	m_scenes.push_back(pScene);
+
+	return EXIT_SUCCESS;
+}
+
+int32 KSceneDirector::removeScene(KScene * pScene)
+{
+	auto findResult = std::find(m_scenes.begin(), m_scenes.end(), pScene);
+
+	if (findResult == m_scenes.end())
+	{
+		return EXIT_FAILURE;
+	}
+
+	m_scenes.erase(findResult);
+	return EXIT_SUCCESS;
 }

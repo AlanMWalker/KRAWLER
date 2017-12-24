@@ -74,8 +74,10 @@ namespace Krawler
 		//override but call base impl before returning from derived 
 		KRAWLER_API virtual void fixedTick();
 
-		//void onEnterScene();
-		//void onExitScene();
+		KRAWLER_API void onEnterScene();
+
+		KRAWLER_API void onExitScene();
+
 		KRAWLER_API const std::wstring& getSceneName() const { return m_sceneName; }
 
 		//nullptr if none available or failed
@@ -104,7 +106,26 @@ namespace Krawler
 	{
 	public:
 
+		KRAWLER_API KSceneDirector();
+		KRAWLER_API ~KSceneDirector() = default;
+
+		KRAWLER_API KInitStatus initScenes();
+		KRAWLER_API void cleanupScenes();
+
+		KRAWLER_API void tickActiveScene();
+		KRAWLER_API void fixedTickActiveScene();
+
+		KRAWLER_API void setCurrentScene(std::wstring sceneName);
+
+		KRAWLER_API int32 addScene(KScene* pScene); //return 0 if added, -1 if failed
+		KRAWLER_API int32 removeScene(KScene* pScene); //return 0 if removed, -1 if failed
+
+		KRAWLER_API KScene* const getCurrentScene() { return m_pCurrentScene; }
+
 	private:
+
+		std::vector<KScene*> m_scenes;
+		KScene* m_pCurrentScene;
 
 	};
 }

@@ -55,6 +55,24 @@ void KEntity::fixedTick()
 	}
 }
 
+void KEntity::onEnterScene()
+{
+	for (auto& pComp : m_componentVector)
+	{
+		KCHECK(pComp);
+		pComp->onEnterScene();
+	}
+}
+
+void KEntity::onExitScene()
+{
+	for (auto& pComp : m_componentVector)
+	{
+		KCHECK(pComp);
+		pComp->onExitScene();
+	}
+}
+
 bool KEntity::addComponent(KComponentBase* pComponent)
 {
 	KCHECK(pComponent);

@@ -27,3 +27,10 @@ void KComponentBase::fixedTick()
 void KComponentBase::tick()
 {
 }
+
+void KComponentBase::onEnterScene()
+{
+}
+void KComponentBase::onExitScene()
+{
+}

@@ -38,8 +38,15 @@ namespace Krawler
 		//Info: fixed-tick all components attached to an entity
 		KRAWLER_API void fixedTick();
 
-		// void onEnterScene(); 
-		// void onExitScene();
+		//Param: n/a 
+		//Return: n/a
+		//Info: call onEnterScene for all components attached to an entity, upon entering a new game scene
+		KRAWLER_API void onEnterScene();
+
+		//Param: n/a 
+		//Return: n/a
+		//Info: call onExitScene for all components attached to an entity, upon exiting a game scene
+		KRAWLER_API void onExitScene();
 
 		//Param: pointer to componenet to be added
 		//Return: true if component is added, false if it wasn't
@@ -71,7 +78,7 @@ namespace Krawler
 		KRAWLER_API bool isEntitiyInUse() const { return m_bIsInUse; }
 
 		KRAWLER_API void setIsInUse(bool bInUse) { m_bIsInUse = bInUse; }
-	
+
 	private:
 		std::vector<KComponentBase*> m_componentVector;
 		std::wstring m_entityTag;

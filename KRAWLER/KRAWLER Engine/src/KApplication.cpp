@@ -1,17 +1,21 @@
 #include "KApplication.h"
-#include "LogicState\KLogicStateDirector.h"
-
 #include <future>
 
 using namespace Krawler;
-using namespace Krawler::LogicState;
 using namespace Krawler::Renderer;
 using namespace sf;
 using namespace std;
 
-KRAWLER_API KInitStatus Krawler::KApplication::initialiseStateDirector()
+KInitStatus Krawler::KApplication::initialiseScenes()
 {
-	return mp_logicStateDirector->initaliseLogicStates();
+	KINIT_CHECK(m_sceneDirector.initScenes());
+
+	if (status != Success)
+	{
+		return status;
+	}
+
+	return KInitStatus::Success;
 }
 
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
@@ -50,11 +54,9 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	mp_renderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
 	mp_renderWindow->setFramerateLimit(m_gameFPS);
 
-	mp_logicStateDirector = new KLogicStateDirector;
 	mp_renderer = new KRenderer;
 
 	Input::KInput::SetWindow(mp_renderWindow);
-
 }
 
 void KApplication::runApplication()
@@ -113,7 +115,7 @@ void KApplication::runApplication()
 		{
 			//previousState = currentState;
 			//Physics tick
-			mp_logicStateDirector->fixedTick();
+			m_sceneDirector.fixedTickActiveScene();
 			time += seconds(m_physicsDelta);
 			accumulator -= seconds(m_physicsDelta);
 		}
@@ -121,22 +123,26 @@ void KApplication::runApplication()
 		++m_frames;
 
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
-		mp_logicStateDirector->physicsLerp(alpha);
+		//TODO KScene renderer lerp
+		//mp_logicStateDirector->physicsLerp(alpha);
+
 
 		if (bHasFocus)
 		{
-			mp_logicStateDirector->tickActiveLogicState();
+			m_sceneDirector.tickActiveScene();
 		}
 
-		//mp_renderer->render();
+		const float time = deltaClock.getElapsedTime().asSeconds();
+		const float sleepTime = (1.0f / m_gameFPS) - time;
+		sf::sleep(sf::seconds(sleepTime));
+		
 	}
 	rThread.join();
 }
 
 void Krawler::KApplication::cleanupApplication()
 {
-	mp_logicStateDirector->cleanupLogicStateDirector();
-	KFREE(mp_logicStateDirector);
+	m_sceneDirector.cleanupScenes();
 	KFREE(mp_renderWindow);
 	KFREE(mp_renderer);
 }
@@ -163,6 +169,10 @@ KApplication::KApplication()
 inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator)
 {
 	currentTime = m_elapsedClock.getElapsedTime();
+	if (mb_isFirstUpdate)
+	{
+		lastTime = currentTime;
+	}
 
 	frameTime = currentTime - lastTime;
 
@@ -203,6 +213,9 @@ void Krawler::KApplicationInitialise::loadFromEnginePreset()
 	if (engConfig.fail())
 	{
 		KPrintf(KTEXT("Error! Couldn't find engine preset config"));
+		//default to 640x480
+		width = 640;
+		height = 480;
 		return;
 	}
 	KApplicationInitialise temp;

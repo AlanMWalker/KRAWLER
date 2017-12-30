@@ -4,7 +4,7 @@
 using namespace Krawler;
 using namespace Krawler::Input;
 
-sf::Window* KInput::mp_window = nullptr;
+sf::RenderWindow* KInput::mp_window = nullptr;
 
 std::set<sf::Keyboard::Key> KInput::m_keysJustPressed;
 std::set<sf::Keyboard::Key> KInput::m_keysPressed;
@@ -19,7 +19,7 @@ sf::Vector2i KInput::m_mouseDelta;
 float KInput::m_mouseScrollDelta = 0.0f;
 bool KInput::mb_mouseLocked = false;
 
-void KInput::SetWindow(sf::Window* window)
+void KInput::SetWindow(sf::RenderWindow* window)
 {
 	KCHECK(KInput::mp_window == nullptr);
 	KInput::mp_window = window;
@@ -159,8 +159,8 @@ void KInput::SetMouseLocked(bool mouseLocked)
 
 Vec2f Krawler::Input::KInput::GetMouseWorldPosition()
 {
-	auto pRenderWindow = KApplication::getApp()->getRenderWindow();
-	Vec2f worldPos = pRenderWindow->mapPixelToCoords(m_mousePosition);
+	//auto pRenderWindow = KApplication::getApp()->getRenderWindow();
+	Vec2f worldPos = mp_window->mapPixelToCoords(m_mousePosition);
 
 	return worldPos;
 }

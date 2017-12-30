@@ -21,4 +21,14 @@
 #define KCAST(type, expr) static_cast<type> (expr)
 
 #define KTEXT(str) L##str
+
+#ifdef __GNUC__
+#define KDEPRECATED(func) func __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#define KDEPRECATED(func) __declspec(deprecated) func
+#else
+#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#define KDEPRECATED(func) func
+#endif
+
 #endif 

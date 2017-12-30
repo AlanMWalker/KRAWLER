@@ -250,8 +250,6 @@
     <ClCompile Include="src\Krawler.cpp" />
     <ClCompile Include="src\Components\KCTransform.cpp" />
     <ClCompile Include="src\KScene.cpp" />
-    <ClCompile Include="src\LogicState\KLogicState.cpp" />
-    <ClCompile Include="src\LogicState\KLogicStateDirector.cpp" />
     <ClCompile Include="src\Physics\KPhysicsBody.cpp" />
     <ClCompile Include="src\Physics\KPhysicsCollisions.cpp" />
     <ClCompile Include="src\Physics\KPhysicsScene.cpp" />
@@ -274,8 +272,6 @@
     <ClInclude Include="include\Components\KCTransform.h" />
     <ClInclude Include="include\KrawlerLib.h" />
     <ClInclude Include="include\KScene.h" />
-    <ClInclude Include="include\LogicState\KLogicState.h" />
-    <ClInclude Include="include\LogicState\KLogicStateDirector.h" />
     <ClInclude Include="include\Maths\KMaths.hpp" />
     <ClInclude Include="include\Maths\KMathsUtilities.h" />
     <ClInclude Include="include\Maths\KMathVector.h" />

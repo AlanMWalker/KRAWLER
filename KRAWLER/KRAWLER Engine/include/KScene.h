@@ -121,7 +121,7 @@ namespace Krawler
 		KRAWLER_API int32 addScene(KScene* pScene); //return 0 if added, -1 if failed
 		KRAWLER_API int32 removeScene(KScene* pScene); //return 0 if removed, -1 if failed
 
-		KRAWLER_API KDEPRECATED(KScene* const getCurrentScene()) { return m_pCurrentScene; }
+		KRAWLER_API KScene* const getCurrentScene() { return m_pCurrentScene; }
 
 	private:
 

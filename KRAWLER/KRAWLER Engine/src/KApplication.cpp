@@ -1,18 +1,10 @@
 #include "KApplication.h"
-#include "LogicState\KLogicStateDirector.h"
-
 #include <future>
 
 using namespace Krawler;
-using namespace Krawler::LogicState;
 using namespace Krawler::Renderer;
 using namespace sf;
 using namespace std;
-
-KRAWLER_API KInitStatus Krawler::KApplication::initialiseStateDirector()
-{
-	return mp_logicStateDirector->initaliseLogicStates();
-}
 
 KInitStatus Krawler::KApplication::initialiseScenes()
 {
@@ -62,7 +54,6 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	mp_renderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
 	mp_renderWindow->setFramerateLimit(m_gameFPS);
 
-	mp_logicStateDirector = new KLogicStateDirector;
 	mp_renderer = new KRenderer;
 
 	Input::KInput::SetWindow(mp_renderWindow);
@@ -152,8 +143,6 @@ void KApplication::runApplication()
 void Krawler::KApplication::cleanupApplication()
 {
 	m_sceneDirector.cleanupScenes();
-	mp_logicStateDirector->cleanupLogicStateDirector();
-	KFREE(mp_logicStateDirector);
 	KFREE(mp_renderWindow);
 	KFREE(mp_renderer);
 }

@@ -11,12 +11,6 @@
 
 namespace Krawler
 {
-	//Forward Declerations
-	namespace LogicState
-	{
-		class KLogicStateDirector;
-	}
-
 	enum KWindowStyle : uint8
 	{
 		Windowed_Fixed_Size,
@@ -58,7 +52,6 @@ namespace Krawler
 
 		KRAWLER_API ~KApplication() = default;
 
-		KRAWLER_API KDEPRECATED(KInitStatus initialiseStateDirector)();
 		KInitStatus initialiseScenes();
 
 		KRAWLER_API void setupApplication(const KApplicationInitialise& appInit);
@@ -67,7 +60,6 @@ namespace Krawler
 
 		//TODO do not expose this function in the dll
 		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return mp_renderWindow; }
-		KRAWLER_API KDEPRECATED(Krawler::LogicState::KLogicStateDirector* const getLogicStateDirector)() { return mp_logicStateDirector; }
 		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return mp_renderer; }
 		KRAWLER_API Krawler::KSceneDirector& getSceneDirector() { return m_sceneDirector; }
 		KRAWLER_API float getElapsedTime() const;
@@ -86,7 +78,6 @@ namespace Krawler
 		__forceinline void outputFPS(const sf::Time& currentTime, sf::Time& fpsLastTime);
 
 		sf::RenderWindow* mp_renderWindow = nullptr;
-		Krawler::LogicState::KLogicStateDirector* mp_logicStateDirector = nullptr;
 		Krawler::Renderer::KRenderer* mp_renderer = nullptr;
 		Krawler::KSceneDirector m_sceneDirector;
 

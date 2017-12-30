@@ -8,7 +8,6 @@
 #include <Physics\KPhysicsScene.h>
 #include <TiledMap\KTiledMap.h>
 #include <Utilities\KDebug.h>
-#include <SLU\KStateLogicUnit.h>
 
 
 #include <KEntity.h>

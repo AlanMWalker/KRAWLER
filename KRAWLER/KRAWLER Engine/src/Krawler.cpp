@@ -29,7 +29,7 @@ KInitStatus Krawler::StartupEngine(KApplicationInitialise * windowInit)
 
 KRAWLER_API KInitStatus Krawler::InitialiseSubmodules()
 {
-	return KApplication::getApp()->initialiseStateDirector();
+	return KApplication::getApp()->initialiseScenes();
 }
 
 void Krawler::ShutdownEngine()

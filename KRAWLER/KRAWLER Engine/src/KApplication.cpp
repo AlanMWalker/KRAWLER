@@ -14,6 +14,18 @@ KRAWLER_API KInitStatus Krawler::KApplication::initialiseStateDirector()
 	return mp_logicStateDirector->initaliseLogicStates();
 }
 
+KInitStatus Krawler::KApplication::initialiseScenes()
+{
+	KINIT_CHECK(m_sceneDirector.initScenes());
+
+	if (status != Success)
+	{
+		return status;
+	}
+
+	return KInitStatus::Success;
+}
+
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
 {
 	mp_renderWindow = new RenderWindow;
@@ -54,7 +66,6 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	mp_renderer = new KRenderer;
 
 	Input::KInput::SetWindow(mp_renderWindow);
-
 }
 
 void KApplication::runApplication()
@@ -113,7 +124,7 @@ void KApplication::runApplication()
 		{
 			//previousState = currentState;
 			//Physics tick
-			mp_logicStateDirector->fixedTick();
+			m_sceneDirector.fixedTickActiveScene();
 			time += seconds(m_physicsDelta);
 			accumulator -= seconds(m_physicsDelta);
 		}
@@ -121,20 +132,26 @@ void KApplication::runApplication()
 		++m_frames;
 
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
-		mp_logicStateDirector->physicsLerp(alpha);
+		//TODO KScene renderer lerp
+		//mp_logicStateDirector->physicsLerp(alpha);
+
 
 		if (bHasFocus)
 		{
-			mp_logicStateDirector->tickActiveLogicState();
+			m_sceneDirector.tickActiveScene();
 		}
 
-		//mp_renderer->render();
+		const float time = deltaClock.getElapsedTime().asSeconds();
+		const float sleepTime = (1.0f / m_gameFPS) - time;
+		sf::sleep(sf::seconds(sleepTime));
+		
 	}
 	rThread.join();
 }
 
 void Krawler::KApplication::cleanupApplication()
 {
+	m_sceneDirector.cleanupScenes();
 	mp_logicStateDirector->cleanupLogicStateDirector();
 	KFREE(mp_logicStateDirector);
 	KFREE(mp_renderWindow);
@@ -163,6 +180,10 @@ KApplication::KApplication()
 inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator)
 {
 	currentTime = m_elapsedClock.getElapsedTime();
+	if (mb_isFirstUpdate)
+	{
+		lastTime = currentTime;
+	}
 
 	frameTime = currentTime - lastTime;
 
@@ -203,6 +224,9 @@ void Krawler::KApplicationInitialise::loadFromEnginePreset()
 	if (engConfig.fail())
 	{
 		KPrintf(KTEXT("Error! Couldn't find engine preset config"));
+		//default to 640x480
+		width = 640;
+		height = 480;
 		return;
 	}
 	KApplicationInitialise temp;

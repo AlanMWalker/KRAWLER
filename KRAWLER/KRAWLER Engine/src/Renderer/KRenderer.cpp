@@ -143,9 +143,33 @@ KRAWLER_API void Krawler::Renderer::KRenderer::setActiveTiledMap(TiledMap::KTile
 	}
 }
 
+void Krawler::Renderer::KRenderer::generateSpriteList()
+{
+	m_sprites.clear();
+	auto const pCurrentScene = KApplication::getApp()->getSceneDirector().getCurrentScene();
+	KCHECK(pCurrentScene);
+
+	auto entityList = pCurrentScene->getEntitiyList();
+
+	for (int i = 0; i < pCurrentScene->getNumbrOfEntitiesAllocated(); ++i)
+	{
+		KEntity& entity = entityList[i];
+		if (!entity.isEntitiyInUse())
+		{
+			continue;
+		}
+		auto pSprite = entity.getComponent<Components::KCSprite>();
+		if (!pSprite)
+		{
+			continue;
+		}
+		m_sprites.push_back(pSprite);
+	}
+}
+
 void Krawler::Renderer::KRenderer::sortByRenderLayer()
 {
-	std::sort(m_renderQueue.begin(), m_renderQueue.end(), [](KGameObject* objA, KGameObject* objB)
+	std::sort(m_sprites.begin(), m_sprites.end(), [](Components::KCSprite* objA, Components::KCSprite* objB)
 	{
 		return objA->getRenderLayer() < objB->getRenderLayer();
 	});
@@ -155,21 +179,29 @@ void Krawler::Renderer::KRenderer::defaultRender()
 {
 	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
 
+	//sortByRenderLayer();
+
+	//if (mb_hasTiledMap)
+	//{
+	//	target->draw(*mp_tiledMap);
+	//}
+	//
+	//for (auto& obj : m_renderQueue)
+	//{
+	//	if (!obj->isGameObjectActive())
+	//	{
+	//		continue;
+	//	}
+	//	target->draw(*obj);
+	//}
+	generateSpriteList();
 	sortByRenderLayer();
-
-	if (mb_hasTiledMap)
+	
+	for (auto& sprite : m_sprites)
 	{
-		target->draw(*mp_tiledMap);
+		target->draw(*sprite);
 	}
 
-	for (auto& obj : m_renderQueue)
-	{
-		if (!obj->isGameObjectActive())
-		{
-			continue;
-		}
-		target->draw(*obj);
-	}
 }
 
 void Krawler::Renderer::KRenderer::raycastRender()

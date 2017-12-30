@@ -4,6 +4,7 @@
 #include "Krawler.h"
 #include "Renderer\KRenderer.h"
 #include "Input\KInput.h"
+#include "KScene.h"
 #include <fstream>
 #include <SFML\Graphics\RenderWindow.hpp> 
 #include <SFML\System\Clock.hpp> 
@@ -57,16 +58,18 @@ namespace Krawler
 
 		KRAWLER_API ~KApplication() = default;
 
-		KRAWLER_API KInitStatus initialiseStateDirector();
+		KRAWLER_API KDEPRECATED(KInitStatus initialiseStateDirector)();
+		KInitStatus initialiseScenes();
 
 		KRAWLER_API void setupApplication(const KApplicationInitialise& appInit);
 		KRAWLER_API void runApplication();
 		KRAWLER_API void cleanupApplication();
 
+		//TODO do not expose this function in the dll
 		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return mp_renderWindow; }
-		KRAWLER_API Krawler::LogicState::KLogicStateDirector* const getLogicStateDirector() { return mp_logicStateDirector; }
+		KRAWLER_API KDEPRECATED(Krawler::LogicState::KLogicStateDirector* const getLogicStateDirector)() { return mp_logicStateDirector; }
 		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return mp_renderer; }
-
+		KRAWLER_API Krawler::KSceneDirector& getSceneDirector() { return m_sceneDirector; }
 		KRAWLER_API float getElapsedTime() const;
 		KRAWLER_API float getDeltaTime() const { return m_gameDelta; }
 		KRAWLER_API float getPhysicsDelta() const { return m_physicsDelta; }
@@ -85,6 +88,7 @@ namespace Krawler
 		sf::RenderWindow* mp_renderWindow = nullptr;
 		Krawler::LogicState::KLogicStateDirector* mp_logicStateDirector = nullptr;
 		Krawler::Renderer::KRenderer* mp_renderer = nullptr;
+		Krawler::KSceneDirector m_sceneDirector;
 
 		uint32 m_gameFPS;
 		uint32 m_physicsFPS;

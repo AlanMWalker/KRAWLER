@@ -1,9 +1,12 @@
 #ifndef KRENDERER_H
 #define KRENDERER_H
 
+#include "Krawler.h"
+#include "Components\KCSprite.h"
+
 #include "GameObject\KGameObject.h"
 #include "TiledMap\KTiledMap.h"
-#include "Krawler.h"
+
 
 namespace Krawler
 {
@@ -47,7 +50,7 @@ namespace Krawler
 			KRAWLER_API sf::Text& getTextByIndex(int32 i) { return m_screenText[i].second; }
 
 		private:
-
+			void generateSpriteList();
 			void sortByRenderLayer();
 
 			void defaultRender();
@@ -56,7 +59,7 @@ namespace Krawler
 			Vec2f screenToWorld(const Vec2i& vec) const;
 
 			std::vector<KGameObject*> m_renderQueue;
-
+			std::vector<Components::KCSprite*> m_sprites;
 			std::vector<TextRender>m_screenText;
 
 			KRendererType m_renderingType;

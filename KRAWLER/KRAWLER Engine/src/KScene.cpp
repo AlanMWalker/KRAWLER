@@ -206,7 +206,7 @@ KEntity* KScene::addEntityToScene()
 	{
 		return nullptr;
 	}
-	m_entities->setIsInUse(true);
+	m_entities[m_entitiesInUse].setIsInUse(true);
 	return &m_entities[m_entitiesInUse++];
 }
 
@@ -270,7 +270,8 @@ KInitStatus KSceneDirector::initScenes()
 		return Failure;
 	}
 
-	m_pCurrentScene = m_scenes[0];
+	if (m_pCurrentScene == nullptr)
+		m_pCurrentScene = m_scenes[0];
 
 	return KInitStatus::Success;
 }

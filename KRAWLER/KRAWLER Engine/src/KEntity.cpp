@@ -16,10 +16,6 @@ KInitStatus KEntity::init()
 	{
 		KCHECK(pComponent);
 		KINIT_CHECK(pComponent->init());
-		if (status != KInitStatus::Success)
-		{
-			return status;
-		}
 	}
 
 	return KInitStatus::Success;

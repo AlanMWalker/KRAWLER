@@ -10,10 +10,6 @@ KInitStatus Krawler::KApplication::initialiseScenes()
 {
 	KINIT_CHECK(m_sceneDirector.initScenes());
 
-	if (status != Success)
-	{
-		return status;
-	}
 
 	return KInitStatus::Success;
 }

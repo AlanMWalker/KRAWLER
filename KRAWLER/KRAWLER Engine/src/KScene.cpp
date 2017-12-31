@@ -105,7 +105,7 @@ void KQuadTree::subdivide()
 
 // -- KSCENE -- \\
 
-KScene::KScene(std::wstring & sceneName, const Rectf& sceneBounds)
+KScene::KScene(const std::wstring & sceneName, const Rectf& sceneBounds)
 	: m_sceneName(sceneName), m_qtree(0, sceneBounds), m_entitiesInUse(0)
 {
 
@@ -116,10 +116,6 @@ KInitStatus KScene::initScene()
 	for (auto& entity : m_entities)
 	{
 		KINIT_CHECK(entity.init()); // init components
-		if (status != KInitStatus::Success) // if failes early out with an error code
-		{
-			return status;
-		}
 		//TODO Move to onenter
 		entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
 	}
@@ -256,10 +252,6 @@ KInitStatus KSceneDirector::initScenes()
 	for (auto& pScene : m_scenes)
 	{
 		KINIT_CHECK(pScene->initScene());
-		if (status != Success)
-		{
-			return status;
-		}
 	}
 
 	KCHECK(m_scenes.size() > 0); // check we have scenes available
@@ -303,7 +295,7 @@ void KSceneDirector::fixedTickActiveScene()
 	m_pCurrentScene->tick();
 }
 
-void KSceneDirector::setCurrentScene(std::wstring sceneName)
+void KSceneDirector::setCurrentScene(const std::wstring& sceneName)
 {
 	auto findResult = std::find_if(m_scenes.begin(), m_scenes.end(), [&sceneName](KScene* pScene) -> bool
 	{

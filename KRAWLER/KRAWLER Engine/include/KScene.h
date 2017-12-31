@@ -59,7 +59,7 @@ namespace Krawler
 	{
 	public:
 
-		KRAWLER_API KScene(std::wstring& sceneName, const Rectf& sceneBounds);
+		KRAWLER_API KScene(const std::wstring& sceneName, const Rectf& sceneBounds);
 		KRAWLER_API ~KScene() = default;
 
 		//override but call base impl before returning from derived 
@@ -116,7 +116,7 @@ namespace Krawler
 		KRAWLER_API void tickActiveScene();
 		KRAWLER_API void fixedTickActiveScene();
 
-		KRAWLER_API void setCurrentScene(std::wstring sceneName);
+		KRAWLER_API void setCurrentScene(const std::wstring& sceneName);
 
 		KRAWLER_API int32 addScene(KScene* pScene); //return 0 if added, -1 if failed
 		KRAWLER_API int32 removeScene(KScene* pScene); //return 0 if removed, -1 if failed

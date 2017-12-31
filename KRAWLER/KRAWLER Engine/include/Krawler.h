@@ -51,18 +51,20 @@ namespace Krawler
 	};
 
 #define KINIT_CHECK(func)																															\
-			Krawler::KInitStatus status = func;																										\
-			if(status != Krawler::KInitStatus::Success)																								\
-			{																																		\
-				std::cout << "Failed to initialise function in: " << __FILE__ << " at line " << __LINE__ << " due to ";								\
-				switch(status)																														\
-				{																																	\
-					case Krawler::KInitStatus::Failure: std::cout << "General Failure!" << std::endl; break;										\
-					case Krawler::KInitStatus::Nullptr: std::cout << "Null pointer!" << std::endl; break;											\
-					case Krawler::KInitStatus::MissingResource: std::cout << "Missing Resource!" << std::endl; break;								\
-				}																																	\
-			}
-
+			{\
+	Krawler::KInitStatus status = func;																										\
+		if (status != Krawler::KInitStatus::Success)																								\
+		{																																		\
+			std::cout << "Failed to initialise function in: " << __FILE__ << " at line " << __LINE__ << " due to ";								\
+			switch (status)																														\
+			{																																	\
+			case Krawler::KInitStatus::Failure: std::cout << "General Failure!" << std::endl; break;										\
+			case Krawler::KInitStatus::Nullptr: std::cout << "Null pointer!" << std::endl; break;											\
+			case Krawler::KInitStatus::MissingResource: std::cout << "Missing Resource!" << std::endl; break;								\
+			}																																	\
+			if(status!=Success) { return status;}\
+		}\
+	}
 	KRAWLER_API KInitStatus StartupEngine(KApplicationInitialise* windowInit);
 	KRAWLER_API KInitStatus InitialiseSubmodules();
 

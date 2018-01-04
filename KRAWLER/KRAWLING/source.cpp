@@ -14,12 +14,12 @@
 #include <Components\KCTransform.h>
 #include <Components\KCSprite.h>
 #include <Components\KCBoxCollider.h>
+#include <Components\KCPhysicsBody.h>
 
 #include <SFML\Graphics.hpp>
 #include <KScene.h>
 
 using namespace Krawler;
-using namespace Krawler::LogicState;
 using namespace Krawler::Input;
 using namespace Krawler::Components;
 
@@ -34,25 +34,66 @@ public:
 
 	~CustomComponent() = default;
 
+	virtual KInitStatus init() override
+	{
+		auto pCurrentScene = KApplication::getApp()->getCurrentScene();
+
+		auto floor = pCurrentScene->addEntityToScene();
+		floor->setEntityTag(KTEXT("floor"));
+		Vec2f floorSize(KApplication::getApp()->getWindowSize().x, 20.0f);
+
+		floor->addComponent(new KCSprite(floor, floorSize));
+		floor->addComponent(new KCBoxCollider(floor, floorSize));
+		floor->addComponent(new KCPhysicsBody(floor));
+		floor->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->setMass(0.0f);
+
+		for (int32 i = 0; i < 50; ++i)
+		{
+			m_boxes.push_back(pCurrentScene->addEntityToScene());
+			auto& box = m_boxes[i];
+			box->setEntityTag(KTEXT("PhysicsBox"));
+			box->addComponent(new KCSprite(box, Vec2f(10.0f, 10.0f)));
+			box->addComponent(new KCBoxCollider(box, Vec2f(10.0f, 10.0f)));
+			box->addComponent(new KCPhysicsBody(box));
+			box->setIsInUse(false);
+		}
+
+		return KInitStatus::Success;
+	}
+
+	virtual void onEnterScene() override
+	{
+		auto floor = KApplication::getApp()->getCurrentScene()->findEntityByTag(KTEXT("floor"));
+		floor->getComponent<KCTransform>()->setTranslation(Vec2f(0.0f, KApplication::getApp()->getWindowSize().y - 20.0f));
+	}
+
 	virtual void tick()
 	{
 		KComponentBase::tick();
 		float dt = KApplication::getApp()->getDeltaTime();
-		KCTransform* transform = getEntity()->getComponent<KCTransform>();
+		KCTransform* const transform = getEntity()->getComponent<KCTransform>();
 
-		if (KInput::Pressed(KKey::W))
+		if (KInput::JustPressed(KKey::Escape))
 		{
-			transform->move(0.0f, -10.0f * dt);
+			KApplication::getApp()->closeApplication();
 		}
 
-		if (KInput::Pressed(KKey::S))
+		if (KInput::MouseJustPressed(KMouseButton::Left))
 		{
-			transform->move(0.0f, 10.0f * dt);
+			Vec2f mouseWorldPos = KInput::GetMouseWorldPosition();
+			if (m_boxesAllocated + 1 != m_boxes.size())
+			{
+				m_boxes[m_boxesAllocated]->setIsInUse(true);
+				m_boxes[m_boxesAllocated]->getComponent<KCTransform>()->setTranslation(mouseWorldPos);
+				++m_boxesAllocated;
+			}
 		}
-
 	}
+
 private:
 
+	std::vector<KEntity*> m_boxes;
+	int32 m_boxesAllocated = 0;
 };
 
 int main(void)
@@ -74,20 +115,10 @@ int main(void)
 	auto app = KApplication::getApp();
 	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0.0f, 0.0f, initApp.width, initApp.height)));
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
-
-	auto pCurrentScene = app->getSceneDirector().getCurrentScene();
+	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
-	auto entity2 = pCurrentScene->addEntityToScene();
-	entity->addComponent(new KCSprite(entity, Vec2f(64, 64)));
-	entity2->addComponent(new KCSprite(entity2, Vec2f(64, 64)));
 	entity->addComponent(new CustomComponent(entity));
 	InitialiseSubmodules();
-
-	entity->getComponent<KCTransform>()->setTranslation(10.0f, 10.0f);
-	entity2->getComponent<KCTransform>()->setTranslation(10.0f, 10.0f);
-	entity2->getComponent<KCSprite>()->setColour(Colour::Green);
-	entity2->getComponent<KCSprite>()->setRenderLayer(-2);
-	entity2->getComponent<KCTransform>()->setParent(entity);
 
 	RunApplication();
 

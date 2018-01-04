@@ -14,12 +14,15 @@
 #include <SFML\Window\Mouse.hpp>
 #include <SFML\Window\Joystick.hpp>
 
+//TODO change set to list
+
 namespace Krawler
 {
 	namespace Input
 	{
 		using KKey = sf::Keyboard::Key;
-
+		using KMouseButton = sf::Mouse::Button;
+		
 		class KInput
 		{
 		public:

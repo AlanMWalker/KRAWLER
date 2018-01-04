@@ -21,7 +21,7 @@ void Krawler::Physics::KPhysicsBody::step(float delta, float pixelsToMetres)
 	m_prevPosition = mp_gameObject->getPosition();
 
 	Vec2f acceleration = (m_massData.invMass * m_force) * delta;
-
+	
 	Vec2f moveMetresPerSecond = (m_velocity + (acceleration / 2.0f)) * delta;
 
 	mp_gameObject->move(moveMetresPerSecond / pixelsToMetres);

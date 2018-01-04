@@ -112,6 +112,7 @@ void KApplication::runApplication()
 			//previousState = currentState;
 			//Physics tick
 			m_sceneDirector.fixedTickActiveScene();
+			m_physicsWorld.fixedTick();
 			time += seconds(m_physicsDelta);
 			accumulator -= seconds(m_physicsDelta);
 		}

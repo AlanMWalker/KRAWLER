@@ -1,5 +1,7 @@
-#include "Physics\KPhysicsWorld.h"
 #include "KApplication.h"
+
+#include "Physics\KPhysicsWorld.h"
+#include "Components\KCBoxCollider.h"
 
 using namespace Krawler;
 using namespace Krawler::Physics;
@@ -47,7 +49,7 @@ void KPhysicsWorld::assembleEntityList()
 			continue;
 		}
 		KCPhysicsBody* pPhysicsBody = entity.getComponent<Components::KCPhysicsBody>();
-
+		
 		//Continue if doesn't have physics body
 		if (!pPhysicsBody)
 		{

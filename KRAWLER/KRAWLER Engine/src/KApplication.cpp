@@ -30,7 +30,6 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 
 	switch (appInit.windowStyle)
 	{
-
 	default:
 	case KWindowStyle::Windowed_Fixed_Size:
 		style |= (Style::Close | Style::Titlebar);
@@ -104,7 +103,7 @@ void KApplication::runApplication()
 		{
 			frameTime = seconds(m_physicsDelta * 4);
 		}
-		
+
 		if (accumulator > seconds(m_physicsDelta * 4))
 		{
 			accumulator = seconds(m_physicsDelta * 4);
@@ -116,7 +115,6 @@ void KApplication::runApplication()
 			{
 				//previousState = currentState;
 				//Physics tick
-
 				m_sceneDirector.fixedTickActiveScene();
 				m_physicsWorld.fixedTick();
 				time += seconds(m_physicsDelta);
@@ -129,7 +127,6 @@ void KApplication::runApplication()
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
 		//TODO KScene renderer lerp
 		//mp_logicStateDirector->physicsLerp(alpha);
-
 
 		if (bHasFocus)
 		{
@@ -207,7 +204,7 @@ void Krawler::KApplication::outputFPS(const sf::Time & currentTime, sf::Time & f
 		m_frames = 0;
 	}
 }
-
+// -- KApplicationInitialise  --
 void Krawler::KApplicationInitialise::loadFromEnginePreset()
 {
 	//LOAD PRESET ENGINE CONFIG
@@ -239,7 +236,7 @@ std::wifstream& Krawler::operator >> (std::wifstream& os, KApplicationInitialise
 	os >> data.physicsFps;
 	os.get();
 	//os >> data.windowTitle;
-	os.getline(str, 100);
+	os.getline(str, 100 * sizeof(wchar_t));
 	data.windowTitle = str;
 	os >> data.consoleWindow;
 	int style = 0;

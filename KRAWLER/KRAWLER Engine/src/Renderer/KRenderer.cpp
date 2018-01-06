@@ -151,7 +151,7 @@ void Krawler::Renderer::KRenderer::generateSpriteList()
 
 	auto entityList = pCurrentScene->getEntitiyList();
 
-	for (int i = 0; i < pCurrentScene->getNumbrOfEntitiesAllocated(); ++i)
+	for (int i = 0; i < (signed)pCurrentScene->getNumbrOfEntitiesAllocated(); ++i)
 	{
 		KEntity& entity = entityList[i];
 		if (!entity.isEntitiyInUse())

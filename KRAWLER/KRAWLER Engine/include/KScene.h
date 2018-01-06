@@ -12,13 +12,7 @@
 
 namespace Krawler
 {
-	const int32 MAX_NUMBER_OF_ENTITIES{ 1200 };
 	
-	struct CollisionData
-	{
-
-	};
-
 	class KScene
 	{
 	public:
@@ -53,7 +47,7 @@ namespace Krawler
 
 		KRAWLER_API KEntity* findEntityByTag(const std::wstring& tag);
 
-		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_entitiesInUse; }
+		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_entitiesAllocated; }
 
 		KRAWLER_API KEntity* getEntitiyList() { return m_entities; }
 	
@@ -69,7 +63,7 @@ namespace Krawler
 		std::wstring m_sceneName;
 		KQuadtree m_qtree;
 
-		uint32 m_entitiesInUse;
+		uint32 m_entitiesAllocated;
 	};
 
 	class KSceneDirector

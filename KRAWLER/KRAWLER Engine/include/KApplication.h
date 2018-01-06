@@ -9,6 +9,9 @@
 #include <SFML\Graphics\RenderWindow.hpp> 
 #include <SFML\System\Clock.hpp> 
 
+//Lowest FPS for Physics & Game: 24
+//Highest FPS for Physics & Game: 80
+
 namespace Krawler
 {
 	enum KWindowStyle : uint8

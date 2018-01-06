@@ -4,6 +4,8 @@
 using namespace Krawler;
 using namespace Components;
 
+using namespace std;
+
 bool KQuadtree::insert(KEntity* pEntity)
 {
 	auto pTrans = pEntity->getComponent<KCTransform>();
@@ -39,34 +41,28 @@ bool KQuadtree::insert(KEntity* pEntity)
 	return false;
 }
 
-std::vector<KEntity*> KQuadtree::queryEntitiy(KEntity* p)
+vector<KEntity*>& KQuadtree::queryEntitiy(KEntity* p)
 {
-	std::vector<KEntity*> pointList;
+	m_queriedPointList.clear();
 	auto pTransform = p->getComponent<KCTransform>();
 
-	if (!m_boundary.contains(pTransform->getPosition()))
-		return pointList;
-
-	for (auto& point : m_points)
-	{
-		pointList.push_back(point);
-	}
+	if (!m_boundary.contains(pTransform->getPosition()) || m_points.size() == 0)
+		return m_queriedPointList;
 
 	if (m_bHasSubdivided)
 	{
-		//TODO Optimise constant copying of vector so query point is less heavy weight
-		auto queried = m_leaves[northWest]->queryEntitiy(p);
-		pointList.insert(pointList.end(), queried.begin(), queried.end());
-		queried = m_leaves[northEast]->queryEntitiy(p);
-		pointList.insert(pointList.end(), queried.begin(), queried.end());
-
-		queried = m_leaves[southWest]->queryEntitiy(p);
-		pointList.insert(pointList.end(), queried.begin(), queried.end());
-
-		queried = m_leaves[southEast]->queryEntitiy(p);
-		pointList.insert(pointList.end(), queried.begin(), queried.end());
+		const LeavesIdentifier containingLeaf = getLeafEnum(p);
+		if (containingLeaf != noLeaf)
+		{
+			vector<KEntity*>& queried = m_leaves[containingLeaf]->queryEntitiy(p);
+			for (auto& pEntity : queried)
+			{
+				m_queriedPointList.push_back(pEntity);
+			}
+		}
 	}
-	return pointList;
+
+	return m_queriedPointList;
 }
 
 void KQuadtree::clear()
@@ -97,4 +93,49 @@ void KQuadtree::subdivide()
 	m_leaves[northEast] = new KQuadtree(m_level + 1, sf::FloatRect(Point(m_boundary.left + halfBounds.x, m_boundary.top), halfBounds));
 	m_leaves[southWest] = new KQuadtree(m_level + 1, sf::FloatRect(Point(m_boundary.left, m_boundary.top + halfBounds.y), halfBounds));
 	m_leaves[southEast] = new KQuadtree(m_level + 1, sf::FloatRect(Point(m_boundary.left + halfBounds.x, m_boundary.top + halfBounds.y), halfBounds));
+
+	for (auto& pEntity : m_points)
+	{
+		const auto leafEnum = getLeafEnum(pEntity);
+		if (leafEnum == noLeaf)
+		{
+			continue;
+		}
+		m_leaves[leafEnum]->insert(pEntity);
+
+	}
+	m_points.clear();
+}
+
+LeavesIdentifier Krawler::KQuadtree::getLeafEnum(KEntity * pEntity) const
+{
+	const float halfWidth = m_boundary.width / 2.0f, halfHeight = m_boundary.height / 2.0f;
+	const Rectf nw(m_boundary.left, m_boundary.top, halfWidth, halfHeight);
+	const Rectf ne(m_boundary.left + halfWidth, m_boundary.top, halfWidth, halfWidth);
+	const Rectf se(m_boundary.left + halfWidth, m_boundary.top + halfHeight, halfWidth, halfHeight);
+	const Rectf sw(m_boundary.left, m_boundary.top + halfHeight, halfWidth, halfHeight);
+
+	const Vec2f pos = pEntity->getComponent<KCTransform>()->getPosition();
+
+	if (nw.contains(pos))
+	{
+		return northWest;
+	}
+
+	if (ne.contains(pos))
+	{
+		return northEast;
+	}
+
+	if (se.contains(pos))
+	{
+		return southEast;
+	}
+
+	if (sw.contains(pos))
+	{
+		return southWest;
+	}
+
+	return LeavesIdentifier::noLeaf;
 }

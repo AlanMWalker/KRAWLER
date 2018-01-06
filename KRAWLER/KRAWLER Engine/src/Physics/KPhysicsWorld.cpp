@@ -39,7 +39,7 @@ void KPhysicsWorld::assembleEntityList()
 	auto pEntities = pScene->getEntitiyList();
 	KCHECK(pEntities);
 
-	for (int32 i = 0; i < pScene->getNumbrOfEntitiesAllocated(); ++i)
+	for (int32 i = 0; i < (signed) pScene->getNumbrOfEntitiesAllocated(); ++i)
 	{
 		auto& entity = pEntities[i];
 		if (!entity.isEntitiyInUse())

@@ -9,8 +9,6 @@ using namespace std;
 KInitStatus Krawler::KApplication::initialiseScenes()
 {
 	KINIT_CHECK(m_sceneDirector.initScenes());
-
-
 	return KInitStatus::Success;
 }
 
@@ -19,8 +17,8 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	mp_renderWindow = new RenderWindow;
 
 	//setup game fps values
-	m_gameFPS = appInit.gameFps;
-	m_physicsFPS = appInit.physicsFps;
+	m_gameFPS = Maths::Clamp(24u, 80u, appInit.gameFps);
+	m_physicsFPS = Maths::Clamp(24u, 80u, appInit.physicsFps);
 
 	//setup the target update fps for the physics engine
 	if (m_physicsFPS != 0)
@@ -106,15 +104,24 @@ void KApplication::runApplication()
 		{
 			frameTime = seconds(m_physicsDelta * 4);
 		}
-
-		while (accumulator.asSeconds() > m_physicsDelta)
+		
+		if (accumulator > seconds(m_physicsDelta * 4))
 		{
-			//previousState = currentState;
-			//Physics tick
-			m_sceneDirector.fixedTickActiveScene();
-			m_physicsWorld.fixedTick();
-			time += seconds(m_physicsDelta);
-			accumulator -= seconds(m_physicsDelta);
+			accumulator = seconds(m_physicsDelta * 4);
+		}
+
+		if (bHasFocus)
+		{
+			while (accumulator.asSeconds() > m_physicsDelta)
+			{
+				//previousState = currentState;
+				//Physics tick
+
+				m_sceneDirector.fixedTickActiveScene();
+				m_physicsWorld.fixedTick();
+				time += seconds(m_physicsDelta);
+				accumulator -= seconds(m_physicsDelta);
+			}
 		}
 
 		++m_frames;
@@ -132,7 +139,7 @@ void KApplication::runApplication()
 		const float time = deltaClock.getElapsedTime().asSeconds();
 		const float sleepTime = (1.0f / m_gameFPS) - time;
 		sf::sleep(sf::seconds(sleepTime));
-		
+
 	}
 	rThread.join();
 }
@@ -193,7 +200,7 @@ void Krawler::KApplication::outputFPS(const sf::Time & currentTime, sf::Time & f
 		const float fps = (KCAST(float, m_frames) / (currentTime - fpsLastTime).asSeconds());
 
 		const float ms = 1.0f / fps;
-		KPrintf(KTEXT("FPS: %f( %f ms per frame)\n"), fps, ms);
+		KPrintf(KTEXT("FPS: %f(%f ms per frame)\n"), fps, ms);
 		//m_fpsText.setString(std::to_string(ms) + " ms/frame\n " + "FPS: " + std::to_string(fps));
 		//
 		fpsLastTime = currentTime;

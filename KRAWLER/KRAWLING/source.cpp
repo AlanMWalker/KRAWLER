@@ -47,12 +47,12 @@ public:
 		floor->addComponent(new KCPhysicsBody(floor));
 		floor->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->setMass(0.0f);
 
-		for (int32 i = 0; i < 50; ++i)
+		for (int32 i = 0; i < MAX_NUMBER_OF_ENTITIES - 3; ++i)
 		{
 			m_boxes.push_back(pCurrentScene->addEntityToScene());
 			auto& box = m_boxes[i];
-			box->setEntityTag(KTEXT("PhysicsBox"));
-			box->addComponent(new KCSprite(box, Vec2f(10.0f, 10.0f)));
+			box->setEntityTag(KTEXT("PhysicsBox") + std::to_wstring(i + 1));
+			box->addComponent(new KCSprite(box, Vec2f(rand() % 100, rand() % 100)));
 			box->addComponent(new KCBoxCollider(box, Vec2f(10.0f, 10.0f)));
 			box->addComponent(new KCPhysicsBody(box));
 			box->setIsInUse(false);
@@ -78,7 +78,7 @@ public:
 			KApplication::getApp()->closeApplication();
 		}
 
-		if (KInput::MouseJustPressed(KMouseButton::Left))
+		if (KInput::MousePressed(KMouseButton::Left))
 		{
 			Vec2f mouseWorldPos = KInput::GetMouseWorldPosition();
 			if (m_boxesAllocated + 1 != m_boxes.size())
@@ -86,6 +86,7 @@ public:
 				m_boxes[m_boxesAllocated]->setIsInUse(true);
 				m_boxes[m_boxesAllocated]->getComponent<KCTransform>()->setTranslation(mouseWorldPos);
 				++m_boxesAllocated;
+				KPrintf(KTEXT("Boxes allocated: %d\n"), m_boxesAllocated);
 			}
 		}
 	}
@@ -113,7 +114,7 @@ int main(void)
 	StartupEngine(&initApp);
 
 	auto app = KApplication::getApp();
-	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0.0f, 0.0f, initApp.width, initApp.height)));
+	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0.0f, 0.0f, initApp.width, 1000000)));
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();

@@ -7,10 +7,12 @@
 using namespace Krawler;
 using namespace Krawler::Components;
 
+using namespace std;
+
 // -- KSCENE -- \\
 
 KScene::KScene(const std::wstring & sceneName, const Rectf& sceneBounds)
-	: m_sceneName(sceneName), m_qtree(0, sceneBounds), m_entitiesInUse(0)
+	: m_sceneName(sceneName), m_qtree(0, sceneBounds), m_entitiesAllocated(0)
 {
 
 }
@@ -39,33 +41,67 @@ void Krawler::KScene::tick()
 {
 	m_bHasTickedOnce = true;
 	m_qtree.clear();
-	for (uint32 i = 0; i < m_entitiesInUse; ++i)
+
+	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
 	{
+		if (!m_entities[i].isEntitiyInUse())
+			continue;
+
 		m_entities[i].tick(); // tick all components
-		m_qtree.insert(m_entities); // insert entity into quadtree before handling box colliders
+		m_qtree.insert(&m_entities[i]); // insert entity into quadtree before handling box colliders
 	}
-	std::vector<KEntity*> colliderList;
-	// handle box colliders here
-	for (uint32 i = 0; i < m_entitiesInUse; ++i)
+
+	const auto isCollisionPairEqual = [](std::pair<KEntity*, KEntity*>& pairA, std::pair<KEntity*, KEntity*>& pairB) -> bool
 	{
+		return (pairA.first == pairB.second  && pairA.second == pairB.second) || (pairA.first == pairB.second && pairA.second == pairB.first);
+	};
+
+	vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs;
+	// handle box colliders here
+	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
+	{
+		if (!m_entities[i].isEntitiyInUse())
+		{//if entity isn't in use
+			continue;
+		}
+
 		auto pCollider = m_entities[i].getComponent<KCBoxCollider>();
+
 		if (!pCollider) // if this entity doesn't have a box collider continue
 		{
 			continue;
 		}
-		auto colliderList = m_qtree.queryEntitiy(&m_entities[i]); // query the quadtree for a list of entities 
+
+		auto& colliderList = m_qtree.queryEntitiy(&m_entities[i]); // query the quadtree for a list of entities 
 																  // near the current one that we can query for collisions
 		for (auto& pEntity : colliderList) //iterate over all possible entities in this list
 		{
+			//check pairs
+			KCHECK(pEntity);
+
 			if (pEntity == &m_entities[i]) //if they are the same entity continue
+			{
 				continue;
-			KCBoxCollider* possibleHitCollider = pEntity->getComponent<KCBoxCollider>();
-			if (!possibleHitCollider)// if no box collider is found, continue to next collider
+			}
+			const pair<KEntity*, KEntity*> pairA(&m_entities[i], pEntity);
+			const pair<KEntity*, KEntity*> pairASwapped(pEntity, &m_entities[i]);
+
+			auto isEqualA = std::find(alreadyCheckedCollisionPairs.begin(), alreadyCheckedCollisionPairs.end(), pairA);
+			auto isEqualASwapped = std::find(alreadyCheckedCollisionPairs.begin(), alreadyCheckedCollisionPairs.end(), pairASwapped);
+
+			if (isEqualA != alreadyCheckedCollisionPairs.end() || isEqualASwapped != alreadyCheckedCollisionPairs.end())
 			{
 				continue;
 			}
 
-			bool result = pCollider->checkIntersects(possibleHitCollider); // check for two intersect
+			KCBoxCollider* const possibleHitCollider = pEntity->getComponent<KCBoxCollider>();
+
+			if (!possibleHitCollider)// if no box collider is found, continue to next collider
+			{
+				continue;
+			}
+			const bool result = pCollider->checkIntersects(possibleHitCollider); // check for two intersect
+
 			if (result)
 			{
 				//handle collision callbacks
@@ -74,11 +110,12 @@ void Krawler::KScene::tick()
 			}
 		}
 	}
+	//KPrintf(L"Size - %d \n", alreadyCheckedCollisionPairs.size());
 }
 
 void Krawler::KScene::fixedTick()
 {
-	for (uint32 i = 0; i < m_entitiesInUse; ++i)
+	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
 	{
 		if (!m_entities[i].isEntitiyInUse())
 		{
@@ -107,21 +144,21 @@ void KScene::onExitScene()
 
 KEntity* KScene::addEntityToScene()
 {
-	if (m_entitiesInUse + 1 > MAX_NUMBER_OF_ENTITIES)
+	if (m_entitiesAllocated + 1 >= MAX_NUMBER_OF_ENTITIES)
 	{
 		return nullptr;
 	}
-	m_entities[m_entitiesInUse].setIsInUse(true);
-	return &m_entities[m_entitiesInUse++];
+	m_entities[m_entitiesAllocated].setIsInUse(true);
+	return &m_entities[m_entitiesAllocated++];
 }
 
 KEntity* KScene::addEntitiesToScene(uint32 number, int32 & numberAllocated)
 {
-	if (m_entitiesInUse + number <= MAX_NUMBER_OF_ENTITIES) //if there is enough entities in the scene
+	if (m_entitiesAllocated + number <= MAX_NUMBER_OF_ENTITIES) //if there is enough entities in the scene
 	{
 		numberAllocated = number; // if the number of entities
-		KEntity* const pEntity = &m_entities[m_entitiesInUse];
-		m_entitiesInUse += number;
+		KEntity* const pEntity = &m_entities[m_entitiesAllocated];
+		m_entitiesAllocated += number;
 		for (uint32 i = 0; i < number; ++i)
 		{
 			pEntity[i].setIsInUse(true);
@@ -220,7 +257,7 @@ int32 KSceneDirector::addScene(KScene * pScene)
 	KCHECK(pScene);
 	if (!pScene)
 	{
-		return EXIT_FAILURE;
+		return -EXIT_FAILURE;
 	}
 
 	m_scenes.push_back(pScene);
@@ -233,7 +270,7 @@ int32 KSceneDirector::removeScene(KScene * pScene)
 
 	if (findResult == m_scenes.end())
 	{
-		return EXIT_FAILURE;
+		return -EXIT_FAILURE;
 	}
 
 	m_scenes.erase(findResult);

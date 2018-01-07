@@ -48,7 +48,6 @@ vector<KEntity*>& KQuadtree::queryEntitiy(KEntity* p)
 
 	if (!m_boundary.contains(pTransform->getPosition()) || m_points.size() == 0)
 		return m_queriedPointList;
-
 	if (m_bHasSubdivided)
 	{
 		const LeavesIdentifier containingLeaf = getLeafEnum(p);
@@ -60,6 +59,10 @@ vector<KEntity*>& KQuadtree::queryEntitiy(KEntity* p)
 				m_queriedPointList.push_back(pEntity);
 			}
 		}
+	}
+	else
+	{
+		m_queriedPointList = m_points;
 	}
 
 	return m_queriedPointList;

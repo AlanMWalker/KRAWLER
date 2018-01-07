@@ -62,11 +62,9 @@ void KApplication::runApplication()
 	Time time;
 	sf::Clock deltaClock;
 
-	bool bHasFocus = true;
 
 	mp_renderWindow->setActive(false);
 	std::thread	rThread(&KRenderer::render, mp_renderer);
-
 	while (mp_renderWindow->isOpen())
 	{
 		m_gameDelta = deltaClock.restart().asSeconds();
@@ -87,13 +85,13 @@ void KApplication::runApplication()
 			}
 			if (evnt.type == Event::GainedFocus)
 			{
-				bHasFocus = true;
+				m_bHasFocus = true;
 			}
 			if (evnt.type == Event::LostFocus)
 			{
-				bHasFocus = false;
+				m_bHasFocus = false;
 			}
-			if (bHasFocus)
+			if (m_bHasFocus)
 			{
 				Input::KInput::HandleEvent(evnt);
 			}
@@ -104,19 +102,19 @@ void KApplication::runApplication()
 			frameTime = seconds(m_physicsDelta * 4);
 		}
 
-		if (accumulator > seconds(m_physicsDelta * 4))
+		if (accumulator > seconds(m_physicsDelta * 2))
 		{
-			accumulator = seconds(m_physicsDelta * 4);
+			accumulator = seconds(m_physicsDelta * 2);
 		}
-
-		if (bHasFocus)
+		
+		if (m_bHasFocus)
 		{
 			while (accumulator.asSeconds() > m_physicsDelta)
 			{
 				//previousState = currentState;
 				//Physics tick
-				m_sceneDirector.fixedTickActiveScene();
 				m_physicsWorld.fixedTick();
+				m_sceneDirector.fixedTickActiveScene();
 				time += seconds(m_physicsDelta);
 				accumulator -= seconds(m_physicsDelta);
 			}
@@ -128,7 +126,7 @@ void KApplication::runApplication()
 		//TODO KScene renderer lerp
 		//mp_logicStateDirector->physicsLerp(alpha);
 
-		if (bHasFocus)
+		if (m_bHasFocus)
 		{
 			m_sceneDirector.tickActiveScene();
 		}
@@ -136,7 +134,7 @@ void KApplication::runApplication()
 		const float time = deltaClock.getElapsedTime().asSeconds();
 		const float sleepTime = (1.0f / m_gameFPS) - time;
 		sf::sleep(sf::seconds(sleepTime));
-
+		
 	}
 	rThread.join();
 }
@@ -170,7 +168,7 @@ KApplication::KApplication()
 inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator)
 {
 	currentTime = m_elapsedClock.getElapsedTime();
-	if (mb_isFirstUpdate)
+	if (m_bIsFirstUpdate)
 	{
 		lastTime = currentTime;
 	}
@@ -184,10 +182,10 @@ inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& last
 
 void Krawler::KApplication::outputFPS(const sf::Time & currentTime, sf::Time & fpsLastTime)
 {
-	if (mb_isFirstUpdate)
+	if (m_bIsFirstUpdate)
 	{
 		m_frames = 0;
-		mb_isFirstUpdate = false;
+		m_bIsFirstUpdate = false;
 		fpsLastTime = currentTime;
 		return;
 	}

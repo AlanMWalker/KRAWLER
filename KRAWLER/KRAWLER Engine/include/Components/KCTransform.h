@@ -76,6 +76,11 @@ namespace Krawler
 			//Info: get world rotation of entity (in degrees)
 			KRAWLER_API float getRotation() const;
 
+			//Param: n/a 
+			//Return: vec2f origin
+			//Info: get local origin of entity (in degrees)
+			KRAWLER_API const Vec2f& getOrigin()const;
+
 			//Param: Vec2f scale/float scaleX, float scale Y
 			//Return: n/a
 			//Info: set scale of entity  

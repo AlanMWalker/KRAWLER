@@ -98,7 +98,9 @@ namespace Krawler
 		float m_gameDelta = 0.0f;
 		float m_physicsDelta = 0.0f;
 
-		bool mb_isFirstUpdate = true;
+		bool m_bIsFirstUpdate = true;
+		bool m_bHasFocus = true;
+
 	};
 }
 #endif

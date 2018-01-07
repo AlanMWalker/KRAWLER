@@ -6,9 +6,10 @@
 
 #include "Physics\KPhysicsWorld.h"
 
+#include "Utilities\KQuadtree.h"
+
 #include <vector>
 #include <list>
-#include "Utilities\KQuadtree.h"
 
 namespace Krawler
 {

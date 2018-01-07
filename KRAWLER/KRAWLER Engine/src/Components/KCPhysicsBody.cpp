@@ -29,6 +29,8 @@ KInitStatus KCPhysicsBody::init()
 
 void KCPhysicsBody::fixedTick()
 {
+	if (m_properties.mass == 0.0f)
+		return;
 	const float dt = KApplication::getApp()->getPhysicsDelta();
 	auto pPhysWorld = KApplication::getApp()->getPhysicsWorld();
 	KCTransform* const pTransform = getEntity()->getComponent<KCTransform>();
@@ -37,13 +39,11 @@ void KCPhysicsBody::fixedTick()
 
 	applyForce(pPhysWorld->getPhysicsWorldProperties().gravity * m_properties.mass); //apply gravity
 
-	const Vec2f acceleration = (m_properties.invMass * m_force) * dt;
+	const Vec2f acceleration = (m_properties.invMass * m_force);
+	m_velocity += acceleration * dt;
 
-	const Vec2f moveMetresPerSecond = (m_velocity + (acceleration / 2.0f)) * dt;
-
-	pTransform->move(moveMetresPerSecond / pPhysWorld->getPhysicsWorldProperties().pixelsToMetres);
-
-	m_velocity += acceleration;
+	const Vec2f moveVec = m_velocity / pPhysWorld->getPhysicsWorldProperties().pixelsToMetres;
+	pTransform->move(moveVec * dt);
 
 	m_force = Vec2f(0.0f, 0.0f);
 }
@@ -55,19 +55,19 @@ void Krawler::Components::KCPhysicsBody::applyForce(const Vec2f & force)
 
 void KPhysicsBodyProperties::setMass(float inMass)
 {
-	if (mass != 0.0f)
+	if (inMass != 0.0f)
 	{
 		mass = inMass;
-		invMass = 1.0f / mass;
+		invMass = 1.0f / inMass;
 	}
 	else
 	{
 		mass = 0.0f;
-		invMass = 1.0f;
+		invMass = 0.0f;
 	}
 }
 
-void KPhysicsBodyProperties::computeMass(float density, KColliderType colliderType)
+void KPhysicsBodyProperties::computeMass(float density, KCColliderType colliderType)
 {
 	//switch (colliderType)
 	//{

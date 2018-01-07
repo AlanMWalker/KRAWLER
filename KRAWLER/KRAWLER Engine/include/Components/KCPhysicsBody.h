@@ -4,23 +4,18 @@
 #include "Krawler.h"
 #include "KComponent.h"
 #include "KEntity.h"
+#include "KCColliderBase.h"
 
 namespace Krawler
 {
 	namespace Components
 	{
-		enum KColliderType
-		{
-			AABB,
-			Circle
-		};
-
 		struct KPhysicsBodyProperties
 		{
 			KRAWLER_API KPhysicsBodyProperties();
 
 			KRAWLER_API void setMass(float mass);
-			KRAWLER_API void computeMass(float density, KColliderType colliderType);
+			KRAWLER_API void computeMass(float density, KCColliderType colliderType);
 
 			float mass;
 			float invMass;
@@ -44,6 +39,14 @@ namespace Krawler
 			KRAWLER_API KPhysicsBodyProperties* getPhysicsBodyProperties() { return &m_properties; }
 
 			KRAWLER_API void applyForce(const Vec2f& force);
+
+			KRAWLER_API const Vec2f& getVelocity() const { return m_velocity; }
+			KRAWLER_API void setVelocity(const Vec2f& vel) { m_velocity = vel; }
+
+			KRAWLER_API void applyImpulse(const Vec2f& impulse)
+			{
+				m_velocity += m_properties.invMass * impulse;
+			}
 
 		private:
 

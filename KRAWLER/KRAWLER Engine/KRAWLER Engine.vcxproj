@@ -216,9 +216,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -239,6 +236,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RC|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Components\KCColliderBase.cpp" />
     <ClCompile Include="src\Physics\KPhysicsWorld.cpp" />
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp" />
     <ClCompile Include="src\Components\KCBoxCollider.cpp" />
@@ -264,6 +262,7 @@
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
     <ClInclude Include="include\Components\KCBoxCollider.h" />
+    <ClInclude Include="include\Components\KCColliderBase.h" />
     <ClInclude Include="include\Components\KCPhysicsBody.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\KComponent.h" />

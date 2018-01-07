@@ -50,12 +50,10 @@ void Krawler::KScene::tick()
 		m_entities[i].tick(); // tick all components
 		m_qtree.insert(&m_entities[i]); // insert entity into quadtree before handling box colliders
 	}
+}
 
-	const auto isCollisionPairEqual = [](std::pair<KEntity*, KEntity*>& pairA, std::pair<KEntity*, KEntity*>& pairB) -> bool
-	{
-		return (pairA.first == pairB.second  && pairA.second == pairB.second) || (pairA.first == pairB.second && pairA.second == pairB.first);
-	};
-
+void Krawler::KScene::fixedTick()
+{
 	vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs;
 	// handle box colliders here
 	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
@@ -73,7 +71,8 @@ void Krawler::KScene::tick()
 		}
 
 		auto& colliderList = m_qtree.queryEntitiy(&m_entities[i]); // query the quadtree for a list of entities 
-																  // near the current one that we can query for collisions
+																   // near the current one that we can query for collisions
+																   //KPrintf(L"Query list size %d\n", colliderList.size());
 		for (auto& pEntity : colliderList) //iterate over all possible entities in this list
 		{
 			//check pairs
@@ -100,21 +99,21 @@ void Krawler::KScene::tick()
 			{
 				continue;
 			}
-			const bool result = pCollider->checkIntersects(possibleHitCollider); // check for two intersect
+			KCollisionDetectionData data;
+			data.entityA = pairA.first;
+			data.entityB = pairA.second;
+
+			//const bool result = pCollider->checkIntersects(possibleHitCollider); // check for two intersect
+			const bool result = AABBvsAABB(data); // check for two intersect
 
 			if (result)
 			{
 				//handle collision callbacks
-				possibleHitCollider->collisionCallback(&m_entities[i]);
-				pCollider->collisionCallback(pEntity);
+				possibleHitCollider->collisionCallback(data);
+				pCollider->collisionCallback(data);
 			}
 		}
 	}
-	//KPrintf(L"Size - %d \n", alreadyCheckedCollisionPairs.size());
-}
-
-void Krawler::KScene::fixedTick()
-{
 	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
 	{
 		if (!m_entities[i].isEntitiyInUse())
@@ -226,7 +225,7 @@ void KSceneDirector::cleanupScenes()
 
 void KSceneDirector::tickActiveScene()
 {
-	if (m_pCurrentScene->hasSceneTickedOnce())
+	if (!m_pCurrentScene->hasSceneTickedOnce())
 	{
 		m_pCurrentScene->onEnterScene();
 	}

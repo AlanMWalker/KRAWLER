@@ -18,7 +18,7 @@ namespace Krawler
 
 			KRAWLER_API const Rectf& getBounds();
 			KRAWLER_API const Vec2f& getHalfSize()const { return m_halfSize; }
-
+			KRAWLER_API	Vec2f getTopLeftCoord() const;
 		private:
 
 			void updateAABB();

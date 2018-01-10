@@ -236,6 +236,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RC|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Components\KCCircleCollider.cpp" />
     <ClCompile Include="src\Components\KCColliderBase.cpp" />
     <ClCompile Include="src\Physics\KPhysicsWorld.cpp" />
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp" />
@@ -250,9 +251,6 @@
     <ClCompile Include="src\Krawler.cpp" />
     <ClCompile Include="src\Components\KCTransform.cpp" />
     <ClCompile Include="src\KScene.cpp" />
-    <ClCompile Include="src\Physics\KPhysicsBody.cpp" />
-    <ClCompile Include="src\Physics\KPhysicsCollisions.cpp" />
-    <ClCompile Include="src\Physics\KPhysicsScene.cpp" />
     <ClCompile Include="src\Renderer\KRenderer.cpp" />
     <ClCompile Include="src\TiledMap\KTiledMap.cpp" />
     <ClCompile Include="src\Utilities\KDebug.cpp" />
@@ -262,6 +260,7 @@
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
     <ClInclude Include="include\Components\KCBoxCollider.h" />
+    <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />
     <ClInclude Include="include\Components\KCPhysicsBody.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
@@ -277,9 +276,6 @@
     <ClInclude Include="include\Maths\KMaths.hpp" />
     <ClInclude Include="include\Maths\KMathsUtilities.h" />
     <ClInclude Include="include\Maths\KMathVector.h" />
-    <ClInclude Include="include\Physics\KPhysicsBody.h" />
-    <ClInclude Include="include\Physics\KPhysicsCollisions.h" />
-    <ClInclude Include="include\Physics\KPhysicsScene.h" />
     <ClInclude Include="include\Physics\KPhysicsStructs.h" />
     <ClInclude Include="include\Physics\KPhysicsWorld.h" />
     <ClInclude Include="include\Renderer\KRenderer.h" />

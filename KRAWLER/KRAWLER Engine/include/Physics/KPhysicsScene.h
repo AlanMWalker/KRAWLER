@@ -13,7 +13,7 @@ namespace Krawler
 {
 	namespace Physics
 	{
-		KRAWLER_API extern bool AABBvsAABB(const sf::FloatRect & rectA, const sf::FloatRect & rectB);
+		//KRAWLER_API extern bool AABBvsAABB(const sf::FloatRect & rectA, const sf::FloatRect & rectB);
 
 		class KPhysicsScene
 		{

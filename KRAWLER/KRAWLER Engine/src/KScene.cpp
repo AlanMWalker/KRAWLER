@@ -2,7 +2,7 @@
 #include "KApplication.h"	 
 
 #include "Components\KCTransform.h"
-#include "Components\KCBoxCollider.h"
+#include "Components\KCColliderBase.h"
 
 using namespace Krawler;
 using namespace Krawler::Components;
@@ -63,7 +63,7 @@ void Krawler::KScene::fixedTick()
 			continue;
 		}
 
-		auto pCollider = m_entities[i].getComponent<KCBoxCollider>();
+		auto pCollider = m_entities[i].getComponent<KCColliderBase>();
 
 		if (!pCollider) // if this entity doesn't have a box collider continue
 		{
@@ -93,7 +93,7 @@ void Krawler::KScene::fixedTick()
 				continue;
 			}
 
-			KCBoxCollider* const possibleHitCollider = pEntity->getComponent<KCBoxCollider>();
+			KCColliderBase* const possibleHitCollider = pEntity->getComponent<KCColliderBase>();
 
 			if (!possibleHitCollider)// if no box collider is found, continue to next collider
 			{
@@ -104,7 +104,8 @@ void Krawler::KScene::fixedTick()
 			data.entityB = pairA.second;
 
 			//const bool result = pCollider->checkIntersects(possibleHitCollider); // check for two intersect
-			const bool result = AABBvsAABB(data); // check for two intersect
+			//const bool result = AABBvsAABB(data); // check for two intersect
+			const bool result = CollisionLookupTable[pCollider->getColliderType()][possibleHitCollider->getColliderType()](data);
 
 			if (result)
 			{

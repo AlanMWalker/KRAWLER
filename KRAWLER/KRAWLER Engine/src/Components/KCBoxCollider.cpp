@@ -16,6 +16,14 @@ const Rectf & KCBoxCollider::getBounds()
 	return m_aabb;
 }
 
+Vec2f KCBoxCollider::getTopLeftCoord() const
+{
+	Vec2f coord;
+	coord = m_pTransform->getOrigin();
+	coord = -(Vec2f(coord.x * m_pTransform->getScale().x, coord.y * m_pTransform->getScale().y));
+	return m_pTransform->getTransform().transformPoint(0, 0);
+}
+
 void KCBoxCollider::updateAABB()
 {
 	m_aabb = m_pTransform->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));

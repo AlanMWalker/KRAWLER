@@ -5,6 +5,7 @@
 
 #include <Krawler.h>
 #include <KApplication.h>
+#include <AssetLoader\KAssetLoader.h>
 #include <Physics\KPhysicsScene.h>
 #include <TiledMap\KTiledMap.h>
 #include <Utilities\KDebug.h>
@@ -13,6 +14,7 @@
 #include <Components\KCTransform.h>
 #include <Components\KCSprite.h>
 #include <Components\KCBoxCollider.h>
+#include <Components\KCCircleCollider.h>
 #include <Components\KCPhysicsBody.h>
 
 #include <SFML\Graphics.hpp>
@@ -24,21 +26,38 @@ using namespace Krawler::Components;
 
 #define BOX_SIZE 48
 
-class CustomComponent : public KComponentBase
+class PhysicsTest : public KComponentBase
 {
 public:
-	CustomComponent(KEntity* pEntity)
+	PhysicsTest(KEntity* pEntity)
 		: KComponentBase(pEntity)
 	{
 
 	}
 
-	~CustomComponent() = default;
+	~PhysicsTest() = default;
 
 	virtual KInitStatus init() override
 	{
 		auto pCurrentScene = KApplication::getApp()->getCurrentScene();
+		for (int32 i = 0; i < MAX_NUMBER_OF_ENTITIES - 3; ++i)
+		{
+			m_boxes.push_back(pCurrentScene->addEntityToScene());
+			auto& box = m_boxes[i];
+			box->setEntityTag(KTEXT("PhysicsBox") + std::to_wstring(i + 1));
 
+			box->addComponent(new KCSprite(box, Vec2f(BOX_SIZE, BOX_SIZE)));
+
+			//box->addComponent(new KCBoxCollider(box, Vec2f(BOX_SIZE, BOX_SIZE)));
+			box->addComponent(new KCCircleCollider(box, BOX_SIZE / 2));
+			box->addComponent(new KCPhysicsBody(box));
+
+			box->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->restitution = 0.8f;
+			box->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->setMass(100.0f);
+			box->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->staticFriction = 0.5;
+			box->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->dynamicFriction = 0.2;
+			box->setIsInUse(false);
+		}
 		auto floor = pCurrentScene->addEntityToScene();
 		floor->setEntityTag(KTEXT("floor"));
 		Vec2f floorSize(KApplication::getApp()->getWindowSize().x, 20.0f);
@@ -47,25 +66,15 @@ public:
 		floor->addComponent(new KCBoxCollider(floor, floorSize));
 		floor->addComponent(new KCPhysicsBody(floor));
 		floor->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->setMass(0.0f);
-		floor->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->restitution =(0.1f);
+		floor->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->restitution = (0.1f);
+
 		
-		for (int32 i = 0; i < MAX_NUMBER_OF_ENTITIES - 3; ++i)
-		{
-			m_boxes.push_back(pCurrentScene->addEntityToScene());
-			auto& box = m_boxes[i];
-			box->setEntityTag(KTEXT("PhysicsBox") + std::to_wstring(i + 1));
-			box->addComponent(new KCSprite(box, Vec2f(BOX_SIZE, BOX_SIZE)));
-			box->addComponent(new KCBoxCollider(box, Vec2f(BOX_SIZE, BOX_SIZE)));
-			box->addComponent(new KCPhysicsBody(box));
-			box->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->restitution = 0.1f;
-			box->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->setMass(100.0f);
-			box->setIsInUse(false);
-		}
 
 		auto pWorld = KApplication::getApp()->getPhysicsWorld();
 		auto props = pWorld->getPhysicsWorldProperties();
 		props.correctionPercentage = 0.8f;
 		props.correctionThreshold = 0.01f;
+		//props.gravity = Vec2f(0.0f, 0.0f);
 		pWorld->setPhysicsWorldProperties(props);
 		return KInitStatus::Success;
 	}
@@ -74,9 +83,15 @@ public:
 	{
 		auto floor = KApplication::getApp()->getCurrentScene()->findEntityByTag(KTEXT("floor"));
 		floor->getComponent<KCTransform>()->setTranslation(Vec2f(0.0f, KApplication::getApp()->getWindowSize().y - 20.0f));
+
+		auto& asset = KAssetLoader::getAssetLoader();
+		asset.setRootFolder(L"res\\");
+
 		for (auto pBox : m_boxes)
 		{
 			pBox->getComponent<KCSprite>()->setColour(Colour(rand() % 256, rand() % 256, rand() % 256));
+			pBox->getComponent<KCSprite>()->setTexture(asset.loadTexture(L"8ball.png"));
+			pBox->getComponent<KCTransform>()->setOrigin(BOX_SIZE / 2, BOX_SIZE / 2);
 		}
 	}
 
@@ -113,6 +128,7 @@ private:
 	int32 m_boxesAllocated = 0;
 };
 
+
 int main(void)
 {
 	srand((unsigned)time(NULL));
@@ -134,7 +150,7 @@ int main(void)
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
-	entity->addComponent(new CustomComponent(entity));
+	entity->addComponent(new PhysicsTest(entity));
 	InitialiseSubmodules();
 
 	RunApplication();

@@ -6,6 +6,7 @@
 
 #include "Utilities\KQuadtree.h"
 #include "Components\KCPhysicsBody.h"
+#include "Components\KCColliderBase.h"
 
 #include <vector>
 #include <functional>

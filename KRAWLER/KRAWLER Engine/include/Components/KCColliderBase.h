@@ -16,16 +16,24 @@ namespace Krawler
 		KRAWLER_API bool operator == (const KCollisionDetectionData& rhs) const
 		{
 			if (entityA != rhs.entityA && entityA != rhs.entityB)
+			{
 				return false;
+			}
 
 			if (entityB != rhs.entityB && entityB != rhs.entityA)
+			{
 				return false;
+			}
 
 			if (penetration != rhs.penetration)
+			{
 				return false;
+			}
 
 			if (collisionNormal != rhs.collisionNormal && collisionNormal != (rhs.collisionNormal*-1.0f))
+			{
 				return false;
+			}
 			return true;
 		}
 		KEntity* entityA = nullptr;
@@ -35,10 +43,18 @@ namespace Krawler
 		Vec2f collisionNormal = Vec2f(0.0f, 0.0f);
 	};
 
+
 	KRAWLER_API bool AABBvsAABB(KCollisionDetectionData& data);
-	//bool CirclevsCircle();
-	//bool AABBvsCircle();
-	//bool CirclevsAABB();
+	KRAWLER_API bool CirclevsCircle(KCollisionDetectionData& data);
+	KRAWLER_API bool AABBvsCircle(KCollisionDetectionData& data);
+	KRAWLER_API bool CirclevsAABB(KCollisionDetectionData& data);
+
+	static bool(*CollisionLookupTable[2][2])(KCollisionDetectionData&) =
+	{
+		{ AABBvsAABB, AABBvsCircle },
+		{ CirclevsAABB, CirclevsCircle },
+	};
+
 
 	namespace Components
 	{

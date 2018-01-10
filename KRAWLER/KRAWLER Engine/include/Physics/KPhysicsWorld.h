@@ -25,7 +25,7 @@ namespace Krawler
 		struct KPhysicsWorldProperties
 		{
 			KRAWLER_API KPhysicsWorldProperties()
-				: gravity(0.0f, 9.81f), pixelsToMetres(1.0f), correctionPercentage(0.8f), correctionThreshold(0.2f)
+				: gravity(0.0f, 9.81f), pixelsToMetres(1.0f), correctionPercentage(0.8f), correctionThreshold(0.01f)
 			{
 
 			}

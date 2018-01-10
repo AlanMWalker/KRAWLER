@@ -25,6 +25,7 @@ using namespace Krawler::Input;
 using namespace Krawler::Components;
 
 #define BOX_SIZE 48
+#define FLOOR_WIDTH 640
 
 class PhysicsTest : public KComponentBase
 {
@@ -60,7 +61,7 @@ public:
 		}
 		auto floor = pCurrentScene->addEntityToScene();
 		floor->setEntityTag(KTEXT("floor"));
-		Vec2f floorSize(KApplication::getApp()->getWindowSize().x, 20.0f);
+		Vec2f floorSize(FLOOR_WIDTH, 20.0f);
 
 		floor->addComponent(new KCSprite(floor, floorSize));
 		floor->addComponent(new KCBoxCollider(floor, floorSize));
@@ -153,18 +154,19 @@ public:
 			return KInitStatus::Failure;
 		}
 
-		if (!m_pBoxA->addComponent(new KCBoxCollider(m_pBoxA, Vec2f(BOX_SIZE, BOX_SIZE))))
+		if (!m_pBoxA->addComponent(new KCCircleCollider(m_pBoxA, BOX_SIZE / 2.0f)))
 		{
 			return KInitStatus::Failure;
 		}
-
+		m_pBoxA->addComponent(new KCPhysicsBody(m_pBoxA));
+		m_pBoxB->addComponent(new KCPhysicsBody(m_pBoxB));
 		//box b init
-		if (!m_pBoxB->addComponent(new KCSprite(m_pBoxB, Vec2f(BOX_SIZE, BOX_SIZE))))
+		if (!m_pBoxB->addComponent(new KCSprite(m_pBoxB, Vec2f(FLOOR_WIDTH, BOX_SIZE))))
 		{
 			return KInitStatus::Failure;
 		}
 
-		if (!m_pBoxB->addComponent(new KCCircleCollider(m_pBoxB, BOX_SIZE / 2.0f)))
+		if (!m_pBoxB->addComponent(new KCBoxCollider(m_pBoxB, Vec2f(FLOOR_WIDTH, BOX_SIZE))))
 		{
 			return KInitStatus::Failure;
 		}
@@ -180,14 +182,14 @@ public:
 	{
 		m_pBoxA->getComponent<KCTransform>()->setTranslation(Vec2f(100, 100));
 
-		m_pBoxB->getComponent<KCCircleCollider>()->subscribeCollisionCallback(&m_callback);
+		m_pBoxB->getComponent<KCBoxCollider>()->subscribeCollisionCallback(&m_callback);
 
 		KAssetLoader& rAssetLoader = KAssetLoader::getAssetLoader();
 		rAssetLoader.setRootFolder(KTEXT("res\\"));
 		auto pTexture = rAssetLoader.loadTexture(KTEXT("8ball.png"));
 		KCHECK(pTexture);
-		//m_pBoxA->getComponent<KCSprite>()->setTexture(pTexture);
-		m_pBoxB->getComponent<KCSprite>()->setTexture(pTexture);
+		m_pBoxA->getComponent<KCSprite>()->setTexture(pTexture);
+		//m_pBoxB->getComponent<KCSprite>()->setTexture(pTexture);
 
 	}
 
@@ -245,11 +247,11 @@ int main(void)
 	StartupEngine(&initApp);
 
 	auto app = KApplication::getApp();
-	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0.0f, 0.0f, initApp.width, initApp.height)));
+	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(-640.0f, -480.0f, 2*initApp.width, 2*initApp.height)));
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
-	entity->addComponent(new ColliderTest(entity));
+	entity->addComponent(new PhysicsTest(entity));
 	InitialiseSubmodules();
 
 	RunApplication();

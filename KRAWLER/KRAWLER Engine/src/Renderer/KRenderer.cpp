@@ -146,12 +146,11 @@ KRAWLER_API void Krawler::Renderer::KRenderer::setActiveTiledMap(TiledMap::KTile
 void Krawler::Renderer::KRenderer::generateSpriteList()
 {
 	m_sprites.clear();
-	auto const pCurrentScene = KApplication::getApp()->getSceneDirector().getCurrentScene();
+	auto const pCurrentScene = KApplication::getApp()->getCurrentScene();
 	KCHECK(pCurrentScene);
-
 	auto entityList = pCurrentScene->getEntitiyList();
 
-	for (int i = 0; i < pCurrentScene->getNumbrOfEntitiesAllocated(); ++i)
+	for (int i = 0; i < (signed)pCurrentScene->getNumbrOfEntitiesAllocated(); ++i)
 	{
 		KEntity& entity = entityList[i];
 		if (!entity.isEntitiyInUse())
@@ -196,7 +195,7 @@ void Krawler::Renderer::KRenderer::defaultRender()
 	//}
 	generateSpriteList();
 	sortByRenderLayer();
-	
+
 	for (auto& sprite : m_sprites)
 	{
 		target->draw(*sprite);

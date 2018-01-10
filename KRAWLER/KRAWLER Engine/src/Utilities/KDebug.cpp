@@ -31,7 +31,7 @@ inline long long Krawler::Profiler::EndFunctionTimer(const std::chrono::high_res
 	if (print)
 	{
 		//std::cout << funcName << " execution time: " << duration << " ms" << std::endl;
-		KPrintf(L"%s execution time: %lld ms\n", funcName.c_str(), duration);
+		KPrintf(L"%s execution time: %lld microsec\n", funcName.c_str(), duration);
 	}
 	return duration;
 }

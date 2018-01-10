@@ -5,46 +5,30 @@ using namespace Krawler;
 using namespace Krawler::Components;
 
 KCBoxCollider::KCBoxCollider(KEntity * pEntity, const Vec2f& size) :
-	KComponentBase(pEntity), m_size(size)
+	KCColliderBase(pEntity, KCColliderType::AABB), m_size(size), m_halfSize(size*0.5f)
 {
-	m_localVertices[0] = Vec2f(0.0f, 0.0f);
-	m_localVertices[1] = Vec2f(size.x, 0.0f);
-	m_localVertices[2] = Vec2f(size.x, size.y);
-	m_localVertices[3] = Vec2f(0.0f, size.y);
+	m_pTransform = getEntity()->getComponent<KCTransform>();
 }
 
-void KCBoxCollider::collisionCallback(KEntity * pEntity)
+const Rectf & KCBoxCollider::getBounds()
 {
-	for (auto& callback : m_callbacks)
-	{
-		callback(pEntity);
-	}
-}
-
-void KCBoxCollider::tick()
-{
-	KCTransform* pTransform = getEntity()->getComponent<KCTransform>();
-
-	for (int32 i = 0; i < 4; ++i)
-	{
-		m_globalVertices[i] = pTransform->getTransform().transformPoint(m_localVertices[i]);
-	}
 	updateAABB();
+	return m_aabb;
 }
 
-KRAWLER_API bool Krawler::Components::KCBoxCollider::checkIntersects(KCBoxCollider * pCollider)
+Vec2f KCBoxCollider::getTopLeftCoord() const
 {
-	//KCTransform* const pTransformA = getEntity()->getComponent<KCTransform>();
-	//KCTransform* const pTransformB = pCollider->getEntity()->getComponent<KCTransform>();
-
-	//sf::FloatRect boxA = pTransformA->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));
-	//sf::FloatRect boxB = pTransformB->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));
-
-	return m_aabb.intersects(pCollider->getBounds());
+	Vec2f coord;
+	coord = m_pTransform->getOrigin();
+	coord = -(Vec2f(coord.x * m_pTransform->getScale().x, coord.y * m_pTransform->getScale().y));
+	return m_pTransform->getTransform().transformPoint(0, 0);
 }
 
-void Krawler::Components::KCBoxCollider::updateAABB()
+void KCBoxCollider::updateAABB()
 {
-	KCTransform* const pTransformA = getEntity()->getComponent<KCTransform>();
-	m_aabb = pTransformA->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));
+	Vec2f topLeft = getTopLeftCoord();
+	m_aabb.left = topLeft.x; 
+	m_aabb.top = topLeft.y;
+	m_aabb.width = m_size.x;
+	m_aabb.height = m_size.y;
 }

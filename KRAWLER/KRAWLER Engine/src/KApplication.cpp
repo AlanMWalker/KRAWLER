@@ -9,8 +9,6 @@ using namespace std;
 KInitStatus Krawler::KApplication::initialiseScenes()
 {
 	KINIT_CHECK(m_sceneDirector.initScenes());
-
-
 	return KInitStatus::Success;
 }
 
@@ -19,8 +17,8 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	mp_renderWindow = new RenderWindow;
 
 	//setup game fps values
-	m_gameFPS = appInit.gameFps;
-	m_physicsFPS = appInit.physicsFps;
+	m_gameFPS = Maths::Clamp(24u, 80u, appInit.gameFps);
+	m_physicsFPS = Maths::Clamp(24u, 80u, appInit.physicsFps);
 
 	//setup the target update fps for the physics engine
 	if (m_physicsFPS != 0)
@@ -32,7 +30,6 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 
 	switch (appInit.windowStyle)
 	{
-
 	default:
 	case KWindowStyle::Windowed_Fixed_Size:
 		style |= (Style::Close | Style::Titlebar);
@@ -65,11 +62,9 @@ void KApplication::runApplication()
 	Time time;
 	sf::Clock deltaClock;
 
-	bool bHasFocus = true;
 
 	mp_renderWindow->setActive(false);
 	std::thread	rThread(&KRenderer::render, mp_renderer);
-
 	while (mp_renderWindow->isOpen())
 	{
 		m_gameDelta = deltaClock.restart().asSeconds();
@@ -90,13 +85,13 @@ void KApplication::runApplication()
 			}
 			if (evnt.type == Event::GainedFocus)
 			{
-				bHasFocus = true;
+				m_bHasFocus = true;
 			}
 			if (evnt.type == Event::LostFocus)
 			{
-				bHasFocus = false;
+				m_bHasFocus = false;
 			}
-			if (bHasFocus)
+			if (m_bHasFocus)
 			{
 				Input::KInput::HandleEvent(evnt);
 			}
@@ -107,13 +102,22 @@ void KApplication::runApplication()
 			frameTime = seconds(m_physicsDelta * 4);
 		}
 
-		while (accumulator.asSeconds() > m_physicsDelta)
+		if (accumulator > seconds(m_physicsDelta * 2))
 		{
-			//previousState = currentState;
-			//Physics tick
-			m_sceneDirector.fixedTickActiveScene();
-			time += seconds(m_physicsDelta);
-			accumulator -= seconds(m_physicsDelta);
+			accumulator = seconds(m_physicsDelta * 2);
+		}
+		
+		if (m_bHasFocus)
+		{
+			while (accumulator.asSeconds() > m_physicsDelta)
+			{
+				//previousState = currentState;
+				//Physics tick
+				m_physicsWorld.fixedTick();
+				m_sceneDirector.fixedTickActiveScene();
+				time += seconds(m_physicsDelta);
+				accumulator -= seconds(m_physicsDelta);
+			}
 		}
 
 		++m_frames;
@@ -122,8 +126,7 @@ void KApplication::runApplication()
 		//TODO KScene renderer lerp
 		//mp_logicStateDirector->physicsLerp(alpha);
 
-
-		if (bHasFocus)
+		if (m_bHasFocus)
 		{
 			m_sceneDirector.tickActiveScene();
 		}
@@ -165,7 +168,7 @@ KApplication::KApplication()
 inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator)
 {
 	currentTime = m_elapsedClock.getElapsedTime();
-	if (mb_isFirstUpdate)
+	if (m_bIsFirstUpdate)
 	{
 		lastTime = currentTime;
 	}
@@ -179,10 +182,10 @@ inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& last
 
 void Krawler::KApplication::outputFPS(const sf::Time & currentTime, sf::Time & fpsLastTime)
 {
-	if (mb_isFirstUpdate)
+	if (m_bIsFirstUpdate)
 	{
 		m_frames = 0;
-		mb_isFirstUpdate = false;
+		m_bIsFirstUpdate = false;
 		fpsLastTime = currentTime;
 		return;
 	}
@@ -192,14 +195,14 @@ void Krawler::KApplication::outputFPS(const sf::Time & currentTime, sf::Time & f
 		const float fps = (KCAST(float, m_frames) / (currentTime - fpsLastTime).asSeconds());
 
 		const float ms = 1.0f / fps;
-		KPrintf(KTEXT("FPS: %f( %f ms per frame)\n"), fps, ms);
+		KPrintf(KTEXT("FPS: %f(%f ms per frame)\n"), fps, ms);
 		//m_fpsText.setString(std::to_string(ms) + " ms/frame\n " + "FPS: " + std::to_string(fps));
 		//
 		fpsLastTime = currentTime;
 		m_frames = 0;
 	}
 }
-
+// -- KApplicationInitialise  --
 void Krawler::KApplicationInitialise::loadFromEnginePreset()
 {
 	//LOAD PRESET ENGINE CONFIG
@@ -231,7 +234,7 @@ std::wifstream& Krawler::operator >> (std::wifstream& os, KApplicationInitialise
 	os >> data.physicsFps;
 	os.get();
 	//os >> data.windowTitle;
-	os.getline(str, 100);
+	os.getline(str, 100 * sizeof(wchar_t));
 	data.windowTitle = str;
 	os >> data.consoleWindow;
 	int style = 0;

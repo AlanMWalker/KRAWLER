@@ -9,6 +9,9 @@
 #include <SFML\Graphics\RenderWindow.hpp> 
 #include <SFML\System\Clock.hpp> 
 
+//Lowest FPS for Physics & Game: 24
+//Highest FPS for Physics & Game: 80
+
 namespace Krawler
 {
 	enum KWindowStyle : uint8
@@ -62,6 +65,9 @@ namespace Krawler
 		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return mp_renderWindow; }
 		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return mp_renderer; }
 		KRAWLER_API Krawler::KSceneDirector& getSceneDirector() { return m_sceneDirector; }
+		KRAWLER_API Krawler::Physics::KPhysicsWorld* const getPhysicsWorld() { return &m_physicsWorld; }
+		KRAWLER_API Krawler::KScene* const getCurrentScene() { return m_sceneDirector.getCurrentScene(); }
+
 		KRAWLER_API float getElapsedTime() const;
 		KRAWLER_API float getDeltaTime() const { return m_gameDelta; }
 		KRAWLER_API float getPhysicsDelta() const { return m_physicsDelta; }
@@ -80,6 +86,7 @@ namespace Krawler
 		sf::RenderWindow* mp_renderWindow = nullptr;
 		Krawler::Renderer::KRenderer* mp_renderer = nullptr;
 		Krawler::KSceneDirector m_sceneDirector;
+		Physics::KPhysicsWorld m_physicsWorld;
 
 		uint32 m_gameFPS;
 		uint32 m_physicsFPS;
@@ -91,7 +98,9 @@ namespace Krawler
 		float m_gameDelta = 0.0f;
 		float m_physicsDelta = 0.0f;
 
-		bool mb_isFirstUpdate = true;
+		bool m_bIsFirstUpdate = true;
+		bool m_bHasFocus = true;
+
 	};
 }
 #endif

@@ -45,6 +45,12 @@ KRAWLER_API void KCSprite::setColour(const Colour & col)
 	}
 }
 
+void KCSprite::setTexture(sf::Texture * pTexture)
+{
+	m_pTexture = pTexture;
+	const Recti bounds(0, 0, pTexture->getSize().x, pTexture->getSize().y);
+	setTextureRect(bounds);
+}
 KRAWLER_API void Krawler::Components::KCSprite::setTextureRect(const Recti & texRect)
 {
 	KCHECK(m_vertexArray.getVertexCount() > 0);

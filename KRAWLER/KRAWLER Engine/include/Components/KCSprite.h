@@ -26,7 +26,7 @@ namespace Krawler
 			KRAWLER_API int32 getRenderLayer() const { return m_renderLayer; }
 			KRAWLER_API void setColour(const Colour& col);
 
-			KRAWLER_API void setTexture(sf::Texture* pTexture) { m_pTexture = pTexture; }
+			KRAWLER_API void setTexture(sf::Texture* pTexture);
 			KRAWLER_API void setTextureRect(const Recti& texRect);
 
 		private:

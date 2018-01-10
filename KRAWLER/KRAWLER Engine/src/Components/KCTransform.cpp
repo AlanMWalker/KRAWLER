@@ -93,6 +93,11 @@ float Krawler::Components::KCTransform::getRotation() const
 	return fmod(m_rotation + m_pParentTransform->getRotation(), 360.0f);
 }
 
+const Vec2f & Krawler::Components::KCTransform::getOrigin() const
+{
+	return m_origin;
+}
+
 void Krawler::Components::KCTransform::setScale(const Vec2f & scale)
 {
 	m_scale = scale;
@@ -151,7 +156,7 @@ void Krawler::Components::KCTransform::reconstructTransform()
 	const float scaleCosX = m_scale.x * cosAngle, scaleCosY = m_scale.y * cosAngle;
 	const float transX = -m_origin.x * scaleCosX - m_origin.y * scaleSineY + m_trans.x;
 	const float transY = m_origin.x * scaleSineX - m_origin.y * scaleCosY + m_trans.y;
-	
+
 	m_transform = sf::Transform(scaleCosX, scaleSineY, transX, -scaleSineX, scaleCosY, transY,
 		0.0f, 0.0f, 1.0f);
 }

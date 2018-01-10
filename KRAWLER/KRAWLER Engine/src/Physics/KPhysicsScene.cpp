@@ -21,6 +21,7 @@ void KPhysicsScene::step(float delta)
 			b->applyForce(m_gravity * b->getMass() *b->getMaterialData().gravityScale);
 		}
 	}
+
 	for (auto& b : m_bodies)
 	{
 		if (!b->isBodyInUse())

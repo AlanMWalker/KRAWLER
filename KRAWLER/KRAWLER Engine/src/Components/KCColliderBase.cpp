@@ -20,33 +20,18 @@ bool Krawler::AABBvsAABB(KCollisionDetectionData & collData)
 	KCTransform* const transformB = collData.entityB->getComponent<KCTransform>();
 
 	Vec2f topLeftA, topLeftB; // top left co-ord of the entity
-	//topLeftA = colliderEntityA->getTopLeftCoord();
-	//topLeftB = colliderEntityB->getTopLeftCoord();
-	topLeftA = transformA->getOrigin();
-	topLeftB = transformB->getOrigin();
-	
-	topLeftA = -(Vec2f(topLeftA.x * transformA->getScale().x, topLeftA.y * transformA->getScale().y));
-	topLeftB = -(Vec2f(topLeftB.x * transformB->getScale().x, topLeftB.y * transformB->getScale().y));
-	
-	topLeftA = transformA->getTransform().transformPoint(topLeftA);
-	topLeftB = transformB->getTransform().transformPoint(topLeftB);
+	topLeftA = colliderEntityA->getTopLeftCoord();
+	topLeftB = colliderEntityB->getTopLeftCoord();
 
 	const Vec2f halfBoundsA(colliderEntityA->getHalfSize());
 	const Vec2f halfBoundsB(colliderEntityB->getHalfSize());
 
 	Vec2f n;
 	n = (topLeftB + halfBoundsB) - (topLeftA + halfBoundsA);
-
-	//float aExtent = goA.getFixedGlobalBounds().width / 2.0f;
-	//float bExtent = goB.getFixedGlobalBounds().width / 2.0f;
-
 	float xOverlap = halfBoundsA.x + halfBoundsB.x - fabs(n.x);
 
 	if (xOverlap > 0.0f)
 	{
-		//float aExtent = goA.getFixedGlobalBounds().height / 2.0f;
-		//float bExtent = goB.getFixedGlobalBounds().height / 2.0f;
-
 		float yOverlap = halfBoundsA.y + halfBoundsB.y - fabs(n.y);
 
 		if (yOverlap > 0.0f)

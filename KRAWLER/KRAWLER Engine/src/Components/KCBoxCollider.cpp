@@ -26,5 +26,9 @@ Vec2f KCBoxCollider::getTopLeftCoord() const
 
 void KCBoxCollider::updateAABB()
 {
-	m_aabb = m_pTransform->getTransform().transformRect(sf::FloatRect(0.0f, 0.0, m_size.x, m_size.y));
+	Vec2f topLeft = getTopLeftCoord();
+	m_aabb.left = topLeft.x; 
+	m_aabb.top = topLeft.y;
+	m_aabb.width = m_size.x;
+	m_aabb.height = m_size.y;
 }

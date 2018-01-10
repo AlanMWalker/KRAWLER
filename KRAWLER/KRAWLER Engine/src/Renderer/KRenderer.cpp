@@ -148,7 +148,6 @@ void Krawler::Renderer::KRenderer::generateSpriteList()
 	m_sprites.clear();
 	auto const pCurrentScene = KApplication::getApp()->getCurrentScene();
 	KCHECK(pCurrentScene);
-
 	auto entityList = pCurrentScene->getEntitiyList();
 
 	for (int i = 0; i < (signed)pCurrentScene->getNumbrOfEntitiesAllocated(); ++i)

@@ -25,6 +25,7 @@ KInitStatus KScene::initScene()
 		//TODO Move to onenter
 		entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
 	}
+	
 	return KInitStatus::Success;
 }
 

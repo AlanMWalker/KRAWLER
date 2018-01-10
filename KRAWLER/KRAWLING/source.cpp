@@ -68,7 +68,7 @@ public:
 		floor->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->setMass(0.0f);
 		floor->getComponent<KCPhysicsBody>()->getPhysicsBodyProperties()->restitution = (0.1f);
 
-		
+
 
 		auto pWorld = KApplication::getApp()->getPhysicsWorld();
 		auto props = pWorld->getPhysicsWorldProperties();
@@ -128,6 +128,105 @@ private:
 	int32 m_boxesAllocated = 0;
 };
 
+class ColliderTest : public KComponentBase
+{
+public:
+
+	ColliderTest(KEntity* pEntity)
+		: KComponentBase(pEntity)
+	{
+		pEntity->setEntityTag(KTEXT("level setup"));
+	}
+
+	~ColliderTest() = default;
+
+	virtual KInitStatus init() override
+	{
+		auto pCurrentScene = KApplication::getApp()->getCurrentScene();
+
+		m_pBoxA = pCurrentScene->addEntityToScene();
+		m_pBoxB = pCurrentScene->addEntityToScene();
+
+		//box a init
+		if (!m_pBoxA->addComponent(new KCSprite(m_pBoxA, Vec2f(BOX_SIZE, BOX_SIZE))))
+		{
+			return KInitStatus::Failure;
+		}
+
+		if (!m_pBoxA->addComponent(new KCBoxCollider(m_pBoxA, Vec2f(BOX_SIZE, BOX_SIZE))))
+		{
+			return KInitStatus::Failure;
+		}
+
+		//box b init
+		if (!m_pBoxB->addComponent(new KCSprite(m_pBoxB, Vec2f(BOX_SIZE, BOX_SIZE))))
+		{
+			return KInitStatus::Failure;
+		}
+
+		if (!m_pBoxB->addComponent(new KCCircleCollider(m_pBoxB, BOX_SIZE / 2.0f)))
+		{
+			return KInitStatus::Failure;
+		}
+
+		m_pBoxA->setEntityTag(KTEXT("box a"));
+		m_pBoxB->setEntityTag(KTEXT("box b"));
+		m_pBoxB->getComponent<KCTransform>()->setOrigin(Vec2f(BOX_SIZE / 2.0f, BOX_SIZE / 2.0f));
+
+		return KInitStatus::Success;
+	}
+
+	virtual void onEnterScene() override
+	{
+		m_pBoxA->getComponent<KCTransform>()->setTranslation(Vec2f(100, 100));
+
+		m_pBoxB->getComponent<KCCircleCollider>()->subscribeCollisionCallback(&m_callback);
+
+		KAssetLoader& rAssetLoader = KAssetLoader::getAssetLoader();
+		rAssetLoader.setRootFolder(KTEXT("res\\"));
+		auto pTexture = rAssetLoader.loadTexture(KTEXT("8ball.png"));
+		KCHECK(pTexture);
+		//m_pBoxA->getComponent<KCSprite>()->setTexture(pTexture);
+		m_pBoxB->getComponent<KCSprite>()->setTexture(pTexture);
+
+	}
+
+	virtual void tick() override
+	{
+		if (!m_bHasCollided)
+		{
+			m_pBoxB->getComponent<KCSprite>()->setColour(Colour::Red);
+		}
+		m_pBoxB->getComponent<KCTransform>()->setTranslation(KInput::GetMouseWorldPosition());
+
+		if (KInput::MouseJustPressed(KMouseButton::Left))
+		{
+			Vec2f world = KInput::GetMouseWorldPosition();
+			KPrintf(KTEXT("Mouse: %f : %f\n"), world.x, world.y);
+		}
+
+		if (KInput::JustPressed(KKey::Escape))
+			KApplication::getApp()->closeApplication();
+
+		m_bHasCollided = false;
+	}
+
+private:
+	void setCollided()
+	{
+		m_bHasCollided = true;
+		m_pBoxB->getComponent<KCSprite>()->setColour(Colour::Green);
+	}
+
+	KCColliderBaseCallback m_callback = [this](const KCollisionDetectionData&) -> void
+	{
+		setCollided();
+	};
+
+	bool m_bHasCollided = false;
+	KEntity* m_pBoxA;
+	KEntity* m_pBoxB;
+};
 
 int main(void)
 {
@@ -150,7 +249,7 @@ int main(void)
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
-	entity->addComponent(new PhysicsTest(entity));
+	entity->addComponent(new ColliderTest(entity));
 	InitialiseSubmodules();
 
 	RunApplication();

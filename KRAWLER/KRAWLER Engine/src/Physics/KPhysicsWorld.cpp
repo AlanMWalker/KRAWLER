@@ -68,8 +68,6 @@ void KPhysicsWorld::assembleEntityList()
 	{
 		auto colliderBase = pEntity->getComponent<KCColliderBase>();
 
-		KCHECK(colliderBase);
-
 		if (!colliderBase)
 			continue;
 
@@ -147,6 +145,13 @@ void KPhysicsWorld::correctPosition(const KCollisionDetectionData & collData)
 
 void KPhysicsWorld::addToCollisionsList(const KCollisionDetectionData & collData)
 {
+	KCPhysicsBody* pBodyA = collData.entityA->getComponent<KCPhysicsBody>();
+	KCPhysicsBody* pBodyB = collData.entityB->getComponent<KCPhysicsBody>();
+
+	if (!pBodyA || !pBodyB)
+	{
+		return;
+	}
 	const auto checkCollisionDataIsntInList = [&collData](const KCollisionDetectionData& vectorEntry) -> bool
 	{
 		return collData == vectorEntry;
@@ -157,5 +162,6 @@ void KPhysicsWorld::addToCollisionsList(const KCollisionDetectionData & collData
 	{
 		return;
 	}
+
 	m_collisionsToCheck.push_back(collData);
 }

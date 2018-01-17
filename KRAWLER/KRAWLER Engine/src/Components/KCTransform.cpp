@@ -21,6 +21,8 @@ void Krawler::Components::KCTransform::tick()
 	if (m_bHasParent)
 	{
 		m_parentedTransform = m_pParentTransform->getTransform() * m_transform;
+		m_parentedTransform.translate(m_pParentTransform->getOrigin().x*m_pParentTransform->getScale().x, m_pParentTransform->getOrigin().y*m_pParentTransform->getScale().y);
+		//todo optimise below
 	}
 
 	m_worldRot = getRotation();

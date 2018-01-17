@@ -181,16 +181,78 @@ bool Krawler::AABBvsCircle(KCollisionDetectionData & collData)
 	return true;
 }
 
-bool Krawler::CirclevsAABB(KCollisionDetectionData & data)
+bool Krawler::CirclevsAABB(KCollisionDetectionData & collData)
 {
-	auto temp = data.entityA;
-	data.entityA = data.entityB;
-	data.entityB = temp;
+	KCCircleCollider* const colliderEntityA = collData.entityA->getComponent<KCCircleCollider>();
+	KCBoxCollider* const colliderEntityB = collData.entityB->getComponent<KCBoxCollider>();
 
-	bool result = AABBvsCircle(data);
-	//data.collisionNormal *= -1.0f;
+	KCTransform* pTransformEntityA = collData.entityA->getComponent<KCTransform>();
 
-	return result;
+	const float xExtent = colliderEntityB->getHalfSize().x;
+	const float yExtent = colliderEntityB->getHalfSize().y;
+
+	const float bRadius = colliderEntityA->getRadius();
+
+	Vec2f entityACentre = colliderEntityB->getTopLeftCoord() + colliderEntityB->getHalfSize(); //top left coord of A
+
+	Vec2f n = (colliderEntityA->getCentrePosition()) - (entityACentre);
+	Vec2f closest = n;
+
+	closest.x = Maths::Clamp(-xExtent, xExtent, closest.x);
+	closest.y = Maths::Clamp(-yExtent, yExtent, closest.y);
+
+	bool inside = false;
+
+	if (n == closest)
+	{
+		inside = true;
+		if (fabs(n.x) > fabs(n.y))
+		{
+			if (closest.x > 0)
+			{
+				closest.x = xExtent;
+			}
+			else
+			{
+				closest.x = -xExtent;
+			}
+		}
+		else
+		{
+			if (closest.y > 0)
+			{
+				closest.y = yExtent;
+			}
+			else
+			{
+				closest.y = -yExtent;
+			}
+		}
+	}
+
+	Vec2f normal = n - closest;
+	float distance = GetSquareLength(normal);
+
+	if (distance > (bRadius* bRadius) && !inside)
+	{ // if distance between two is greater than radius and the circle isn't inside, early out no collision
+		return false;
+	}
+
+	distance = sqrtf(distance);
+
+	if (inside)
+	{
+		collData.collisionNormal = -normal / distance;
+		collData.penetration = bRadius - distance;
+	}
+	else
+	{
+		collData.collisionNormal = normal / distance;
+		collData.penetration = bRadius - distance;
+	}
+	collData.collisionNormal *= -1.0f;
+
+	return true;
 }
 
 //--Components::KCColliderBase--\\ 

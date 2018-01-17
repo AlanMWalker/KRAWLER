@@ -19,6 +19,7 @@ void Krawler::TiledMap::KTiledMap::draw(sf::RenderTarget & rTarget, RenderStates
 {
 	rStates.transform *= getTransform();
 	rStates.texture = mp_texture;
+	rStates.shader = m_pShader;
 	rTarget.draw(m_vertArray, rStates);
 }
 
@@ -141,6 +142,10 @@ KRAWLER_API KTiledMapLoadResult Krawler::TiledMap::KTiledMap::setupTiledMapFromA
 			pQuad[2].texCoords = sf::Vector2f((tu + 1) * m_tileWidth, (tv + 1) * m_tileHeight);
 			pQuad[3].texCoords = sf::Vector2f(tu * m_tileWidth, (tv + 1) * m_tileHeight);
 
+			pQuad[0].color = Color::Magenta;
+			pQuad[1].color = Color::Magenta;
+			pQuad[2].color = Color::Magenta;
+			pQuad[3].color = Color::Magenta;
 		}
 	}
 

@@ -7,6 +7,7 @@
 #include <SFML\Graphics\Transformable.hpp>
 #include <SFML\Graphics\Drawable.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\Shader.hpp>
 
 #define MAP_FILE_FORMAT KTEXT(".dat")
 
@@ -51,6 +52,8 @@ namespace Krawler
 
 			KRAWLER_API void setTexture(const std::wstring& textureFileName);
 
+			KRAWLER_API void setShader(sf::Shader* pShader) { m_pShader = pShader; }
+			KRAWLER_API sf::Shader* getShader() { return m_pShader; }
 		private:
 
 			int32 m_mapWidth;
@@ -63,7 +66,7 @@ namespace Krawler
 			sf::VertexArray m_vertArray;
 
 			sf::Texture* mp_texture = nullptr;
-
+			sf::Shader* m_pShader = nullptr;
 		};
 	}
 }

@@ -12,7 +12,7 @@
 #include <map>
 
 #include <SFML\Graphics\Rect.hpp>
-
+#include <SFML\System\Vector3.hpp>
 namespace Krawler
 {
 	using int8 = signed char;
@@ -32,6 +32,8 @@ namespace Krawler
 	using Vec2u = sf::Vector2u;
 	using Vec2d = sf::Vector2<double>;
 
+	using Vec3f = sf::Vector3f;
+
 	using Point = sf::Vector2f;
 	using Colour = sf::Color;
 
@@ -39,6 +41,7 @@ namespace Krawler
 	using Rectd = sf::Rect<double>;
 	using Recti = sf::Rect<int32>;
 	using Rectu = sf::Rect<uint32>;
+
 
 	struct KApplicationInitialise;
 

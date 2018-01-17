@@ -5,6 +5,8 @@
 #include <SFML\Graphics\Texture.hpp>
 #include <SFML\Graphics\Font.hpp>
 #include <SFML\Audio\SoundBuffer.hpp>
+#include <SFML\Graphics\Shader.hpp>
+
 #include <unordered_map>
 
 namespace Krawler
@@ -22,9 +24,12 @@ namespace Krawler
 		}
 
 		KRAWLER_API void cleanupAssetLoader();
+
 		KRAWLER_API sf::Texture* loadTexture(const std::wstring& fileName);
 		KRAWLER_API sf::SoundBuffer* loadSoundBuffer(const std::wstring& fileName);
 		KRAWLER_API sf::Font* loadFont(const std::wstring& fileName);
+
+		KRAWLER_API sf::Shader* loadShader(const std::wstring& vertShader, const std::wstring& fragShader);
 
 		KRAWLER_API void setRootFolder(const std::wstring& rootFolder) { m_rootFolder = rootFolder; }
 
@@ -36,6 +41,7 @@ namespace Krawler
 		std::unordered_map <std::wstring, sf::Texture*> m_texturesMap;
 		std::unordered_map <std::wstring, sf::Font*> m_fontMap;
 		std::unordered_map <std::wstring, sf::SoundBuffer*> m_soundBufferMap;
+		std::unordered_map<std::wstring, sf::Shader*> m_shaderMap;
 
 		sf::Texture* loadTextureASYNC(const std::wstring& fileName);
 

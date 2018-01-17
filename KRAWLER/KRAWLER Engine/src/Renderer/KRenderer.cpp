@@ -180,10 +180,10 @@ void Krawler::Renderer::KRenderer::defaultRender()
 
 	//sortByRenderLayer();
 
-	//if (mb_hasTiledMap)
-	//{
-	//	target->draw(*mp_tiledMap);
-	//}
+	if (mb_hasTiledMap)
+	{
+		target->draw(*mp_tiledMap);
+	}
 	//
 	//for (auto& obj : m_renderQueue)
 	//{

@@ -6,6 +6,7 @@
 
 #include <SFML\Graphics\Drawable.hpp>
 #include <SFML\Graphics\VertexArray.hpp>
+#include <SFML\Graphics\Shader.hpp>
 
 namespace Krawler
 {
@@ -29,12 +30,18 @@ namespace Krawler
 			KRAWLER_API void setTexture(sf::Texture* pTexture);
 			KRAWLER_API void setTextureRect(const Recti& texRect);
 
+			KRAWLER_API Rectf getOnscreenBounds() const;
+
+			KRAWLER_API sf::Shader* getShader() { return m_pShader; }
+			
+			KRAWLER_API void setShader(sf::Shader* pShader) { m_pShader = pShader; }
 		private:
 
 			sf::VertexArray m_vertexArray;
 			sf::Vector2f m_size;
 
 			sf::Texture* m_pTexture;
+			sf::Shader* m_pShader;
 			KCTransform* m_pTransform;
 
 			int32 m_renderLayer;

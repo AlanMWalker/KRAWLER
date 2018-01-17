@@ -97,6 +97,27 @@ sf::Font * Krawler::KAssetLoader::loadFont(const std::wstring & fileName)
 
 	return m_fontMap[m_rootFolder + fileName];
 }
+sf::Shader * KAssetLoader::loadShader(const std::wstring & vertShader, const std::wstring & fragShader)
+{
+	auto fileIterator = m_shaderMap.find(m_rootFolder + vertShader);
+	if (fileIterator != m_shaderMap.end())
+	{
+		return fileIterator->second;
+	}
+
+	sf::String sVert(m_rootFolder + vertShader);
+	sf::String sFrag(m_rootFolder + fragShader);
+	Shader* pShader = new Shader();
+	KCHECK(pShader);
+	if (!pShader->loadFromFile(sVert, sFrag))
+	{
+		return nullptr;
+	}
+
+	m_shaderMap.emplace(sVert, pShader);
+
+	return m_shaderMap[sVert];
+}
 
 sf::Texture * Krawler::KAssetLoader::loadTextureASYNC(const std::wstring & fileName)
 {

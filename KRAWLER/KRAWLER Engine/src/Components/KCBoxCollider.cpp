@@ -16,6 +16,12 @@ const Rectf & KCBoxCollider::getBounds()
 	return m_aabb;
 }
 
+const Rectf& KCBoxCollider::getBoundingBox()
+{
+	updateAABB();
+	return m_aabb;
+}
+
 Vec2f KCBoxCollider::getTopLeftCoord() const
 {
 	Vec2f coord;
@@ -27,7 +33,7 @@ Vec2f KCBoxCollider::getTopLeftCoord() const
 void KCBoxCollider::updateAABB()
 {
 	Vec2f topLeft = getTopLeftCoord();
-	m_aabb.left = topLeft.x; 
+	m_aabb.left = topLeft.x;
 	m_aabb.top = topLeft.y;
 	m_aabb.width = m_size.x;
 	m_aabb.height = m_size.y;

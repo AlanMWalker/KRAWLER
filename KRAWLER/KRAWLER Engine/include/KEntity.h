@@ -78,7 +78,7 @@ namespace Krawler
 		KRAWLER_API const std::wstring& getEntityTag() const { return m_entityTag; }
 
 		//todo change to enabled
-		KRAWLER_API bool isEntitiyInUse() const { return m_bIsInUse; }
+		KRAWLER_API bool isEntityInUse() const { return m_bIsInUse; }
 
 		KRAWLER_API void setIsInUse(bool bInUse) { m_bIsInUse = bInUse; }
 

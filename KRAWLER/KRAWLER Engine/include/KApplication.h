@@ -9,6 +9,8 @@
 #include <SFML\Graphics\RenderWindow.hpp> 
 #include <SFML\System\Clock.hpp> 
 
+#include <mutex>
+
 //Lowest FPS for Physics & Game: 24
 //Highest FPS for Physics & Game: 80
 
@@ -62,8 +64,8 @@ namespace Krawler
 		KRAWLER_API void cleanupApplication();
 
 		//TODO do not expose this function in the dll
-		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return mp_renderWindow; }
-		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return mp_renderer; }
+		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return m_pRenderWindow; }
+		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return m_pRenderer; }
 		KRAWLER_API Krawler::KSceneDirector& getSceneDirector() { return m_sceneDirector; }
 		KRAWLER_API Krawler::Physics::KPhysicsWorld* const getPhysicsWorld() { return &m_physicsWorld; }
 		KRAWLER_API Krawler::KScene* const getCurrentScene() { return m_sceneDirector.getCurrentScene(); }
@@ -76,15 +78,19 @@ namespace Krawler
 
 		KRAWLER_API void closeApplication();
 
+		static std::mutex& getMutexInstance() { return m_mutex; }
+
 	private:
 
 		KApplication();
 
+		void fixedStep();
+
 		__forceinline void updateFrameTime(sf::Time& currentTime, sf::Time& lastTime, sf::Time& frameTime, sf::Time& accumulator);
 		__forceinline void outputFPS(const sf::Time& currentTime, sf::Time& fpsLastTime);
 
-		sf::RenderWindow* mp_renderWindow = nullptr;
-		Krawler::Renderer::KRenderer* mp_renderer = nullptr;
+		sf::RenderWindow* m_pRenderWindow = nullptr;
+		Krawler::Renderer::KRenderer* m_pRenderer = nullptr;
 		Krawler::KSceneDirector m_sceneDirector;
 		Physics::KPhysicsWorld m_physicsWorld;
 
@@ -100,6 +106,8 @@ namespace Krawler
 
 		bool m_bIsFirstUpdate = true;
 		bool m_bHasFocus = true;
+
+		static std::mutex m_mutex;
 
 	};
 }

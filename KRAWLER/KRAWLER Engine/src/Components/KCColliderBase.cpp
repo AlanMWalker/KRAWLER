@@ -77,8 +77,8 @@ bool Krawler::CirclevsCircle(KCollisionDetectionData& collData)
 	const float aRadius = pCircleColliderA->getRadius();
 	const float bRadius = pCircleColliderB->getRadius();;
 
-	const Vec2f aCentre = pCircleColliderA->getCentrePosition();
-	const Vec2f bCentre = pCircleColliderB->getCentrePosition();
+	const Vec2f& aCentre = pCircleColliderA->getCentrePosition();
+	const Vec2f& bCentre = pCircleColliderB->getCentrePosition();
 
 	Vec2f n = bCentre - aCentre; // Direction from b to a 
 
@@ -257,7 +257,7 @@ bool Krawler::CirclevsAABB(KCollisionDetectionData & collData)
 
 //--Components::KCColliderBase--\\ 
 KCColliderBase::KCColliderBase(KEntity * pEntity, KCColliderType type)
-	: KComponentBase(pEntity), m_colliderType(type)
+	: KComponentBase(pEntity), m_colliderType(type), m_collisionLayer(0)
 {
 }
 
@@ -299,4 +299,9 @@ KRAWLER_API bool Krawler::Components::KCColliderBase::isCallbackSubscribed(KCCol
 	auto findResult = std::find(m_callbacks.begin(), m_callbacks.end(), callback);
 
 	return findResult != m_callbacks.end();
+}
+
+void KCColliderBase::setCollisionLayer(int16 collisionLayer)
+{
+	m_collisionLayer = collisionLayer;
 }

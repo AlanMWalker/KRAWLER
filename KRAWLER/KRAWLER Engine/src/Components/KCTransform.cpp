@@ -1,5 +1,5 @@
 #include "Components\KCTransform.h"
-
+#include "Maths\KMathVector.h"
 using namespace Krawler;
 using namespace Krawler::Components;
 
@@ -17,12 +17,11 @@ void Krawler::Components::KCTransform::tick()
 		reconstructTransform();
 		m_bUpdateTransform = false;
 	}
-
 	if (m_bHasParent)
 	{
-		m_parentedTransform = m_pParentTransform->getTransform() * m_transform;
-		m_parentedTransform.translate(m_pParentTransform->getOrigin().x*m_pParentTransform->getScale().x, m_pParentTransform->getOrigin().y*m_pParentTransform->getScale().y);
-		//todo optimise below
+		float parentRot = m_pParentTransform->getRotation();
+		m_combinedWithParentTransform = m_pParentTransform->getTransform() * m_transform;
+		//m_parentedTransform.translate(m_pParentTransform->getOrigin().x*m_pParentTransform->getScale().x, m_pParentTransform->getOrigin().y*m_pParentTransform->getScale().y);
 	}
 
 	m_worldRot = getRotation();
@@ -34,7 +33,7 @@ const sf::Transform & Krawler::Components::KCTransform::getTransform()
 {
 	if (m_bHasParent)
 	{
-		return m_parentedTransform;
+		return m_combinedWithParentTransform;
 	}
 	return m_transform;
 }
@@ -81,7 +80,7 @@ void Krawler::Components::KCTransform::setTranslation(float dx, float dy)
 
 const Vec2f Krawler::Components::KCTransform::getPosition() const
 {
-	const float* const pMatrix = !m_bHasParent ? m_transform.getMatrix() : m_parentedTransform.getMatrix();
+	const float* const pMatrix = !m_bHasParent ? m_transform.getMatrix() : m_combinedWithParentTransform.getMatrix();
 	return Vec2f(pMatrix[12], pMatrix[13]);
 }
 
@@ -113,7 +112,7 @@ void Krawler::Components::KCTransform::setScale(float x, float y)
 
 Vec2f Krawler::Components::KCTransform::getScale() const
 {
-	const float* const pMatrix = !m_bHasParent ? m_transform.getMatrix() : m_parentedTransform.getMatrix();
+	const float* const pMatrix = !m_bHasParent ? m_transform.getMatrix() : m_combinedWithParentTransform.getMatrix();
 	if (m_bHasParent)
 		return Vec2f(m_scale.x* m_pParentTransform->getScale().x, m_scale.y * m_pParentTransform->getScale().y);
 	return m_scale;

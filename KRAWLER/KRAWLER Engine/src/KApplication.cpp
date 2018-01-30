@@ -6,6 +6,8 @@ using namespace Krawler::Renderer;
 using namespace sf;
 using namespace std;
 
+std::mutex KApplication::m_mutex;
+
 KInitStatus Krawler::KApplication::initialiseScenes()
 {
 	KINIT_CHECK(m_sceneDirector.initScenes());
@@ -14,7 +16,7 @@ KInitStatus Krawler::KApplication::initialiseScenes()
 
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
 {
-	mp_renderWindow = new RenderWindow;
+	m_pRenderWindow = new RenderWindow;
 
 	//setup game fps values
 	m_gameFPS = Maths::Clamp(24u, 80u, appInit.gameFps);
@@ -44,12 +46,12 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 		break;
 	}
 
-	mp_renderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
-	mp_renderWindow->setFramerateLimit(m_gameFPS);
+	m_pRenderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
+	m_pRenderWindow->setFramerateLimit(m_gameFPS);
 
-	mp_renderer = new KRenderer;
+	m_pRenderer = new KRenderer;
 
-	Input::KInput::SetWindow(mp_renderWindow);
+	Input::KInput::SetWindow(m_pRenderWindow);
 }
 
 void KApplication::runApplication()
@@ -63,9 +65,10 @@ void KApplication::runApplication()
 	sf::Clock deltaClock;
 
 
-	mp_renderWindow->setActive(false);
-	std::thread	rThread(&KRenderer::render, mp_renderer);
-	while (mp_renderWindow->isOpen())
+	m_pRenderWindow->setActive(false);
+	std::thread	rThread(&KRenderer::render, m_pRenderer);
+	//std::thread pThread(&KApplication::fixedStep, this);
+	while (m_pRenderWindow->isOpen())
 	{
 		m_gameDelta = deltaClock.restart().asSeconds();
 		Time frameTime;
@@ -77,11 +80,11 @@ void KApplication::runApplication()
 
 		Input::KInput::Update();
 
-		while (mp_renderWindow->pollEvent(evnt))
+		while (m_pRenderWindow->pollEvent(evnt))
 		{
 			if (evnt.type == Event::Closed)
 			{
-				mp_renderWindow->close();
+				m_pRenderWindow->close();
 			}
 			if (evnt.type == Event::GainedFocus)
 			{
@@ -106,7 +109,7 @@ void KApplication::runApplication()
 		{
 			accumulator = seconds(m_physicsDelta * 2);
 		}
-		
+
 		if (m_bHasFocus)
 		{
 			while (accumulator.asSeconds() > m_physicsDelta)
@@ -130,20 +133,21 @@ void KApplication::runApplication()
 		{
 			m_sceneDirector.tickActiveScene();
 		}
-
+		const float EXTRA_FPS_BUMP = 0;
 		const float time = deltaClock.getElapsedTime().asSeconds();
-		const float sleepTime = (1.0f / m_gameFPS) - time;
-		sf::sleep(sf::seconds(sleepTime));
-		
+		const float sleepTime = (1.0f / (m_gameFPS + EXTRA_FPS_BUMP)) - time;
+		//sf::sleep(sf::seconds(sleepTime));
+		this_thread::sleep_for(chrono::milliseconds(static_cast<int32>(sleepTime * 1000)));
 	}
 	rThread.join();
+	//pThread.join();
 }
 
 void Krawler::KApplication::cleanupApplication()
 {
 	m_sceneDirector.cleanupScenes();
-	KFREE(mp_renderWindow);
-	KFREE(mp_renderer);
+	KFREE(m_pRenderWindow);
+	KFREE(m_pRenderer);
 }
 
 float Krawler::KApplication::getElapsedTime() const
@@ -153,16 +157,69 @@ float Krawler::KApplication::getElapsedTime() const
 
 KRAWLER_API Vec2u Krawler::KApplication::getWindowSize() const
 {
-	return mp_renderWindow->getSize();
+	return m_pRenderWindow->getSize();
 }
 
 KRAWLER_API void Krawler::KApplication::closeApplication()
 {
-	mp_renderWindow->close();
+	m_pRenderWindow->close();
 }
 
 KApplication::KApplication()
 {
+}
+
+//Runs on pThread
+void Krawler::KApplication::fixedStep()
+{
+	Clock deltaClockFixedStep;
+	Clock elapsed;
+	Time accumulator; //time accumulator for fixed step 
+	Time lastTime;
+	Time currentTime;
+	Time time;
+
+	while (m_pRenderWindow->isOpen())
+	{
+		//KPrintf(KTEXT("Physics Text\n"));
+		//sf::sleep( )
+		lastTime = currentTime;
+		currentTime = elapsed.getElapsedTime();
+		Time frameTime;
+
+		frameTime = currentTime - lastTime;
+
+		const int32 idealDT = (int32)((1.0f / m_gameFPS) * 1000.0f);
+		accumulator += frameTime;
+
+		if (frameTime > seconds(m_physicsDelta * 4))
+		{
+			frameTime = seconds(m_physicsDelta * 4);
+		}
+
+		if (accumulator > seconds(m_physicsDelta * 2))
+		{
+			accumulator = seconds(m_physicsDelta * 2);
+		}
+
+		if (m_bHasFocus)
+		{
+			while (accumulator.asSeconds() > m_physicsDelta)
+			{
+				//previousState = currentState;
+				//Physics tick
+				m_physicsWorld.fixedTick();
+				m_sceneDirector.fixedTickActiveScene();
+				time += seconds(m_physicsDelta);
+				accumulator -= seconds(m_physicsDelta);
+			}
+		}
+
+
+		const int32 dtInMS = deltaClockFixedStep.restart().asMilliseconds();
+		this_thread::sleep_for(chrono::milliseconds(idealDT - dtInMS));
+		//KPrintf(L"DT: %f \n", 1.0f / ((float)(dtInMS + (idealDT - dtInMS)) / 1000.0f));
+	}
 }
 
 inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator)

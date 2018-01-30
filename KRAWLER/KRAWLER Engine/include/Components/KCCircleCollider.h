@@ -14,8 +14,9 @@ namespace Krawler
 			KRAWLER_API KCCircleCollider(KEntity* pEntity, float radius);
 			KRAWLER_API ~KCCircleCollider() = default;
 
-			KRAWLER_API const Vec2f& getCentrePosition() ;
+			KRAWLER_API const Vec2f& getCentrePosition();
 			KRAWLER_API float getRadius() const;
+			KRAWLER_API virtual const Rectf& getBoundingBox() override;
 
 		private:
 
@@ -23,6 +24,7 @@ namespace Krawler
 
 			float m_radius;
 			Vec2f m_centrePos;
+			Rectf m_boundingBox;
 
 		};
 	}

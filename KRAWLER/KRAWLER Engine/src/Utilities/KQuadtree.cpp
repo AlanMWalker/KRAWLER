@@ -1,6 +1,8 @@
 #include "Utilities\KQuadtree.h"
 #include "Components\KCTransform.h"
 
+#include "Components\KCColliderBase.h"
+
 using namespace Krawler;
 using namespace Components;
 
@@ -9,6 +11,12 @@ using namespace std;
 bool KQuadtree::insert(KEntity* pEntity)
 {
 	auto pTrans = pEntity->getComponent<KCTransform>();
+	auto pCollider = pEntity->getComponent<KCColliderBase>();
+
+	if (!pCollider) // if there's no collider then return false for not added
+	{
+		return false;
+	}
 
 	if (!m_boundary.contains(pTrans->getPosition()))
 	{
@@ -45,9 +53,14 @@ vector<KEntity*>& KQuadtree::queryEntitiy(KEntity* p)
 {
 	m_queriedPointList.clear();
 	auto pTransform = p->getComponent<KCTransform>();
+	KCColliderBase* pColliderBase = p->getComponent<KCColliderBase>();
+	const Rectf& boundingBox = pColliderBase->getBoundingBox();
 
-	if (!m_boundary.contains(pTransform->getPosition()) || m_points.size() == 0)
+	if (!m_boundary.intersects(boundingBox) || m_points.size() == 0)
+	{
 		return m_queriedPointList;
+	}
+
 	if (m_bHasSubdivided)
 	{
 		const LeavesIdentifier containingLeaf = getLeafEnum(p);
@@ -56,7 +69,11 @@ vector<KEntity*>& KQuadtree::queryEntitiy(KEntity* p)
 			vector<KEntity*>& queried = m_leaves[containingLeaf]->queryEntitiy(p);
 			for (auto& pEntity : queried)
 			{
-				m_queriedPointList.push_back(pEntity);
+				const Rectf& queriedEntityBoundingBox = pEntity->getComponent<KCColliderBase>()->getBoundingBox();
+				if (queriedEntityBoundingBox.intersects(boundingBox))
+				{
+					m_queriedPointList.push_back(pEntity);
+				}
 			}
 		}
 	}

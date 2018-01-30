@@ -1,5 +1,5 @@
 #include "KScene.h"
-#include "KApplication.h"	 
+#include "KApplication.h"
 
 #include "Components\KCTransform.h"
 #include "Components\KCColliderBase.h"
@@ -25,7 +25,7 @@ KInitStatus KScene::initScene()
 		//TODO Move to onenter
 		entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
 	}
-	
+
 	return KInitStatus::Success;
 }
 
@@ -40,26 +40,41 @@ void Krawler::KScene::cleanUpScene()
 
 void Krawler::KScene::tick()
 {
-	m_bHasTickedOnce = true;
+	KApplication::getMutexInstance().lock();
+	if (!m_bHasTickedOnce)
+	{
+		m_bHasTickedOnce = true;
+	}
 	m_qtree.clear();
 
 	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
 	{
-		if (!m_entities[i].isEntitiyInUse())
+		if (!m_entities[i].isEntityInUse())
 			continue;
 
 		m_entities[i].tick(); // tick all components
 		m_qtree.insert(&m_entities[i]); // insert entity into quadtree before handling box colliders
 	}
+	KApplication::getMutexInstance().unlock();
 }
 
 void Krawler::KScene::fixedTick()
 {
+	KApplication::getMutexInstance().lock();
+
 	vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs;
+	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
+	{
+		if (!m_entities[i].isEntityInUse())
+			continue;
+
+		//m_entities[i].tick(); // tick all components
+		m_qtree.insert(&m_entities[i]); // insert entity into quadtree before handling box colliders
+	}
 	// handle box colliders here
 	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
 	{
-		if (!m_entities[i].isEntitiyInUse())
+		if (!m_entities[i].isEntityInUse())
 		{//if entity isn't in use
 			continue;
 		}
@@ -74,6 +89,7 @@ void Krawler::KScene::fixedTick()
 		auto& colliderList = m_qtree.queryEntitiy(&m_entities[i]); // query the quadtree for a list of entities 
 																   // near the current one that we can query for collisions
 																   //KPrintf(L"Query list size %d\n", colliderList.size());
+
 		for (auto& pEntity : colliderList) //iterate over all possible entities in this list
 		{
 			//check pairs
@@ -100,12 +116,18 @@ void Krawler::KScene::fixedTick()
 			{
 				continue;
 			}
+			int16 collisionLayerA = pCollider->getCollisionLayer();
+			int16 collisionLayerB = possibleHitCollider->getCollisionLayer();
+			int16 sameLayer = (collisionLayerA & collisionLayerB);
+			if (sameLayer < 0xF)
+			{
+				continue;
+			}
 			KCollisionDetectionData data;
 			data.entityA = pairA.first;
 			data.entityB = pairA.second;
 
-			//const bool result = pCollider->checkIntersects(possibleHitCollider); // check for two intersect
-			//const bool result = AABBvsAABB(data); // check for two intersect
+
 			const bool result = CollisionLookupTable[pCollider->getColliderType()][possibleHitCollider->getColliderType()](data);
 
 			if (result)
@@ -118,21 +140,26 @@ void Krawler::KScene::fixedTick()
 	}
 	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
 	{
-		if (!m_entities[i].isEntitiyInUse())
+		if (!m_entities[i].isEntityInUse())
 		{
 			continue;
 		}
 		m_entities[i].fixedTick();
 	}
+	KApplication::getMutexInstance().unlock();
+
 }
 
 void KScene::onEnterScene()
 {
+	KApplication::getMutexInstance().lock();
+
 	KApplication::getApp()->getPhysicsWorld()->setQuadtree(&m_qtree);
 	for (auto& entity : m_entities)
 	{
 		entity.onEnterScene();
 	}
+	KApplication::getMutexInstance().unlock();
 }
 
 void KScene::onExitScene()

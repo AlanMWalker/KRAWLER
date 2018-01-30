@@ -64,7 +64,9 @@ namespace Krawler
 			Circle,
 			Mesh
 		};
+
 		using KCColliderBaseCallback = std::function<void(const KCollisionDetectionData& collData)>;
+
 		class KCColliderBase : public KComponentBase
 		{
 		public:
@@ -82,10 +84,17 @@ namespace Krawler
 
 			KRAWLER_API bool isCallbackSubscribed(KCColliderBaseCallback* callback) const;
 
+			KRAWLER_API virtual const Rectf& getBoundingBox() = 0;
+
+			KRAWLER_API void setCollisionLayer(int16 collisionLayer);
+
+			KRAWLER_API int16 getCollisionLayer() const { return m_collisionLayer; }
+
 		private:
 
 			std::vector<KCColliderBaseCallback*> m_callbacks;
 
+			uint16 m_collisionLayer;
 
 			KCColliderType m_colliderType;
 		};

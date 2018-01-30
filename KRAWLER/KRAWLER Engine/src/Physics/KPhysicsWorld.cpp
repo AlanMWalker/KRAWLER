@@ -44,13 +44,13 @@ void KPhysicsWorld::assembleEntityList()
 	auto& rSceneDirector = KApplication::getApp()->getSceneDirector();
 	KScene* pScene = rSceneDirector.getCurrentScene();
 
-	auto pEntities = pScene->getEntitiyList();
+	auto pEntities = pScene->getEntityList();
 	KCHECK(pEntities);
 
 	for (int32 i = 0; i < (signed)pScene->getNumbrOfEntitiesAllocated(); ++i)
 	{
 		auto& entity = pEntities[i];
-		if (!entity.isEntitiyInUse())
+		if (!entity.isEntityInUse())
 		{//contine if not in use
 			continue;
 		}

@@ -104,12 +104,14 @@ KTiledMapLoadResult KTiledMap::setupTiledMap(const std::wstring & filename)
 	return KTiledMapLoadResult::Map_Load_Success;
 }
 
-KRAWLER_API KTiledMapLoadResult Krawler::TiledMap::KTiledMap::setupTiledMapFromArray(int * tileIDs, Vec2i mapDimensions, Vec2i tileDimensions)
+KRAWLER_API KTiledMapLoadResult Krawler::TiledMap::KTiledMap::setupTiledMapFromArray(std::vector<int32>& tileIDs, Vec2i mapDimensions, Vec2i tileDimensions, Vec2i textureSize)
 {
 	m_mapWidth = mapDimensions.x;
 	m_mapHeight = mapDimensions.y;
 	m_tileWidth = tileDimensions.x;
 	m_tileHeight = tileDimensions.y;;
+	m_textureSize = textureSize;
+	m_tileIDs = tileIDs;
 
 	mp_mapData = new KMapTile[m_mapWidth * m_mapHeight];
 	m_vertArray.resize(m_mapWidth * m_mapHeight * 4);
@@ -131,21 +133,21 @@ KRAWLER_API KTiledMapLoadResult Krawler::TiledMap::KTiledMap::setupTiledMapFromA
 			pQuad[2].position = Vec2f((float)(i + 1)* m_tileWidth, (float)(j + 1)* m_tileHeight);
 			pQuad[3].position = Vec2f((float)i  * m_tileWidth, (float)(j + 1)* m_tileHeight);
 
-			mp_mapData[index].xPos = i;
-			mp_mapData[index].yPos = j;
+			/*pQuad[0].color = Colour::Magenta;
+			pQuad[1].color = Colour::Magenta;
+			pQuad[2].color = Colour::Magenta;
+			pQuad[3].color = Colour::Magenta;*/
 
-			int tu = tileId % (mp_texture->getSize().x / m_tileWidth);
-			int tv = tileId / (mp_texture->getSize().x / m_tileWidth);
-
-			pQuad[0].texCoords = sf::Vector2f(tu * m_tileWidth, tv * m_tileHeight);
-			pQuad[1].texCoords = sf::Vector2f((tu + 1) * m_tileWidth, tv * m_tileHeight);
-			pQuad[2].texCoords = sf::Vector2f((tu + 1) * m_tileWidth, (tv + 1) * m_tileHeight);
-			pQuad[3].texCoords = sf::Vector2f(tu * m_tileWidth, (tv + 1) * m_tileHeight);
-
-			pQuad[0].color = Color::Magenta;
-			pQuad[1].color = Color::Magenta;
-			pQuad[2].color = Color::Magenta;
-			pQuad[3].color = Color::Magenta;
+			//mp_mapData[index].xPos = i;
+			//mp_mapData[index].yPos = j;
+			//
+			//int tu = tileId % (mp_texture->getSize().x / m_tileWidth);
+			//int tv = tileId / (mp_texture->getSize().x / m_tileWidth);
+			//
+			//pQuad[0].texCoords = sf::Vector2f(tu * m_tileWidth, tv * m_tileHeight);
+			//pQuad[1].texCoords = sf::Vector2f((tu + 1) * m_tileWidth, tv * m_tileHeight);
+			//pQuad[2].texCoords = sf::Vector2f((tu + 1) * m_tileWidth, (tv + 1) * m_tileHeight);
+			//pQuad[3].texCoords = sf::Vector2f(tu * m_tileWidth, (tv + 1) * m_tileHeight);
 		}
 	}
 
@@ -153,8 +155,53 @@ KRAWLER_API KTiledMapLoadResult Krawler::TiledMap::KTiledMap::setupTiledMapFromA
 	return KTiledMapLoadResult::Map_Load_Success;
 }
 
-void Krawler::TiledMap::KTiledMap::setTexture(const std::wstring & textureFileName)
+void Krawler::TiledMap::KTiledMap::setTexture(sf::Texture* const pTexture)
 {
-	mp_texture = KAssetLoader::getAssetLoader().loadTexture(textureFileName);
-	//mp_texture->setSmooth(true);
+	if (!pTexture)
+	{
+		KPrintf(KTEXT("Nullptr passed as texture for tiledmap! %s \n"), __FILEW__);
+		return;
+	}
+
+	mp_texture = pTexture;
+
+	for (int32 j = 0; j < m_mapHeight; ++j)
+	{
+		for (int32 i = 0; i < m_mapWidth; ++i)
+		{
+			const int index = i + j * m_mapWidth;
+
+			int tileId = 0;
+
+			tileId = m_tileIDs[index];
+			Vertex* const pQuad = &m_vertArray[index * 4];
+
+			int tu = tileId % (mp_texture->getSize().x / m_textureSize.x);
+			int tv = tileId / (mp_texture->getSize().x / m_textureSize.x);
+
+			pQuad[0].texCoords = sf::Vector2f(tu * m_textureSize.x, tv * m_textureSize.y);
+			pQuad[1].texCoords = sf::Vector2f((tu + 1) * m_textureSize.x, tv * m_textureSize.y);
+			pQuad[2].texCoords = sf::Vector2f((tu + 1) * m_textureSize.x, (tv + 1) * m_textureSize.y);
+			pQuad[3].texCoords = sf::Vector2f(tu * m_textureSize.x, (tv + 1) * m_textureSize.y);
+
+
+		}
+	}
+	mp_texture->setSmooth(true);
+}
+
+void KTiledMap::setAllTilesColour(const Colour & col)
+{
+	for (int32 j = 0; j < m_mapHeight; ++j)
+	{
+		for (int32 i = 0; i < m_mapWidth; ++i)
+		{
+			int idx = i + j * m_mapWidth;
+			Vertex* const pQuad = &m_vertArray[idx * 4];
+			pQuad[0].color = col;
+			pQuad[1].color = col;
+			pQuad[2].color = col;
+			pQuad[3].color = col;
+		}
+	}
 }

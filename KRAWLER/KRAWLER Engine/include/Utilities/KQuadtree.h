@@ -27,6 +27,7 @@ namespace Krawler
 			: m_level(level), m_boundary(bounds), m_bHasSubdivided(false), m_leaves{ nullptr }
 		{
 		}
+
 		~KQuadtree()
 		{
 
@@ -34,10 +35,10 @@ namespace Krawler
 
 		bool insert(KEntity* p);
 		std::vector<KEntity*>& queryEntitiy(KEntity* pEntity);
-		//std::list<KEntity> query();
 		void clear();
 
 	private:
+
 		void subdivide();
 		LeavesIdentifier getLeafEnum(KEntity* pEntity) const;
 

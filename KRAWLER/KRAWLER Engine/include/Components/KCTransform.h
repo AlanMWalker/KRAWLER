@@ -116,7 +116,7 @@ namespace Krawler
 			KCTransform* m_pParentTransform;
 
 			sf::Transform m_transform;
-			sf::Transform m_parentedTransform;
+			sf::Transform m_combinedWithParentTransform;
 
 			float m_rotation;
 

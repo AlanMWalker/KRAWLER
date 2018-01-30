@@ -75,6 +75,8 @@ void KPhysicsBodyProperties::setMass(float inMass)
 
 void KPhysicsBodyProperties::computeMass(float density, KCColliderType colliderType)
 {
+	density = 0.0;
+	colliderType = KCColliderType::Circle;
 	//switch (colliderType)
 	//{
 	//default:

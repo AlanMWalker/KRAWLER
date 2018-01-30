@@ -19,7 +19,7 @@ void Krawler::Components::KCTransform::tick()
 	}
 	if (m_bHasParent)
 	{
-		float parentRot = m_pParentTransform->getRotation();
+		//float parentRot = m_pParentTransform->getRotation();
 		m_combinedWithParentTransform = m_pParentTransform->getTransform() * m_transform;
 		//m_parentedTransform.translate(m_pParentTransform->getOrigin().x*m_pParentTransform->getScale().x, m_pParentTransform->getOrigin().y*m_pParentTransform->getScale().y);
 	}
@@ -112,7 +112,6 @@ void Krawler::Components::KCTransform::setScale(float x, float y)
 
 Vec2f Krawler::Components::KCTransform::getScale() const
 {
-	const float* const pMatrix = !m_bHasParent ? m_transform.getMatrix() : m_combinedWithParentTransform.getMatrix();
 	if (m_bHasParent)
 		return Vec2f(m_scale.x* m_pParentTransform->getScale().x, m_scale.y * m_pParentTransform->getScale().y);
 	return m_scale;

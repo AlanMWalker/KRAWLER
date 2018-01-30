@@ -16,9 +16,6 @@ bool Krawler::AABBvsAABB(KCollisionDetectionData & collData)
 	KCBoxCollider* const colliderEntityA = collData.entityA->getComponent<KCBoxCollider>();
 	KCBoxCollider* const colliderEntityB = collData.entityB->getComponent<KCBoxCollider>();
 
-	KCTransform* const transformA = collData.entityA->getComponent<KCTransform>();
-	KCTransform* const transformB = collData.entityB->getComponent<KCTransform>();
-
 	Vec2f topLeftA, topLeftB; // top left co-ord of the entity
 	topLeftA = colliderEntityA->getTopLeftCoord();
 	topLeftB = colliderEntityB->getTopLeftCoord();
@@ -113,8 +110,6 @@ bool Krawler::AABBvsCircle(KCollisionDetectionData & collData)
 	KCBoxCollider* const colliderEntityA = collData.entityA->getComponent<KCBoxCollider>();
 	KCCircleCollider* const colliderEntityB = collData.entityB->getComponent<KCCircleCollider>();
 
-	KCTransform* pTransformEntityA = collData.entityA->getComponent<KCTransform>();
-
 	const float xExtent = colliderEntityA->getHalfSize().x;
 	const float yExtent = colliderEntityA->getHalfSize().y;
 
@@ -185,8 +180,6 @@ bool Krawler::CirclevsAABB(KCollisionDetectionData & collData)
 {
 	KCCircleCollider* const colliderEntityA = collData.entityA->getComponent<KCCircleCollider>();
 	KCBoxCollider* const colliderEntityB = collData.entityB->getComponent<KCBoxCollider>();
-
-	KCTransform* pTransformEntityA = collData.entityA->getComponent<KCTransform>();
 
 	const float xExtent = colliderEntityB->getHalfSize().x;
 	const float yExtent = colliderEntityB->getHalfSize().y;

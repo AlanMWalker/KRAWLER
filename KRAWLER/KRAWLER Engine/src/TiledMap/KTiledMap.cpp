@@ -179,12 +179,10 @@ void Krawler::TiledMap::KTiledMap::setTexture(sf::Texture* const pTexture)
 			int tu = tileId % (mp_texture->getSize().x / m_textureSize.x);
 			int tv = tileId / (mp_texture->getSize().x / m_textureSize.x);
 
-			pQuad[0].texCoords = sf::Vector2f(tu * m_textureSize.x, tv * m_textureSize.y);
-			pQuad[1].texCoords = sf::Vector2f((tu + 1) * m_textureSize.x, tv * m_textureSize.y);
-			pQuad[2].texCoords = sf::Vector2f((tu + 1) * m_textureSize.x, (tv + 1) * m_textureSize.y);
-			pQuad[3].texCoords = sf::Vector2f(tu * m_textureSize.x, (tv + 1) * m_textureSize.y);
-
-
+			pQuad[0].texCoords = sf::Vector2f((float)tu * m_textureSize.x, (float)tv * m_textureSize.y);
+			pQuad[1].texCoords = sf::Vector2f((float)(tu + 1) * m_textureSize.x, (float)tv * m_textureSize.y);
+			pQuad[2].texCoords = sf::Vector2f((float)(tu + 1) * m_textureSize.x, (float)(tv + 1) * m_textureSize.y);
+			pQuad[3].texCoords = sf::Vector2f((float)tu * m_textureSize.x, (float)(tv + 1) * m_textureSize.y);
 		}
 	}
 	mp_texture->setSmooth(true);

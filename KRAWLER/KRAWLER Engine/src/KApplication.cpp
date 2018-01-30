@@ -134,8 +134,8 @@ void KApplication::runApplication()
 			m_sceneDirector.tickActiveScene();
 		}
 		const float EXTRA_FPS_BUMP = 0;
-		const float time = deltaClock.getElapsedTime().asSeconds();
-		const float sleepTime = (1.0f / (m_gameFPS + EXTRA_FPS_BUMP)) - time;
+		const float timeInSec = deltaClock.getElapsedTime().asSeconds();
+		const float sleepTime = (1.0f / (m_gameFPS + EXTRA_FPS_BUMP)) - timeInSec;
 		//sf::sleep(sf::seconds(sleepTime));
 		this_thread::sleep_for(chrono::milliseconds(static_cast<int32>(sleepTime * 1000)));
 	}

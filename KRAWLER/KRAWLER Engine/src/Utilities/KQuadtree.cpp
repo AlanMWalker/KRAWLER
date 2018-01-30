@@ -52,7 +52,6 @@ bool KQuadtree::insert(KEntity* pEntity)
 vector<KEntity*>& KQuadtree::queryEntitiy(KEntity* p)
 {
 	m_queriedPointList.clear();
-	auto pTransform = p->getComponent<KCTransform>();
 	KCColliderBase* pColliderBase = p->getComponent<KCColliderBase>();
 	const Rectf& boundingBox = pColliderBase->getBoundingBox();
 

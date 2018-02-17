@@ -6,6 +6,7 @@
 
 #include <SFML\Graphics.hpp>
 #include <AssetLoader\KAssetLoader.h>
+
 using namespace Krawler;
 using namespace Krawler::Renderer;
 
@@ -191,7 +192,6 @@ void KRenderer::generateSpriteList()
 		m_sprites.push_back(pSprite);
 	}
 	KApplication::getMutexInstance().unlock();
-
 }
 
 void KRenderer::sortByRenderLayer()

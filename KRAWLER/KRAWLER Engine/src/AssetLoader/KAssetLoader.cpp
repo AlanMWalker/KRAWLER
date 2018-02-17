@@ -136,6 +136,6 @@ sf::Texture * Krawler::KAssetLoader::loadTextureASYNC(const std::wstring & fileN
 	}
 
 	m_texturesMap.emplace(s, new Texture(t));
-
+	
 	return m_texturesMap[m_rootFolder + fileName];
 }

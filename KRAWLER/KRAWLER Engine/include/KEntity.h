@@ -2,9 +2,11 @@
 #define KENTITY_H
 
 #include <vector>
-
-#include "Krawler.h"
-#include "KComponent.h"
+#include <codecvt>
+#include <locale>
+#include <string>
+#include <Krawler.h>
+#include <KComponent.h>
 
 namespace Krawler
 {
@@ -97,8 +99,9 @@ namespace Krawler
 		});
 
 		if (result == m_componentVector.end())
+		{
 			return nullptr;
-
+		}
 		return dynamic_cast<TComponent*>(*result);
 	}
 }

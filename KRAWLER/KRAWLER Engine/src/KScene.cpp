@@ -86,12 +86,18 @@ void Krawler::KScene::fixedTick()
 			continue;
 		}
 
-		auto& colliderList = m_qtree.queryEntitiy(&m_entities[i]); // query the quadtree for a list of entities 
-																   // near the current one that we can query for collisions
-																   //KPrintf(L"Query list size %d\n", colliderList.size());
+		//auto& colliderList = m_qtree.queryEntitiy(&m_entities[i]); // query the quadtree for a list of entities 
+		//														   // near the current one that we can query for collisions
+		//														   //KPrintf(L"Query list size %d\n", colliderList.size());
 
-		for (auto& pEntity : colliderList) //iterate over all possible entities in this list
+		std::stack<KEntity*>& colliderStack = m_qtree.getPossibleCollidingEntitiesStack(&m_entities[i]);
+
+		//for (auto& pEntity : colliderList) //iterate over all possible entities in this list
+		//for (int32 j = 0; i < colliderStack.size(); ++j )
+		while(!colliderStack.empty())
 		{
+			KEntity* pEntity = colliderStack.top();
+
 			//check pairs
 			KCHECK(pEntity);
 
@@ -107,6 +113,7 @@ void Krawler::KScene::fixedTick()
 
 			if (isEqualA != alreadyCheckedCollisionPairs.end() || isEqualASwapped != alreadyCheckedCollisionPairs.end())
 			{
+				colliderStack.pop();
 				continue;
 			}
 
@@ -114,19 +121,24 @@ void Krawler::KScene::fixedTick()
 
 			if (!possibleHitCollider)// if no box collider is found, continue to next collider
 			{
+				colliderStack.pop();
 				continue;
 			}
-			int16 collisionLayerA = pCollider->getCollisionLayer();
-			int16 collisionLayerB = possibleHitCollider->getCollisionLayer();
-			int16 sameLayer = (collisionLayerA & collisionLayerB);
-			if (sameLayer < 0xF)
+			const KCColliderFilteringData& filterA = pCollider->getCollisionFilteringData();
+			const KCColliderFilteringData& filterB = possibleHitCollider->getCollisionFilteringData();
+
+			// if collision filters tested against collision masks for entity a & b exclude them from being allowed
+			// to collide with one another, then continue onto the next pair.
+
+			if ((filterA.collisionFilter & filterB.collisionMask) == 0 || (filterB.collisionFilter & filterA.collisionMask) == 0)
 			{
+				colliderStack.pop();
 				continue;
 			}
+
 			KCollisionDetectionData data;
 			data.entityA = pairA.first;
 			data.entityB = pairA.second;
-
 
 			const bool result = CollisionLookupTable[pCollider->getColliderType()][possibleHitCollider->getColliderType()](data);
 
@@ -136,6 +148,8 @@ void Krawler::KScene::fixedTick()
 				possibleHitCollider->collisionCallback(data);
 				pCollider->collisionCallback(data);
 			}
+			colliderStack.pop();
+
 		}
 	}
 	for (uint32 i = 0; i < m_entitiesAllocated; ++i)

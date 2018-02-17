@@ -80,8 +80,8 @@ void Krawler::Components::KCTransform::setTranslation(float dx, float dy)
 
 const Vec2f Krawler::Components::KCTransform::getPosition() const
 {
-	const float* const pMatrix = !m_bHasParent ? m_transform.getMatrix() : m_combinedWithParentTransform.getMatrix();
-	return Vec2f(pMatrix[12], pMatrix[13]);
+	const sf::Transform* const pTransform = !m_bHasParent ? &m_transform : &m_combinedWithParentTransform;
+	return pTransform->transformPoint(getOrigin());
 }
 
 float Krawler::Components::KCTransform::getRotation() const

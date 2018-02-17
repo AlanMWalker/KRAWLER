@@ -109,6 +109,8 @@ namespace Krawler
 			KRAWLER_API void scale(const Vec2f& scale);
 			KRAWLER_API void scale(float sx, float sy);
 
+			KRAWLER_API const Vec2f& getTranslation() const { return m_trans; }
+
 		private:
 
 			void reconstructTransform();

@@ -148,13 +148,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;KRAWLERENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\SFML-2.4.2\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,7 +168,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RC|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -237,6 +238,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RC|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Maths\KOrientation.cpp" />
+    <ClCompile Include="src\Components\KCollisions.cpp" />
+    <ClCompile Include="src\Components\KCOrientedBoxCollider.cpp" />
     <ClCompile Include="src\Components\KCCircleCollider.cpp" />
     <ClCompile Include="src\Components\KCColliderBase.cpp" />
     <ClCompile Include="src\Physics\KPhysicsWorld.cpp" />
@@ -263,6 +267,8 @@
     <ClInclude Include="include\Components\KCBoxCollider.h" />
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />
+    <ClInclude Include="include\Components\KCollisions.h" />
+    <ClInclude Include="include\Components\KCOrientedBoxCollider.h" />
     <ClInclude Include="include\Components\KCPhysicsBody.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\KComponent.h" />
@@ -277,6 +283,7 @@
     <ClInclude Include="include\Maths\KMaths.hpp" />
     <ClInclude Include="include\Maths\KMathsUtilities.h" />
     <ClInclude Include="include\Maths\KMathVector.h" />
+    <ClInclude Include="include\Maths\KOrientation.h" />
     <ClInclude Include="include\Physics\KPhysicsStructs.h" />
     <ClInclude Include="include\Physics\KPhysicsWorld.h" />
     <ClInclude Include="include\Renderer\KRenderer.h" />

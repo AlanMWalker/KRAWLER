@@ -22,14 +22,17 @@ namespace Krawler
 			KRAWLER_API virtual const Rectf& getBoundingBox() override;
 
 			KRAWLER_API virtual void tick() override;
+			KRAWLER_API virtual void fixedTick() override;
 
-			KRAWLER_API Vec2f getFaceNormal(int faceIdx) const;
+			KRAWLER_API Vec2f getOrientedFaceNormal(int faceIdx) const;
+			KRAWLER_API const Vec2f& getNormal(int faceIdx) const;
 
-			KRAWLER_API Vec2f getVertexPosition(int vertIdx) const;
+			KRAWLER_API Vec2f getVertexWorldPosition(int vertIdx) const;
+			KRAWLER_API const Vec2f& getVertexLocalPosition(int vertIdx) const;
 
 			KRAWLER_API Vec2f getSupport(const Vec2f& dir) const;
 			KRAWLER_API const KOrientation& getOrientation() const { return m_orientation; }
-			KRAWLER_API const Vec2f& getTranslation() const { return m_pTransform->getTranslation(); }
+			KRAWLER_API Vec2f getPosition() const { return m_pTransform->getPosition(); }
 		private:
 
 			Vec2f m_size;
@@ -40,13 +43,13 @@ namespace Krawler
 
 			Vec2f m_vertices[FaceCount];
 
-			Vec2f m_normals[FaceCount] =
+			Vec2f m_normals[FaceCount];/* =
 			{
 				Vec2f(0.0,-1.0f),
 				Vec2f(1.0f, 0.0f),
 				Vec2f(0.0f, 1.0f),
 				Vec2f(-1.0f, 0.0f)
-			};
+			};*/
 
 		};
 	}

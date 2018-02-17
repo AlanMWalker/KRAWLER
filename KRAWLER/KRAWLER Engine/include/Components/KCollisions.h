@@ -14,7 +14,7 @@ namespace Krawler
 
 	KRAWLER_API bool OBBvsAABB(KCollisionDetectionData& data);
 	KRAWLER_API bool AABBvsOBB(KCollisionDetectionData& data);
-	KRAWLER_API bool OBBvsCirlce(KCollisionDetectionData& data);
+	KRAWLER_API bool OBBvsCircle(KCollisionDetectionData& data);
 	KRAWLER_API bool CirclevsOBB(KCollisionDetectionData& data);
 	KRAWLER_API bool OBBvsOBB(KCollisionDetectionData& data);
 
@@ -23,11 +23,7 @@ namespace Krawler
 	{
 		{ AABBvsAABB, AABBvsCircle, AABBvsOBB },
 		{ CirclevsAABB, CirclevsCircle, CirclevsOBB },
-		{ OBBvsAABB, OBBvsCirlce, OBBvsOBB }
+		{ OBBvsAABB, OBBvsCircle, OBBvsOBB }
 	};
-
-
-	
-
 }
 #endif 

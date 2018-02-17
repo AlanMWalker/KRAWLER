@@ -13,6 +13,17 @@ using namespace Krawler::Components;
 //SAT Helper functions ( currently for OBB impl only) 
 static float FindAxisLeastPenetration(int32& faceIdx, KCOrientedBoxCollider* const colA, KCOrientedBoxCollider* const colB);
 
+static __forceinline bool BiasGreaterThan(float a, float b)
+{
+	const float k_biasRelative = 0.95f;
+	const float k_biasAbsolute = 0.01f;
+	return a >= b * k_biasRelative + a * k_biasAbsolute;
+}
+
+static void FindIncidentFace(Vec2f v[], KCOrientedBoxCollider* const refOBB, KCOrientedBoxCollider* const incOBB, int32 refIdx);
+
+static int32 clip(Vec2f n, float c, Vec2f face[]);
+
 bool Krawler::AABBvsAABB(KCollisionDetectionData & collData)
 {
 	//Setup pointers to physics bodies
@@ -261,18 +272,224 @@ bool Krawler::AABBvsOBB(KCollisionDetectionData & data)
 	return true;
 }
 
-bool Krawler::OBBvsCirlce(KCollisionDetectionData & data)
+bool Krawler::OBBvsCircle(KCollisionDetectionData & collData)
 {
+	KEntity* temp = collData.entityA;
+	collData.entityA = collData.entityB;
+	collData.entityB = temp;
+
+	bool result = CirclevsOBB(collData);
+
+	temp = collData.entityA;
+	collData.entityA = collData.entityB;
+	collData.entityB = temp;
+	collData.collisionNormal = -collData.collisionNormal;
+
+	return result;
+}
+
+bool Krawler::CirclevsOBB(KCollisionDetectionData & collData)
+{
+	constexpr float EPSILON = 0.0001f;
+
+	KCCircleCollider* circleCollider = collData.entityA->getComponent<KCCircleCollider>();
+	KCOrientedBoxCollider* obbCollider = collData.entityB->getComponent<KCOrientedBoxCollider>();
+
+	if (!circleCollider || !obbCollider)
+	{
+		return false;
+	}
+
+	const KOrientation& obbOrientation = obbCollider->getOrientation();
+
+	collData.contactCount = 0;
+
+	Vec2f centre = circleCollider->getCentrePosition();
+	const float radius = circleCollider->getRadius();
+	//transform circle centre to obb space
+	centre = obbOrientation.getTransposedOrientation() * (centre - obbCollider->getPosition());
+
+	float separation = -FLT_MAX;
+	int32 faceNormal = 0;
+
+	for (int32 i = 0; i < FaceCount; ++i)
+	{
+		float s = DotProduct(obbCollider->getNormal(i), centre - obbCollider->getVertexLocalPosition(i));
+
+		if (s > radius)
+		{
+			return false;
+		}
+
+		if (s > separation)
+		{
+			separation = s;
+			faceNormal = i;
+		}
+	}
+
+	Vec2f v1 = obbCollider->getVertexLocalPosition(faceNormal);
+	int32 faceNormal2 = (faceNormal + 1 >= FaceCount) ? 0 : faceNormal + 1;
+	Vec2f v2 = obbCollider->getVertexLocalPosition(faceNormal2);
+
+	//if centre is within obb
+	if (separation < EPSILON)
+	{
+		collData.contactCount = 1;
+		collData.collisionNormal = obbCollider->getOrientedFaceNormal(faceNormal);
+		collData.contacts[0] = collData.collisionNormal * radius + circleCollider->getCentrePosition();
+		collData.penetration = radius;
+		return true;
+	}
+
+	const float dot1 = DotProduct(centre - v1, v2 - v1);
+	const float dot2 = DotProduct(centre - v2, v1 - v2);
+
+	collData.penetration = (radius - separation) / radius;
+
+	if (dot1 <= 0.0f)
+	{
+		if (GetSquareLength(centre - v1) > radius * radius)
+		{
+			return false;
+		}
+		collData.contactCount = 1;
+		Vec2f n = v1 - centre;
+		n = obbOrientation* n;
+		n = Normalise(n);
+		collData.collisionNormal = n;
+		collData.contacts[0] = obbOrientation * v1 + obbCollider->getPosition();
+	}
+	else if (dot2 <= 0.0f)
+	{
+		if (GetSquareLength(centre - v2) > radius * radius)
+		{
+			return false;
+		}
+
+		collData.contactCount = 1;
+		Vec2f n = v2 - centre;
+		v2 = obbOrientation*n;
+		n = Normalise(n);
+		collData.collisionNormal = n;
+		collData.contacts[0] = obbOrientation * v2 + obbCollider->getPosition();
+	}
+	else
+	{
+		Vec2f n = obbCollider->getNormal(faceNormal);
+		if (DotProduct(centre - v1, n) > radius)
+		{
+			return false;
+		}
+		n = obbOrientation*n;
+		collData.collisionNormal = -n;
+		collData.contacts[0] = collData.collisionNormal * radius + circleCollider->getCentrePosition();
+		collData.contactCount = 1;
+	}
+
 	return true;
 }
 
-bool Krawler::CirclevsOBB(KCollisionDetectionData & data)
+bool Krawler::OBBvsOBB(KCollisionDetectionData & collData)
 {
-	return true;
-}
+	KCOrientedBoxCollider *obb_A, *obb_B;
+	obb_A = collData.entityA->getComponent<KCOrientedBoxCollider>();
+	obb_B = collData.entityB->getComponent<KCOrientedBoxCollider>();
 
-bool Krawler::OBBvsOBB(KCollisionDetectionData & data)
-{
+	if (!obb_A || !obb_B)
+	{
+		return false;
+	}
+
+	int32 faceA;
+	float penA = FindAxisLeastPenetration(faceA, obb_A, obb_B);
+	if (penA >= 0.0f)
+	{
+		return false;
+	}
+
+	int32 faceB;
+	float penB = FindAxisLeastPenetration(faceB, obb_B, obb_A);
+	if (penB >= 0.0f)
+	{
+		return false;
+	}
+
+	uint32 refIndex;
+	bool flip; //always point from a to b
+
+	KCOrientedBoxCollider *refOBB, *incOBB; //reference and incident 
+
+	if (BiasGreaterThan(penA, penB))
+	{
+		refOBB = obb_A;
+		incOBB = obb_B;
+		refIndex = faceA;
+		flip = false;
+	}
+	else
+	{
+		refOBB = obb_B;
+		incOBB = obb_A;
+		refIndex = faceB;
+		flip = true;
+	}
+
+	Vec2f incidentFace[2];
+	FindIncidentFace(incidentFace, refOBB, incOBB, refIndex);
+
+	//get face vertices from incident face
+	Vec2f v1 = refOBB->getVertexWorldPosition(refIndex);
+	refIndex = (refIndex + 1 >= FaceCount) ? 0 : refIndex + 1;
+	Vec2f v2 = refOBB->getVertexWorldPosition(refIndex);
+
+	//calculate face side normal in world space
+	Vec2f sidePlaneNormal = Normalise((v2 - v1));
+
+	Vec2f refFaceNormal(sidePlaneNormal.y, -sidePlaneNormal.x);
+
+	float refC = DotProduct(refFaceNormal, v1);
+	float negativeSide = -DotProduct(sidePlaneNormal, v1);
+	float posSide = DotProduct(sidePlaneNormal, v2);
+
+	if (clip(-sidePlaneNormal, negativeSide, incidentFace) < 2)
+	{
+		return false;
+	}
+
+	if (clip(sidePlaneNormal, posSide, incidentFace) < 2)
+	{
+		return false;
+	}
+
+	collData.collisionNormal = flip ? -refFaceNormal : refFaceNormal;
+
+	uint32 cp = 0;
+	float separation = DotProduct(refFaceNormal, incidentFace[0]) - refC;
+
+	if (separation <= 0.0f)
+	{
+		collData.contacts[cp] = incidentFace[0];
+		collData.penetration = -separation;
+		++cp;
+	}
+	else
+	{
+		collData.penetration = 0.0f;
+	}
+
+	separation = DotProduct(refFaceNormal, incidentFace[1]) - refC;
+	if (separation <= 0.0f)
+	{
+		collData.contacts[cp] = incidentFace[1];
+		collData.penetration += -separation;
+		++cp;
+
+		collData.penetration /= (float)cp;
+	}
+
+	collData.contactCount = cp;
+
 	return true;
 }
 
@@ -283,7 +500,7 @@ float FindAxisLeastPenetration(int32 & faceIdx, KCOrientedBoxCollider * const co
 
 	for (int32 i = 0; i < FaceCount; ++i)
 	{
-		Vec2f orientedNormal = colA->getFaceNormal(i); // normal which accounts for collider a's rotation
+		Vec2f orientedNormal = colA->getOrientedFaceNormal(i); // normal which accounts for collider a's rotation
 
 		KOrientation transposedOrientationB = colB->getOrientation().getTransposedOrientation();
 
@@ -292,8 +509,8 @@ float FindAxisLeastPenetration(int32 & faceIdx, KCOrientedBoxCollider * const co
 		//retrieve support point from B along -normal
 		Vec2f s = colB->getSupport(-normal);
 
-		Vec2f v = colA->getVertexPosition(i);
-		v -= colB->getTranslation();
+		Vec2f v = colA->getVertexWorldPosition(i);
+		v -= colB->getPosition();
 		v = transposedOrientationB * v;
 
 		float dp = DotProduct(normal, s - v);
@@ -307,4 +524,63 @@ float FindAxisLeastPenetration(int32 & faceIdx, KCOrientedBoxCollider * const co
 
 	faceIdx = bestIdx;
 	return bestDistance;
+}
+
+void FindIncidentFace(Vec2f v[], KCOrientedBoxCollider * const refOBB, KCOrientedBoxCollider * const incOBB, int32 refIdx)
+{
+	Vec2f refNormal = refOBB->getOrientedFaceNormal(refIdx);
+
+	refNormal = incOBB->getOrientation().getTransposedOrientation() *  refNormal;
+
+	int32 incFace = 0;
+	float minDP = FLT_MAX;
+	for (int32 i = 0; i < FaceCount; ++i)
+	{
+		float dp = DotProduct(refNormal, incOBB->getNormal(i));
+		if (dp < minDP)
+		{
+			minDP = dp;
+			incFace = i;
+		}
+	}
+
+	v[0] = incOBB->getVertexWorldPosition(incFace);
+	incFace = (incFace + 1 >= FaceCount) ? 0 : incFace + 1;
+	v[1] = incOBB->getVertexWorldPosition(incFace);
+}
+
+int32 clip(Vec2f n, float c, Vec2f face[])
+{
+	int32 sp = 0;
+	Vec2f out[2] =
+	{
+		face[0],
+		face[1]
+	};
+
+	float d1 = DotProduct(n, face[0]) - c;
+	float d2 = DotProduct(n, face[1]) - c;
+
+	if (d1 <= 0.0f)
+	{
+		out[sp++] = face[0];
+	}
+
+	if (d2 <= 0.0f)
+	{
+		out[sp++] = face[1];
+	}
+
+	if (d1*d2 < 0.0f)
+	{
+		float alpha = d1 / (d1 - d2);
+		out[sp] = face[0] + alpha * (face[1] - face[0]);
+		++sp;
+	}
+
+	face[0] = out[0];
+	face[1] = out[1];
+
+	KCHECK(sp != 3);
+	return sp;
 }

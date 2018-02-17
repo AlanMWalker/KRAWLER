@@ -43,6 +43,8 @@ namespace Krawler
 
 		float penetration = 0.0f;
 		Vec2f collisionNormal = Vec2f(0.0f, 0.0f);
+		uint32 contactCount = 0;
+		Vec2f contacts[2];
 	};
 
 	namespace Components

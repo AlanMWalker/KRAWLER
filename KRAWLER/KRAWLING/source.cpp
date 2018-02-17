@@ -377,7 +377,7 @@ int main(void)
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
-	entity->addComponent(new OBBTest(entity));
+	entity->addComponent(new PhysicsTest(entity));
 	InitialiseSubmodules();
 
 	RunApplication();

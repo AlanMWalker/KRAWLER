@@ -1,9 +1,11 @@
 #ifndef KCCOLLIDER_BASE_H
 #define KCCOLLIDER_BASE_H
 
-#include "Krawler.h"	
-#include "KComponent.h"	
-#include "KEntity.h"
+#include <Krawler.h>	
+#include <KComponent.h>
+#include <KEntity.h>
+
+#include <Components\KCollisions.h>
 
 #include <functional>
 #include <vector>
@@ -41,20 +43,9 @@ namespace Krawler
 
 		float penetration = 0.0f;
 		Vec2f collisionNormal = Vec2f(0.0f, 0.0f);
+		uint32 contactCount = 0;
+		Vec2f contacts[2];
 	};
-
-
-	KRAWLER_API bool AABBvsAABB(KCollisionDetectionData& data);
-	KRAWLER_API bool CirclevsCircle(KCollisionDetectionData& data);
-	KRAWLER_API bool AABBvsCircle(KCollisionDetectionData& data);
-	KRAWLER_API bool CirclevsAABB(KCollisionDetectionData& data);
-
-	static bool(*CollisionLookupTable[2][2])(KCollisionDetectionData&) =
-	{
-		{ AABBvsAABB, AABBvsCircle },
-		{ CirclevsAABB, CirclevsCircle },
-	};
-
 
 	namespace Components
 	{
@@ -62,9 +53,17 @@ namespace Krawler
 		{
 			AABB,
 			Circle,
-			Mesh
+			OBB
 		};
+
+		struct KCColliderFilteringData
+		{
+			int16 collisionFilter = 0x0001;
+			int16 collisionMask = 0x0001;
+		};
+
 		using KCColliderBaseCallback = std::function<void(const KCollisionDetectionData& collData)>;
+
 		class KCColliderBase : public KComponentBase
 		{
 		public:
@@ -82,11 +81,19 @@ namespace Krawler
 
 			KRAWLER_API bool isCallbackSubscribed(KCColliderBaseCallback* callback) const;
 
+			KRAWLER_API virtual const Rectf& getBoundingBox() = 0;
+
+			KRAWLER_API void setCollisionFilteringData(const KCColliderFilteringData& filteringPOD);
+
+			KRAWLER_API const KCColliderFilteringData& getCollisionFilteringData() const { return m_filterData; }
+
 		private:
 
 			std::vector<KCColliderBaseCallback*> m_callbacks;
 
+			uint16 m_collisionLayer;
 
+			KCColliderFilteringData m_filterData;
 			KCColliderType m_colliderType;
 		};
 	}

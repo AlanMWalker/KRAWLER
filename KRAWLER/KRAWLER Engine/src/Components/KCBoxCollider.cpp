@@ -16,19 +16,32 @@ const Rectf & KCBoxCollider::getBounds()
 	return m_aabb;
 }
 
+const Rectf& KCBoxCollider::getBoundingBox()
+{
+	updateAABB();
+	return m_aabb;
+}
+
 Vec2f KCBoxCollider::getTopLeftCoord() const
 {
-	Vec2f coord;
-	coord = m_pTransform->getOrigin();
-	coord = -(Vec2f(coord.x * m_pTransform->getScale().x, coord.y * m_pTransform->getScale().y));
-	return m_pTransform->getTransform().transformPoint(0, 0);
+	const Vec2f& origin = m_pTransform->getOrigin();
+	//if (origin == Vec2f(0, 0))
+	//{
+	//	//return m_pTransform->getTranslation();
+	//	return m_pTransform->getPosition();
+	//
+	//}
+	//const Vec2f coord = -(Vec2f(origin.x * m_pTransform->getScale().x, origin.y * m_pTransform->getScale().y));
+	//return m_pTransform->getTranslation() - origin;
+
+	const Vec2f pos = m_pTransform->getTransform().transformPoint(0.0f, 0.0f);
+	return pos;
 }
 
 void KCBoxCollider::updateAABB()
 {
-	Vec2f topLeft = getTopLeftCoord();
-	m_aabb.left = topLeft.x; 
-	m_aabb.top = topLeft.y;
-	m_aabb.width = m_size.x;
-	m_aabb.height = m_size.y;
+	const Vec2f topLeft = getTopLeftCoord();
+	const Vec2f p = m_pTransform->getTransform().transformPoint(m_pTransform->getOrigin());
+
+	m_aabb = m_pTransform->getTransform().transformRect(Rectf(Vec2f(m_pTransform->getOrigin()), m_size));
 }

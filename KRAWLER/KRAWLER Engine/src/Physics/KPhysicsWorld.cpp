@@ -44,13 +44,13 @@ void KPhysicsWorld::assembleEntityList()
 	auto& rSceneDirector = KApplication::getApp()->getSceneDirector();
 	KScene* pScene = rSceneDirector.getCurrentScene();
 
-	auto pEntities = pScene->getEntitiyList();
+	auto pEntities = pScene->getEntityList();
 	KCHECK(pEntities);
 
 	for (int32 i = 0; i < (signed)pScene->getNumbrOfEntitiesAllocated(); ++i)
 	{
 		auto& entity = pEntities[i];
-		if (!entity.isEntitiyInUse())
+		if (!entity.isEntityInUse())
 		{//contine if not in use
 			continue;
 		}
@@ -67,8 +67,6 @@ void KPhysicsWorld::assembleEntityList()
 	for (KEntity* pEntity : m_physicsEntities)
 	{
 		auto colliderBase = pEntity->getComponent<KCColliderBase>();
-
-		KCHECK(colliderBase);
 
 		if (!colliderBase)
 			continue;
@@ -147,6 +145,13 @@ void KPhysicsWorld::correctPosition(const KCollisionDetectionData & collData)
 
 void KPhysicsWorld::addToCollisionsList(const KCollisionDetectionData & collData)
 {
+	KCPhysicsBody* pBodyA = collData.entityA->getComponent<KCPhysicsBody>();
+	KCPhysicsBody* pBodyB = collData.entityB->getComponent<KCPhysicsBody>();
+
+	if (!pBodyA || !pBodyB)
+	{
+		return;
+	}
 	const auto checkCollisionDataIsntInList = [&collData](const KCollisionDetectionData& vectorEntry) -> bool
 	{
 		return collData == vectorEntry;
@@ -157,5 +162,6 @@ void KPhysicsWorld::addToCollisionsList(const KCollisionDetectionData & collData
 	{
 		return;
 	}
+
 	m_collisionsToCheck.push_back(collData);
 }

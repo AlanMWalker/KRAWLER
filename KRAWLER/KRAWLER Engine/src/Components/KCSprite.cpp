@@ -7,7 +7,7 @@ using namespace Krawler;
 using namespace Krawler::Components;
 
 KCSprite::KCSprite(KEntity * pEntity, const Vec2f& size)
-	:KComponentBase(pEntity), m_size(size), m_pTexture(nullptr), m_pTransform(nullptr), m_renderLayer(0)
+	:KComponentBase(pEntity), m_size(size), m_pTexture(nullptr), m_pShader(nullptr), m_pTransform(nullptr), m_renderLayer(0)
 {
 }
 
@@ -33,7 +33,7 @@ void KCSprite::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const
 {
 	rStates.transform *= m_pTransform->getTransform();
 	rStates.texture = m_pTexture;
-
+	rStates.shader = m_pShader;
 	rTarget.draw(m_vertexArray, rStates);
 }
 
@@ -59,4 +59,9 @@ KRAWLER_API void Krawler::Components::KCSprite::setTextureRect(const Recti & tex
 	m_vertexArray[1].texCoords = Vec2f((float)(texRect.left + texRect.width), (float)(texRect.top));
 	m_vertexArray[2].texCoords = Vec2f((float)(texRect.left + texRect.width), (float)(texRect.top + texRect.height));
 	m_vertexArray[3].texCoords = Vec2f((float)(texRect.left), (float)(texRect.top + texRect.height));
+}
+
+Rectf KCSprite::getOnscreenBounds() const
+{
+	return m_pTransform->getTransform().transformRect(Rectf(0, 0, m_size.x, m_size.y));
 }

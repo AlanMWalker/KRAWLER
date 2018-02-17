@@ -2,9 +2,11 @@
 #define KENTITY_H
 
 #include <vector>
-
-#include "Krawler.h"
-#include "KComponent.h"
+#include <codecvt>
+#include <locale>
+#include <string>
+#include <Krawler.h>
+#include <KComponent.h>
 
 namespace Krawler
 {
@@ -78,7 +80,7 @@ namespace Krawler
 		KRAWLER_API const std::wstring& getEntityTag() const { return m_entityTag; }
 
 		//todo change to enabled
-		KRAWLER_API bool isEntitiyInUse() const { return m_bIsInUse; }
+		KRAWLER_API bool isEntityInUse() const { return m_bIsInUse; }
 
 		KRAWLER_API void setIsInUse(bool bInUse) { m_bIsInUse = bInUse; }
 
@@ -97,8 +99,9 @@ namespace Krawler
 		});
 
 		if (result == m_componentVector.end())
+		{
 			return nullptr;
-
+		}
 		return dynamic_cast<TComponent*>(*result);
 	}
 }

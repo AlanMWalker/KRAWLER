@@ -13,6 +13,7 @@ namespace Krawler
 		struct KPhysicsBodyProperties
 		{
 			KRAWLER_API KPhysicsBodyProperties();
+			KRAWLER_API KPhysicsBodyProperties(float mass, float staticFriction, float dynamicFriction, float restitution);
 
 			KRAWLER_API void setMass(float mass);
 			KRAWLER_API void computeMass(float density, KCColliderType colliderType);
@@ -39,10 +40,11 @@ namespace Krawler
 			KRAWLER_API KPhysicsBodyProperties* getPhysicsBodyProperties() { return &m_properties; }
 
 			KRAWLER_API void applyForce(const Vec2f& force);
-
-			KRAWLER_API const Vec2f& getVelocity() const { return m_velocity; }
 			KRAWLER_API void setVelocity(const Vec2f& vel) { m_velocity = vel; }
 
+			KRAWLER_API const Vec2f& getForce() const { return m_force; }
+			KRAWLER_API const Vec2f& getVelocity() const { return m_velocity; }
+			
 			KRAWLER_API void applyImpulse(const Vec2f& impulse)
 			{
 				m_velocity += m_properties.invMass * impulse;

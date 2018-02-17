@@ -44,9 +44,7 @@ void Krawler::ShutdownEngine()
 void Krawler::RunApplication()
 {
 	auto app = KApplication::getApp();
-
-
-	KApplication::getApp()->runApplication();
+	app->runApplication();
 }
 
 std::wstring Krawler::GenerateUUID()

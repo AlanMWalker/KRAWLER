@@ -11,6 +11,7 @@
 #include <vector>
 #include <list>
 
+
 namespace Krawler
 {
 
@@ -50,13 +51,13 @@ namespace Krawler
 
 		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_entitiesAllocated; }
 
-		KRAWLER_API KEntity* getEntitiyList() { return m_entities; }
+		KRAWLER_API KEntity* getEntityList() { return m_entities; }
 
 		bool hasSceneTickedOnce() const { return m_bHasTickedOnce; }
 
 	private:
 
-	
+
 
 		bool m_bHasTickedOnce = false;
 		std::vector<KEntity*> m_renderQueue;

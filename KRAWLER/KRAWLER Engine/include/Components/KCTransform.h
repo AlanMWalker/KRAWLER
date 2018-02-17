@@ -109,6 +109,8 @@ namespace Krawler
 			KRAWLER_API void scale(const Vec2f& scale);
 			KRAWLER_API void scale(float sx, float sy);
 
+			KRAWLER_API const Vec2f& getTranslation() const { return m_trans; }
+
 		private:
 
 			void reconstructTransform();
@@ -116,7 +118,7 @@ namespace Krawler
 			KCTransform* m_pParentTransform;
 
 			sf::Transform m_transform;
-			sf::Transform m_parentedTransform;
+			sf::Transform m_combinedWithParentTransform;
 
 			float m_rotation;
 

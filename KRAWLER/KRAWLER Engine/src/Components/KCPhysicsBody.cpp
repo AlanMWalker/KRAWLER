@@ -13,6 +13,12 @@ KPhysicsBodyProperties::KPhysicsBodyProperties()
 	dynamicFriction = 0.0;
 }
 
+KPhysicsBodyProperties::KPhysicsBodyProperties(float mass, float sFriction, float dFriction, float restit)
+	: staticFriction(sFriction), dynamicFriction(dFriction), restitution(restit)
+{
+	setMass(mass);
+}
+
 //KCPhysicsBody
 
 KCPhysicsBody::KCPhysicsBody(KEntity * pEntity, KPhysicsBodyProperties properties)
@@ -42,7 +48,7 @@ void KCPhysicsBody::fixedTick()
 	const Vec2f acceleration = (m_properties.invMass * m_force);
 	m_velocity += acceleration * dt;
 
-	const Vec2f moveVec = m_velocity / pPhysWorld->getPhysicsWorldProperties().pixelsToMetres;
+	const Vec2f moveVec = m_velocity * (1.0f / pPhysWorld->getPhysicsWorldProperties().metresToPixels);
 	pTransform->move(moveVec * dt);
 
 	m_force = Vec2f(0.0f, 0.0f);
@@ -69,6 +75,8 @@ void KPhysicsBodyProperties::setMass(float inMass)
 
 void KPhysicsBodyProperties::computeMass(float density, KCColliderType colliderType)
 {
+	density = 0.0;
+	colliderType = KCColliderType::Circle;
 	//switch (colliderType)
 	//{
 	//default:

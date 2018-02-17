@@ -7,6 +7,7 @@
 #include <SFML\Graphics\Transformable.hpp>
 #include <SFML\Graphics\Drawable.hpp>
 #include <SFML\Graphics\RenderTarget.hpp>
+#include <SFML\Graphics\Shader.hpp>
 
 #define MAP_FILE_FORMAT KTEXT(".dat")
 
@@ -42,14 +43,20 @@ namespace Krawler
 
 			KTiledMap(const KTiledMap& map) = delete; //Non-copyable
 			KTiledMap(const KTiledMap&& map) = delete; //Non-copyable 
+			void operator=(const KTiledMap map) = delete;//Non-copyable 
 
 			virtual void draw(sf::RenderTarget& rTarget, sf::RenderStates rStates) const;
 
 			KRAWLER_API void cleanupTiledMap(); // cleanup function
 			KRAWLER_API KTiledMapLoadResult setupTiledMap(const  std::wstring& filename);
-			KRAWLER_API KTiledMapLoadResult setupTiledMapFromArray(int* tileIDs, Vec2i mapDimensions, Vec2i tileDimensions);
+			KRAWLER_API KTiledMapLoadResult setupTiledMapFromArray(std::vector<int32>& tileIDs, Vec2i mapDimensions, Vec2i tileDimensions, Vec2i textureSize);
 
-			KRAWLER_API void setTexture(const std::wstring& textureFileName);
+			KRAWLER_API void setTexture(sf::Texture* const pTexture);
+
+			KRAWLER_API void setShader(sf::Shader* pShader) { m_pShader = pShader; }
+			KRAWLER_API sf::Shader* getShader() { return m_pShader; }
+
+			KRAWLER_API void setAllTilesColour(const Colour& col);
 
 		private:
 
@@ -57,13 +64,14 @@ namespace Krawler
 			int32 m_mapHeight;
 			int32 m_tileWidth;
 			int32 m_tileHeight;
+			Vec2i m_textureSize;
 
 			KMapTile* mp_mapData;
-
+			std::vector<int> m_tileIDs;
 			sf::VertexArray m_vertArray;
 
 			sf::Texture* mp_texture = nullptr;
-
+			sf::Shader* m_pShader = nullptr;
 		};
 	}
 }

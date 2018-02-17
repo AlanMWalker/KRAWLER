@@ -2,7 +2,7 @@
 #define KQUADTREE
 
 #include <vector>
-#include <list> 
+#include <stack> 
 
 #include "Krawler.h"
 #include "KEntity.h"
@@ -27,29 +27,35 @@ namespace Krawler
 			: m_level(level), m_boundary(bounds), m_bHasSubdivided(false), m_leaves{ nullptr }
 		{
 		}
+
 		~KQuadtree()
 		{
 
 		}
 
 		bool insert(KEntity* p);
-		std::vector<KEntity*>& queryEntitiy(KEntity* pEntity);
-		//std::list<KEntity> query();
+		KDEPRECATED(std::vector<KEntity*>& queryEntitiy)(KEntity* pEntity);
+		std::stack<KEntity*>& getPossibleCollidingEntitiesStack(KEntity* pEntity);
+
 		void clear();
 
 	private:
+
 		void subdivide();
 		LeavesIdentifier getLeafEnum(KEntity* pEntity) const;
+		std::stack<LeavesIdentifier> getLeavesEnum(KEntity* pEntity) const;
 
-		const int MAX_NUM_LEVELS = 5;
-		const int MAX_ENTITIES = MAX_NUMBER_OF_ENTITIES / MAX_NUM_LEVELS;
+		constexpr static int MAX_ENTITIES = 10;
+		constexpr static int MAX_NUM_LEVELS = MAX_NUMBER_OF_ENTITIES / MAX_ENTITIES;
 
 		KQuadtree* m_leaves[LeavesIdentifier::leavesIdentifierCount];
 
 		Rectf m_boundary;
 
-		std::vector<KEntity*> m_points;
+		std::vector<KEntity*> m_nodeVector;
 		std::vector<KEntity*> m_queriedPointList;
+
+		std::stack<KEntity*> m_queriedEntityStack;
 
 		int m_level;
 		bool m_bHasSubdivided;

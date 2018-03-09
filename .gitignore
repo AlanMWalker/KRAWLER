@@ -10,3 +10,4 @@ RC/
 .vscode/
 *.~
 *.un~
+*.ipch

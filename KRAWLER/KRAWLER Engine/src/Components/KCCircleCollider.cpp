@@ -1,5 +1,5 @@
-#include "Components\KCCircleCollider.h"
-#include "Components\KCTransform.h"
+#include <Components\KCCircleCollider.h>
+#include <Components\KCTransform.h>
 
 using namespace Krawler;
 using namespace Krawler::Components;
@@ -8,7 +8,7 @@ KCCircleCollider::KCCircleCollider(KEntity* pEntity, float radius)
 	: KCColliderBase(pEntity, KCColliderType::Circle), m_radius(radius)
 
 {
-
+	m_pTransform = pEntity->getComponent<KCTransform>();
 }
 
 const Vec2f & KCCircleCollider::getCentrePosition()
@@ -34,14 +34,13 @@ const Rectf & Krawler::Components::KCCircleCollider::getBoundingBox()
 
 void Krawler::Components::KCCircleCollider::updateCentrePosition()
 {
-	KCTransform* const pTransform = getEntity()->getComponent<KCTransform>();
 	Vec2f topLeft;
 
-	topLeft = pTransform->getPosition();// -pTransform->getOrigin();
+	topLeft = m_pTransform->getPosition();// -pTransform->getOrigin();
 
-	if (pTransform->getOrigin() == Vec2f(m_radius, m_radius))
+	if (m_pTransform->getOrigin() == Vec2f(m_radius, m_radius))
 	{
-		m_centrePos = pTransform->getTransform().transformPoint(m_radius,m_radius);
+		m_centrePos = m_pTransform->getTransform().transformPoint(m_radius, m_radius);
 		return;
 	}
 

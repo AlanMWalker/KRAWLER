@@ -114,7 +114,7 @@ void KInput::EventMouseScrollMoved(float delta)
 
 void KInput::EventTextEntered(sf::Uint32 charCode)
 {
-	m_textEntered += (char)charCode;
+	m_textEntered += (wchar_t)charCode;
 }
 
 bool KInput::JustPressed(sf::Keyboard::Key key)

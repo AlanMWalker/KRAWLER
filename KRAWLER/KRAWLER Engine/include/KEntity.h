@@ -12,7 +12,10 @@ namespace Krawler
 {
 	/*Entity class which components are attached to.
 	All entities automatically have a transform component attatched upon construction.*/
-
+	namespace Components
+	{
+		class KCTransform;
+	}
 	const int32 MAX_NUMBER_OF_ENTITIES{ 120 };
 
 	class KEntity
@@ -84,10 +87,13 @@ namespace Krawler
 
 		KRAWLER_API void setIsInUse(bool bInUse) { m_bIsInUse = bInUse; }
 
+		KRAWLER_API  Components::KCTransform* const getTransformComponent() { return m_pTransform; }
+
 	private:
 		std::vector<KComponentBase*> m_componentVector;
 		std::wstring m_entityTag;
 		bool m_bIsInUse;
+		Components::KCTransform* m_pTransform = nullptr;
 	};
 
 	template<typename TComponent>

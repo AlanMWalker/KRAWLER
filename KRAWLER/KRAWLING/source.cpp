@@ -356,6 +356,32 @@ private:
 
 };
 
+class DeallocTest
+	: public KComponentBase//KScene deallocation testing 
+{
+public:
+	DeallocTest(KEntity* pEntity) :
+		KComponentBase(pEntity)
+	{
+	}
+	~DeallocTest() = default;
+
+	virtual KInitStatus init() override
+	{
+
+		KEntity* pEntity = KApplication::getApp()->getCurrentScene()->addEntityToScene();
+		pEntity->addComponent(new KCSprite(pEntity, Vec2f(20, 20)));
+		pEntity->getTransformComponent()->setTranslation(50, 50);
+
+		return KInitStatus::Success;
+	}
+
+	virtual void tick() override
+	{
+
+	}
+};
+
 int main(void)
 {
 	srand((unsigned)time(NULL));
@@ -377,7 +403,8 @@ int main(void)
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
-	entity->addComponent(new PhysicsTest(entity));
+	//entity->addComponent(new PhysicsTest(entity));
+	entity->addComponent(new DeallocTest(entity));
 	InitialiseSubmodules();
 
 	RunApplication();

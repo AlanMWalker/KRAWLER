@@ -1,4 +1,3 @@
-
 #include "Renderer\KRenderer.h"
 #include "KApplication.h"
 
@@ -216,7 +215,7 @@ void KRenderer::defaultRender()
 
 	generateSpriteList();
 	sortByRenderLayer();
-
+	const int32 size = m_sprites.size();
 	for (auto& sprite : m_sprites)
 	{
 		target->draw(*sprite);

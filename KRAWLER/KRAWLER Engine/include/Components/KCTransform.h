@@ -33,6 +33,8 @@ namespace Krawler
 			//Return: n/a 
 			//Info: 
 			KRAWLER_API KCTransform(KEntity* pEntity);
+			KRAWLER_API KCTransform(KCTransform& toCopy);
+			KRAWLER_API void operator = (KCTransform& toCopy);
 			KRAWLER_API ~KCTransform() = default;
 
 			//Param: n/a

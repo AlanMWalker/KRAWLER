@@ -1,0 +1,50 @@
+﻿  dllmain.cpp
+  KOrientation.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\maths\korientation.cpp(1): fatal error C1083: Cannot open include file: 'Maths\KOrientation.h': No such file or directory
+  KCollisions.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\components\kcollisions.cpp(1): fatal error C1083: Cannot open include file: 'Components\KCollisions.h': No such file or directory
+  KCOrientedBoxCollider.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\components\kcorientedboxcollider.cpp(1): fatal error C1083: Cannot open include file: 'Components\KCOrientedBoxCollider.h': No such file or directory
+  KCCircleCollider.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\components\kccirclecollider.cpp(1): fatal error C1083: Cannot open include file: 'Components\KCCircleCollider.h': No such file or directory
+  KCColliderBase.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\components\kccolliderbase.cpp(1): fatal error C1083: Cannot open include file: 'Components\KCColliderBase.h': No such file or directory
+  KPhysicsWorld.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\physics\kphysicsworld.cpp(1): fatal error C1083: Cannot open include file: 'KApplication.h': No such file or directory
+  KAssetLoader.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\assetloader\kassetloader.cpp(1): fatal error C1083: Cannot open include file: 'AssetLoader\KAssetLoader.h': No such file or directory
+  KCBoxCollider.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\components\kcboxcollider.cpp(1): fatal error C1083: Cannot open include file: 'Components\KCBoxCollider.h': No such file or directory
+  KCPhysicsBody.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\components\kcphysicsbody.cpp(1): fatal error C1083: Cannot open include file: 'Components\KCPhysicsBody.h': No such file or directory
+  KCSprite.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\components\kcsprite.cpp(1): fatal error C1083: Cannot open include file: 'Components\KCSprite.h': No such file or directory
+  KComponent.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\kcomponent.cpp(1): fatal error C1083: Cannot open include file: 'KComponent.h': No such file or directory
+  KEntity.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\kentity.cpp(1): fatal error C1083: Cannot open include file: 'KEntity.h': No such file or directory
+  KGameObject.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\gameobject\kgameobject.cpp(2): fatal error C1083: Cannot open include file: 'GameObject\KGameObject.h': No such file or directory
+  KInput.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\input\kinput.cpp(1): fatal error C1083: Cannot open include file: 'Input\KInput.h': No such file or directory
+  KApplication.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\kapplication.cpp(1): fatal error C1083: Cannot open include file: 'KApplication.h': No such file or directory
+  Krawler.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\krawler.cpp(2): fatal error C1083: Cannot open include file: 'Krawler.h': No such file or directory
+  KCTransform.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\components\kctransform.cpp(1): fatal error C1083: Cannot open include file: 'Components\KCTransform.h': No such file or directory
+  KScene.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\kscene.cpp(1): fatal error C1083: Cannot open include file: 'KScene.h': No such file or directory
+  KRenderer.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\renderer\krenderer.cpp(2): fatal error C1083: Cannot open include file: 'Renderer\KRenderer.h': No such file or directory
+  Generating Code...
+  Compiling...
+  KTiledMap.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\tiledmap\ktiledmap.cpp(1): fatal error C1083: Cannot open include file: 'TiledMap\KTiledMap.h': No such file or directory
+  KDebug.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\utilities\kdebug.cpp(1): fatal error C1083: Cannot open include file: 'Utilities\KDebug.h': No such file or directory
+  KEngineMacros.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\utilities\kenginemacros.cpp(2): fatal error C1083: Cannot open include file: 'Utilities\KEngineMacros.h': No such file or directory
+  KQuadtree.cpp
+c:\users\mace\documents\github\krawler\krawler\krawler engine\src\utilities\kquadtree.cpp(1): fatal error C1083: Cannot open include file: 'Utilities\KQuadtree.h': No such file or directory
+  Generating Code...

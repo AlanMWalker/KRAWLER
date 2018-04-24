@@ -10,6 +10,24 @@ KCTransform::KCTransform(KEntity* pEntity)
 
 }
 
+KCTransform::KCTransform(KCTransform & toCopy)
+	: KComponentBase(toCopy.getEntity()), m_pParentTransform(toCopy.m_pParentTransform), m_bHasParent(toCopy.m_bHasParent),
+	m_rotation(toCopy.m_rotation), m_origin(toCopy.m_origin), m_scale(toCopy.m_scale), m_trans(toCopy.m_trans), m_bUpdateTransform(true)
+
+{
+}
+
+void KCTransform::operator=(KCTransform & toCopy)
+{
+	m_pParentTransform = toCopy.m_pParentTransform;
+	m_bHasParent = toCopy.m_bHasParent;
+
+	m_rotation = toCopy.m_rotation;  m_origin = toCopy.m_origin;
+	m_scale = toCopy.m_scale;
+	m_trans = toCopy.m_trans;
+	m_bUpdateTransform = true;
+}
+
 void Krawler::Components::KCTransform::tick()
 {
 	if (m_bUpdateTransform)

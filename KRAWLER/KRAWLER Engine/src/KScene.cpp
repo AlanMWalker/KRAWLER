@@ -19,11 +19,11 @@ KScene::KScene(const std::wstring & sceneName, const Rectf& sceneBounds)
 
 KInitStatus KScene::initScene()
 {
-	for (auto& entity : m_entities)
+	for (auto& chunk : m_entityChunks)
 	{
-		KINIT_CHECK(entity.init()); // init components
+		KINIT_CHECK(chunk.entity.init()); // init components
 		//TODO Move to onenter
-		entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
+		chunk.entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
 	}
 
 	return KInitStatus::Success;
@@ -31,9 +31,9 @@ KInitStatus KScene::initScene()
 
 void Krawler::KScene::cleanUpScene()
 {
-	for (auto& entity : m_entities)
+	for (auto& chunk : m_entityChunks)
 	{
-		entity.cleanUp();
+		chunk.entity.cleanUp();
 	}
 	m_qtree.clear();
 }
@@ -47,13 +47,18 @@ void Krawler::KScene::tick()
 	}
 	m_qtree.clear();
 
-	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
+	for (uint32 i = 0; i < MAX_NUMBER_OF_ENTITIES; ++i)
 	{
-		if (!m_entities[i].isEntityInUse())
+		if (!m_entityChunks[i].allocated) // if not allocated to the scene, ignore
+		{
 			continue;
-
-		m_entities[i].tick(); // tick all components
-		m_qtree.insert(&m_entities[i]); // insert entity into quadtree before handling box colliders
+		}
+		if (!m_entityChunks[i].entity.isEntityInUse())
+		{
+			continue;
+		}
+		m_entityChunks[i].entity.tick(); // tick all components
+		m_qtree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
 	}
 	KApplication::getMutexInstance().unlock();
 }
@@ -63,23 +68,35 @@ void Krawler::KScene::fixedTick()
 	KApplication::getMutexInstance().lock();
 
 	vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs;
-	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
+	for (uint32 i = 0; i < MAX_NUMBER_OF_ENTITIES; ++i)
 	{
-		if (!m_entities[i].isEntityInUse())
+		if (!m_entityChunks[i].allocated)
+		{
 			continue;
+		}
+
+		if (!m_entityChunks[i].entity.isEntityInUse())
+		{
+			continue;
+		}
 
 		//m_entities[i].tick(); // tick all components
-		m_qtree.insert(&m_entities[i]); // insert entity into quadtree before handling box colliders
+		m_qtree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
 	}
 	// handle box colliders here
 	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
 	{
-		if (!m_entities[i].isEntityInUse())
+		if (!m_entityChunks[i].allocated)
+		{
+			continue;
+		}
+
+		if (!m_entityChunks[i].entity.isEntityInUse())
 		{//if entity isn't in use
 			continue;
 		}
 
-		auto pCollider = m_entities[i].getComponent<KCColliderBase>();
+		auto pCollider = m_entityChunks[i].entity.getComponent<KCColliderBase>();
 
 		if (!pCollider) // if this entity doesn't have a box collider continue
 		{
@@ -90,23 +107,23 @@ void Krawler::KScene::fixedTick()
 		//														   // near the current one that we can query for collisions
 		//														   //KPrintf(L"Query list size %d\n", colliderList.size());
 
-		std::stack<KEntity*>& colliderStack = m_qtree.getPossibleCollidingEntitiesStack(&m_entities[i]);
+		std::stack<KEntity*>& colliderStack = m_qtree.getPossibleCollidingEntitiesStack(&m_entityChunks[i].entity);
 
 		//for (auto& pEntity : colliderList) //iterate over all possible entities in this list
 		//for (int32 j = 0; i < colliderStack.size(); ++j )
-		while(!colliderStack.empty())
+		while (!colliderStack.empty())
 		{
 			KEntity* pEntity = colliderStack.top();
 
 			//check pairs
 			KCHECK(pEntity);
 
-			if (pEntity == &m_entities[i]) //if they are the same entity continue
+			if (pEntity == &m_entityChunks[i].entity) //if they are the same entity continue
 			{
 				continue;
 			}
-			const pair<KEntity*, KEntity*> pairA(&m_entities[i], pEntity);
-			const pair<KEntity*, KEntity*> pairASwapped(pEntity, &m_entities[i]);
+			const pair<KEntity*, KEntity*> pairA(&m_entityChunks[i].entity, pEntity);
+			const pair<KEntity*, KEntity*> pairASwapped(pEntity, &m_entityChunks[i].entity);
 
 			auto isEqualA = std::find(alreadyCheckedCollisionPairs.begin(), alreadyCheckedCollisionPairs.end(), pairA);
 			auto isEqualASwapped = std::find(alreadyCheckedCollisionPairs.begin(), alreadyCheckedCollisionPairs.end(), pairASwapped);
@@ -154,11 +171,11 @@ void Krawler::KScene::fixedTick()
 	}
 	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
 	{
-		if (!m_entities[i].isEntityInUse())
+		if (!m_entityChunks[i].entity.isEntityInUse())
 		{
 			continue;
 		}
-		m_entities[i].fixedTick();
+		m_entityChunks[i].entity.fixedTick();
 	}
 	KApplication::getMutexInstance().unlock();
 
@@ -169,7 +186,7 @@ void KScene::onEnterScene()
 	KApplication::getMutexInstance().lock();
 
 	KApplication::getApp()->getPhysicsWorld()->setQuadtree(&m_qtree);
-	for (auto& entity : m_entities)
+	for (auto& entity : m_entityChunks)
 	{
 		entity.onEnterScene();
 	}
@@ -178,7 +195,7 @@ void KScene::onEnterScene()
 
 void KScene::onExitScene()
 {
-	for (auto& entity : m_entities)
+	for (auto& entity : m_entityChunks)
 	{
 		entity.onExitScene();
 	}
@@ -190,8 +207,8 @@ KEntity* KScene::addEntityToScene()
 	{
 		return nullptr;
 	}
-	m_entities[m_entitiesAllocated].setIsInUse(true);
-	return &m_entities[m_entitiesAllocated++];
+	m_entityChunks[m_entitiesAllocated].setIsInUse(true);
+	return &m_entityChunks[m_entitiesAllocated++];
 }
 
 KEntity* KScene::addEntitiesToScene(uint32 number, int32 & numberAllocated)
@@ -199,7 +216,7 @@ KEntity* KScene::addEntitiesToScene(uint32 number, int32 & numberAllocated)
 	if (m_entitiesAllocated + number <= MAX_NUMBER_OF_ENTITIES) //if there is enough entities in the scene
 	{
 		numberAllocated = number; // if the number of entities
-		KEntity* const pEntity = &m_entities[m_entitiesAllocated];
+		KEntity* const pEntity = &m_entityChunks[m_entitiesAllocated];
 		m_entitiesAllocated += number;
 		for (uint32 i = 0; i < number; ++i)
 		{
@@ -210,9 +227,19 @@ KEntity* KScene::addEntitiesToScene(uint32 number, int32 & numberAllocated)
 	return nullptr;
 }
 
+void KScene::removeEntityFromScene(KEntity* pEntityToRemove)
+{
+	KCHECK(pEntityToRemove);
+	if (!pEntityToRemove)
+	{
+		return;
+	}
+
+}
+
 KEntity * Krawler::KScene::findEntityByTag(const std::wstring & tag)
 {
-	auto find = std::find_if(std::begin(m_entities), std::end(m_entities), [&tag](const KEntity& entity) -> bool
+	auto find = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [&tag](const KEntity& entity) -> bool
 	{
 		if (entity.getEntityTag() == tag)
 		{
@@ -221,11 +248,27 @@ KEntity * Krawler::KScene::findEntityByTag(const std::wstring & tag)
 		return false;
 	});
 
-	if (find == std::end(m_entities))
+	if (find == std::end(m_entityChunks))
 	{
 		return nullptr;
 	}
 	return &(*find);
+}
+
+//private
+Krawler::KEntity* KScene::getAllocatableEntity()
+{
+	auto findResult = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [](KAllocatableChunk& entity) -> bool
+	{
+		return entity.allocated;
+	});
+
+	if (findResult == std::end(m_entityChunks))
+	{
+		return nullptr;
+	}
+
+	return &findResult->entity;
 }
 
 //-- KSCENEDIRECTOR -- \\

@@ -69,10 +69,6 @@ void KPhysicsWorld::assembleEntityList()
 		m_physicsEntities.push_back(&entity);
 	}
 
-	const int number_of_physics_entities = m_physicsEntities.size();
-
-	KPRINTF("%d\n", number_of_physics_entities);
-	
 	for (KEntity* pEntity : m_physicsEntities)
 	{
 		auto colliderBase = pEntity->getComponent<KCColliderBase>();

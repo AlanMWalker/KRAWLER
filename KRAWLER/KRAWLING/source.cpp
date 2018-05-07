@@ -42,7 +42,7 @@ public:
 	virtual KInitStatus init() override
 	{
 		auto pCurrentScene = KApplication::getApp()->getCurrentScene();
-		for (int32 i = 0; i < MAX_NUMBER_OF_ENTITIES - 3; ++i)
+		for (int32 i = 0; i < CHUNK_POOL_SIZE - 3; ++i)
 		{
 			m_boxes.push_back(pCurrentScene->addEntityToScene());
 			auto& box = m_boxes[i];
@@ -111,14 +111,14 @@ public:
 		auto floor = KApplication::getApp()->getCurrentScene()->findEntityByTag(KTEXT("floor"));
 		floor->getComponent<KCTransform>()->setTranslation(Vec2f(0.0f, KApplication::getApp()->getWindowSize().y - 20.0f));
 
-		if (KInput::MousePressed(KMouseButton::Left) || KInput::MouseJustPressed(KMouseButton::Right))
+		if (KInput::MouseJustPressed(KMouseButton::Left))
 		{
 			Vec2f mouseWorldPos = KInput::GetMouseWorldPosition();
 			if (m_boxesAllocated + 1 != m_boxes.size())
 			{
 				m_boxes[m_boxesAllocated]->setIsInUse(true);
 				m_boxes[m_boxesAllocated]->getComponent<KCTransform>()->setTranslation(mouseWorldPos);
-				m_boxes[m_boxesAllocated]->getComponent<KCTransform>()->setRotation(Maths::RandFloat(0, 20));
+				//m_boxes[m_boxesAllocated]->getComponent<KCTransform>()->setRotation(Maths::RandFloat(0, 20));
 				++m_boxesAllocated;
 				KPrintf(KTEXT("Boxes allocated: %d\n"), m_boxesAllocated);
 			}
@@ -368,10 +368,20 @@ public:
 
 	virtual KInitStatus init() override
 	{
-
-		KEntity* pEntity = KApplication::getApp()->getCurrentScene()->addEntityToScene();
+		auto pScene = KApplication::getApp()->getCurrentScene();
+		KEntity* pEntity = pScene->addEntityToScene();
 		pEntity->addComponent(new KCSprite(pEntity, Vec2f(20, 20)));
 		pEntity->getTransformComponent()->setTranslation(50, 50);
+
+		std::vector<KEntity*> entityVec;
+
+		bool result = pScene->addMultipleEntitiesToScene(400, entityVec);
+
+		for (KEntity* pEntity : entityVec)
+		{
+			pEntity->addComponent(new KCSprite(pEntity, Vec2f(Maths::RandFloat(0, 100), Maths::RandFloat(0, 100))));
+			pEntity->getTransformComponent()->setTranslation(Maths::RandFloat(0, 400), Maths::RandFloat(0, 400));
+		}
 
 		return KInitStatus::Success;
 	}
@@ -385,16 +395,6 @@ public:
 int main(void)
 {
 	srand((unsigned)time(NULL));
-
-	//KApplicationInitialise initApp;
-	//initApp.consoleWindow = true;
-	//initApp.width = 640;
-	//initApp.height = 480;
-	//initApp.windowStyle = Windowed_Fixed_Size;
-	//initApp.gameFps = 30;
-	//initApp.physicsFps = 100;
-	//initApp.windowTitle = KTEXT("Hello World!");
-	//
 	KApplicationInitialise initApp(true);
 	StartupEngine(&initApp);
 
@@ -403,8 +403,8 @@ int main(void)
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
-	//entity->addComponent(new PhysicsTest(entity));
-	entity->addComponent(new DeallocTest(entity));
+	entity->addComponent(new PhysicsTest(entity));
+	//entity->addComponent(new DeallocTest(entity));
 	InitialiseSubmodules();
 
 	RunApplication();

@@ -47,7 +47,7 @@ void Krawler::KScene::tick()
 	}
 	m_qtree.clear();
 
-	for (uint32 i = 0; i < MAX_NUMBER_OF_ENTITIES; ++i)
+	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
 		if (!m_entityChunks[i].allocated) // if not allocated to the scene, ignore
 		{
@@ -68,7 +68,7 @@ void Krawler::KScene::fixedTick()
 	KApplication::getMutexInstance().lock();
 
 	vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs;
-	for (uint32 i = 0; i < MAX_NUMBER_OF_ENTITIES; ++i)
+	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
 		if (!m_entityChunks[i].allocated)
 		{
@@ -103,14 +103,9 @@ void Krawler::KScene::fixedTick()
 			continue;
 		}
 
-		//auto& colliderList = m_qtree.queryEntitiy(&m_entities[i]); // query the quadtree for a list of entities 
-		//														   // near the current one that we can query for collisions
-		//														   //KPrintf(L"Query list size %d\n", colliderList.size());
-
 		std::stack<KEntity*>& colliderStack = m_qtree.getPossibleCollidingEntitiesStack(&m_entityChunks[i].entity);
 
-		//for (auto& pEntity : colliderList) //iterate over all possible entities in this list
-		//for (int32 j = 0; i < colliderStack.size(); ++j )
+		
 		while (!colliderStack.empty())
 		{
 			KEntity* pEntity = colliderStack.top();
@@ -230,7 +225,7 @@ KEntity* KScene::addEntityToScene()
 
 KEntity* KScene::addEntitiesToScene(uint32 number, int32 & numberAllocated)
 {
-	if (m_numberOfAllocatedChunks + number <= MAX_NUMBER_OF_ENTITIES) //if there is enough entities in the scene
+	if (m_numberOfAllocatedChunks + number <= CHUNK_POOL_SIZE) //if there is enough entities in the scene
 	{
 		numberAllocated = number; // if the number of entities
 		KEntity* const pEntity = &(m_entityChunks[m_numberOfAllocatedChunks].entity);
@@ -242,6 +237,35 @@ KEntity* KScene::addEntitiesToScene(uint32 number, int32 & numberAllocated)
 		return pEntity;
 	}
 	return nullptr;
+}
+
+KRAWLER_API bool KScene::addMultipleEntitiesToScene(uint32 numberToAllocate, vector<KEntity*>& entityVec)
+{
+	const int32 total = getFreeChunkTotal();
+	//if there isn't enough available memory, do not allocate
+	if (total < numberToAllocate)
+	{
+		return false;
+	}
+	entityVec.resize(numberToAllocate);
+	int32 count = 0;
+
+	for (auto it = std::begin(m_entityChunks); it != std::end(m_entityChunks); ++it)
+	{
+		if (count >= numberToAllocate)
+		{
+			break;
+		}
+		if (!it->allocated)
+		{
+			it->allocated = true;
+			it->entity.setIsInUse(true);
+			entityVec[count] = &it->entity;
+			++count;
+		}
+	}
+
+	return true;
 }
 
 void KScene::removeEntityFromScene(KEntity* pEntityToRemove)
@@ -256,9 +280,9 @@ void KScene::removeEntityFromScene(KEntity* pEntityToRemove)
 
 KEntity * Krawler::KScene::findEntityByTag(const std::wstring & tag)
 {
-	auto find = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [&tag](const KEntity& entity) -> bool
+	auto find = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [&tag](const KAllocatableChunk& chunk) -> bool
 	{
-		if (entity.getEntityTag() == tag)
+		if (chunk.entity.getEntityTag() == tag)
 		{
 			return true;
 		}
@@ -269,7 +293,7 @@ KEntity * Krawler::KScene::findEntityByTag(const std::wstring & tag)
 	{
 		return nullptr;
 	}
-	return &(*find);
+	return &(*find).entity;
 }
 
 //private
@@ -277,15 +301,25 @@ Krawler::KEntity* KScene::getAllocatableEntity()
 {
 	auto findResult = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [](KAllocatableChunk& entity) -> bool
 	{
-		return entity.allocated;
+		return !entity.allocated;
 	});
 
 	if (findResult == std::end(m_entityChunks))
 	{
 		return nullptr;
 	}
-	findResult->allocated = 1;
+	findResult->allocated = true;
+	findResult->entity.setIsInUse(true);
 	return &findResult->entity;
+}
+
+Krawler::int32 Krawler::KScene::getFreeChunkTotal() const
+{
+	int32 count = 0;
+	for (auto& chunk : m_entityChunks)
+		if (!chunk.allocated)
+			++count;
+	return count;
 }
 
 //-- KSCENEDIRECTOR -- \\

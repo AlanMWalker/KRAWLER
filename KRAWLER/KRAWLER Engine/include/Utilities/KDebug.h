@@ -4,11 +4,12 @@
 #include <chrono>
 #include <string>
 #include "KrawlerLib.h"
+#include "KEngineMacros.h"
 
 namespace Krawler
 {
 	KRAWLER_API void KPrintf(const wchar_t* szFormat, ...);
-
+#define KPRINTF(text, args) KPrintf(KTEXT(text), args)
 	namespace Profiler
 	{
 		KRAWLER_API inline std::chrono::high_resolution_clock::time_point StartFunctionTimer();

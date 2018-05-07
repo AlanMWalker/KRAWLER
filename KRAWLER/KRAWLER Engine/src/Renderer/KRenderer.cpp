@@ -176,7 +176,7 @@ void KRenderer::generateSpriteList()
 	KCHECK(pCurrentScene);
 	auto entityList = pCurrentScene->getEntityList();
 
-	for (int i = 0; i < (signed)pCurrentScene->getNumbrOfEntitiesAllocated(); ++i)
+	for (int i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
 		if (!entityList[i].allocated)
 		{

@@ -46,7 +46,7 @@ namespace Krawler
 		std::stack<LeavesIdentifier> getLeavesEnum(KEntity* pEntity) const;
 
 		constexpr static int MAX_ENTITIES = 10;
-		constexpr static int MAX_NUM_LEVELS = MAX_NUMBER_OF_ENTITIES / MAX_ENTITIES;
+		constexpr static int MAX_NUM_LEVELS = CHUNK_POOL_SIZE / MAX_ENTITIES;
 
 		KQuadtree* m_leaves[LeavesIdentifier::leavesIdentifierCount];
 

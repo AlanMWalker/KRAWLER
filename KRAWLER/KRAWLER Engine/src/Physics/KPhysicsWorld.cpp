@@ -47,9 +47,14 @@ void KPhysicsWorld::assembleEntityList()
 	auto pEntities = pScene->getEntityList();
 	KCHECK(pEntities);
 
-	for (int32 i = 0; i < (signed)pScene->getNumbrOfEntitiesAllocated(); ++i)
+	for (int32 i = 0; i < (signed)CHUNK_POOL_SIZE; ++i)
 	{
-		auto& entity = pEntities[i];
+		if (!pEntities[i].allocated)
+		{
+			continue;
+		}
+
+		auto& entity = pEntities[i].entity;
 		if (!entity.isEntityInUse())
 		{//contine if not in use
 			continue;
@@ -64,6 +69,10 @@ void KPhysicsWorld::assembleEntityList()
 		m_physicsEntities.push_back(&entity);
 	}
 
+	const int number_of_physics_entities = m_physicsEntities.size();
+
+	KPRINTF("%d\n", number_of_physics_entities);
+	
 	for (KEntity* pEntity : m_physicsEntities)
 	{
 		auto colliderBase = pEntity->getComponent<KCColliderBase>();

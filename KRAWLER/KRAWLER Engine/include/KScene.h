@@ -11,12 +11,11 @@
 #include <vector>
 #include <list>
 
-
 namespace Krawler
 {
 	struct KAllocatableChunk
 	{
-		Krawler::int8 allocated = 0;
+		bool allocated = 0;
 		KEntity entity;
 	};
 
@@ -50,7 +49,9 @@ namespace Krawler
 		KRAWLER_API KEntity* addEntityToScene();
 
 		//Will aim to always give a contiguous block. Nullptr if none available or failed
-		KRAWLER_API KEntity* addEntitiesToScene(uint32 number, int32& numberAllocated);
+		KRAWLER_API KDEPRECATED(KEntity* addEntitiesToScene)(Krawler::uint32 number, Krawler::int32& numberAllocated);
+
+		KRAWLER_API bool addMultipleEntitiesToScene(uint32 numberToAllocate, std::vector<KEntity*>& entityVec);
 
 		KRAWLER_API void removeEntityFromScene(KEntity* pEntityToRemove);
 
@@ -64,12 +65,12 @@ namespace Krawler
 
 	private:
 
-
 		Krawler::KEntity* getAllocatableEntity();
-
+		// Get the total number of unallocated chunks in the memory pool
+		Krawler::int32 getFreeChunkTotal() const;
 		bool m_bHasTickedOnce = false;
 
-		KAllocatableChunk m_entityChunks[MAX_NUMBER_OF_ENTITIES];
+		KAllocatableChunk m_entityChunks[CHUNK_POOL_SIZE];
 
 		std::wstring m_sceneName;
 		KQuadtree m_qtree;

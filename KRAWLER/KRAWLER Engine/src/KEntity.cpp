@@ -13,11 +13,6 @@ KEntity::KEntity()
 
 KInitStatus KEntity::init()
 {
-	//for (auto& pComponent : m_componentVector)
-	//{
-	//	KCHECK(pComponent);
-	//	KINIT_CHECK(pComponent->init());
-	//}
 	for (int32 componentIdx = 0; componentIdx < (signed)m_componentVector.size(); ++componentIdx)
 	{
 		KCHECK(m_componentVector[componentIdx]);

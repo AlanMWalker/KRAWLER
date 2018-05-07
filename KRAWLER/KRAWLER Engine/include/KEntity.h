@@ -16,7 +16,7 @@ namespace Krawler
 	{
 		class KCTransform;
 	}
-	const int32 MAX_NUMBER_OF_ENTITIES{ 120 };
+	const int32 CHUNK_POOL_SIZE{ 120 };
 
 	class KEntity
 	{

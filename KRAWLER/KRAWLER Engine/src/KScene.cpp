@@ -12,7 +12,7 @@ using namespace std;
 // -- KSCENE -- \\
 
 KScene::KScene(const std::wstring & sceneName, const Rectf& sceneBounds)
-	: m_sceneName(sceneName), m_qtree(0, sceneBounds), m_entitiesAllocated(0)
+	: m_sceneName(sceneName), m_qtree(0, sceneBounds), m_numberOfAllocatedChunks(0)
 {
 
 }
@@ -84,7 +84,7 @@ void Krawler::KScene::fixedTick()
 		m_qtree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
 	}
 	// handle box colliders here
-	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
+	for (uint32 i = 0; i < m_numberOfAllocatedChunks; ++i)
 	{
 		if (!m_entityChunks[i].allocated)
 		{
@@ -169,7 +169,7 @@ void Krawler::KScene::fixedTick()
 
 		}
 	}
-	for (uint32 i = 0; i < m_entitiesAllocated; ++i)
+	for (uint32 i = 0; i < m_numberOfAllocatedChunks; ++i)
 	{
 		if (!m_entityChunks[i].entity.isEntityInUse())
 		{
@@ -186,38 +186,55 @@ void KScene::onEnterScene()
 	KApplication::getMutexInstance().lock();
 
 	KApplication::getApp()->getPhysicsWorld()->setQuadtree(&m_qtree);
-	for (auto& entity : m_entityChunks)
+	for (auto& entityChunk : m_entityChunks)
 	{
-		entity.onEnterScene();
+		if (!entityChunk.allocated)
+		{
+			continue;
+		}
+
+		entityChunk.entity.onEnterScene();
 	}
 	KApplication::getMutexInstance().unlock();
 }
 
 void KScene::onExitScene()
 {
-	for (auto& entity : m_entityChunks)
+	for (auto& entityChunk : m_entityChunks)
 	{
-		entity.onExitScene();
+		if (!entityChunk.allocated)
+		{
+			continue;
+		}
+		entityChunk.entity.onExitScene();
 	}
 }
 
 KEntity* KScene::addEntityToScene()
 {
-	if (m_entitiesAllocated + 1 >= MAX_NUMBER_OF_ENTITIES)
+	/*if (m_entitiesAllocated + 1 >= MAX_NUMBER_OF_ENTITIES)
 	{
 		return nullptr;
 	}
-	m_entityChunks[m_entitiesAllocated].setIsInUse(true);
-	return &m_entityChunks[m_entitiesAllocated++];
+	m_entityChunks[m_entitiesAllocated].entity.setIsInUse(true);
+	return &m_entityChunks[m_entitiesAllocated++].entity;*/
+	KEntity* const pEntity = getAllocatableEntity();
+	if (!pEntity)
+	{
+		return nullptr;
+	}
+
+	++m_numberOfAllocatedChunks;
+	return pEntity;
 }
 
 KEntity* KScene::addEntitiesToScene(uint32 number, int32 & numberAllocated)
 {
-	if (m_entitiesAllocated + number <= MAX_NUMBER_OF_ENTITIES) //if there is enough entities in the scene
+	if (m_numberOfAllocatedChunks + number <= MAX_NUMBER_OF_ENTITIES) //if there is enough entities in the scene
 	{
 		numberAllocated = number; // if the number of entities
-		KEntity* const pEntity = &m_entityChunks[m_entitiesAllocated];
-		m_entitiesAllocated += number;
+		KEntity* const pEntity = &(m_entityChunks[m_numberOfAllocatedChunks].entity);
+		m_numberOfAllocatedChunks += number;
 		for (uint32 i = 0; i < number; ++i)
 		{
 			pEntity[i].setIsInUse(true);
@@ -267,7 +284,7 @@ Krawler::KEntity* KScene::getAllocatableEntity()
 	{
 		return nullptr;
 	}
-
+	findResult->allocated = 1;
 	return &findResult->entity;
 }
 

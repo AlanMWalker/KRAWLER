@@ -56,7 +56,7 @@ namespace Krawler
 
 		KRAWLER_API KEntity* findEntityByTag(const std::wstring& tag);
 
-		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_entitiesAllocated; }
+		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_numberOfAllocatedChunks; }
 
 		KRAWLER_API KAllocatableChunk* getEntityList() { return m_entityChunks; }
 
@@ -74,7 +74,7 @@ namespace Krawler
 		std::wstring m_sceneName;
 		KQuadtree m_qtree;
 
-		uint32 m_entitiesAllocated;
+		uint32 m_numberOfAllocatedChunks;
 	};
 
 	class KSceneDirector

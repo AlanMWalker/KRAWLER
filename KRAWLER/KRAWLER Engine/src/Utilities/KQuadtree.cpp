@@ -100,69 +100,6 @@ vector<KEntity*>& KQuadtree::queryEntitiy(KEntity* p)
 	return m_queriedPointList;
 }
 
-std::stack<KEntity*>& Krawler::KQuadtree::getPossibleCollidingEntitiesStack(KEntity* pEntity)
-{
-	if (!m_queriedEntityStack.empty())
-	{
-		for (int32 i = 0; i < m_queriedEntityStack.size(); ++i)
-		{
-			m_queriedEntityStack.pop();
-		}
-	}
-
-	KCColliderBase* pColliderBase = pEntity->getComponent<KCColliderBase>();
-	if (!pColliderBase)
-	{
-		return m_queriedEntityStack;
-	}
-
-	const Rectf& boundingBox = pColliderBase->getBoundingBox();
-
-	if (!m_boundary.intersects(boundingBox) || m_nodeVector.size() == 0)
-	{
-		return m_queriedEntityStack;
-	}
-
-	if (m_bHasSubdivided)
-	{
-		const LeavesIdentifier containingLeaf = getLeafEnum(pEntity);
-		std::stack<LeavesIdentifier> leafStack(getLeavesEnum(pEntity));
-
-		for (int32 i = 0; i < (signed)leafStack.size(); ++i) // (containingLeaf != noLeaf)
-		{
-			std::stack<KEntity*>& queried = m_leaves[leafStack.top()]->getPossibleCollidingEntitiesStack(pEntity);
-			//for (auto& pNode : queried)
-			while (!queried.empty())
-			{
-				KEntity* pNode = queried.top();
-				if (pNode == pEntity)
-				{
-					queried.pop();
-					continue;
-				}
-
-				m_queriedEntityStack.push(pNode);
-				queried.pop();
-
-			}
-			leafStack.pop();
-		}
-	}
-	else
-	{
-		for (auto& pNode : m_nodeVector)
-		{
-			if (pEntity == pNode)
-			{// if same object
-				continue;
-			}
-			m_queriedEntityStack.push(pNode);
-		}
-	}
-
-	return m_queriedEntityStack;
-}
-
 void KQuadtree::getPossibleCollisions(KEntity* pEntity, std::stack<KEntity*>& entityStack)
 {
 	KCColliderBase* pColliderBase = pEntity->getComponent<KCColliderBase>();

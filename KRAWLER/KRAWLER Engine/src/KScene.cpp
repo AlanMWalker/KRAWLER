@@ -83,8 +83,9 @@ void Krawler::KScene::fixedTick()
 		//m_entities[i].tick(); // tick all components
 		m_qtree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
 	}
-	// handle box colliders here
-	for (uint32 i = 0; i < m_numberOfAllocatedChunks; ++i)
+
+	// handle colliders here
+	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
 		if (!m_entityChunks[i].allocated)
 		{
@@ -103,9 +104,11 @@ void Krawler::KScene::fixedTick()
 			continue;
 		}
 
-		std::stack<KEntity*>& colliderStack = m_qtree.getPossibleCollidingEntitiesStack(&m_entityChunks[i].entity);
+		std::stack<KEntity*> colliderStack;
+		m_qtree.getPossibleCollisions(&m_entityChunks[i].entity, colliderStack);
 
-		
+		const int32 stackSize = colliderStack.size();
+
 		while (!colliderStack.empty())
 		{
 			KEntity* pEntity = colliderStack.top();

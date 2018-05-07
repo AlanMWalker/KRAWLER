@@ -128,7 +128,7 @@ std::stack<KEntity*>& Krawler::KQuadtree::getPossibleCollidingEntitiesStack(KEnt
 		const LeavesIdentifier containingLeaf = getLeafEnum(pEntity);
 		std::stack<LeavesIdentifier> leafStack(getLeavesEnum(pEntity));
 
-		for (int32 i = 0; i < (signed) leafStack.size(); ++i) // (containingLeaf != noLeaf)
+		for (int32 i = 0; i < (signed)leafStack.size(); ++i) // (containingLeaf != noLeaf)
 		{
 			std::stack<KEntity*>& queried = m_leaves[leafStack.top()]->getPossibleCollidingEntitiesStack(pEntity);
 			//for (auto& pNode : queried)
@@ -163,6 +163,57 @@ std::stack<KEntity*>& Krawler::KQuadtree::getPossibleCollidingEntitiesStack(KEnt
 	return m_queriedEntityStack;
 }
 
+void KQuadtree::getPossibleCollisions(KEntity* pEntity, std::stack<KEntity*>& entityStack)
+{
+	KCColliderBase* pColliderBase = pEntity->getComponent<KCColliderBase>();
+	if (!pColliderBase)
+	{
+		return;
+	}
+	const Rectf& boundingBox = pColliderBase->getBoundingBox();
+
+	if (!m_boundary.intersects(boundingBox) || m_nodeVector.size() == 0)
+	{
+		return;
+	}
+
+	if (m_bHasSubdivided)
+	{
+		const LeavesIdentifier containingLeaf = getLeafEnum(pEntity);
+		std::stack<LeavesIdentifier> leafStack(getLeavesEnum(pEntity));
+
+		for (int32 i = 0; i < (signed)leafStack.size(); ++i) // (containingLeaf != noLeaf)
+		{
+			std::stack<KEntity*>& queried = m_leaves[leafStack.top()]->getPossibleCollidingEntitiesStack(pEntity);
+			//for (auto& pNode : queried)
+			while (!queried.empty())
+			{
+				KEntity* pNode = queried.top();
+				if (pNode == pEntity)
+				{
+					queried.pop();
+					continue;
+				}
+
+				entityStack.push(pNode);
+				queried.pop();
+
+			}
+			leafStack.pop();
+		}
+	}
+
+	for (auto& pNode : m_nodeVector)
+	{
+		if (pEntity == pNode)
+		{// if same object
+			continue;
+		}
+		entityStack.push(pNode);
+	}
+
+}
+
 void KQuadtree::clear()
 {
 	if (m_bHasSubdivided)
@@ -185,12 +236,12 @@ void KQuadtree::subdivide()
 		return;
 	}
 
-	const Point halfBounds(m_boundary.width / 2.0f, m_boundary.height / 2.0f);
+	const Vec2f halfBounds(m_boundary.width / 2.0f, m_boundary.height / 2.0f);
 
-	m_leaves[northWest] = new KQuadtree(m_level + 1, sf::FloatRect(Point(m_boundary.left, m_boundary.top), halfBounds));
-	m_leaves[northEast] = new KQuadtree(m_level + 1, sf::FloatRect(Point(m_boundary.left + halfBounds.x, m_boundary.top), halfBounds));
-	m_leaves[southWest] = new KQuadtree(m_level + 1, sf::FloatRect(Point(m_boundary.left, m_boundary.top + halfBounds.y), halfBounds));
-	m_leaves[southEast] = new KQuadtree(m_level + 1, sf::FloatRect(Point(m_boundary.left + halfBounds.x, m_boundary.top + halfBounds.y), halfBounds));
+	m_leaves[northWest] = new KQuadtree(m_level + 1, sf::FloatRect(Vec2f(m_boundary.left, m_boundary.top), halfBounds));
+	m_leaves[northEast] = new KQuadtree(m_level + 1, sf::FloatRect(Vec2f(m_boundary.left + halfBounds.x, m_boundary.top), halfBounds));
+	m_leaves[southWest] = new KQuadtree(m_level + 1, sf::FloatRect(Vec2f(m_boundary.left, m_boundary.top + halfBounds.y), halfBounds));
+	m_leaves[southEast] = new KQuadtree(m_level + 1, sf::FloatRect(Vec2f(m_boundary.left + halfBounds.x, m_boundary.top + halfBounds.y), halfBounds));
 
 	for (auto& pEntity : m_nodeVector)
 	{
@@ -247,7 +298,7 @@ std::stack<LeavesIdentifier> Krawler::KQuadtree::getLeavesEnum(KEntity * pEntity
 	const Rectf se(m_boundary.left + halfWidth, m_boundary.top + halfHeight, halfWidth, halfHeight);
 	const Rectf sw(m_boundary.left, m_boundary.top + halfHeight, halfWidth, halfHeight);
 
-	const Rectf bounds = pEntity->getComponent<KCColliderBase>()->getBoundingBox();
+	const Rectf& bounds = pEntity->getComponent<KCColliderBase>()->getBoundingBox();
 
 	if (nw.intersects(bounds))
 	{

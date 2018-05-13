@@ -166,16 +166,31 @@ Krawler::KAssetLoader::KAssetLoader()
 	}
 
 	xml_node<>* pFirstNodeChild = pFirstNode->first_node();
-	
+
 	while (pFirstNodeChild)
 	{
 		printf("%s\n", pFirstNodeChild->name());
 
+		if (string("texture") == string(pFirstNodeChild->name()))
+		{
+			string filePath = fp;
+			loadTexture();
+		}
+		else if (string("shader") == string(pFirstNodeChild->name()))
+		{
+
+		}
+		else if (string("sound") == string(pFirstNodeChild->name()))
+		{
+
+		}
+
 		pFirstNodeChild = pFirstNodeChild->next_sibling();
 	}
-	
+
 cleanup_branch:
 	free(pBuffer);
+	doc.clear();
 
 }
 

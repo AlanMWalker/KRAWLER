@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <assets>
+  <root foldername="res"/>
   <texture name="8ball" filepath="textures/8ball.png"/>
-  <shader name="default" vert="defaultVert.frag" frag ="defaultFrag.frag"/>
+  <shader name="default" vert="shaders/defaultVert.frag" frag ="shaders/defaultFrag.frag"/>
+  <!--<sound name="fire", filepath="sound/fire.wav"/>
+  <music name ="menu_music", filepath="music.ogg"/>-->
 </assets>

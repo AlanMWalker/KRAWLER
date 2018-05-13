@@ -31,7 +31,7 @@ namespace Krawler
 			KRAWLER_API static void Update();
 			KRAWLER_API static void HandleEvent(const sf::Event& evt);
 
-			KRAWLER_API static bool JustPressed(sf::Keyboard::Key key);
+			KRAWLER_API static bool JustPressed(sf::Keyboard::Key key); //TODO Prevent repeat key firing
 			KRAWLER_API static bool Pressed(sf::Keyboard::Key key);
 			KRAWLER_API static bool JustReleased(sf::Keyboard::Key key);
 			KRAWLER_API static bool MouseJustPressed(sf::Mouse::Button button);

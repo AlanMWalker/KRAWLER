@@ -9,10 +9,6 @@ using namespace Krawler::Components;
 KCSprite::KCSprite(KEntity * pEntity, const Vec2f& size)
 	:KComponentBase(pEntity), m_size(size), m_pTexture(nullptr), m_pShader(nullptr), m_pTransform(nullptr), m_renderLayer(0)
 {
-}
-
-KInitStatus KCSprite::init()
-{
 	m_vertexArray = sf::VertexArray(sf::Quads, 4);
 
 	m_vertexArray[0].position = Vec2f(0.0f, 0.0f);
@@ -20,7 +16,16 @@ KInitStatus KCSprite::init()
 	m_vertexArray[2].position = Vec2f(m_size.x, m_size.y);
 	m_vertexArray[3].position = Vec2f(0.0f, m_size.y);
 
-	m_pTransform = getEntity()->getComponent<KCTransform>();
+	m_vertexArray[0].color = Colour::White;
+	m_vertexArray[1].color = Colour::White;
+	m_vertexArray[2].color = Colour::White;
+	m_vertexArray[3].color = Colour::White;
+
+	m_pTransform = getEntity()->getTransformComponent();
+}
+
+KInitStatus KCSprite::init()
+{
 	KCHECK(m_pTransform);
 	if (!m_pTransform)
 	{
@@ -51,6 +56,7 @@ void KCSprite::setTexture(sf::Texture * pTexture)
 	const Recti bounds(0, 0, pTexture->getSize().x, pTexture->getSize().y);
 	setTextureRect(bounds);
 }
+
 KRAWLER_API void Krawler::Components::KCSprite::setTextureRect(const Recti & texRect)
 {
 	KCHECK(m_vertexArray.getVertexCount() > 0);
@@ -65,3 +71,19 @@ Rectf KCSprite::getOnscreenBounds() const
 {
 	return m_pTransform->getTransform().transformRect(Rectf(0, 0, m_size.x, m_size.y));
 }
+<<<<<<< HEAD
+=======
+
+void KCSprite::operator = (const KCSprite& spr)
+{
+	m_vertexArray.clear(); //clear this classes vert arrayso it's empty 
+
+	m_size = spr.m_size;
+	m_vertexArray = spr.m_vertexArray;
+	m_pTexture = spr.m_pTexture;
+	m_pShader = spr.m_pShader;
+
+	m_renderLayer = spr.m_renderLayer;
+	m_pTransform = getEntity()->getTransformComponent();
+}
+>>>>>>> GDS-KRAWLER

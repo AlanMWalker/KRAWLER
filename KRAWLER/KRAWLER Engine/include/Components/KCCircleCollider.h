@@ -1,12 +1,14 @@
 #ifndef KCCIRCLE_COLLIDER_H
 #define KCCIRCLE_COLLIDER_H
 
-#include "Krawler.h"
-#include "KCColliderBase.h"
+#include <Krawler.h>
+#include <Components\KCColliderBase.h>
+
 namespace Krawler
 {
 	namespace Components
 	{
+		class KCTransform;
 		class KCCircleCollider : public KCColliderBase
 		{
 		public:
@@ -25,7 +27,7 @@ namespace Krawler
 			float m_radius;
 			Vec2f m_centrePos;
 			Rectf m_boundingBox;
-
+			KCTransform* m_pTransform;
 		};
 	}
 }

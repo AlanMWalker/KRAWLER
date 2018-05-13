@@ -3,13 +3,13 @@
 
 #include <assert.h>
 
-#define KFREE(ptr) if( ptr != nullptr)	\
-						{					\
-							delete ptr;		\
-							ptr = nullptr;	\
+#define KFREE(ptr)		if( ptr != nullptr)		\
+						{						\
+							delete ptr;			\
+							ptr = nullptr;		\
 						}
 
-#define KFREE_ARR(ptr) if( ptr != nullptr)	\
+#define KFREE_ARR(ptr)	if( ptr != nullptr)		\
 						{						\
 							delete[] ptr;		\
 							ptr = nullptr;		\

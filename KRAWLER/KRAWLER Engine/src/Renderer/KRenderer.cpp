@@ -1,4 +1,3 @@
-
 #include "Renderer\KRenderer.h"
 #include "KApplication.h"
 
@@ -177,9 +176,14 @@ void KRenderer::generateSpriteList()
 	KCHECK(pCurrentScene);
 	auto entityList = pCurrentScene->getEntityList();
 
-	for (int i = 0; i < (signed)pCurrentScene->getNumbrOfEntitiesAllocated(); ++i)
+	for (int i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
-		KEntity& entity = entityList[i];
+		if (!entityList[i].allocated)
+		{
+			continue;
+		}
+
+		KEntity& entity = entityList[i].entity;
 		if (!entity.isEntityInUse())
 		{
 			continue;
@@ -216,7 +220,7 @@ void KRenderer::defaultRender()
 
 	generateSpriteList();
 	sortByRenderLayer();
-
+	const int32 size = m_sprites.size();
 	for (auto& sprite : m_sprites)
 	{
 		target->draw(*sprite);

@@ -14,6 +14,11 @@
 
 namespace Krawler
 {
+	struct KAllocatableChunk
+	{
+		bool allocated = 0;
+		KEntity entity;
+	};
 
 	class KScene
 	{
@@ -45,29 +50,33 @@ namespace Krawler
 		KRAWLER_API KEntity* addEntityToScene();
 
 		//Will aim to always give a contiguous block. Nullptr if none available or failed
-		KRAWLER_API KEntity* addEntitiesToScene(uint32 number, int32& numberAllocated);
+		KRAWLER_API KDEPRECATED(KEntity* addEntitiesToScene)(Krawler::uint32 number, Krawler::int32& numberAllocated);
+
+		KRAWLER_API bool addMultipleEntitiesToScene(uint32 numberToAllocate, std::vector<KEntity*>& entityVec);
+
+		KRAWLER_API void removeEntityFromScene(KEntity* pEntityToRemove);
 
 		KRAWLER_API KEntity* findEntityByTag(const std::wstring& tag);
 
-		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_entitiesAllocated; }
+		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_numberOfAllocatedChunks; }
 
-		KRAWLER_API KEntity* getEntityList() { return m_entities; }
+		KRAWLER_API KAllocatableChunk* getEntityList() { return m_entityChunks; }
 
 		bool hasSceneTickedOnce() const { return m_bHasTickedOnce; }
 
 	private:
 
-
-
+		Krawler::KEntity* getAllocatableEntity();
+		// Get the total number of unallocated chunks in the memory pool
+		Krawler::int32 getFreeChunkTotal() const;
 		bool m_bHasTickedOnce = false;
-		std::vector<KEntity*> m_renderQueue;
 
-		KEntity m_entities[MAX_NUMBER_OF_ENTITIES];
+		KAllocatableChunk m_entityChunks[CHUNK_POOL_SIZE];
 
 		std::wstring m_sceneName;
 		KQuadtree m_qtree;
 
-		uint32 m_entitiesAllocated;
+		uint32 m_numberOfAllocatedChunks;
 	};
 
 	class KSceneDirector

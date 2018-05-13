@@ -571,7 +571,7 @@ int32 clip(Vec2f n, float c, Vec2f face[])
 		out[sp++] = face[1];
 	}
 
-	if (d1*d2 < 0.0f)
+	if (d1*d2 < 0.0f && sp < 2)
 	{
 		float alpha = d1 / (d1 - d2);
 		out[sp] = face[0] + alpha * (face[1] - face[0]);

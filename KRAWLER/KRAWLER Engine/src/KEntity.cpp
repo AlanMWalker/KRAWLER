@@ -8,15 +8,22 @@ KEntity::KEntity()
 	: m_componentVector(1, nullptr), m_entityTag(GenerateUUID()), m_bIsInUse(false)
 {
 	m_componentVector[0] = new KCTransform(this);
+	m_pTransform = dynamic_cast<KCTransform*>(m_componentVector[0]);
+}
+
+
+KEntity::~KEntity()
+{
+	for (KComponentBase* pComponent : m_componentVector)
+	{
+		pComponent->cleanUp();
+		KFREE(pComponent);
+	}
+	m_componentVector.clear();
 }
 
 KInitStatus KEntity::init()
 {
-	//for (auto& pComponent : m_componentVector)
-	//{
-	//	KCHECK(pComponent);
-	//	KINIT_CHECK(pComponent->init());
-	//}
 	for (int32 componentIdx = 0; componentIdx < (signed)m_componentVector.size(); ++componentIdx)
 	{
 		KCHECK(m_componentVector[componentIdx]);

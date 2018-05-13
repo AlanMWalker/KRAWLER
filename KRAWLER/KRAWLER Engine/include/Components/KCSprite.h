@@ -20,7 +20,7 @@ namespace Krawler
 			KRAWLER_API ~KCSprite() = default;
 
 			KRAWLER_API virtual KInitStatus init() override;
-			virtual void draw(sf::RenderTarget& rTarget, sf::RenderStates rStates) const override;
+			KRAWLER_API virtual void draw(sf::RenderTarget& rTarget, sf::RenderStates rStates) const override;
 
 			KRAWLER_API void setRenderLayer(int32 renderLayer) { m_renderLayer = renderLayer; }
 
@@ -33,8 +33,11 @@ namespace Krawler
 			KRAWLER_API Rectf getOnscreenBounds() const;
 
 			KRAWLER_API sf::Shader* getShader() { return m_pShader; }
-			
+
 			KRAWLER_API void setShader(sf::Shader* pShader) { m_pShader = pShader; }
+
+			KRAWLER_API void operator = (const KCSprite& spr);
+
 		private:
 
 			sf::VertexArray m_vertexArray;

@@ -10,3 +10,6 @@ RC/
 .vscode/
 *.~
 *.un~
+*.ipch
+*.db-shm
+*.db-wal

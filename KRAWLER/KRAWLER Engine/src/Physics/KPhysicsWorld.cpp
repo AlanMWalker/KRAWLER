@@ -47,9 +47,14 @@ void KPhysicsWorld::assembleEntityList()
 	auto pEntities = pScene->getEntityList();
 	KCHECK(pEntities);
 
-	for (int32 i = 0; i < (signed)pScene->getNumbrOfEntitiesAllocated(); ++i)
+	for (int32 i = 0; i < (signed)CHUNK_POOL_SIZE; ++i)
 	{
-		auto& entity = pEntities[i];
+		if (!pEntities[i].allocated)
+		{
+			continue;
+		}
+
+		auto& entity = pEntities[i].entity;
 		if (!entity.isEntityInUse())
 		{//contine if not in use
 			continue;

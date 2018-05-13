@@ -65,6 +65,7 @@ void Krawler::KScene::tick()
 
 void Krawler::KScene::fixedTick()
 {
+	static std::stack<KEntity*> colliderStack;
 	KApplication::getMutexInstance().lock();
 
 	vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs;
@@ -104,7 +105,6 @@ void Krawler::KScene::fixedTick()
 			continue;
 		}
 
-		std::stack<KEntity*> colliderStack;
 		m_qtree.getPossibleCollisions(&m_entityChunks[i].entity, colliderStack);
 
 		const int32 stackSize = colliderStack.size();
@@ -210,12 +210,6 @@ void KScene::onExitScene()
 
 KEntity* KScene::addEntityToScene()
 {
-	/*if (m_entitiesAllocated + 1 >= MAX_NUMBER_OF_ENTITIES)
-	{
-		return nullptr;
-	}
-	m_entityChunks[m_entitiesAllocated].entity.setIsInUse(true);
-	return &m_entityChunks[m_entitiesAllocated++].entity;*/
 	KEntity* const pEntity = getAllocatableEntity();
 	if (!pEntity)
 	{

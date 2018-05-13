@@ -23,7 +23,7 @@ bool KQuadtree::insert(KEntity* pEntity)
 			return false;
 	}
 
-	if (!m_boundary.contains(pTrans->getPosition()))
+	if (!m_boundary.intersects(pCollider->getBoundingBox()))
 	{
 		return false;
 	}
@@ -119,10 +119,10 @@ void KQuadtree::getPossibleCollisions(KEntity* pEntity, std::stack<KEntity*>& en
 		const LeavesIdentifier containingLeaf = getLeafEnum(pEntity);
 		std::stack<LeavesIdentifier> leafStack(getLeavesEnum(pEntity));
 
-		for (int32 i = 0; i < (signed)leafStack.size(); ++i) // (containingLeaf != noLeaf)
+		std::stack<KEntity*> queried;
+		for (int32 i = 0; i < (signed)leafStack.size(); ++i)
 		{
-			std::stack<KEntity*>& queried = m_leaves[leafStack.top()]->getPossibleCollidingEntitiesStack(pEntity);
-			//for (auto& pNode : queried)
+			m_leaves[leafStack.top()]->getPossibleCollisions(pEntity, queried);
 			while (!queried.empty())
 			{
 				KEntity* pNode = queried.top();

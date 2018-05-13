@@ -403,8 +403,8 @@ int main(void)
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
-	entity->addComponent(new PhysicsTest(entity));
-	//entity->addComponent(new DeallocTest(entity));
+	//entity->addComponent(new PhysicsTest(entity));
+	entity->addComponent(new DeallocTest(entity));
 	InitialiseSubmodules();
 
 	RunApplication();

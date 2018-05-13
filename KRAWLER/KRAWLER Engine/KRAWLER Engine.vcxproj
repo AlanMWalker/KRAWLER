@@ -297,6 +297,10 @@
     <ClInclude Include="include\Utilities\KDebug.h" />
     <ClInclude Include="include\Utilities\KEngineMacros.h" />
     <ClInclude Include="include\Utilities\KQuadtree.h" />
+    <ClInclude Include="rapidxml\rapidxml.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\KMathsUtilities.inl" />

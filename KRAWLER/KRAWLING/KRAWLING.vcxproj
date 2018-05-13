@@ -165,6 +165,9 @@
   <ItemGroup>
     <None Include="kconfig.cfg" />
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="assets.xml" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

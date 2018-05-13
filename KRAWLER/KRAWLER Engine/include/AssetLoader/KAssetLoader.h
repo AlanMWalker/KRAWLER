@@ -32,10 +32,11 @@ namespace Krawler
 		KRAWLER_API sf::Shader* loadShader(const std::wstring& vertShader, const std::wstring& fragShader);
 
 		KRAWLER_API void setRootFolder(const std::wstring& rootFolder) { m_rootFolder = rootFolder; }
+		
 
 	private:
 
-		KAssetLoader() = default;
+		KAssetLoader();
 
 		std::wstring m_rootFolder;
 		std::unordered_map <std::wstring, sf::Texture*> m_texturesMap;

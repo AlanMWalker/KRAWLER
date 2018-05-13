@@ -3,7 +3,6 @@ Debug/
 RC/
 *.swp
 *.~
-rapidxml/
 *.opensdf
 *.sdf
 *.VC.opendb
@@ -17,3 +16,4 @@ rapidxml/
 *.db-shm
 *.db-wal
 
+.gitignore~

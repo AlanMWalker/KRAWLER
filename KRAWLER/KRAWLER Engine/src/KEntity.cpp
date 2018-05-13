@@ -11,6 +11,17 @@ KEntity::KEntity()
 	m_pTransform = dynamic_cast<KCTransform*>(m_componentVector[0]);
 }
 
+
+KEntity::~KEntity()
+{
+	for (KComponentBase* pComponent : m_componentVector)
+	{
+		pComponent->cleanUp();
+		KFREE(pComponent);
+	}
+	m_componentVector.clear();
+}
+
 KInitStatus KEntity::init()
 {
 	for (int32 componentIdx = 0; componentIdx < (signed)m_componentVector.size(); ++componentIdx)

@@ -31,6 +31,7 @@ using namespace Krawler::Components;
 class PhysicsTest : public KComponentBase
 {
 public:
+
 	PhysicsTest(KEntity* pEntity)
 		: KComponentBase(pEntity)
 	{
@@ -373,9 +374,8 @@ public:
 		pEntity->addComponent(new KCSprite(pEntity, Vec2f(20, 20)));
 		pEntity->getTransformComponent()->setTranslation(50, 50);
 
-		std::vector<KEntity*> entityVec;
 
-		bool result = pScene->addMultipleEntitiesToScene(400, entityVec);
+		bool result = pScene->addMultipleEntitiesToScene(9, entityVec);
 
 		for (KEntity* pEntity : entityVec)
 		{
@@ -388,8 +388,17 @@ public:
 
 	virtual void tick() override
 	{
-
+		if (KInput::JustPressed(KKey::Space))
+		{
+			for (KEntity* pEntity : entityVec)
+			{
+				KApplication::getApp()->getCurrentScene()->removeEntityFromScene(pEntity);
+			}
+			entityVec.clear();
+		}
 	}
+private:
+	std::vector<KEntity*> entityVec;
 };
 
 int main(void)

@@ -273,6 +273,13 @@ void KScene::removeEntityFromScene(KEntity* pEntityToRemove)
 		return;
 	}
 
+	for (auto it = std::begin(m_entityChunks); it != std::end(m_entityChunks); ++it)
+	{
+		if (&it->entity == pEntityToRemove)
+		{
+			pEntityToRemove->cleanUp();
+		}
+	}
 }
 
 KEntity * Krawler::KScene::findEntityByTag(const std::wstring & tag)

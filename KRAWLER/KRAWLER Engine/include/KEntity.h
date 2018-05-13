@@ -23,7 +23,7 @@ namespace Krawler
 	public:
 
 		KRAWLER_API KEntity();
-		KRAWLER_API ~KEntity() = default;
+		KRAWLER_API ~KEntity();
 
 		//Param: n/a 
 		//Return: KInitStatus (success if init fine)

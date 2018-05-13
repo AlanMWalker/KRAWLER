@@ -1,6 +1,9 @@
 Release/
 Debug/
 RC/
+*.swp
+*.~
+rapidxml/
 *.opensdf
 *.sdf
 *.VC.opendb
@@ -13,3 +16,4 @@ RC/
 *.ipch
 *.db-shm
 *.db-wal
+

@@ -33,4 +33,7 @@
   <ItemGroup>
     <None Include="kconfig.cfg" />
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="assets.xml" />
+  </ItemGroup>
 </Project>

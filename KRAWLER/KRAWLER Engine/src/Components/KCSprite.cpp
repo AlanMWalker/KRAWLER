@@ -71,8 +71,6 @@ Rectf KCSprite::getOnscreenBounds() const
 {
 	return m_pTransform->getTransform().transformRect(Rectf(0, 0, m_size.x, m_size.y));
 }
-<<<<<<< HEAD
-=======
 
 void KCSprite::operator = (const KCSprite& spr)
 {
@@ -86,4 +84,3 @@ void KCSprite::operator = (const KCSprite& spr)
 	m_renderLayer = spr.m_renderLayer;
 	m_pTransform = getEntity()->getTransformComponent();
 }
->>>>>>> GDS-KRAWLER

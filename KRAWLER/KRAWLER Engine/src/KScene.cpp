@@ -49,12 +49,8 @@ void Krawler::KScene::tick()
 
 	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
-<<<<<<< HEAD
-		if (!m_entities[i].isEntityInUse())
-=======
 		if (!m_entityChunks[i].allocated) // if not allocated to the scene, ignore
 		{
->>>>>>> GDS-KRAWLER
 			continue;
 		}
 		if (!m_entityChunks[i].entity.isEntityInUse())

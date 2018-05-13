@@ -1,10 +1,14 @@
 #include "AssetLoader\KAssetLoader.h"
 
 #include <future>
+#include <fstream>
+#include <stdio.h>
+#include <..\rapidxml\rapidxml.hpp>
 
 using namespace sf;
 using namespace Krawler;
 using namespace std;
+using namespace rapidxml;
 
 Krawler::KAssetLoader::~KAssetLoader()
 {
@@ -119,6 +123,62 @@ sf::Shader * KAssetLoader::loadShader(const std::wstring & vertShader, const std
 	return m_shaderMap[sVert];
 }
 
+Krawler::KAssetLoader::KAssetLoader()
+{
+#pragma region RAPIDXML LOADING
+	FILE* pFile = NULL;
+	fopen_s(&pFile, "assets.xml", "r");
+	if (pFile == NULL)
+	{
+		KPRINTF("Failed to open asset file!");
+		return;
+	}
+	//TODO handle returns of FSEEK for data validity 
+	fseek(pFile, 0, SEEK_END);
+	const int CHAR_COUNT = ftell(pFile);
+	fseek(pFile, 0, SEEK_SET);
+
+	char* pBuffer = (char*)malloc(sizeof(char) * CHAR_COUNT + 1);
+	fread_s(pBuffer, CHAR_COUNT + 1 * sizeof(char), sizeof(char), CHAR_COUNT + 1, pFile);
+
+	int closingXMLIndex = 0;
+	for (int i = CHAR_COUNT; i > 0; --i)
+	{
+		if (pBuffer[i] == '>')
+		{
+			closingXMLIndex = i;
+			break;
+		}
+	}
+	pBuffer[closingXMLIndex + 1] = '\0';
+
+	fclose(pFile);
+	pFile = NULL;
+	xml_document<> doc;
+	doc.parse<0>(pBuffer);
+	xml_node<>* pFirstNode = doc.first_node("assets");
+#pragma endregion 
+
+	if (!pFirstNode)
+	{
+		printf("No asset node!\n");
+		goto cleanup_branch;
+	}
+
+	xml_node<>* pFirstNodeChild = pFirstNode->first_node();
+	
+	while (pFirstNodeChild)
+	{
+		printf("%s\n", pFirstNodeChild->name());
+
+		pFirstNodeChild = pFirstNodeChild->next_sibling();
+	}
+	
+cleanup_branch:
+	free(pBuffer);
+
+}
+
 sf::Texture * Krawler::KAssetLoader::loadTextureASYNC(const std::wstring & fileName)
 {
 	auto fileIterator = m_texturesMap.find(m_rootFolder + fileName);
@@ -136,6 +196,6 @@ sf::Texture * Krawler::KAssetLoader::loadTextureASYNC(const std::wstring & fileN
 	}
 
 	m_texturesMap.emplace(s, new Texture(t));
-	
+
 	return m_texturesMap[m_rootFolder + fileName];
 }

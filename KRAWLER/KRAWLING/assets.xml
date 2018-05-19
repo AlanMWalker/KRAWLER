@@ -2,7 +2,6 @@
 <assets>
   <root_folder folder_name="res"/>
   <texture name="8ball" file_path="textures/8ball.png"/>
-  <shader name="default" vert_path="shaders/defaultVert.frag" frag_path="shaders/defaultFrag.frag"/>
-  <!--<sound name="fire", filepath="sound/fire.wav"/>
-  <music name ="menu_music", filepath="music.ogg"/>-->
+  <shader name="default" vert_path="shaders/defaultVert.glsl" frag_path="shaders/defaultFrag.glsl"/>
+  <sound name="fire" file_path="sound/railgun.ogg"/>
 </assets>

@@ -48,27 +48,19 @@ void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & f
 	m_texturesMap.emplace(name, new Texture(t));
 }
 
-sf::SoundBuffer* Krawler::KAssetLoader::loadSoundBuffer(const std::wstring & fileName)
+void KAssetLoader::loadSound(const std::wstring & name, const std::wstring & filePath)
 {
-	auto fileIterator = m_soundBufferMap.find(m_rootFolder + fileName);
-	if (fileIterator != m_soundBufferMap.end())
-	{
-		return (fileIterator->second);
-	}
-
 	SoundBuffer* sb = new SoundBuffer;
-	sf::String s(m_rootFolder + fileName);
+	sf::String s(m_rootFolder + KTEXT("\\") + filePath);
 
 	if (!sb->loadFromFile(s.toAnsiString()))
 	{
 		delete sb;
 		KPrintf(KTEXT("Failed to load sound %ws\n"), s.toWideString().c_str());
-		return nullptr;
+		return;
 	}
 
-	m_soundBufferMap.emplace(s, sb);
-
-	return m_soundBufferMap[m_rootFolder + fileName];
+	m_soundBufferMap.emplace(name, sb);
 }
 
 sf::Font * Krawler::KAssetLoader::loadFont(const std::wstring & fileName)
@@ -92,26 +84,19 @@ sf::Font * Krawler::KAssetLoader::loadFont(const std::wstring & fileName)
 	return m_fontMap[m_rootFolder + fileName];
 }
 
-sf::Shader * KAssetLoader::loadShader(const std::wstring & vertShader, const std::wstring & fragShader)
+void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & vertShader, const std::wstring & fragShader)
 {
-	auto fileIterator = m_shaderMap.find(m_rootFolder + vertShader);
-	if (fileIterator != m_shaderMap.end())
-	{
-		return fileIterator->second;
-	}
 
-	sf::String sVert(m_rootFolder + vertShader);
-	sf::String sFrag(m_rootFolder + fragShader);
+	sf::String sVert(m_rootFolder + KTEXT("\\") + vertShader);
+	sf::String sFrag(m_rootFolder + KTEXT("\\") + fragShader);
 	Shader* pShader = new Shader();
 	KCHECK(pShader);
 	if (!pShader->loadFromFile(sVert, sFrag))
 	{
-		return nullptr;
+		return;
 	}
 
-	m_shaderMap.emplace(sVert, pShader);
-
-	return m_shaderMap[sVert];
+	m_shaderMap.emplace(shaderName, pShader);
 }
 
 Krawler::KAssetLoader::KAssetLoader()
@@ -221,11 +206,52 @@ Krawler::KAssetLoader::KAssetLoader()
 		}
 		else if (wstring(pAssetTypeNodes->name()) == KTEXT("shader"))
 		{
+			pAttrName = pAssetTypeNodes->first_attribute();
+			if (pAttrName)
+			{
+				if (wstring(pAttrName->name()) == KTEXT("name"))
+				{
+					assetName = pAttrName->value();
+				}
+				pAttrFilepath = pAttrName->next_attribute();
+				if (pAttrFilepath)
+				{
+					if (wstring(pAttrFilepath->name()) == KTEXT("vert_path"))
+					{
+						assetPathA = pAttrFilepath->value();
+					}
+				}
 
+				pAttrFilepath = pAttrFilepath->next_attribute();
+				if (pAttrFilepath)
+				{
+					if (wstring(pAttrFilepath->name()) == KTEXT("frag_path"))
+					{
+						assetPathB = pAttrFilepath->value();
+					}
+				}
+			}
+			loadShader(assetName, assetPathA, assetPathB);
 		}
 		else if (wstring(pAssetTypeNodes->name()) == KTEXT("sound"))
 		{
-
+			pAttrName = pAssetTypeNodes->first_attribute();
+			if (pAttrName)
+			{
+				if (wstring(pAttrName->name()) == KTEXT("name"))
+				{
+					assetName = pAttrName->value();
+				}
+				pAttrFilepath = pAttrName->next_attribute();
+				if (pAttrFilepath)
+				{
+					if (wstring(pAttrFilepath->name()) == KTEXT("file_path"))
+					{
+						assetPathA = pAttrFilepath->value();
+					}
+				}
+			}
+			loadSound(assetName, assetPathA);
 		}
 		else if (wstring(pAssetTypeNodes->name()) == KTEXT("font"))
 		{

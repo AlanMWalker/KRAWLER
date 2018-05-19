@@ -39,11 +39,11 @@ namespace Krawler
 
 		std::wstring m_rootFolder;
 
-		void loadTexture(const std::wstring& name, const std::wstring& path);
-		sf::SoundBuffer* loadSoundBuffer(const std::wstring& fileName);
+		void loadTexture(const std::wstring& name, const std::wstring& filePath);
+		void loadShader(const std::wstring& shaderName, const std::wstring& vertShaderPath, const std::wstring& fragShaderPath);
+		void loadSound(const std::wstring& name, const std::wstring& filePath);
+
 		sf::Font* loadFont(const std::wstring& fileName);
-		sf::Shader* loadShader(const std::wstring& vertShader, const std::wstring& fragShader);
-		//sf::Shader* loadShader(const std::wstring& shader);
 
 		std::unordered_map <std::wstring, sf::Texture*> m_texturesMap;
 		std::unordered_map <std::wstring, sf::Font*> m_fontMap;

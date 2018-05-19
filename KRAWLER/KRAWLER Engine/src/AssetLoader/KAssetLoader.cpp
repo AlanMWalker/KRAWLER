@@ -63,34 +63,26 @@ void KAssetLoader::loadSound(const std::wstring & name, const std::wstring & fil
 	m_soundBufferMap.emplace(name, sb);
 }
 
-sf::Font * Krawler::KAssetLoader::loadFont(const std::wstring & fileName)
+void KAssetLoader::loadFont(const std::wstring& name, const std::wstring& filePath)
 {
-	auto fileIterator = m_fontMap.find(m_rootFolder + fileName);
-	if (fileIterator != m_fontMap.end())
-	{
-		return fileIterator->second;
-	}
-
 	Font f;
-	sf::String s(m_rootFolder + fileName);
+	const sf::String s(m_rootFolder + KTEXT("\\") + filePath);
 
 	if (!f.loadFromFile(s.toAnsiString()))
 	{
-		return nullptr;
+		return;
 	}
 
 	m_fontMap.emplace(s, new Font(f));
-
-	return m_fontMap[m_rootFolder + fileName];
 }
 
 void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & vertShader, const std::wstring & fragShader)
 {
-
-	sf::String sVert(m_rootFolder + KTEXT("\\") + vertShader);
-	sf::String sFrag(m_rootFolder + KTEXT("\\") + fragShader);
-	Shader* pShader = new Shader();
+	const sf::String sVert(m_rootFolder + KTEXT("\\") + vertShader);
+	const sf::String sFrag(m_rootFolder + KTEXT("\\") + fragShader);
+	Shader* const pShader = new Shader();
 	KCHECK(pShader);
+
 	if (!pShader->loadFromFile(sVert, sFrag))
 	{
 		return;
@@ -113,14 +105,17 @@ Krawler::KAssetLoader::KAssetLoader()
 	fseek(pFile, 0, SEEK_END);
 	const int CHAR_COUNT = ftell(pFile);
 	fseek(pFile, 0, SEEK_SET);
+
 	const int BUFFER_SIZE = sizeof(wchar_t) * CHAR_COUNT + 1;
-	wchar_t* pBuffer = (wchar_t*)malloc(BUFFER_SIZE);
+
+	wchar_t* const pBuffer = (wchar_t*)malloc(BUFFER_SIZE);
 	for (int i = 0; i < CHAR_COUNT; ++i)
 	{
 		pBuffer[i] = fgetwc(pFile);
 	}
 
 	int closingXMLIndex = 0;
+
 	for (int i = CHAR_COUNT; i > 0; --i)
 	{
 		if (pBuffer[i] == '>')
@@ -255,7 +250,23 @@ Krawler::KAssetLoader::KAssetLoader()
 		}
 		else if (wstring(pAssetTypeNodes->name()) == KTEXT("font"))
 		{
-
+			pAttrName = pAssetTypeNodes->first_attribute();
+			if (pAttrName)
+			{
+				if (wstring(pAttrName->name()) == KTEXT("name"))
+				{
+					assetName = pAttrName->value();
+				}
+				pAttrFilepath = pAttrName->next_attribute();
+				if (pAttrFilepath)
+				{
+					if (wstring(pAttrFilepath->name()) == KTEXT("file_path"))
+					{
+						assetPathA = pAttrFilepath->value();
+					}
+				}
+			}
+			loadFont(assetName, assetPathA);
 		}
 		else
 		{

@@ -35,27 +35,17 @@ KRAWLER_API void Krawler::KAssetLoader::cleanupAssetLoader()
 	m_fontMap.clear();
 }
 
-sf::Texture * Krawler::KAssetLoader::loadTexture(const std::wstring & fileName)
+void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & filePath)
 {
-	//auto fileIterator = m_texturesMap.find(m_rootFolder + fileName);
-	//if (fileIterator != m_texturesMap.end())
-	//{
-	//	return fileIterator->second;
-	//}
-	//
-	//Texture t;
-	//sf::String s(m_rootFolder + fileName);
-	//
-	//if (!t.loadFromFile(s.toAnsiString()))
-	//{
-	//	return nullptr;
-	//}
-	//
-	//m_texturesMap.emplace(s, new Texture(t));
+	Texture t;
+	sf::String s(m_rootFolder + KTEXT("\\") + filePath);
 
-	//return m_texturesMap[m_rootFolder + fileName];
-	auto p = std::async(&KAssetLoader::loadTextureASYNC, this, fileName);
-	return p.get();
+	if (!t.loadFromFile(s.toAnsiString()))
+	{
+		return;
+	}
+
+	m_texturesMap.emplace(name, new Texture(t));
 }
 
 sf::SoundBuffer* Krawler::KAssetLoader::loadSoundBuffer(const std::wstring & fileName)
@@ -101,6 +91,7 @@ sf::Font * Krawler::KAssetLoader::loadFont(const std::wstring & fileName)
 
 	return m_fontMap[m_rootFolder + fileName];
 }
+
 sf::Shader * KAssetLoader::loadShader(const std::wstring & vertShader, const std::wstring & fragShader)
 {
 	auto fileIterator = m_shaderMap.find(m_rootFolder + vertShader);
@@ -125,9 +116,9 @@ sf::Shader * KAssetLoader::loadShader(const std::wstring & vertShader, const std
 
 Krawler::KAssetLoader::KAssetLoader()
 {
-#pragma region RAPIDXML LOADING
 	FILE* pFile = NULL;
-	fopen_s(&pFile, "assets.xml", "r");
+	_wfopen_s(&pFile, KTEXT("assets.xml"), KTEXT("r"));
+
 	if (pFile == NULL)
 	{
 		KPRINTF("Failed to open asset file!");
@@ -137,9 +128,12 @@ Krawler::KAssetLoader::KAssetLoader()
 	fseek(pFile, 0, SEEK_END);
 	const int CHAR_COUNT = ftell(pFile);
 	fseek(pFile, 0, SEEK_SET);
-
-	char* pBuffer = (char*)malloc(sizeof(char) * CHAR_COUNT + 1);
-	fread_s(pBuffer, CHAR_COUNT + 1 * sizeof(char), sizeof(char), CHAR_COUNT + 1, pFile);
+	const int BUFFER_SIZE = sizeof(wchar_t) * CHAR_COUNT + 1;
+	wchar_t* pBuffer = (wchar_t*)malloc(BUFFER_SIZE);
+	for (int i = 0; i < CHAR_COUNT; ++i)
+	{
+		pBuffer[i] = fgetwc(pFile);
+	}
 
 	int closingXMLIndex = 0;
 	for (int i = CHAR_COUNT; i > 0; --i)
@@ -153,64 +147,101 @@ Krawler::KAssetLoader::KAssetLoader()
 	pBuffer[closingXMLIndex + 1] = '\0';
 
 	fclose(pFile);
-	pFile = NULL;
-	xml_document<> doc;
-	doc.parse<0>(pBuffer);
-	xml_node<>* pFirstNode = doc.first_node("assets");
-#pragma endregion 
 
-	if (!pFirstNode)
+	pFile = NULL;
+	xml_document<wchar_t> assetsXMLDoc;
+	assetsXMLDoc.parse<0>(pBuffer);
+	xml_node<wchar_t>* assetNodeVerification = assetsXMLDoc.first_node(KTEXT("assets"));
+
+	if (!assetNodeVerification)
 	{
-		printf("No asset node!\n");
+		KPRINTF("No asset node!\n");
 		goto cleanup_branch;
 	}
 
-	xml_node<>* pFirstNodeChild = pFirstNode->first_node();
-
-	while (pFirstNodeChild)
+	xml_node<wchar_t>* pRootFolderNode = assetNodeVerification->first_node();
+	if (!pRootFolderNode)
 	{
-		printf("%s\n", pFirstNodeChild->name());
+		KPRINTF("No root folder node specified!\n");
+		goto cleanup_branch;
+	}
 
-		if (string("texture") == string(pFirstNodeChild->name()))
+	if (wstring(pRootFolderNode->name()) != KTEXT("root_folder"))
+	{
+		KPRINTF("No root folder node specified!\n");
+		goto cleanup_branch;
+	}
+
+	xml_attribute<wchar_t>* pRootFolderName = pRootFolderNode->first_attribute();
+	if (!pRootFolderName)
+	{
+		KPRINTF("No root folder node specified!\n");
+		goto cleanup_branch;
+	}
+
+	if (wstring(pRootFolderName->name()) != KTEXT("folder_name"))
+	{
+		KPRINTF("No root folder name specified!\n");
+		goto cleanup_branch;
+	}
+
+	m_rootFolder = pRootFolderName->value();
+
+	xml_node<wchar_t>* pAssetTypeNodes;
+	pAssetTypeNodes = pRootFolderNode->next_sibling();
+
+	while (pAssetTypeNodes)
+	{
+		KPRINTF_A("%s\n", pAssetTypeNodes->name());
+
+		xml_attribute<wchar_t>* pAttrName = nullptr;
+		xml_attribute<wchar_t>* pAttrFilepath = nullptr;
+		wstring assetName;
+		wstring assetPathA, assetPathB;
+
+		if (wstring(pAssetTypeNodes->name()) == KTEXT("texture"))
 		{
-			string filePath = fp;
-			loadTexture();
+			pAttrName = pAssetTypeNodes->first_attribute();
+			if (pAttrName)
+			{
+				if (wstring(pAttrName->name()) == KTEXT("name"))
+				{
+					assetName = pAttrName->value();
+				}
+				pAttrFilepath = pAttrName->next_attribute();
+				if (pAttrFilepath)
+				{
+					if (wstring(pAttrFilepath->name()) == KTEXT("file_path"))
+					{
+						assetPathA = pAttrFilepath->value();
+					}
+				}
+			}
+			loadTexture(assetName, assetPathA);
 		}
-		else if (string("shader") == string(pFirstNodeChild->name()))
+		else if (wstring(pAssetTypeNodes->name()) == KTEXT("shader"))
 		{
 
 		}
-		else if (string("sound") == string(pFirstNodeChild->name()))
+		else if (wstring(pAssetTypeNodes->name()) == KTEXT("sound"))
 		{
 
 		}
+		else if (wstring(pAssetTypeNodes->name()) == KTEXT("font"))
+		{
 
-		pFirstNodeChild = pFirstNodeChild->next_sibling();
+		}
+		else
+		{
+			KPRINTF_A("Label %s is not a valid asset type (font, texture, shader or sound)\n", pAssetTypeNodes->name());
+		}
+
+		pAssetTypeNodes = pAssetTypeNodes->next_sibling();
 	}
 
 cleanup_branch:
 	free(pBuffer);
-	doc.clear();
+	assetsXMLDoc.clear();
 
 }
 
-sf::Texture * Krawler::KAssetLoader::loadTextureASYNC(const std::wstring & fileName)
-{
-	auto fileIterator = m_texturesMap.find(m_rootFolder + fileName);
-	if (fileIterator != m_texturesMap.end())
-	{
-		return fileIterator->second;
-	}
-
-	Texture t;
-	sf::String s(m_rootFolder + fileName);
-
-	if (!t.loadFromFile(s.toAnsiString()))
-	{
-		return nullptr;
-	}
-
-	m_texturesMap.emplace(s, new Texture(t));
-
-	return m_texturesMap[m_rootFolder + fileName];
-}

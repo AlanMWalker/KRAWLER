@@ -49,7 +49,12 @@ public:
 		KEntity* pEntity = pScene->addEntityToScene();
 		pEntity->addComponent(new KCSprite(pEntity, Vec2f(20, 20)));
 		pEntity->getTransformComponent()->setTranslation(50, 50);
-		auto texture = KAssetLoader::getAssetLoader().getTexture(std::wstring(L"8ball"));
+
+		KAssetLoader& assetLoad = KAssetLoader::getAssetLoader();
+		auto texture = assetLoad.getTexture(L"8ball");
+		auto sound = assetLoad.getSound(L"fire");
+		auto font = assetLoad.getFont(L"default_font");
+		auto shader = assetLoad.getShader(L"default");
 		pEntity->getComponent<KCSprite>()->setTexture(texture);
 
 		bool result = pScene->addMultipleEntitiesToScene(9, entityVec);

@@ -118,7 +118,7 @@ void KAssetLoader::loadFont(const std::wstring& name, const std::wstring& filePa
 		return;
 	}
 
-	m_fontMap.emplace(s, new Font(f));
+	m_fontMap.emplace(name, new Font(f));
 }
 
 void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & vertShader, const std::wstring & fragShader)
@@ -181,33 +181,33 @@ KAssetLoader::KAssetLoader()
 	if (!assetNodeVerification)
 	{
 		KPRINTF("No asset node!\n");
-		goto cleanup_branch;
+		goto cleanup_fail;
 	}
 
 	xml_node<wchar_t>* pRootFolderNode = assetNodeVerification->first_node();
 	if (!pRootFolderNode)
 	{
 		KPRINTF("No root folder node specified!\n");
-		goto cleanup_branch;
+		goto cleanup_fail;
 	}
 
 	if (wstring(pRootFolderNode->name()) != KTEXT("root_folder"))
 	{
 		KPRINTF("No root folder node specified!\n");
-		goto cleanup_branch;
+		goto cleanup_fail;
 	}
 
 	xml_attribute<wchar_t>* pRootFolderName = pRootFolderNode->first_attribute();
 	if (!pRootFolderName)
 	{
 		KPRINTF("No root folder node specified!\n");
-		goto cleanup_branch;
+		goto cleanup_fail;
 	}
 
 	if (wstring(pRootFolderName->name()) != KTEXT("folder_name"))
 	{
 		KPRINTF("No root folder name specified!\n");
-		goto cleanup_branch;
+		goto cleanup_fail;
 	}
 
 	m_rootFolder = pRootFolderName->value();
@@ -242,6 +242,12 @@ KAssetLoader::KAssetLoader()
 					}
 				}
 			}
+
+			if (assetName.length() == 0 || assetPathA.size() == 0)
+			{
+				KPRINTF("Asset attributes length == 0!\n");
+				goto cleanup_fail;
+			}
 			loadTexture(assetName, assetPathA);
 		}
 		else if (wstring(pAssetTypeNodes->name()) == KTEXT("shader"))
@@ -271,6 +277,11 @@ KAssetLoader::KAssetLoader()
 					}
 				}
 			}
+			if (assetName.length() == 0 || assetPathA.size() == 0 || assetPathB.size() == 0)
+			{
+				KPRINTF("Asset attributes length == 0!\n");
+				goto cleanup_fail;
+			}
 			loadShader(assetName, assetPathA, assetPathB);
 		}
 		else if (wstring(pAssetTypeNodes->name()) == KTEXT("sound"))
@@ -290,6 +301,11 @@ KAssetLoader::KAssetLoader()
 						assetPathA = pAttrFilepath->value();
 					}
 				}
+			}
+			if (assetName.length() == 0 || assetPathA.size() == 0)
+			{
+				KPRINTF("Asset attributes length == 0!\n");
+				goto cleanup_fail;
 			}
 			loadSound(assetName, assetPathA);
 		}
@@ -311,6 +327,11 @@ KAssetLoader::KAssetLoader()
 					}
 				}
 			}
+			if (assetName.length() == 0 || assetPathA.size() == 0)
+			{
+				KPRINTF("Asset attributes length == 0!\n");
+				goto cleanup_fail;
+			}
 			loadFont(assetName, assetPathA);
 		}
 		else
@@ -321,9 +342,20 @@ KAssetLoader::KAssetLoader()
 		pAssetTypeNodes = pAssetTypeNodes->next_sibling();
 	}
 
-cleanup_branch:
+
+	goto cleanup_safe;
+
+cleanup_fail:
 	free(pBuffer);
 	assetsXMLDoc.clear();
+	_CrtDbgBreak();
+	return;
+
+cleanup_safe:
+	free(pBuffer);
+	assetsXMLDoc.clear();
+	return;
+
 
 }
 

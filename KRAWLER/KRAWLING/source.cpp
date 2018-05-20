@@ -49,7 +49,8 @@ public:
 		KEntity* pEntity = pScene->addEntityToScene();
 		pEntity->addComponent(new KCSprite(pEntity, Vec2f(20, 20)));
 		pEntity->getTransformComponent()->setTranslation(50, 50);
-
+		auto texture = KAssetLoader::getAssetLoader().getTexture(std::wstring(L"8ball"));
+		pEntity->getComponent<KCSprite>()->setTexture(texture);
 
 		bool result = pScene->addMultipleEntitiesToScene(9, entityVec);
 

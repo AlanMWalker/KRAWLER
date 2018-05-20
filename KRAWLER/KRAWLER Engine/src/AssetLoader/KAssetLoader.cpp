@@ -10,11 +10,11 @@ using namespace Krawler;
 using namespace std;
 using namespace rapidxml;
 
-Krawler::KAssetLoader::~KAssetLoader()
+KAssetLoader::~KAssetLoader()
 {
 }
 
-KRAWLER_API void Krawler::KAssetLoader::cleanupAssetLoader()
+void KAssetLoader::cleanupAssetLoader()
 {
 	for (auto& pair : m_texturesMap)
 	{
@@ -33,6 +33,51 @@ KRAWLER_API void Krawler::KAssetLoader::cleanupAssetLoader()
 		KFREE(pair.second);
 	}
 	m_fontMap.clear();
+}
+
+sf::Texture * const KAssetLoader::getTexture(const std::wstring & name)
+{
+	auto findResult = m_texturesMap.find(name);
+
+	if (findResult == m_texturesMap.end())
+	{
+		return nullptr;
+	}
+
+	return findResult->second;
+}
+
+sf::SoundBuffer * const KAssetLoader::getSound(const std::wstring & name)
+{
+	auto findResult = m_soundBufferMap.find(name);
+	if (findResult == m_soundBufferMap.end())
+	{
+		return nullptr;
+	}
+
+	return findResult->second;
+}
+
+sf::Shader * const KAssetLoader::getShader(const std::wstring & name)
+{
+	auto findResult = m_shaderMap.find(name);
+	if (findResult == m_shaderMap.end())
+	{
+		return nullptr;
+	}
+
+	return findResult->second;
+}
+
+sf::Font * const KAssetLoader::getFont(const std::wstring & name)
+{
+	auto findResult = m_fontMap.find(name);
+	if (findResult == m_fontMap.end())
+	{
+		return nullptr;
+	}
+
+	return findResult->second;
 }
 
 void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & filePath)
@@ -91,7 +136,7 @@ void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring
 	m_shaderMap.emplace(shaderName, pShader);
 }
 
-Krawler::KAssetLoader::KAssetLoader()
+KAssetLoader::KAssetLoader()
 {
 	FILE* pFile = NULL;
 	_wfopen_s(&pFile, KTEXT("assets.xml"), KTEXT("r"));

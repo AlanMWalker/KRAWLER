@@ -25,10 +25,10 @@ namespace Krawler
 
 		KRAWLER_API void cleanupAssetLoader();
 
-		KRAWLER_API sf::Texture* const getTexture(std::wstring& name);
-		KRAWLER_API sf::Sound* const getSound(std::wstring& name);
-		KRAWLER_API sf::Shader* const getShader(std::wstring& name);
-		KRAWLER_API sf::Font* const getFont(std::wstring& name);
+		KRAWLER_API sf::Texture* const getTexture(const std::wstring& name);
+		KRAWLER_API sf::SoundBuffer* const getSound(const std::wstring& name);
+		KRAWLER_API sf::Shader* const getShader(const std::wstring& name);
+		KRAWLER_API sf::Font* const getFont(const std::wstring& name);
 
 		KRAWLER_API void setRootFolder(const std::wstring& rootFolder) { m_rootFolder = rootFolder; }
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assets>
+  <root_folder folder_name="res"/>
+  <texture name="8ball" file_path="textures/8ball.png"/>
+  <shader name="default" vert_path="shaders/defaultVert.glsl" frag_path="shaders/defaultFrag.glsl"/>
+  <sound name="fire" file_path="sound/railgun.ogg"/>
+  <font name="default_font" file_path="font/Seriphim.ttf"/>
+</assets>

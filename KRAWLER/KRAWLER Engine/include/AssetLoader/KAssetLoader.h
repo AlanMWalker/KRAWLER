@@ -25,25 +25,29 @@ namespace Krawler
 
 		KRAWLER_API void cleanupAssetLoader();
 
-		KRAWLER_API sf::Texture* loadTexture(const std::wstring& fileName);
-		KRAWLER_API sf::SoundBuffer* loadSoundBuffer(const std::wstring& fileName);
-		KRAWLER_API sf::Font* loadFont(const std::wstring& fileName);
-
-		KRAWLER_API sf::Shader* loadShader(const std::wstring& vertShader, const std::wstring& fragShader);
+		KRAWLER_API sf::Texture* const getTexture(const std::wstring& name);
+		KRAWLER_API sf::SoundBuffer* const getSound(const std::wstring& name);
+		KRAWLER_API sf::Shader* const getShader(const std::wstring& name);
+		KRAWLER_API sf::Font* const getFont(const std::wstring& name);
 
 		KRAWLER_API void setRootFolder(const std::wstring& rootFolder) { m_rootFolder = rootFolder; }
 
+
 	private:
 
-		KAssetLoader() = default;
+		KAssetLoader();
 
 		std::wstring m_rootFolder;
+
+		void loadTexture(const std::wstring& name, const std::wstring& filePath);
+		void loadShader(const std::wstring& shaderName, const std::wstring& vertShaderPath, const std::wstring& fragShaderPath);
+		void loadSound(const std::wstring& name, const std::wstring& filePath);
+		void loadFont(const std::wstring& name, const std::wstring& filePath);
+
 		std::unordered_map <std::wstring, sf::Texture*> m_texturesMap;
 		std::unordered_map <std::wstring, sf::Font*> m_fontMap;
 		std::unordered_map <std::wstring, sf::SoundBuffer*> m_soundBufferMap;
 		std::unordered_map<std::wstring, sf::Shader*> m_shaderMap;
-
-		sf::Texture* loadTextureASYNC(const std::wstring& fileName);
 
 	};
 }

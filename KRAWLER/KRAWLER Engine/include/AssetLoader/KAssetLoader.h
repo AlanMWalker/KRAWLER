@@ -11,6 +11,11 @@
 
 namespace Krawler
 {
+	namespace Animation
+	{
+		struct KAnimation;
+	};
+
 	class KAssetLoader
 	{
 	public:
@@ -36,6 +41,9 @@ namespace Krawler
 	private:
 
 		KAssetLoader();
+		void loadAssetsXML();
+		void loadAnimationsXML();
+		void matchAnimationsToTextures();
 
 		std::wstring m_rootFolder;
 
@@ -48,6 +56,7 @@ namespace Krawler
 		std::unordered_map <std::wstring, sf::Font*> m_fontMap;
 		std::unordered_map <std::wstring, sf::SoundBuffer*> m_soundBufferMap;
 		std::unordered_map<std::wstring, sf::Shader*> m_shaderMap;
+		std::unordered_map < std::wstring, Animation::KAnimation*> m_animationsMap;
 
 	};
 }

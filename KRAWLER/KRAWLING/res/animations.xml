@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation name="player_run_anim" texture_name="player_run" fps="60" width="32" height="32">
+  <frame x_pos="1" y_pos="5"/>
+</animation>
+<animation name="enemy_run_anim" texture_name="enemy_run" fps="60" width="32" height="32">
+  <frame xs_pos="8" yf_pos="6"/>
+</animation>

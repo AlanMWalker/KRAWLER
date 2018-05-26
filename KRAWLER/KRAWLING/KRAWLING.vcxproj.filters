@@ -38,5 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="assets.xml" />
+    <Xml Include="res\animations.xml" />
   </ItemGroup>
 </Project>

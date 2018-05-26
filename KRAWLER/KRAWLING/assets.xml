@@ -2,6 +2,8 @@
 <assets>
   <root_folder folder_name="res"/>
   <texture name="8ball" file_path="textures/8ball.png"/>
+  <texture name="player_run" file_path="textures/player_run.png"/>
+  <texture name="enemy_run" file_path="textures/enemy_run.png"/>
   <shader name="default" vert_path="shaders/defaultVert.glsl" frag_path="shaders/defaultFrag.glsl"/>
   <sound name="fire" file_path="sound/railgun.ogg"/>
   <font name="default_font" file_path="font/Seriphim.ttf"/>

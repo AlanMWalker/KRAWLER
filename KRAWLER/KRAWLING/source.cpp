@@ -32,7 +32,6 @@ using namespace Krawler::Components;
 #define BOX_SIZE 48
 #define FLOOR_WIDTH 640
 
-
 class DeallocTest
 	: public KComponentBase//KScene deallocation testing 
 {

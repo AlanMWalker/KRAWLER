@@ -244,6 +244,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RC|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Animation\KAnimation.cpp" />
+    <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
+    <ClCompile Include="src\Components\KCRenderableBase.cpp" />
     <ClCompile Include="src\Maths\KOrientation.cpp" />
     <ClCompile Include="src\Components\KCollisions.cpp" />
     <ClCompile Include="src\Components\KCOrientedBoxCollider.cpp" />
@@ -270,13 +273,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
+    <ClInclude Include="include\Components\KCAnimatedSprite.h" />
     <ClInclude Include="include\Components\KCBoxCollider.h" />
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />
     <ClInclude Include="include\Components\KCollisions.h" />
     <ClInclude Include="include\Components\KCOrientedBoxCollider.h" />
     <ClInclude Include="include\Components\KCPhysicsBody.h" />
+    <ClInclude Include="include\Components\KCRenderableBase.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
+    <ClInclude Include="include\Animation\KAnimation.h" />
     <ClInclude Include="include\KComponent.h" />
     <ClInclude Include="include\KEntity.h" />
     <ClInclude Include="include\GameObject\KGameObject.h" />

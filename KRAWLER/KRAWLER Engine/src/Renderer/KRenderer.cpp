@@ -22,35 +22,14 @@ KRenderer::~KRenderer()
 	m_screenText.clear();
 }
 
-void KRenderer::addToRendererQueue(KGameObject * pGameObj)
-{
-	KCHECK(pGameObj);
-	if (!pGameObj)
-	{
-		return;
-	}
-
-	m_renderQueue.push_back(pGameObj);
-}
-
 void KRenderer::render()
 {
 	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
-	mp_defaultFont.loadFromFile("res\\seriphim.ttf");
 
 	while (target->isOpen())
 	{
 		target->clear();
-		switch (m_renderingType)
-		{
-		default:
-		case Default:
-			defaultRender();
-			break;
-		case Raycast:
-			raycastRender();
-			break;
-		}
+		defaultRender();
 
 		for (auto& text : m_screenText)
 		{
@@ -60,85 +39,6 @@ void KRenderer::render()
 			target->draw(t);
 		}
 		target->display();
-	}
-}
-
-bool KRenderer::isInRenderQueue(KGameObject* pGameObj) const
-{
-	KCHECK(pGameObj);
-	auto p = find(m_renderQueue.begin(), m_renderQueue.end(), pGameObj);
-	return (p != m_renderQueue.end());
-}
-
-bool KRenderer::isInRenderQueue(const std::wstring & identifier) const
-{
-	bool found = false;
-	for (auto& a : m_renderQueue)
-	{
-		if (a->getObjectName() == identifier)
-		{
-			found = true;
-			break;
-		}
-	}
-	return found;
-}
-
-void KRenderer::removeFromRenderQueue(KGameObject* pObj)
-{
-	KCHECK(pObj);
-	if (!pObj)
-	{
-		return;
-	}
-
-	if (!isInRenderQueue(pObj))
-	{
-		return;
-	}
-
-	m_renderQueue.erase(std::find(m_renderQueue.begin(), m_renderQueue.end(), pObj));
-}
-
-void KRenderer::removeFromRenderQueue(const std::wstring & identifier)
-{
-	if (!isInRenderQueue(identifier))
-	{
-		return;
-	}
-
-	int32 idx = 0;
-	bool found = false;
-	while (idx < KCAST(int32, m_renderQueue.size()))
-	{
-		if (m_renderQueue[idx]->getObjectName() == identifier)
-		{
-			found = true;
-			break;
-		}
-		++idx;
-	}
-
-	if (!found)
-	{
-		return;
-	}
-	auto a = std::find(m_renderQueue.begin(), m_renderQueue.end(), m_renderQueue[idx]);
-	m_renderQueue.erase(a);
-}
-
-KRAWLER_API void KRenderer::clearRenderQueue()
-{
-	m_renderQueue.clear();
-	m_screenText.clear();
-}
-
-KRAWLER_API void KRenderer::setActiveTiledMap(TiledMap::KTiledMap * pTiledMap)
-{
-	if (pTiledMap != nullptr)
-	{
-		mp_tiledMap = pTiledMap;
-		mb_hasTiledMap = true;
 	}
 }
 
@@ -167,11 +67,11 @@ KRAWLER_API void KRenderer::addTiledMap(int32 renderOrder, TiledMap::KTiledMap *
 	});
 }
 
-void KRenderer::generateSpriteList()
+void KRenderer::generateRenderableList()
 {
 	KApplication::getMutexInstance().lock();
 
-	m_sprites.clear();
+	m_renderable.clear();
 	auto const pCurrentScene = KApplication::getApp()->getCurrentScene();
 	KCHECK(pCurrentScene);
 	auto entityList = pCurrentScene->getEntityList();
@@ -188,19 +88,19 @@ void KRenderer::generateSpriteList()
 		{
 			continue;
 		}
-		auto pSprite = entity.getComponent<Components::KCSprite>();
+		auto pSprite = entity.getComponent<Components::KCRenderableBase>();
 		if (!pSprite)
 		{
 			continue;
 		}
-		m_sprites.push_back(pSprite);
+		m_renderable.push_back(pSprite);
 	}
 	KApplication::getMutexInstance().unlock();
 }
 
 void KRenderer::sortByRenderLayer()
 {
-	std::sort(m_sprites.begin(), m_sprites.end(), [](Components::KCSprite* objA, Components::KCSprite* objB)
+	std::sort(m_renderable.begin(), m_renderable.end(), [](Components::KCRenderableBase* objA, Components::KCRenderableBase* objB)
 	{
 		return objA->getRenderLayer() < objB->getRenderLayer();
 	});
@@ -218,19 +118,13 @@ void KRenderer::defaultRender()
 		}
 	}
 
-	generateSpriteList();
+	generateRenderableList();
 	sortByRenderLayer();
-	const int32 size = m_sprites.size();
-	for (auto& sprite : m_sprites)
+	const int32 size = m_renderable.size();
+	for (auto& renderable : m_renderable)
 	{
-		target->draw(*sprite);
+		target->draw(*renderable);
 	}
-
-}
-
-void KRenderer::raycastRender()
-{
-
 }
 
 Vec2f KRenderer::screenToWorld(const Vec2i & vec) const

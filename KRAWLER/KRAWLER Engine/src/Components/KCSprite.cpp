@@ -7,7 +7,7 @@ using namespace Krawler;
 using namespace Krawler::Components;
 
 KCSprite::KCSprite(KEntity * pEntity, const Vec2f& size)
-	:KComponentBase(pEntity), m_size(size), m_pTexture(nullptr), m_pShader(nullptr), m_pTransform(nullptr), m_renderLayer(0)
+	:KCRenderableBase(pEntity), m_size(size), m_pTexture(nullptr), m_pTransform(nullptr)
 {
 	m_vertexArray = sf::VertexArray(sf::Quads, 4);
 
@@ -24,21 +24,11 @@ KCSprite::KCSprite(KEntity * pEntity, const Vec2f& size)
 	m_pTransform = getEntity()->getTransformComponent();
 }
 
-KInitStatus KCSprite::init()
-{
-	KCHECK(m_pTransform);
-	if (!m_pTransform)
-	{
-		return KInitStatus::Failure;
-	}
-	return KInitStatus::Success;
-}
-
 void KCSprite::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const
 {
 	rStates.transform *= m_pTransform->getTransform();
 	rStates.texture = m_pTexture;
-	rStates.shader = m_pShader;
+	rStates.shader = getShader();
 	rTarget.draw(m_vertexArray, rStates);
 }
 
@@ -79,8 +69,6 @@ void KCSprite::operator = (const KCSprite& spr)
 	m_size = spr.m_size;
 	m_vertexArray = spr.m_vertexArray;
 	m_pTexture = spr.m_pTexture;
-	m_pShader = spr.m_pShader;
 
-	m_renderLayer = spr.m_renderLayer;
 	m_pTransform = getEntity()->getTransformComponent();
 }

@@ -83,24 +83,43 @@ private:
 	std::vector<KEntity*> entityVec;
 };
 
+#include <JSON\json.hpp>
+#include <fstream>
+
+using json = nlohmann::json;
+using namespace std;
+
 int main(void)
 {
+
 	srand((unsigned)time(NULL));
-	KApplicationInitialise initApp(true);
-	StartupEngine(&initApp);
+	json j;
+	ifstream file("res/maps/test_level.json");
+	if (file.fail())
+	{
+		return -1;
+		system("pause");
+	}
+	file >> j;
+	
+	_CrtDbgBreak();
 
-	auto app = KApplication::getApp();
-	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0, 0, 2 * initApp.width, 2 * initApp.height)));
-	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
-	auto pCurrentScene = app->getCurrentScene();
-	auto entity = pCurrentScene->addEntityToScene();
-	//entity->addComponent(new PhysicsTest(entity));
-	entity->addComponent(new DeallocTest(entity));
-	InitialiseSubmodules();
 
-	RunApplication();
+	//KApplicationInitialise initApp(true);
+	//StartupEngine(&initApp);
 
-	ShutdownEngine();
+	//auto app = KApplication::getApp();
+	//app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0, 0, 2 * initApp.width, 2 * initApp.height)));
+	//app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
+	//auto pCurrentScene = app->getCurrentScene();
+	//auto entity = pCurrentScene->addEntityToScene();
+	////entity->addComponent(new PhysicsTest(entity));
+	//entity->addComponent(new DeallocTest(entity));
+	//InitialiseSubmodules();
+
+	//RunApplication();
+
+	//ShutdownEngine();
 
 	return 0;
 }

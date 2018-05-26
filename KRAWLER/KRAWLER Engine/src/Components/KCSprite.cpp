@@ -7,7 +7,7 @@ using namespace Krawler;
 using namespace Krawler::Components;
 
 KCSprite::KCSprite(KEntity * pEntity, const Vec2f& size)
-	:KComponentBase(pEntity), m_size(size), m_pTexture(nullptr), m_pShader(nullptr), m_pTransform(nullptr), m_renderLayer(0)
+	:KCRenderableBase(pEntity), m_size(size), m_pTexture(nullptr), m_pShader(nullptr), m_pTransform(nullptr), m_renderLayer(0)
 {
 	m_vertexArray = sf::VertexArray(sf::Quads, 4);
 

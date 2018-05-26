@@ -26,19 +26,7 @@ namespace Krawler
 			KRAWLER_API KRenderer();
 			KRAWLER_API ~KRenderer();
 
-			KDEPRECATED(KRAWLER_API void addToRendererQueue)(KGameObject* pGameObj);
-
 			KRAWLER_API void render();
-
-			KDEPRECATED(KRAWLER_API bool isInRenderQueue)(KGameObject* pGameObj) const;
-			KDEPRECATED(KRAWLER_API bool isInRenderQueue)(const std::wstring& identifier) const;
-
-			KDEPRECATED(KRAWLER_API void removeFromRenderQueue)(KGameObject* pObj);
-			KDEPRECATED(KRAWLER_API void removeFromRenderQueue)(const std::wstring& identifier);
-
-			KDEPRECATED(KRAWLER_API void clearRenderQueue)();
-
-			KDEPRECATED(KRAWLER_API void setActiveTiledMap)(TiledMap::KTiledMap* pTiledMap);
 
 			KRAWLER_API void addTiledMap(int32 renderOrder, TiledMap::KTiledMap* pTiledMap);
 
@@ -55,16 +43,15 @@ namespace Krawler
 			KRAWLER_API KDEPRECATED(sf::Text& getTextByIndex)(int32 i) { return m_screenText[i].second; }
 
 		private:
-			void generateSpriteList();
+			void generateRenderableList();
 			void sortByRenderLayer();
 
 			void defaultRender();
-			void raycastRender();
 
 			Vec2f screenToWorld(const Vec2i& vec) const;
 
 			std::vector<KGameObject*> m_renderQueue;
-			std::vector<Components::KCSprite*> m_sprites;
+			std::vector<Components::KCRenderableBase*> m_renderable;
 			std::vector<TextRender>m_screenText;
 			std::vector <TileMapRenderItem> m_tiledMaps;
 			KRendererType m_renderingType;

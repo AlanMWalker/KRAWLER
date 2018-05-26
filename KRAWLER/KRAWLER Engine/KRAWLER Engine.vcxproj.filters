@@ -185,6 +185,9 @@
     <ClInclude Include="rapidxml\rapidxml_print.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\JSON\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\KMathsUtilities.inl">

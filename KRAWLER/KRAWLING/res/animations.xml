@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animation name="player_run_anim" texture_name="player_run" fps="60" width="32" height="32">
-  <frame x_pos="1" y_pos="5"/>
-</animation>
-<animation name="enemy_run_anim" texture_name="enemy_run" fps="60" width="32" height="32">
-  <frame xs_pos="8" yf_pos="6"/>
-</animation>
+<data>
+  <animation name="player_run_anim" texture_name="player_run" fps="6" width="24" height="24">
+    <frame x_pos="0" y_pos="0"/>
+    <frame x_pos="1" y_pos="0"/>
+    <frame x_pos="2" y_pos="0"/>
+    <frame x_pos="3" y_pos="0"/>
+  </animation>
+  
+  <animation name="enemy_run_anim" texture_name="enemy_run" fps="6" width="24" height="24">
+    <frame x_pos="0" y_pos="0"/>
+    <frame x_pos="1" y_pos="0"/>
+    <frame x_pos="2" y_pos="0"/>
+    <frame x_pos="3" y_pos="0"/>
+  </animation>
+
+  <animation name="player_explode_anim" texture_name="player_explode" fps="6" width="24" height="24">
+  <frame x_pos="0" y_pos="0"/>
+  <frame x_pos="1" y_pos="0"/>
+  <frame x_pos="2" y_pos="0"/>
+  <frame x_pos="3" y_pos="0"/>
+  <frame x_pos="4" y_pos="0"/>
+  </animation>
+
+<animation name="enemy_explode_anim" texture_name="enemy_explode" fps="6" width="24" height="24">
+  <frame x_pos="0" y_pos="0"/>
+  <frame x_pos="1" y_pos="0"/>
+  <frame x_pos="2" y_pos="0"/>
+  <frame x_pos="3" y_pos="0"/>
+  <frame x_pos="4" y_pos="0"/>
+  </animation>
+</data>

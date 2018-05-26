@@ -18,7 +18,6 @@ namespace Krawler
 			KRAWLER_API KCSprite(KEntity* pEntity, const Vec2f& size = Vec2f(1.0f, 1.0f));
 			KRAWLER_API ~KCSprite() = default;
 
-			KRAWLER_API virtual KInitStatus init() override;
 			KRAWLER_API virtual void draw(sf::RenderTarget& rTarget, sf::RenderStates rStates) const override;
 
 			KRAWLER_API void setColour(const Colour& col);
@@ -34,12 +33,8 @@ namespace Krawler
 
 			sf::VertexArray m_vertexArray;
 			sf::Vector2f m_size;
-
 			sf::Texture* m_pTexture;
-			sf::Shader* m_pShader;
 			KCTransform* m_pTransform;
-
-			int32 m_renderLayer;
 
 		};
 	}

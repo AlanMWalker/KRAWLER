@@ -12,7 +12,7 @@ using namespace Krawler;
 using namespace std;
 using namespace rapidxml;
 
-#define MAX_ANIMATION_FILE_CHARS 10000
+#define MAX_ANIMATION_FILE_CHARS 100000
 
 KAssetLoader::~KAssetLoader()
 {
@@ -37,6 +37,12 @@ void KAssetLoader::cleanupAssetLoader()
 		KFREE(pair.second);
 	}
 	m_fontMap.clear();
+
+	for (auto& pair : m_animationsMap)
+	{
+		KFREE(pair.second);
+	}
+	m_animationsMap.clear();
 }
 
 sf::Texture * const KAssetLoader::getTexture(const std::wstring & name)
@@ -77,6 +83,17 @@ sf::Font * const KAssetLoader::getFont(const std::wstring & name)
 {
 	auto findResult = m_fontMap.find(name);
 	if (findResult == m_fontMap.end())
+	{
+		return nullptr;
+	}
+
+	return findResult->second;
+}
+
+Animation::KAnimation * const KAssetLoader::getAnimation(const std::wstring & name)
+{
+	auto findResult = m_animationsMap.find(name);
+	if (findResult == m_animationsMap.end())
 	{
 		return nullptr;
 	}
@@ -391,6 +408,11 @@ void KAssetLoader::loadAnimationsXML()
 	{
 		animationsXMLFile.get(textArray[index]);
 		++index;
+		if (index > MAX_ANIMATION_FILE_CHARS && !animationsXMLFile.eof())
+		{
+			KPRINTF("Failed to load anim");
+			KCHECK(false);
+		}
 	}
 
 	if (index < MAX_ANIMATION_FILE_CHARS)
@@ -402,7 +424,7 @@ void KAssetLoader::loadAnimationsXML()
 
 	xml_document<wchar_t> animationsXMLDoc;
 	animationsXMLDoc.parse<0>(textArray);
-	xml_node<wchar_t>* animation_node = animationsXMLDoc.first_node(KTEXT("animation"));
+	xml_node<wchar_t>* animation_node = animationsXMLDoc.first_node(KTEXT("data"))->first_node(KTEXT("animation"));
 	Animation::KAnimation animDataStruct;
 
 	if (!animation_node)

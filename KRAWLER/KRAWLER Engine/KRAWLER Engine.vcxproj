@@ -245,6 +245,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Animation\KAnimation.cpp" />
+    <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
     <ClCompile Include="src\Maths\KOrientation.cpp" />
     <ClCompile Include="src\Components\KCollisions.cpp" />
@@ -272,6 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
+    <ClInclude Include="include\Components\KCAnimatedSprite.h" />
     <ClInclude Include="include\Components\KCBoxCollider.h" />
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />

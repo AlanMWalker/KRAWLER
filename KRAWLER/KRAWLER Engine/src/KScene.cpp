@@ -240,7 +240,7 @@ KRAWLER_API bool KScene::addMultipleEntitiesToScene(uint32 numberToAllocate, vec
 {
 	const int32 total = getFreeChunkTotal();
 	//if there isn't enough available memory, do not allocate
-	if (total < numberToAllocate)
+	if (total < (signed)numberToAllocate)
 	{
 		return false;
 	}
@@ -249,7 +249,7 @@ KRAWLER_API bool KScene::addMultipleEntitiesToScene(uint32 numberToAllocate, vec
 
 	for (auto it = std::begin(m_entityChunks); it != std::end(m_entityChunks); ++it)
 	{
-		if (count >= numberToAllocate)
+		if (count >= (signed)numberToAllocate)
 		{
 			break;
 		}

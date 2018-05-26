@@ -93,6 +93,9 @@
     <ClCompile Include="src\Animation\KAnimation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Components\KCAnimatedSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\KApplication.h">
@@ -195,6 +198,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Animation\KAnimation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Components\KCAnimatedSprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

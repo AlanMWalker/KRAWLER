@@ -12,13 +12,12 @@ using namespace Krawler::Renderer;
 using namespace std;
 
 KRenderer::KRenderer()
-	: m_renderingType(KRendererType::Default), m_renderQueue(0), mp_tiledMap(nullptr)
+	: m_renderingType(KRendererType::Default)
 {
 }
 
 KRenderer::~KRenderer()
 {
-	m_renderQueue.clear();
 	m_screenText.clear();
 }
 
@@ -40,31 +39,6 @@ void KRenderer::render()
 		}
 		target->display();
 	}
-}
-
-KRAWLER_API void KRenderer::addTiledMap(int32 renderOrder, TiledMap::KTiledMap * pTiledMap)
-{
-	if (!pTiledMap)
-	{
-		return;
-	}
-
-	if (!mb_hasTiledMap)
-	{
-		mb_hasTiledMap = true;
-	}
-
-	TileMapRenderItem item;
-	item.first = renderOrder;
-	item.second = pTiledMap;
-
-	m_tiledMaps.push_back(item);
-
-	std::sort(m_tiledMaps.begin(), m_tiledMaps.end(),
-		[](const TileMapRenderItem& lhs, const TileMapRenderItem& rhs) -> bool
-	{
-		return lhs.first < rhs.first;
-	});
 }
 
 void KRenderer::generateRenderableList()
@@ -109,14 +83,6 @@ void KRenderer::sortByRenderLayer()
 void KRenderer::defaultRender()
 {
 	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
-
-	if (mb_hasTiledMap)
-	{
-		for (auto& tiledMapRenderItem : m_tiledMaps)
-		{
-			target->draw(*tiledMapRenderItem.second);
-		}
-	}
 
 	generateRenderableList();
 	sortByRenderLayer();

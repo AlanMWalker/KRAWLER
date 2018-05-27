@@ -120,7 +120,7 @@ int main(void)
 	auto entity = pCurrentScene->addEntityToScene();
 	//entity->addComponent(new PhysicsTest(entity));
 	//entity->addComponent(new DeallocTest(entity));
-	entity->addComponent(new AnimationTest(entity));
+	//entity->addComponent(new AnimationTest(entity));
 	InitialiseSubmodules();
 
 	//RunApplication();

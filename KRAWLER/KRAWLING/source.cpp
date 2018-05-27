@@ -83,6 +83,7 @@ private:
 	std::vector<KEntity*> entityVec;
 };
 
+
 class AnimationTest : public KComponentBase
 {
 public:
@@ -147,13 +148,32 @@ private:
 
 };
 
+#include <JSON\json.hpp>
+#include <fstream>
+
+using json = nlohmann::json;
+using namespace std;
+
 
 int main(void)
 {
+
 	srand((unsigned)time(NULL));
+	json j;
+	ifstream file("res/maps/test_level.json");
+	if (file.fail())
+	{
+		return -1;
+		system("pause");
+	}
+	file >> j;
+	
+	_CrtDbgBreak();
+
+
 	KApplicationInitialise initApp(true);
 	StartupEngine(&initApp);
-
+  
 	auto app = KApplication::getApp();
 	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0, 0, 2 * initApp.width, 2 * initApp.height)));
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
@@ -164,9 +184,9 @@ int main(void)
 	entity->addComponent(new AnimationTest(entity));
 	InitialiseSubmodules();
 
-	RunApplication();
+	//RunApplication();
 
-	ShutdownEngine();
+	//ShutdownEngine();
 
 	return 0;
 }

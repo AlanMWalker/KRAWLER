@@ -283,6 +283,7 @@
     <ClInclude Include="include\Components\KCRenderableBase.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\Animation\KAnimation.h" />
+    <ClInclude Include="include\JSON\json.hpp" />
     <ClInclude Include="include\KComponent.h" />
     <ClInclude Include="include\KEntity.h" />
     <ClInclude Include="include\GameObject\KGameObject.h" />

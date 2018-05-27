@@ -335,6 +335,9 @@ Krawler::KSceneDirector::KSceneDirector()
 
 KInitStatus KSceneDirector::initScenes()
 {
+	if (m_pCurrentScene == nullptr)
+		m_pCurrentScene = m_scenes[0];
+
 	for (auto& pScene : m_scenes)
 	{
 		KINIT_CHECK(pScene->initScene());
@@ -348,8 +351,6 @@ KInitStatus KSceneDirector::initScenes()
 		return Failure;
 	}
 
-	if (m_pCurrentScene == nullptr)
-		m_pCurrentScene = m_scenes[0];
 
 	return KInitStatus::Success;
 }

@@ -10,7 +10,6 @@ using namespace std;
 
 bool KQuadtree::insert(KEntity* pEntity)
 {
-	auto pTrans = pEntity->getComponent<KCTransform>();
 	auto pCollider = pEntity->getComponent<KCColliderBase>();
 
 	if (!pCollider || !pEntity->isEntityInUse()) // if there's no collider then return false for not added

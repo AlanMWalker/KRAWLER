@@ -1,14 +1,18 @@
 #include "AssetLoader\KAssetLoader.h"
+#include "Animation\KAnimation.h"
 
 #include <future>
 #include <fstream>
 #include <stdio.h>
 #include <..\rapidxml\rapidxml.hpp>
+#include <string.h>
 
 using namespace sf;
 using namespace Krawler;
 using namespace std;
 using namespace rapidxml;
+
+#define MAX_ANIMATION_FILE_CHARS 100000
 
 KAssetLoader::~KAssetLoader()
 {
@@ -33,6 +37,12 @@ void KAssetLoader::cleanupAssetLoader()
 		KFREE(pair.second);
 	}
 	m_fontMap.clear();
+
+	for (auto& pair : m_animationsMap)
+	{
+		KFREE(pair.second);
+	}
+	m_animationsMap.clear();
 }
 
 sf::Texture * const KAssetLoader::getTexture(const std::wstring & name)
@@ -73,6 +83,17 @@ sf::Font * const KAssetLoader::getFont(const std::wstring & name)
 {
 	auto findResult = m_fontMap.find(name);
 	if (findResult == m_fontMap.end())
+	{
+		return nullptr;
+	}
+
+	return findResult->second;
+}
+
+Animation::KAnimation * const KAssetLoader::getAnimation(const std::wstring & name)
+{
+	auto findResult = m_animationsMap.find(name);
+	if (findResult == m_animationsMap.end())
 	{
 		return nullptr;
 	}
@@ -137,6 +158,18 @@ void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring
 }
 
 KAssetLoader::KAssetLoader()
+{
+	std::thread thread_a(&KAssetLoader::loadAssetsXML, this);
+	std::thread thread_b(&KAssetLoader::loadAnimationsXML, this);
+
+	thread_a.join();
+	thread_b.join();
+	//loadAssetsXML();
+	//loadAnimationsXML();
+	matchAnimationsToTextures();
+}
+
+void KAssetLoader::loadAssetsXML()
 {
 	FILE* pFile = NULL;
 	_wfopen_s(&pFile, KTEXT("assets.xml"), KTEXT("r"));
@@ -217,8 +250,6 @@ KAssetLoader::KAssetLoader()
 
 	while (pAssetTypeNodes)
 	{
-		KPRINTF_A("%s\n", pAssetTypeNodes->name());
-
 		xml_attribute<wchar_t>* pAttrName = nullptr;
 		xml_attribute<wchar_t>* pAttrFilepath = nullptr;
 		wstring assetName;
@@ -355,7 +386,219 @@ cleanup_safe:
 	free(pBuffer);
 	assetsXMLDoc.clear();
 	return;
+}
 
+void KAssetLoader::loadAnimationsXML()
+{
+	wifstream animationsXMLFile;
+	const wstring filePath = m_rootFolder + L"\\animations.xml";
+	animationsXMLFile.open(filePath, ios::in);
+	animationsXMLFile >> noskipws;
+
+	if (animationsXMLFile.fail())
+	{
+		KPRINTF("No animations.xml file found!\n");
+		return;
+	}
+
+	wchar_t textArray[MAX_ANIMATION_FILE_CHARS];
+	int32 index = 0;
+
+	while (index < MAX_ANIMATION_FILE_CHARS && !animationsXMLFile.eof())
+	{
+		animationsXMLFile.get(textArray[index]);
+		++index;
+		if (index > MAX_ANIMATION_FILE_CHARS && !animationsXMLFile.eof())
+		{
+			KPRINTF("Failed to load anim");
+			KCHECK(false);
+		}
+	}
+
+	if (index < MAX_ANIMATION_FILE_CHARS)
+	{
+		textArray[index - 1] = L'\0';
+	}
+	animationsXMLFile.close();
+
+
+	xml_document<wchar_t> animationsXMLDoc;
+	animationsXMLDoc.parse<0>(textArray);
+	xml_node<wchar_t>* animation_node = animationsXMLDoc.first_node(KTEXT("data"))->first_node(KTEXT("animation"));
+	Animation::KAnimation animDataStruct;
+
+	if (!animation_node)
+	{
+		KPRINTF_A("No animation nodes found in %s\n", filePath.c_str());
+		goto cleanup_branch_fail;
+	}
+
+
+	xml_attribute<wchar_t> *pAnimationName = nullptr, *pTextureName = nullptr, *pFrameTime = nullptr,
+		*pWidth = nullptr, *pHeight = nullptr;
+
+	while (animation_node)
+	{
+		//Animation name
+		{
+			if (wstring(animation_node->name()) != KTEXT("animation"))
+			{
+				KPRINTF_A("Incorrect node name %s\n", animation_node->name());
+				goto cleanup_branch_fail;
+			}
+			pAnimationName = animation_node->first_attribute(KTEXT("name"));
+			if (!pAnimationName)
+			{
+				KPRINTF("No animation name specified\n");
+				goto cleanup_branch_fail;
+			}
+
+			if (wcslen(pAnimationName->value()) == 0)
+			{
+				KPRINTF("Invalid animation name, length == 0\n");
+				goto cleanup_branch_fail;
+			}
+
+			animDataStruct.animationName = pAnimationName->value();
+		}
+
+		//Texture name
+		{
+			pTextureName = animation_node->first_attribute(KTEXT("texture_name"));
+			if (!pTextureName)
+			{
+				KPRINTF_A("No texture name referenced, animation name: %s \n", animDataStruct.animationName.c_str());
+				goto cleanup_branch_fail;
+			}
+			if (wcslen(pTextureName->value()) == 0)
+			{
+				KPRINTF_A("Invalid texture name! Texture name length == 0! Animation name: %s\n", animDataStruct.animationName.c_str());
+				goto cleanup_branch_fail;
+			}
+			animDataStruct.textureName = pTextureName->value();
+		}
+
+		//Frame Time
+		{
+			pFrameTime = animation_node->first_attribute(KTEXT("fps"));
+			if (!pFrameTime)
+			{
+				KPRINTF_A("No fps referenced, animation name: %s \n", animDataStruct.animationName.c_str());
+				goto cleanup_branch_fail;
+			}
+			if (wcslen(pTextureName->value()) == 0)
+			{
+				KPRINTF_A("No value given for fps, animation name: %s\n", animDataStruct.animationName.c_str());
+				goto cleanup_branch_fail;
+			}
+			const float denominator = static_cast<float> (_wtof(pFrameTime->value()));
+			if (denominator != 0.0f)
+			{
+				animDataStruct.frameTime = 1.0f / denominator;
+			}
+		}
+
+		//bounds
+		{
+
+			pWidth = animation_node->first_attribute(KTEXT("width"));
+			if (!pWidth)
+			{
+				KPRINTF_A("No width referenced, animation name: %s \n", animDataStruct.animationName.c_str());
+				goto cleanup_branch_fail;
+			}
+			if (wcslen(pWidth->value()) == 0)
+			{
+				KPRINTF_A("Width property length == 0, animation name: %s \n", animDataStruct.animationName.c_str());
+				goto cleanup_branch_fail;
+			}
+
+			animDataStruct.bounds.x = (float)_wtoi(pWidth->value());
+			pHeight = animation_node->first_attribute(KTEXT("height"));
+
+			if (!pHeight)
+			{
+				KPRINTF_A("No height referenced, animation name: %s \n", animDataStruct.animationName.c_str());
+				goto cleanup_branch_fail;
+			}
+
+			if (wcslen(pHeight->value()) == 0)
+			{
+				KPRINTF_A("height property length == 0, animation name: %s \n", animDataStruct.animationName.c_str());
+				goto cleanup_branch_fail;
+			}
+			animDataStruct.bounds.y = (float)_wtoi(pHeight->value());
+		}
+
+		xml_node<wchar_t>* pFrameNode = animation_node->first_node(KTEXT("frame"));
+		xml_attribute<wchar_t> * pXPosAttr = nullptr, *pYPosAttr = nullptr;
+		Vec2f frameData;
+		while (pFrameNode)
+		{
+
+			pXPosAttr = pFrameNode->first_attribute(KTEXT("x_pos"));
+			if (pXPosAttr)
+			{
+				if (wcslen(pXPosAttr->value()) > 0)
+				{
+					frameData.x = (float)_wtoi(pXPosAttr->value());
+				}
+				else
+				{
+					KPRINTF_A("Invalid frame x position! Animation name %s\n", animDataStruct.animationName.c_str());
+				}
+			}
+			else
+			{
+				KPRINTF_A("Invalid frame x position! Animation name %s\n", animDataStruct.animationName.c_str());
+			}
+
+			pYPosAttr = pFrameNode->first_attribute(KTEXT("y_pos"));
+			if (pYPosAttr)
+			{
+				if (wcslen(pYPosAttr->value()) > 0)
+				{
+					frameData.y = (float)_wtoi(pYPosAttr->value());
+				}
+				else
+				{
+					KPRINTF_A("Invalid frame y position! Animation name %s\n", animDataStruct.animationName.c_str());
+				}
+			}
+			else
+			{
+				KPRINTF_A("Invalid frame y position! Animation name %s\n", animDataStruct.animationName.c_str());
+			}
+
+			animDataStruct.frameData.push_back(frameData);
+
+			pFrameNode = pFrameNode->next_sibling();
+		}
+		m_animationsMap.emplace(animDataStruct.animationName, new Animation::KAnimation(animDataStruct));
+
+		animation_node = animation_node->next_sibling();
+		animDataStruct.frameData.clear();
+	}
+
+cleanup_branch_fail:
+	animationsXMLDoc.clear();
+	return;
+
+}
+
+void KAssetLoader::matchAnimationsToTextures()
+{
+	for (auto& anim : m_animationsMap)
+	{
+		Texture* pTex = getTexture(anim.second->textureName);
+		if (!pTex)
+		{
+			KPrintf(KTEXT("Unable to find texture %s for animation %s\n"), anim.second->textureName.c_str(), anim.first.c_str());
+			continue;
+		}
+		anim.second->pTexture = pTex;
+
+	}
 
 }
 

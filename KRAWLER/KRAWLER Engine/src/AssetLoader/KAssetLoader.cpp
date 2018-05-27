@@ -4,13 +4,18 @@
 #include <future>
 #include <fstream>
 #include <stdio.h>
-#include <..\rapidxml\rapidxml.hpp>
 #include <string.h>
+
+#include <..\rapidxml\rapidxml.hpp>
+#include <JSON\json.hpp>
+#include <fstream>
 
 using namespace sf;
 using namespace Krawler;
 using namespace std;
 using namespace rapidxml;
+
+using json = nlohmann::json;
 
 #define MAX_ANIMATION_FILE_CHARS 100000
 
@@ -101,17 +106,29 @@ Animation::KAnimation * const KAssetLoader::getAnimation(const std::wstring & na
 	return findResult->second;
 }
 
+TiledImport::KLevelMap * const KAssetLoader::getLevelMap(const std::wstring & name)
+{
+	auto findResult = m_importedLevelsMap.find(name);
+	if (findResult == m_importedLevelsMap.end())
+	{
+		return nullptr;
+	}
+
+	return findResult->second;
+}
+
 void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & filePath)
 {
-	Texture t;
+	Texture* pTex = new Texture;
 	sf::String s(m_rootFolder + KTEXT("\\") + filePath);
 
-	if (!t.loadFromFile(s.toAnsiString()))
+	if (!pTex->loadFromFile(s.toAnsiString()))
 	{
+		KFREE(pTex);
 		return;
 	}
 
-	m_texturesMap.emplace(name, new Texture(t));
+	m_texturesMap.emplace(name, pTex);
 }
 
 void KAssetLoader::loadSound(const std::wstring & name, const std::wstring & filePath)
@@ -140,6 +157,18 @@ void KAssetLoader::loadFont(const std::wstring& name, const std::wstring& filePa
 	}
 
 	m_fontMap.emplace(name, new Font(f));
+}
+
+void KAssetLoader::loadTilemap(const std::wstring & name, const std::wstring & filePath)
+{
+	TiledImport::KLevelMap* pMap;
+	pMap = TiledImport::loadTiledJSONFile(m_rootFolder + KTEXT("\\") + filePath);
+	KCHECK(pMap);
+	if (!pMap)
+	{
+		return;
+	}
+	m_importedLevelsMap.emplace(name, pMap);
 }
 
 void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & vertShader, const std::wstring & fragShader)
@@ -364,6 +393,31 @@ void KAssetLoader::loadAssetsXML()
 				goto cleanup_fail;
 			}
 			loadFont(assetName, assetPathA);
+		}
+		else if (wstring(pAssetTypeNodes->name()) == KTEXT("level"))
+		{
+			pAttrName = pAssetTypeNodes->first_attribute();
+			if (pAttrName)
+			{
+				if (wstring(pAttrName->name()) == KTEXT("name"))
+				{
+					assetName = pAttrName->value();
+				}
+			}
+			pAttrFilepath = pAttrName->next_attribute();
+			if (pAttrFilepath)
+			{
+				if (wstring(pAttrFilepath->name()) == KTEXT("file_path"))
+				{
+					assetPathA = pAttrFilepath->value();
+				}
+			}
+			if (assetName.length() == 0 || assetPathA.size() == 0)
+			{
+				KPRINTF("Asset attributes length == 0!\n");
+				goto cleanup_fail;
+			}
+			loadTilemap(assetName, assetPathA);
 		}
 		else
 		{

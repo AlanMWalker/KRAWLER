@@ -3,6 +3,8 @@
 
 #include "Krawler.h"
 #include "Components\KCSprite.h"
+#include <SFML\Graphics\Text.hpp>	
+#include <SFML\Graphics\Font.hpp>
 
 namespace Krawler
 {

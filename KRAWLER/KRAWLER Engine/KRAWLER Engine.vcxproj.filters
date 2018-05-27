@@ -39,9 +39,6 @@
     <ClCompile Include="src\Input\KInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TiledMap\KTiledMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -94,6 +91,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Components\KCAnimatedSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KTiledImport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -152,9 +152,6 @@
     <ClInclude Include="include\Components\KCBoxCollider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TiledMap\KTiledMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\KScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -194,7 +191,6 @@
     <ClInclude Include="rapidxml\rapidxml_print.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-
     <ClInclude Include="include\Components\KCRenderableBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -202,9 +198,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Components\KCAnimatedSprite.h">
-       <Filter>Header Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\JSON\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Tiled\KTiledImport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

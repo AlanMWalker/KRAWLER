@@ -11,16 +11,68 @@
          "width":32,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "name":"obj_layer",
+         "objects":[
+                {
+                 "height":32,
+                 "id":1,
+                 "name":"player_spawn",
+                 "properties":
+                    {
+                     "player_level":0,
+                     "player_name":"Bob"
+                    },
+                 "propertytypes":
+                    {
+                     "player_level":"int",
+                     "player_name":"string"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":416,
+                 "y":96
+                }, 
+                {
+                 "height":32,
+                 "id":3,
+                 "name":"enemy_spawn",
+                 "properties":
+                    {
+                     "enemy_level":5,
+                     "enemy_name":"skeleton"
+                    },
+                 "propertytypes":
+                    {
+                     "enemy_level":"int",
+                     "enemy_name":"string"
+                    },
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":804,
+                 "y":240
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "properties":
     {
-     "file":"tiles\/tiles.tsx"
+     "tilesheet_texture_name":"tilesheet"
     },
  "propertytypes":
     {
-     "file":"file"
+     "tilesheet_texture_name":"string"
     },
  "renderorder":"right-down",
  "tiledversion":"1.1.5",

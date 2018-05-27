@@ -3,7 +3,7 @@
  <image source="../../textures/tiles.png" width="96" height="32"/>
  <tile id="0">
   <objectgroup draworder="index">
-   <object id="1" x="0" y="0" width="20" height="35.3333"/>
+   <object id="1" x="0" y="0" width="32" height="32"/>
   </objectgroup>
  </tile>
  <tile id="1">

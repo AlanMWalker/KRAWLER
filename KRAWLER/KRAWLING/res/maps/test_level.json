@@ -78,10 +78,12 @@
  "orientation":"orthogonal",
  "properties":
     {
+     "happy":23,
      "tilesheet_texture_name":"tilesheet"
     },
  "propertytypes":
     {
+     "happy":"int",
      "tilesheet_texture_name":"string"
     },
  "renderorder":"right-down",

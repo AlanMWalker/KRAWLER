@@ -56,14 +56,17 @@ public:
 		{
 			pEntity->getComponent<KCAnimatedSprite>()->setAnimation(KTEXT("player_run_anim"));
 		}
+
 		if (KInput::Pressed(KKey::Down))
 		{
 			pEntity->getComponent<KCAnimatedSprite>()->setAnimation(KTEXT("enemy_run_anim"));
 		}
+		
 		if (KInput::Pressed(KKey::Left))
 		{
 			pEntity->getComponent<KCAnimatedSprite>()->setAnimation(KTEXT("player_explode_anim"));
 		}
+		
 		if (KInput::Pressed(KKey::Right))
 		{
 			pEntity->getComponent<KCAnimatedSprite>()->setAnimation(KTEXT("enemy_explode_anim"));

@@ -5,15 +5,6 @@
  "margin":0,
  "name":"tilesheet",
  "spacing":0,
- "terrains":[
-        {
-         "name":"default_terrain",
-         "tile":1
-        }, 
-        {
-         "name":"Wall Terrain",
-         "tile":0
-        }],
  "tilecount":3,
  "tileheight":32,
  "tiles":
@@ -66,8 +57,7 @@
              "visible":true,
              "x":0,
              "y":0
-            },
-         "terrain":[0, 0, 0, 0]
+            }
         },
      "2":
         {
@@ -92,8 +82,7 @@
              "visible":true,
              "x":0,
              "y":0
-            },
-         "terrain":[-1, 0, 0, 0]
+            }
         }
     },
  "tilewidth":32,

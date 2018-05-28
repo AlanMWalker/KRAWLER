@@ -653,6 +653,5 @@ void KAssetLoader::matchAnimationsToTextures()
 		anim.second->pTexture = pTex;
 
 	}
-
 }
 

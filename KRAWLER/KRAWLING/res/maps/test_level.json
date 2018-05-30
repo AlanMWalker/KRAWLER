@@ -78,13 +78,21 @@
  "orientation":"orthogonal",
  "properties":
     {
-     "happy":23,
-     "tilesheet_texture_name":"tilesheet"
+     "colour":"#ff2d0044",
+     "file_test":"..\/textures\/tiles.png",
+     "test_bool":false,
+     "test_float":3.141,
+     "test_int":30,
+     "test_string":"\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ultrices nisi et pretium placerat. Duis eget bibendum massa. Pellentesque sit amet nisi faucibus, feugiat metus facilisis, vulputate enim. Integer tincidunt rhoncus imperdiet. Quisque vel fringilla ante. Etiam efficitur malesuada eros non maximus. Donec a eleifend tellus. Maecenas lacinia feugiat massa nec molestie. Vestibulum vitae ex erat.\n\nFusce efficitur tortor sed sem tincidunt hendrerit. Aliquam non leo massa. Duis eu cursus diam. Nunc sit amet risus convallis ex accumsan volutpat. Sed non ornare libero, quis tincidunt mi. Maecenas condimentum metus ac pretium congue. Suspendisse condimentum velit in ligula mattis, sed pellentesque ligula pharetra. Integer sit amet luctus nisi. Praesent eu aliquet est. Proin vitae sem nisl. Vivamus mollis orci non orci bibendum viverra. Etiam tristique augue in magna convallis bibendum. Fusce ut felis tempor, ullamcorper metus a, eleifend ex.\n\nInteger gravida aliquet velit, dictum euismod velit mattis vel. Phasellus consequat sodales leo a imperdiet. Maecenas non consequat odio. Sed feugiat ut mauris a porttitor. Nulla blandit accumsan mollis. Suspendisse at est nec arcu porttitor laoreet ut vitae sem. Duis vehicula laoreet tincidunt. Maecenas sem augue, blandit in erat id, venenatis condimentum libero. Nulla non accumsan sapien, nec ultricies ante. Vestibulum finibus et eros ut bibendum. Nam suscipit cursus sem, non cursus ante vestibulum vitae. Phasellus vehicula lobortis sapien sed sollicitudin.\n\nAliquam erat volutpat. Aliquam volutpat rhoncus rutrum. Pellentesque ac nulla ac lorem facilisis dictum sit amet ac nisi. Phasellus eu dignissim felis. Morbi iaculis tincidunt convallis. Phasellus vel suscipit ipsum, vel convallis ipsum. In faucibus id lectus eleifend luctus. Nam ac elit consequat, ultrices lectus non, lobortis quam. Mauris non nisl vel dui iaculis iaculis. Vestibulum ultrices et dolor in condimentum. Ut tincidunt commodo sapien.\n\nProin id nibh eget nibh dignissim accumsan ut quis nulla. Fusce sed ante fringilla, vestibulum neque nec, molestie libero. Donec eu hendrerit velit, vel sollicitudin dui. Aliquam molestie tortor et risus pellentesque, eget tincidunt metus iaculis. Proin ullamcorper magna sed enim suscipit, et volutpat elit porttitor. Nulla id tincidunt massa. Vestibulum rhoncus risus id varius molestie. Suspendisse fermentum ante in ante aliquet tincidunt. Mauris viverra accumsan ullamcorper. Proin tristique eget eros non dapibus. Fusce ut dolor at lorem tristique malesuada et ullamcorper leo. Nulla luctus sit amet ipsum quis rhoncus. Vivamus et nunc turpis. Nunc eget lorem neque. Mauris scelerisque ac risus sed commodo. "
     },
  "propertytypes":
     {
-     "happy":"int",
-     "tilesheet_texture_name":"string"
+     "colour":"color",
+     "file_test":"file",
+     "test_bool":"bool",
+     "test_float":"float",
+     "test_int":"int",
+     "test_string":"string"
     },
  "renderorder":"right-down",
  "tiledversion":"1.1.5",

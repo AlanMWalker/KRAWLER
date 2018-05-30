@@ -4,6 +4,14 @@
  "imagewidth":96,
  "margin":0,
  "name":"tilesheet",
+ "properties":
+    {
+     "texture_name":"tilesheet"
+    },
+ "propertytypes":
+    {
+     "texture_name":"string"
+    },
  "spacing":0,
  "tilecount":3,
  "tileheight":32,

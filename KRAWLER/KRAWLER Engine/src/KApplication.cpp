@@ -126,7 +126,7 @@ void KApplication::runApplication()
 		++m_frames;
 
 		const float alpha = accumulator.asSeconds() / m_physicsDelta;
-		//TODO KScene renderer lerp
+		//DO: KScene renderer lerp
 		//mp_logicStateDirector->physicsLerp(alpha);
 
 		if (m_bHasFocus)

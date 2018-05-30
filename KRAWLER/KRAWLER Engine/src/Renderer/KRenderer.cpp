@@ -24,6 +24,7 @@ KRenderer::~KRenderer()
 void KRenderer::render()
 {
 	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
+	target->setActive(true);
 
 	while (target->isOpen())
 	{

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="32" height="18" tilewidth="32" tileheight="32" infinite="0" nextobjectid="5">
  <properties>
+  <property name="colour" type="color" value="#ff2f2a81"/>
   <property name="tilesheet_texture_name" value="tilesheet"/>
  </properties>
  <tileset firstgid="1" source="tiles/tiles.json"/>

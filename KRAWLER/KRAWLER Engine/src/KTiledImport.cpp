@@ -78,7 +78,7 @@ bool is_valid_level_map_type(const json & rootJson)
 bool load_level_map_layer(const json& rootJson, KLevelMap* pMap)
 {
 	KCHECK(pMap);
-	// map width
+
 	if (!get_int_safe(pMap->width, "width", rootJson))
 	{
 		MAP_PARSE_ERR;
@@ -86,7 +86,6 @@ bool load_level_map_layer(const json& rootJson, KLevelMap* pMap)
 		return false;
 	}
 
-	//map height
 	if (!get_int_safe(pMap->height, "height", rootJson))
 	{
 		MAP_PARSE_ERR;
@@ -100,6 +99,7 @@ bool load_level_map_layer(const json& rootJson, KLevelMap* pMap)
 		KPRINTF("Failed to find 'tilewidth' field on map!\n");
 		return false;
 	}
+
 
 	if (!get_int_safe(pMap->tileHeight, "tileheight", rootJson))
 	{

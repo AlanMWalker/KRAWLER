@@ -5,6 +5,8 @@
 #include <string>
 #include <map>
 
+#define MAX_PROPERTY_STRING_CHARS 3000
+
 namespace Krawler
 {
 	namespace TiledImport
@@ -15,7 +17,7 @@ namespace Krawler
 			TileLayer
 		};
 
-		enum KPropertyTypes : int8
+		enum KLevelMapPropertyTypes : int8
 		{
 			String,
 			Int,
@@ -57,8 +59,7 @@ namespace Krawler
 
 		union KLevelMapProperty
 		{
-			KLevelMapProperty() {};
-			wchar_t* type_string;
+			wchar_t type_string[MAX_PROPERTY_STRING_CHARS]; //Files will also be stored as str
 			int type_int;
 			float type_float;
 			bool type_bool;
@@ -80,11 +81,13 @@ namespace Krawler
 			Krawler::uint32 tilesetsCount;
 
 			std::map<std::wstring, KLevelMapProperty> properties;
-			std::map<std::wstring, KPropertyTypes> propertyTypes;
+			std::map<std::wstring, KLevelMapPropertyTypes> propertyTypes;
 
 		};
 
 		KLevelMap* loadTiledJSONFile(const std::wstring filePath);
+
+		void cleanupLevelMap(KLevelMap* pMap);
 	}
 }
 

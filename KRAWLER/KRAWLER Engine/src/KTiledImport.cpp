@@ -18,17 +18,45 @@ using json = nlohmann::json;
 
 #define MAP_PARSE_ERR KPRINTF("JSON PARSE ERROR! ")
 
-static bool is_valid_level_map_type(const json& rootJson); //Is the 
-static bool load_level_map_layer(const json& rootJson, KLevelMap* pMap);
-static bool get_int_safe(int32& value, const string& name, const json& rootJson);
-static void extract_properties_to_map(const json& jsonObj, std::map<std::wstring, KLevelMapProperty> & propMap, std::map<std::wstring, KLevelMapPropertyTypes> &  typeMap);
+// --- FUNCTION DECLERATIONS --- \\
 
-static KLevelMapPropertyTypes get_property_type_by_string(const std::wstring& name);
-static KLayerTypes get_layer_type(const json& layerJsonObj);
+//Is the the map file valid in terms of type (has a property called 'type' with a value of 'map' 
+static bool is_valid_level_map_type(const json& rootJson);
 
-KLevelMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
+//
+static bool are_map_layers_present(const json& rootJson);
+
+// 
+static bool load_level_map_layer(const json& rootJson, KTIMap* pMap);
+
+//
+static bool get_string_if_present(wstring& value, const string& name, const json& jsonObj);
+
+//
+static bool get_int_if_present(int32& value, const string& name, const json& rootJson);
+
+//
+static void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap & propMap, KTIPropertyTypesMap&  typeMap);
+
+static bool extract_map_layers(const json& jsonObj, KTIMap* pMap);
+
+//
+static KTIPropertyTypes get_property_type_by_string(const std::wstring& name);
+
+//
+static KTILayerTypes get_layer_type(const json& layerJsonObj);
+
+//
+static bool is_template_object(const json& mapObjectJson);
+
+static void extract_object_layer_data(const json& objectLayerJson, KTILayer* pObjLayerData);
+
+// --- FUNCTION DEFINITIONS --- \\
+
+
+KTIMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
 {
-	KLevelMap* pMap = new KLevelMap;
+	KTIMap* pMap = new KTIMap;
 
 	ifstream jsonFile;
 	jsonFile.open(filePath, ios::in);
@@ -60,55 +88,66 @@ KLevelMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
 	return pMap;
 }
 
-void Krawler::TiledImport::cleanupLevelMap(KLevelMap * pMap)
+void Krawler::TiledImport::cleanupLevelMap(KTIMap * pMap)
 {
 }
 
 bool is_valid_level_map_type(const json & rootJson)
 {
-	auto findResult = rootJson.find("type");
-	if (findResult == rootJson.end())
+	auto findResult = rootJson.count("type");
+	if (findResult == 0)
 	{
 		return false;
 	}
-	const string p = (*findResult);
+	const string&& p = rootJson["type"].get<string>();
 	return p == "map";
 }
 
-bool load_level_map_layer(const json& rootJson, KLevelMap* pMap)
+bool are_map_layers_present(const json & rootJson)
+{
+	return rootJson.count("layers") > 0;
+}
+
+bool load_level_map_layer(const json& rootJson, KTIMap* pMap)
 {
 	KCHECK(pMap);
 
-	if (!get_int_safe(pMap->width, "width", rootJson))
+	if (!are_map_layers_present(rootJson))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("No layers attached to map!\n");
+		return false;
+	}
+
+	if (!get_int_if_present(pMap->width, "width", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'width' field on map!\n");
 		return false;
 	}
 
-	if (!get_int_safe(pMap->height, "height", rootJson))
+	if (!get_int_if_present(pMap->height, "height", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'height' field on map!\n");
 		return false;
 	}
 
-	if (!get_int_safe(pMap->tileWidth, "tilewidth", rootJson))
+	if (!get_int_if_present(pMap->tileWidth, "tilewidth", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'tilewidth' field on map!\n");
 		return false;
 	}
 
-
-	if (!get_int_safe(pMap->tileHeight, "tileheight", rootJson))
+	if (!get_int_if_present(pMap->tileHeight, "tileheight", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'tileheight' field on map!\n");
 		return false;
 	}
 
-	if (!get_int_safe(pMap->nextObjectID, "nextobjectid", rootJson))
+	if (!get_int_if_present(pMap->nextObjectID, "nextobjectid", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'nextobjectid' field on map!\n");
@@ -117,10 +156,15 @@ bool load_level_map_layer(const json& rootJson, KLevelMap* pMap)
 
 	extract_properties_to_map(rootJson, pMap->properties, pMap->propertyTypes);
 
+	if (!extract_map_layers(rootJson, pMap))
+	{
+		return false;
+	}
+
 	return true;
 }
 
-bool get_int_safe(int32 & value, const string & name, const json & rootJson)
+bool get_int_if_present(int32 & value, const string & name, const json & rootJson)
 {
 	auto intProperty = rootJson.count(name);
 	if (intProperty == 0)
@@ -138,7 +182,7 @@ bool get_int_safe(int32 & value, const string & name, const json & rootJson)
 	return true;
 }
 
-void extract_properties_to_map(const json& jsonObj, std::map<std::wstring, KLevelMapProperty> & propMap, std::map<std::wstring, KLevelMapPropertyTypes> &  typeMap)
+void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap & propMap, KTIPropertyTypesMap &  typeMap)
 {
 	auto property_obj_it = jsonObj.find("properties");
 	auto property_types_it = jsonObj.find("propertytypes");
@@ -170,9 +214,9 @@ void extract_properties_to_map(const json& jsonObj, std::map<std::wstring, KLeve
 	while (itProperties != properties_obj.end() && itPropertyTypes != propertyTypes_obj.end())
 	{
 		const std::wstring Type_Name = sf::String(itPropertyTypes.value().get<string>()).toWideString();
-		const KLevelMapPropertyTypes Type_Enum = get_property_type_by_string(Type_Name); //isolate the data type of this property 
+		const KTIPropertyTypes Type_Enum = get_property_type_by_string(Type_Name); //isolate the data type of this property 
 
-		KLevelMapProperty mapPropertyUnion{ 0 };
+		KTIProperty mapPropertyUnion{ 0 };
 		bool bLoadedCorrectly = true;
 		std::wstring key, valueWideStr, type;
 		key = sf::String(itProperties.key()).toWideString();
@@ -273,7 +317,7 @@ void extract_properties_to_map(const json& jsonObj, std::map<std::wstring, KLeve
 		{
 			bLoadedCorrectly = false;
 			MAP_PARSE_ERR;
-			KPRINTF("File property not supported in this parser");
+			KPRINTF("File property not supported in this parser!\n");
 		}
 		break;
 
@@ -290,33 +334,133 @@ void extract_properties_to_map(const json& jsonObj, std::map<std::wstring, KLeve
 	}
 }
 
-KLevelMapPropertyTypes get_property_type_by_string(const std::wstring & name)
+bool extract_map_layers(const json & jsonObj, KTIMap * pMap)
 {
-	KLevelMapPropertyTypes type = KLevelMapPropertyTypes::String; // default type
+	KCHECK(pMap);
+	auto layersObject = jsonObj["layers"];
+
+	KCHECK(layersObject.is_array()); // layers must always be an array 
+
+	pMap->layerCount = layersObject.size();
+
+	// No layers == invalid file 
+	if (pMap->layerCount == 0)
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("No layers found on tiledmap file!\n");
+		return false;
+	}
+
+	pMap->pLayers = new KTILayer[pMap->layerCount];
+
+	for (uint32 i = 0; i < pMap->layerCount; ++i)
+	{
+		auto& individual_layer_struct = pMap->pLayers[i];
+		pMap->pLayers[i].layerType = get_layer_type(layersObject[i]);
+
+		if (!get_string_if_present(individual_layer_struct.name, "name", layersObject[i]))
+		{
+			MAP_PARSE_ERR;
+			KPRINTF("No name found on tiledmap layer!\n");
+			continue;
+		}
+
+		if (!get_int_if_present(individual_layer_struct.x, "x", layersObject[i]))
+		{
+			MAP_PARSE_ERR;
+			KPRINTF("No x position found on tiledmap layer!\n");
+			continue;
+		}
+
+		if (!get_int_if_present(individual_layer_struct.y, "y", layersObject[i]))
+		{
+			MAP_PARSE_ERR;
+			KPRINTF("No y position found on tiledmap layer!\n");
+			continue;
+		}
+
+		switch (pMap->pLayers[i].layerType)
+		{
+		case TileLayer:
+
+			break;
+
+		case ObjectLayer:
+
+			extract_object_layer_data(layersObject[i], &individual_layer_struct);
+			break;
+
+		default:
+			break;
+		}
+	}
+	return true;
+}
+
+KTIPropertyTypes get_property_type_by_string(const std::wstring & name)
+{
+	KTIPropertyTypes type = KTIPropertyTypes::String; // default type
 
 	if (name == KTEXT("string"))
 	{
-		return KLevelMapPropertyTypes::String;
+		return KTIPropertyTypes::String;
 	}
 	else if (name == KTEXT("int"))
 	{
-		return KLevelMapPropertyTypes::Int;
+		return KTIPropertyTypes::Int;
 	}
 	else if (name == KTEXT("float"))
 	{
-		return KLevelMapPropertyTypes::Float;
+		return KTIPropertyTypes::Float;
 	}
 	else if (name == KTEXT("bool"))
 	{
-		return KLevelMapPropertyTypes::Bool;
+		return KTIPropertyTypes::Bool;
 	}
 	else if (name == KTEXT("color")) //silly American spelling.. 
 	{
-		return KLevelMapPropertyTypes::HexColour;
+		return KTIPropertyTypes::HexColour;
 	}
 	else if (name == KTEXT("file"))
 	{
-		return KLevelMapPropertyTypes::File;
+		return KTIPropertyTypes::File;
 	}
 	return type;
+}
+
+KTILayerTypes get_layer_type(const json & layerJsonObj)
+{
+	if (layerJsonObj["type"].get<string>() == "objectgroup")
+	{
+		return KTILayerTypes::ObjectLayer;
+	}
+	return KTILayerTypes::TileLayer;
+}
+
+bool is_template_object(const json & mapObjectJson)
+{
+	mapObjectJson.count("template") > 0;
+}
+
+void extract_object_layer_data(const json & objectLayerJson, KTILayer * pObjLayerData)
+{
+
+}
+
+bool get_string_if_present(wstring & value, const string & name, const json & jsonObj)
+{
+	auto strProperty = jsonObj.count(name);
+	if (strProperty == 0)
+	{
+		return false;
+	}
+
+	auto result = jsonObj[name];
+
+	if (!result.is_string())
+	{
+		return false;
+	}
+	value = sf::String(result.get<string>()).toWideString();
+	return true;
 }

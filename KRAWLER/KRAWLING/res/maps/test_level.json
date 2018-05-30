@@ -27,46 +27,50 @@
          "name":"obj_layer",
          "objects":[
                 {
-                 "height":32,
-                 "id":1,
+                 "height":64,
+                 "id":20,
                  "name":"player_spawn",
                  "properties":
                     {
-                     "player_level":0,
-                     "player_name":"Bob"
+                     "obj_prop_test_float":3.14159,
+                     "obj_prop_test_int ":666,
+                     "obj_prop_test_str":"hello world "
                     },
                  "propertytypes":
                     {
-                     "player_level":"int",
-                     "player_name":"string"
+                     "obj_prop_test_float":"float",
+                     "obj_prop_test_int ":"int",
+                     "obj_prop_test_str":"string"
                     },
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":32,
-                 "x":416,
-                 "y":96
+                 "width":64,
+                 "x":320,
+                 "y":288
                 }, 
                 {
-                 "height":32,
-                 "id":3,
-                 "name":"enemy_spawn",
+                 "height":36.7272727272727,
+                 "id":22,
+                 "name":"something_else",
                  "properties":
                     {
-                     "enemy_level":5,
-                     "enemy_name":"skeleton"
+                     "obj_prop_test_float":3.14159,
+                     "obj_prop_test_int ":true,
+                     "obj_prop_test_str":54
                     },
                  "propertytypes":
                     {
-                     "enemy_level":"int",
-                     "enemy_name":"string"
+                     "obj_prop_test_float":"float",
+                     "obj_prop_test_int ":"bool",
+                     "obj_prop_test_str":"int"
                     },
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":32,
-                 "x":804,
-                 "y":240
+                 "width":212.484848484848,
+                 "x":689.212121212121,
+                 "y":292.242424242424
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -74,7 +78,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":5,
+ "nextobjectid":23,
  "orientation":"orthogonal",
  "properties":
     {

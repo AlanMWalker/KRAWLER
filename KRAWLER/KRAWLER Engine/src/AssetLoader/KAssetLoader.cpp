@@ -106,7 +106,7 @@ Animation::KAnimation * const KAssetLoader::getAnimation(const std::wstring & na
 	return findResult->second;
 }
 
-TiledImport::KLevelMap * const KAssetLoader::getLevelMap(const std::wstring & name)
+TiledImport::KTIMap * const KAssetLoader::getLevelMap(const std::wstring & name)
 {
 	auto findResult = m_importedLevelsMap.find(name);
 	if (findResult == m_importedLevelsMap.end())
@@ -161,7 +161,7 @@ void KAssetLoader::loadFont(const std::wstring& name, const std::wstring& filePa
 
 void KAssetLoader::loadTilemap(const std::wstring & name, const std::wstring & filePath)
 {
-	TiledImport::KLevelMap* pMap;
+	TiledImport::KTIMap* pMap;
 	pMap = TiledImport::loadTiledJSONFile(m_rootFolder + KTEXT("\\") + filePath);
 	KCHECK(pMap);
 	if (!pMap)

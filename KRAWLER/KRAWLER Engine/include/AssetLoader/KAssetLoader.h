@@ -36,7 +36,7 @@ namespace Krawler
 		KRAWLER_API sf::Shader* const getShader(const std::wstring& name);
 		KRAWLER_API sf::Font* const getFont(const std::wstring& name);
 		KRAWLER_API Animation::KAnimation* const getAnimation(const std::wstring& name);
-		KRAWLER_API TiledImport::KLevelMap* const getLevelMap(const std::wstring& name);
+		KRAWLER_API TiledImport::KTIMap* const getLevelMap(const std::wstring& name);
 
 		KRAWLER_API void setRootFolder(const std::wstring& rootFolder) { m_rootFolder = rootFolder; }
 
@@ -61,7 +61,7 @@ namespace Krawler
 		std::unordered_map <std::wstring, sf::SoundBuffer*> m_soundBufferMap;
 		std::unordered_map <std::wstring, sf::Shader*> m_shaderMap;
 		std::unordered_map <std::wstring, Animation::KAnimation*> m_animationsMap;
-		std::unordered_map <std::wstring, TiledImport::KLevelMap*> m_importedLevelsMap;
+		std::unordered_map <std::wstring, TiledImport::KTIMap*> m_importedLevelsMap;
 
 	};
 }

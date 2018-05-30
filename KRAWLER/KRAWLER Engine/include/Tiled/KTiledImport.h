@@ -11,13 +11,14 @@ namespace Krawler
 {
 	namespace TiledImport
 	{
-		enum KLayerTypes : int8
+		//TI denoting TiledImport
+		enum KTILayerTypes : int8
 		{
 			ObjectLayer,
 			TileLayer
 		};
 
-		enum KLevelMapPropertyTypes : int8
+		enum KTIPropertyTypes : int8
 		{
 			String,
 			Int,
@@ -27,37 +28,14 @@ namespace Krawler
 			File
 		};
 
-		struct KLevelMapObjectBox
+		enum KTIObjectTypes
 		{
-
+			Point,
+			Rect,
+			Ellipse
 		};
 
-		struct KLevelMapObjectCircle
-		{
-
-		};
-
-		struct KLevelMapObjectPoint
-		{
-
-		};
-
-		struct KLevelMapObjectLayer
-		{
-
-		};
-
-		struct KLevelMapTileLayer
-		{
-
-		};
-
-		struct KLevelMapTileset
-		{
-
-		};
-
-		union KLevelMapProperty
+		union KTIProperty
 		{
 			wchar_t type_string[MAX_PROPERTY_STRING_CHARS]; //Files will also be stored as str
 			int type_int;
@@ -66,7 +44,32 @@ namespace Krawler
 			Krawler::Colour type_colour;
 		};
 
-		struct KLevelMap
+		using KTIPropertiesMap = std::map<std::wstring, KTIProperty>;
+		using KTIPropertyTypesMap = std::map<std::wstring, KTIPropertyTypes>;
+
+		struct KTIObject
+		{
+		};
+
+		struct KTILayer
+		{
+			KTIObject * pObjectList;
+			uint32 objectCount;
+			std::wstring name;
+			int x;
+			int y;
+			int* data = nullptr;
+			KTIPropertiesMap propertiesMap;
+			KTIPropertyTypesMap propertTypesMap;
+			KTILayerTypes layerType;
+		};
+
+		struct KTITileset
+		{
+
+		};
+
+		struct KTIMap
 		{
 			Krawler::int32 height;
 			Krawler::int32 width;
@@ -75,19 +78,21 @@ namespace Krawler
 			Krawler::int32 nextObjectID;
 
 			std::wstring orientation;
-			KLevelMapTileLayer* layers = nullptr;
-			Krawler::uint32 layersCount;
-			KLevelMapTileset* tilesets = nullptr;
+
+			KTILayer* pLayers = nullptr;
+			Krawler::uint32 layerCount;
+
+			KTITileset* tilesets = nullptr;
 			Krawler::uint32 tilesetsCount;
 
-			std::map<std::wstring, KLevelMapProperty> properties;
-			std::map<std::wstring, KLevelMapPropertyTypes> propertyTypes;
+			KTIPropertiesMap properties;
+			KTIPropertyTypesMap propertyTypes;
 
 		};
 
-		KLevelMap* loadTiledJSONFile(const std::wstring filePath);
+		KTIMap* loadTiledJSONFile(const std::wstring filePath);
 
-		void cleanupLevelMap(KLevelMap* pMap);
+		void cleanupLevelMap(KTIMap* pMap);
 	}
 }
 

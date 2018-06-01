@@ -65,7 +65,7 @@
                      "obj_prop_test_int ":"bool",
                      "obj_prop_test_str":"int"
                     },
-                 "rotation":0,
+                 "rotation":-9,
                  "type":"",
                  "visible":true,
                  "width":212.484848484848,
@@ -73,12 +73,30 @@
                  "y":292.242424242424
                 }],
          "opacity":1,
+         "properties":
+            {
+             "obj_layer_bool_test_prop":true,
+             "obj_layer_col_test_prop":"#ffff0000",
+             "obj_layer_file_test_prop":"d",
+             "obj_layer_float_test_prop":9.999,
+             "obj_layer_int_test_prop":42,
+             "obj_layer_string_test_prop":"object layer property string"
+            },
+         "propertytypes":
+            {
+             "obj_layer_bool_test_prop":"bool",
+             "obj_layer_col_test_prop":"color",
+             "obj_layer_file_test_prop":"file",
+             "obj_layer_float_test_prop":"float",
+             "obj_layer_int_test_prop":"int",
+             "obj_layer_string_test_prop":"string"
+            },
          "type":"objectgroup",
          "visible":true,
          "x":0,
          "y":0
         }],
- "nextobjectid":23,
+ "nextobjectid":25,
  "orientation":"orthogonal",
  "properties":
     {

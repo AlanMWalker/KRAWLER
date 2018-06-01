@@ -36,8 +36,12 @@ static bool get_string_if_present(wstring& value, const string& name, const json
 static bool get_int_if_present(int32& value, const string& name, const json& rootJson);
 
 //
+static bool get_float_if_present(float& value, const string& name, const json& rootJson);
+
+//
 static void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap & propMap, KTIPropertyTypesMap&  typeMap);
 
+//
 static bool extract_map_layers(const json& jsonObj, KTIMap* pMap);
 
 //
@@ -49,9 +53,14 @@ static KTILayerTypes get_layer_type(const json& layerJsonObj);
 //
 static bool is_template_object(const json& mapObjectJson);
 
+//
 static void extract_object_layer_data(const json& objectLayerJson, KTILayer* pObjLayerData);
 
-// --- FUNCTION DEFINITIONS --- \\
+//
+static void extract_object_data(const json & objectsArray, KTIObject * pObj);
+
+
+//--- FUNCTION DEFINITIONS --- \\
 
 
 KTIMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
@@ -179,6 +188,24 @@ bool get_int_if_present(int32 & value, const string & name, const json & rootJso
 		return false;
 	}
 	value = result.get<int>();
+	return true;
+}
+
+bool get_float_if_present(float & value, const string & name, const json & rootJson)
+{
+	auto floatProp = rootJson.count(name);
+	if (floatProp == 0)
+	{
+		return false;
+	}
+
+	auto result = rootJson[name];
+
+	if (!result.is_number_float())
+	{
+		return false;
+	}
+	value = result.get<float>();
 	return true;
 }
 
@@ -341,22 +368,22 @@ bool extract_map_layers(const json & jsonObj, KTIMap * pMap)
 
 	KCHECK(layersObject.is_array()); // layers must always be an array 
 
-	pMap->layerCount = layersObject.size();
+	const int32 LayerCount = layersObject.size();
 
 	// No layers == invalid file 
-	if (pMap->layerCount == 0)
+	if (LayerCount == 0)
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("No layers found on tiledmap file!\n");
 		return false;
 	}
 
-	pMap->pLayers = new KTILayer[pMap->layerCount];
+	pMap->layersVector.resize(LayerCount);
 
-	for (uint32 i = 0; i < pMap->layerCount; ++i)
+	for (uint32 i = 0; i < LayerCount; ++i)
 	{
-		auto& individual_layer_struct = pMap->pLayers[i];
-		pMap->pLayers[i].layerType = get_layer_type(layersObject[i]);
+		auto& individual_layer_struct = pMap->layersVector[i];
+		pMap->layersVector[i].layerType = get_layer_type(layersObject[i]);
 
 		if (!get_string_if_present(individual_layer_struct.name, "name", layersObject[i]))
 		{
@@ -365,21 +392,38 @@ bool extract_map_layers(const json & jsonObj, KTIMap * pMap)
 			continue;
 		}
 
-		if (!get_int_if_present(individual_layer_struct.x, "x", layersObject[i]))
+		if (!get_float_if_present(individual_layer_struct.x, "x", layersObject[i]))
 		{
-			MAP_PARSE_ERR;
-			KPRINTF("No x position found on tiledmap layer!\n");
-			continue;
+			int x = 0;
+			if (!get_int_if_present(x, "x", layersObject[i]))
+			{
+				MAP_PARSE_ERR;
+				KPRINTF("No x position found on tiledmap layer!\n");
+				continue;
+			}
+			else
+			{
+				individual_layer_struct.x = (float)x;
+			}
+
 		}
 
-		if (!get_int_if_present(individual_layer_struct.y, "y", layersObject[i]))
+		if (!get_float_if_present(individual_layer_struct.y, "y", layersObject[i]))
 		{
-			MAP_PARSE_ERR;
-			KPRINTF("No y position found on tiledmap layer!\n");
-			continue;
+			int y = 0;
+			if (!get_int_if_present(y, "y", layersObject[i]))
+			{
+				MAP_PARSE_ERR;
+				KPRINTF("No y position found on tiledmap layer!\n");
+				continue;
+			}
+			else
+			{
+				individual_layer_struct.y = (float)y;
+			}
 		}
 
-		switch (pMap->pLayers[i].layerType)
+		switch (pMap->layersVector[i].layerType)
 		{
 		case TileLayer:
 
@@ -444,7 +488,102 @@ bool is_template_object(const json & mapObjectJson)
 
 void extract_object_layer_data(const json & objectLayerJson, KTILayer * pObjLayerData)
 {
+	//extract layer level properties 
+	extract_properties_to_map(objectLayerJson, pObjLayerData->propertiesMap, pObjLayerData->propertTypesMap);
 
+	if (!objectLayerJson.is_object())
+	{
+		return;
+	}
+
+	if (!objectLayerJson["objects"].is_array())
+	{
+		return;
+	}
+
+	const int32 ObjectCount = objectLayerJson["objects"].size();
+	const json& mapObjectsArrayJson = objectLayerJson["objects"];
+
+	if (ObjectCount < 1)
+	{
+		return;
+	}
+
+	pObjLayerData->objectsVector.resize(ObjectCount);
+
+	KCHECK(pObjLayerData->objectsVector.size() > 0);
+
+	for (int32 i = 0; i < ObjectCount; ++i)
+	{
+		extract_object_data(mapObjectsArrayJson[i], &pObjLayerData->objectsVector[i]);
+	}
+}
+
+void extract_object_data(const json & objectsArray, KTIObject * pObj)
+{
+	if (!objectsArray.count("name"))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("Object lacking name field!\n");
+		return;
+	}
+
+	pObj->name = sf::String(objectsArray["name"].get<string>()).toWideString();
+
+	if (!objectsArray.count("x"))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF_A("Object lacking x position (name %s)!\n", pObj->name.c_str());
+		return;
+	}
+
+	if (objectsArray["x"].is_number_integer())
+	{
+		pObj->x = (float)objectsArray["x"].get<int>();
+	}
+	else
+	{
+		pObj->x = objectsArray["x"].get<float>();
+	}
+
+	if (!objectsArray.count("y"))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF_A("Object lacking y position (name %s)!\n", pObj->name.c_str());
+		return;
+	}
+
+	if (objectsArray["y"].is_number_integer())
+	{
+		pObj->y = (float)objectsArray["y"].get<int>();
+	}
+	else
+	{
+		pObj->y = objectsArray["y"].get<float>();
+	}
+
+	if (objectsArray.count("gid") > 0)
+	{
+		if (objectsArray["gid"].is_number_integer())
+		{
+			pObj->gid = objectsArray["gid"].get<int>();
+		}
+	}
+
+	if (objectsArray["id"].is_number_integer())
+	{
+		pObj->id = objectsArray["id"].get<int>();
+	}
+
+	if (objectsArray["rotation"].is_number_integer())
+	{
+		pObj->rotation = (float)(objectsArray["rotation"].get<int>());
+	}
+	else
+	{
+		pObj->rotation = objectsArray["rotation"].get<float>();
+	}
+	extract_properties_to_map(objectsArray, pObj->propertiesMap, pObj->propertyTypesMap);
 }
 
 bool get_string_if_present(wstring & value, const string & name, const json & jsonObj)

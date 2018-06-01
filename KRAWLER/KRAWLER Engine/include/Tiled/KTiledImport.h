@@ -4,6 +4,7 @@
 #include <Krawler.h>
 #include <string>
 #include <map>
+#include <vector>
 
 #define MAX_PROPERTY_STRING_CHARS 3000
 
@@ -49,16 +50,28 @@ namespace Krawler
 
 		struct KTIObject
 		{
+			std::wstring name;
+			Krawler::int32 gid;
+			Krawler::int32 id;
+			float height;
+			float width;
+			float x;
+			float y;
+			float rotation; //degrees
+			KTIPropertiesMap propertiesMap;
+			KTIPropertyTypesMap propertyTypesMap;
+			KTIObjectTypes objectType;
 		};
 
 		struct KTILayer
 		{
-			KTIObject * pObjectList;
-			uint32 objectCount;
+			std::vector<KTIObject> objectsVector;
 			std::wstring name;
-			int x;
-			int y;
-			int* data = nullptr;
+			float x;
+			float y;
+			float width;
+			float height;
+			Krawler::int32* data = nullptr;
 			KTIPropertiesMap propertiesMap;
 			KTIPropertyTypesMap propertTypesMap;
 			KTILayerTypes layerType;
@@ -79,8 +92,7 @@ namespace Krawler
 
 			std::wstring orientation;
 
-			KTILayer* pLayers = nullptr;
-			Krawler::uint32 layerCount;
+			std::vector<KTILayer> layersVector;
 
 			KTITileset* tilesets = nullptr;
 			Krawler::uint32 tilesetsCount;

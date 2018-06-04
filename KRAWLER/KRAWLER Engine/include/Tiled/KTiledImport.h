@@ -33,7 +33,8 @@ namespace Krawler
 		{
 			Point,
 			Rect,
-			Ellipse
+			Circle, 
+			Polygon //@Remember Polygon not currently supported
 		};
 
 		union KTIProperty
@@ -104,7 +105,7 @@ namespace Krawler
 
 		KTIMap* loadTiledJSONFile(const std::wstring filePath);
 
-		void cleanupLevelMap(KTIMap* pMap);
+		void cleanupLevelMap(KTIMap* pMap); // @Remember Cleanup function implementation 
 	}
 }
 

@@ -17,7 +17,14 @@ using json = nlohmann::json;
 
 
 #define MAP_PARSE_ERR KPRINTF("JSON PARSE ERROR! ")
-
+#define GET_NUMBER_FLOAT(jsonElement, name, floatVar) if (jsonElement[name].is_number_integer())\
+{\
+	floatVar = (float)jsonElement[name].get<int>();\
+}\
+else\
+{\
+	floatVar = jsonElement[name].get<float>();\
+}\
 // --- FUNCTION DECLERATIONS --- \\
 
 //Is the the map file valid in terms of type (has a property called 'type' with a value of 'map' 
@@ -537,14 +544,7 @@ void extract_object_data(const json & objectsArray, KTIObject * pObj)
 		return;
 	}
 
-	if (objectsArray["x"].is_number_integer())
-	{
-		pObj->x = (float)objectsArray["x"].get<int>();
-	}
-	else
-	{
-		pObj->x = objectsArray["x"].get<float>();
-	}
+	GET_NUMBER_FLOAT(objectsArray, "x", pObj->x);
 
 	if (!objectsArray.count("y"))
 	{
@@ -552,15 +552,7 @@ void extract_object_data(const json & objectsArray, KTIObject * pObj)
 		KPRINTF_A("Object lacking y position (name %s)!\n", pObj->name.c_str());
 		return;
 	}
-
-	if (objectsArray["y"].is_number_integer())
-	{
-		pObj->y = (float)objectsArray["y"].get<int>();
-	}
-	else
-	{
-		pObj->y = objectsArray["y"].get<float>();
-	}
+	GET_NUMBER_FLOAT(objectsArray, "y", pObj->y);
 
 	if (objectsArray.count("gid") > 0)
 	{
@@ -575,15 +567,33 @@ void extract_object_data(const json & objectsArray, KTIObject * pObj)
 		pObj->id = objectsArray["id"].get<int>();
 	}
 
-	if (objectsArray["rotation"].is_number_integer())
+	GET_NUMBER_FLOAT(objectsArray, "rotation", pObj->rotation);
+
+	extract_properties_to_map(objectsArray, pObj->propertiesMap, pObj->propertyTypesMap);
+
+	// Extract the objects type 
+
+	if (objectsArray.count("point") > 0)
 	{
-		pObj->rotation = (float)(objectsArray["rotation"].get<int>());
+		pObj->objectType = KTIObjectTypes::Point;
+	}
+	else if (objectsArray.count("ellipse") > 0)
+	{
+		pObj->objectType = KTIObjectTypes::Circle;
+		GET_NUMBER_FLOAT(objectsArray, "width", pObj->width);
+		GET_NUMBER_FLOAT(objectsArray, "height", pObj->height);
+	}
+	else if (objectsArray.count("polygon") > 0)
+	{
+		pObj->objectType = KTIObjectTypes::Polygon;
+		//@Remember Polygon logic no implemented
 	}
 	else
 	{
-		pObj->rotation = objectsArray["rotation"].get<float>();
+		pObj->objectType = KTIObjectTypes::Rect;
+		GET_NUMBER_FLOAT(objectsArray, "width", pObj->width);
+		GET_NUMBER_FLOAT(objectsArray, "height", pObj->height);
 	}
-	extract_properties_to_map(objectsArray, pObj->propertiesMap, pObj->propertyTypesMap);
 }
 
 bool get_string_if_present(wstring & value, const string & name, const json & jsonObj)

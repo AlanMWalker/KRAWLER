@@ -18,7 +18,7 @@ namespace Krawler
 			ObjectLayer,
 			TileLayer
 		};
-
+		// @Remember to add a failed enum flag
 		enum KTIPropertyTypes : int8
 		{
 			String,

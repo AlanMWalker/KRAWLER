@@ -17,7 +17,8 @@ using json = nlohmann::json;
 
 
 #define MAP_PARSE_ERR KPRINTF("JSON PARSE ERROR! ")
-#define GET_NUMBER_FLOAT(jsonElement, name, floatVar) if (jsonElement[name].is_number_integer())\
+#define GET_NUMBER_FLOAT(jsonElement, name, floatVar) \
+if (jsonElement[name].is_number_integer())\
 {\
 	floatVar = (float)jsonElement[name].get<int>();\
 }\
@@ -27,47 +28,73 @@ else\
 }\
 // --- FUNCTION DECLERATIONS --- \\
 
-//Is the the map file valid in terms of type (has a property called 'type' with a value of 'map' 
+//Desc: Is the the map file valid in terms of type (has a property called 'type' with a value of 'map') 
+//Params: map json object
+//Return: true if valid, false if invalid
 static bool is_valid_level_map_type(const json& rootJson);
 
-//
+//Desc: Is there a layers array attached to the object
+//Params: map json object
+//Return: true if present, false if not
 static bool are_map_layers_present(const json& rootJson);
 
-// 
-static bool load_level_map_layer(const json& rootJson, KTIMap* pMap);
+//Desc: Load tiled map meta data, and handle all layer extraction & tileset data
+//Params: json object of map, KTIMap pointer
+//Return: true if successful, false if failed
+static bool load_tiled_map(const json& rootJson, KTIMap* pMap);
 
-//
+//Desc: get a string value if it present on a json object
+//Params: string ref of variable to be set, name of json object, json object to extract from
+//Return: true if set, false if not
 static bool get_string_if_present(wstring& value, const string& name, const json& jsonObj);
 
-//
+//Desc: get a int value if it present on a json object
+//Params: float ref of variable to be set, name of json object, json object to extract from
+//Return: true if set, false if not
 static bool get_int_if_present(int32& value, const string& name, const json& rootJson);
 
-//
+//Desc: get a float value if it present on a json object
+//Params: float ref of variable to be set, name of json object, json object to extract from
+//Return: true if set, false if not
 static bool get_float_if_present(float& value, const string& name, const json& rootJson);
 
-//
+//Desc: Extract properties from any json node that has properties
+//Params: json object, KTIPropertiesMap ref, KTIPropertyTypesMap ref
+//Return: N/A
 static void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap & propMap, KTIPropertyTypesMap&  typeMap);
 
-//
+//Desc: Extract tiled and object layers and add them to a KTIMap
+//Params: json object (containing layers array member), pointer to KTI map
+//Return: true if successful, false if not
 static bool extract_map_layers(const json& jsonObj, KTIMap* pMap);
 
-//
+//Desc: Returns enum of the type of a property based on its name
+//Params: string of name
+//Return: KTIPropertyTypes enum of property type (will default to string if not known) 
 static KTIPropertyTypes get_property_type_by_string(const std::wstring& name);
 
-//
+//Desc: Returns enum type of the layer 
+//Params: json object which contains a field 'type' for layer type
+//Return: KTILayerTypes enum 
 static KTILayerTypes get_layer_type(const json& layerJsonObj);
 
-//
+//Desc: Is the object we've identified a template of an object
+//Params: json obj
+//Return: true if is template, false if not
 static bool is_template_object(const json& mapObjectJson);
 
-//
+//Desc: Fill out a KTILayer object with the data for an Tiled 'object layer' 
+//Params: json object (containing object layer data), ptr to KTILayer
+//Return: N/A
 static void extract_object_layer_data(const json& objectLayerJson, KTILayer* pObjLayerData);
 
-//
+//Desc: Fill out the relevant fields of a KTIObject
+//Params: json object (containing Tiled object data), ptr to KTIObject
+//Return: N/A
 static void extract_object_data(const json & objectsArray, KTIObject * pObj);
 
 
-//--- FUNCTION DEFINITIONS --- \\
+//--- PUBLIC FUNCTION DEFINITIONS --- \\
 
 
 KTIMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
@@ -92,7 +119,7 @@ KTIMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
 		return nullptr;
 	}
 
-	const bool load_status = load_level_map_layer(rootObject, pMap);
+	const bool load_status = load_tiled_map(rootObject, pMap);
 
 	if (!load_status)
 	{
@@ -107,6 +134,8 @@ KTIMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
 void Krawler::TiledImport::cleanupLevelMap(KTIMap * pMap)
 {
 }
+
+// -- STATIC FUNCTION DEFINITIONS  -- \\
 
 bool is_valid_level_map_type(const json & rootJson)
 {
@@ -124,7 +153,7 @@ bool are_map_layers_present(const json & rootJson)
 	return rootJson.count("layers") > 0;
 }
 
-bool load_level_map_layer(const json& rootJson, KTIMap* pMap)
+bool load_tiled_map(const json& rootJson, KTIMap* pMap)
 {
 	KCHECK(pMap);
 

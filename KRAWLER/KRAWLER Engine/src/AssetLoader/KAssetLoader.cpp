@@ -464,7 +464,7 @@ void KAssetLoader::loadAnimationsXML()
 		++index;
 		if (index > MAX_ANIMATION_FILE_CHARS && !animationsXMLFile.eof())
 		{
-			KPRINTF("Failed to load anim");
+			KPRINTF("Failed to load animation because too many characters in file.");
 			KCHECK(false);
 		}
 	}

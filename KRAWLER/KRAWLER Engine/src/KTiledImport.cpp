@@ -14,15 +14,24 @@ using namespace std;
 
 using json = nlohmann::json;
 
-
+/*
+String Issues:
+json.hpp libray uses std::string, while the internals of KRAWLER use std::wstring. Therefore a horrid workaround
+is to use sf::String(string_object).toWideString().
+*/
 
 #define MAP_PARSE_ERR KPRINTF("JSON PARSE ERROR! ")
+#define DOES_ELEMENT_EXIST(name, jsonObj) (jsonObj.count(name) > 0)
 #define GET_NUMBER_FLOAT(jsonElement, name, floatVar) \
 if (jsonElement[name].is_number_integer())\
 {\
-	floatVar = (float)jsonElement[name].get<int>();\
+	floatVar = (float)jsonElement[name].get<int32>();\
 }\
-else\
+else if( jsonElement[name].is_number_unsigned()) \
+{\
+	floatVar = (float)jsonElement[name].get<uint32>();\
+}\
+else \
 {\
 	floatVar = jsonElement[name].get<float>();\
 }\
@@ -93,9 +102,12 @@ static void extract_object_layer_data(const json& objectLayerJson, KTILayer* pOb
 //Return: N/A
 static void extract_object_data(const json & objectsArray, KTIObject * pObj);
 
+//Desc: 
+//Params:
+//Return:
+static void extract_tile_layer_data(const json& tileLayerJson, KTILayer* pTileLayerData);
 
 //--- PUBLIC FUNCTION DEFINITIONS --- \\
-
 
 KTIMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
 {
@@ -428,41 +440,38 @@ bool extract_map_layers(const json & jsonObj, KTIMap * pMap)
 			continue;
 		}
 
-		if (!get_float_if_present(individual_layer_struct.x, "x", layersObject[i]))
+		//float handle positions
+		if (!DOES_ELEMENT_EXIST("x", layersObject[i]))
 		{
-			int x = 0;
-			if (!get_int_if_present(x, "x", layersObject[i]))
-			{
-				MAP_PARSE_ERR;
-				KPRINTF("No x position found on tiledmap layer!\n");
-				continue;
-			}
-			else
-			{
-				individual_layer_struct.x = (float)x;
-			}
-
+			MAP_PARSE_ERR;
+			KPRINTF("No x position found on tiledmap layer!\n");
 		}
 
-		if (!get_float_if_present(individual_layer_struct.y, "y", layersObject[i]))
+		GET_NUMBER_FLOAT(layersObject[i], "x", individual_layer_struct.x);
+
+		if (!DOES_ELEMENT_EXIST("y", layersObject[i]))
 		{
-			int y = 0;
-			if (!get_int_if_present(y, "y", layersObject[i]))
-			{
-				MAP_PARSE_ERR;
-				KPRINTF("No y position found on tiledmap layer!\n");
-				continue;
-			}
-			else
-			{
-				individual_layer_struct.y = (float)y;
-			}
+			MAP_PARSE_ERR;
+			KPRINTF("No y position found on tiledmap layer!\n");
+		}
+
+		GET_NUMBER_FLOAT(layersObject[i], "y", individual_layer_struct.y);
+
+		//handle offsets
+		if (DOES_ELEMENT_EXIST("offsetx", layersObject[i]))
+		{
+			GET_NUMBER_FLOAT(layersObject[i], "offsetx", individual_layer_struct.offsetX);
+		}
+
+		if (DOES_ELEMENT_EXIST("offsety", layersObject[i]))
+		{
+			GET_NUMBER_FLOAT(layersObject[i], "offsety", individual_layer_struct.offsetY);
 		}
 
 		switch (pMap->layersVector[i].layerType)
 		{
 		case TileLayer:
-
+			extract_tile_layer_data(layersObject[i], &individual_layer_struct);
 			break;
 
 		case ObjectLayer:
@@ -623,6 +632,43 @@ void extract_object_data(const json & objectsArray, KTIObject * pObj)
 		GET_NUMBER_FLOAT(objectsArray, "width", pObj->width);
 		GET_NUMBER_FLOAT(objectsArray, "height", pObj->height);
 	}
+}
+
+void extract_tile_layer_data(const json & tileLayerJson, KTILayer * pTileLayerData)
+{
+	if (!DOES_ELEMENT_EXIST("width", tileLayerJson))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("No width on tile layer!\n");
+		return;
+
+	}
+
+	GET_NUMBER_FLOAT(tileLayerJson, "width", pTileLayerData->width);
+
+	if (!DOES_ELEMENT_EXIST("height", tileLayerJson))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("No height on tile layer!\n");
+		return;
+	}
+
+	GET_NUMBER_FLOAT(tileLayerJson, "height", pTileLayerData->height);
+
+	const Krawler::int32 TILE_TOTAL = pTileLayerData->width* pTileLayerData->height;
+
+	if (tileLayerJson["data"].size() != TILE_TOTAL)
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("Tile array size doesn't match width * height \n");
+		return;
+	}
+
+	auto&& arr = tileLayerJson["data"].get<std::vector<Krawler::int32>>();
+	pTileLayerData->tileData.resize(TILE_TOTAL);
+	memcpy_s(&pTileLayerData->tileData[0], sizeof(int32) * TILE_TOTAL, &arr[0], sizeof(int32) * TILE_TOTAL);
+
+	extract_properties_to_map(tileLayerJson, pTileLayerData->propertiesMap, pTileLayerData->propertTypesMap);
 }
 
 bool get_string_if_present(wstring & value, const string & name, const json & jsonObj)

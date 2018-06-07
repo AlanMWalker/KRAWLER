@@ -33,7 +33,7 @@ namespace Krawler
 		{
 			Point,
 			Rect,
-			Circle, 
+			Circle,
 			Polygon //@Remember Polygon not currently supported
 		};
 
@@ -67,12 +67,14 @@ namespace Krawler
 		struct KTILayer
 		{
 			std::vector<KTIObject> objectsVector;
+			std::vector<Krawler::int32> tileData; //1D array of tile guid's
 			std::wstring name;
 			float x;
 			float y;
-			float width;
-			float height;
-			Krawler::int32* data = nullptr;
+			float offsetX;
+			float offsetY;
+			float width; // 0 for object layer, grid width for tile layer
+			float height; // 0 for object layer, grid height for tile layer
 			KTIPropertiesMap propertiesMap;
 			KTIPropertyTypesMap propertTypesMap;
 			KTILayerTypes layerType;

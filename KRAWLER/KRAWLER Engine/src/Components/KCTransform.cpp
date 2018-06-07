@@ -47,7 +47,7 @@ void Krawler::Components::KCTransform::tick()
 	m_worldScale = getScale();
 }
 
-const sf::Transform & Krawler::Components::KCTransform::getTransform()
+const sf::Transform & Krawler::Components::KCTransform::getTransform() const
 {
 	if (m_bHasParent)
 	{

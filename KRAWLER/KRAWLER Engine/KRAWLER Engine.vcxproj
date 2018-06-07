@@ -250,6 +250,7 @@
     <ClCompile Include="src\Animation\KAnimation.cpp" />
     <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
+    <ClCompile Include="src\Components\KCTileMap.cpp" />
     <ClCompile Include="src\KTiledImport.cpp" />
     <ClCompile Include="src\Maths\KOrientation.cpp" />
     <ClCompile Include="src\Components\KCollisions.cpp" />
@@ -286,6 +287,7 @@
     <ClInclude Include="include\Components\KCRenderableBase.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\Animation\KAnimation.h" />
+    <ClInclude Include="include\Components\KCTileMap.h" />
     <ClInclude Include="include\JSON\json.hpp" />
     <ClInclude Include="include\KComponent.h" />
     <ClInclude Include="include\KEntity.h" />

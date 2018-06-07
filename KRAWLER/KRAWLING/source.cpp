@@ -17,7 +17,7 @@
 #include <Components\KCOrientedBoxCollider.h>
 #include <Components\KCPhysicsBody.h>
 #include <Components\KCAnimatedSprite.h>
-
+#include <Components\KCTileMap.h>
 //#include "OBBTest.h"
 //#include "ColliderTest.h"
 //#include "PhysicsTest.h"
@@ -26,12 +26,20 @@
 #include <SFML\Graphics.hpp>
 #include <KScene.h>
 
+#include <SFML\GpuPreference.hpp>
+
 using namespace Krawler;
 using namespace Krawler::Input;
 using namespace Krawler::Components;
 
 #define BOX_SIZE 48
 #define FLOOR_WIDTH 640
+
+extern "C"
+{
+	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
 
 class DeallocTest
 	: public KComponentBase//KScene deallocation testing 
@@ -84,45 +92,49 @@ private:
 };
 
 
+class TiledMapTest
+	: public KComponentBase//KScene deallocation testing 
+{
+public:
+	TiledMapTest(KEntity* pEntity) :
+		KComponentBase(pEntity)
+	{
+	}
+	~TiledMapTest() = default;
 
+	virtual KInitStatus init() override
+	{
+		auto pScene = KApplication::getApp()->getCurrentScene();
+		KAssetLoader& assetLoad = KAssetLoader::getAssetLoader();
 
-#include <JSON\json.hpp>
-#include <fstream>
+		KEntity* pEntity = pScene->addEntityToScene();
+		pEntity->addComponent(new KCTileMap(pEntity, KTEXT("test_level")));
+		return KInitStatus::Success;
+	}
 
-using json = nlohmann::json;
-using namespace std;
-
+	virtual void tick() override
+	{
+		if (KInput::JustPressed(KKey::Space))
+		{
+			for (KEntity* pEntity : entityVec)
+			{
+				KApplication::getApp()->getCurrentScene()->removeEntityFromScene(pEntity);
+			}
+			entityVec.clear();
+		}
+	}
+private:
+	std::vector<KEntity*> entityVec;
+};
 
 int main(void)
 {
-
-	//srand((unsigned)time(NULL));
-	//json j;
-	//ifstream file("res/maps/test_level.json");
-	//if (file.fail())
-	//{
-	//	return -1;
-	//	system("pause");
-	//}
-	//file >> j;
-	//auto mapType = j["type"];
-	//auto mapWidth = j["width"].get<int>();
-	//auto mapHeight = j["height"].get<int>();
-	//json::array_t layerArray = j["layers"].get<json::array_t>();
-
-	//for (auto& layer : layerArray)
-	//{
-	//	auto layerType = layer["type"];
-	//}
-	////_CrtDbgBreak();
-
-
 	KApplicationInitialise initApp(false);
 	initApp.gameFps = 60;
 	initApp.physicsFps = 60;
 	initApp.width = sf::VideoMode::getDesktopMode().width;
 	initApp.height = sf::VideoMode::getDesktopMode().height;
-	initApp.windowStyle = KWindowStyle::Windowed_Resizeable;
+	initApp.windowStyle = KWindowStyle::Fullscreen;
 	initApp.windowTitle = KTEXT("Testing TiledMaps");
 	StartupEngine(&initApp);
 
@@ -131,9 +143,7 @@ int main(void)
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
-	//entity->addComponent(new PhysicsTest(entity));
-	//entity->addComponent(new DeallocTest(entity));
-	entity->addComponent(new AnimationTest(entity));
+	entity->addComponent(new TiledMapTest(entity));
 	InitialiseSubmodules();
 
 	RunApplication();

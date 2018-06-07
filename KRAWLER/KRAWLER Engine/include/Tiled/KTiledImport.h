@@ -89,6 +89,7 @@ namespace Krawler
 			int32 spacing;
 			int32 firstGID;
 			int32 tileCount;
+			//width & height represet image width & image height
 		};
 
 		struct KTIMap

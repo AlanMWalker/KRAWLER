@@ -4,17 +4,13 @@
 #include "AssetLoader\KAssetLoader.h"
 
 #include <future>
+#include <SFML\Graphics\VertexBuffer.hpp>
 
 #define UUID_PREFIX L"18-5E-0F-45-8D-BA"
 
 using namespace Krawler;
 using namespace Krawler::Maths;
 
-extern "C"
-{
-	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
-	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-}
 
 KInitStatus Krawler::StartupEngine(KApplicationInitialise * windowInit)
 {
@@ -29,6 +25,11 @@ KInitStatus Krawler::StartupEngine(KApplicationInitialise * windowInit)
 
 KRAWLER_API KInitStatus Krawler::InitialiseSubmodules()
 {
+	if (!sf::VertexBuffer::isAvailable())
+	{
+		KPRINTF("ERROR! VertexBuffers are not available on this machine!");
+		return KInitStatus::Failure;
+	}
 	return KApplication::getApp()->initialiseScenes();
 }
 

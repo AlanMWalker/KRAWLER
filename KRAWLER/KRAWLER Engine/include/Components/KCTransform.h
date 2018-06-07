@@ -45,7 +45,7 @@ namespace Krawler
 			//Param: n/a 
 			//Return: Transform
 			//Info: Returns a reference to the internally stored transform entity
-			KRAWLER_API const sf::Transform& getTransform();
+			KRAWLER_API const sf::Transform& getTransform() const;
 
 			//Return: n/a
 			//Info: Set the entitiy this transform is parented to 

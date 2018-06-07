@@ -1,3 +1,4 @@
+#pragma once
 #include <Krawler.h>
 #include <KApplication.h>
 #include <AssetLoader\KAssetLoader.h>
@@ -12,6 +13,13 @@
 #include <Components\KCCircleCollider.h>
 #include <Components\KCOrientedBoxCollider.h>
 #include <Components\KCPhysicsBody.h>
+
+using namespace Krawler;
+using namespace Krawler::Input;
+using namespace Krawler::Components;
+
+#define FLOOR_WIDTH 100
+#define BOX_SIZE 64
 
 class PhysicsTest : public KComponentBase
 {

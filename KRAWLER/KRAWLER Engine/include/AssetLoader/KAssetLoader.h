@@ -6,6 +6,7 @@
 #include <SFML\Graphics\Font.hpp>
 #include <SFML\Audio\SoundBuffer.hpp>
 #include <SFML\Graphics\Shader.hpp>
+#include <Tiled\KTiledImport.h>
 
 #include <unordered_map>
 
@@ -35,6 +36,7 @@ namespace Krawler
 		KRAWLER_API sf::Shader* const getShader(const std::wstring& name);
 		KRAWLER_API sf::Font* const getFont(const std::wstring& name);
 		KRAWLER_API Animation::KAnimation* const getAnimation(const std::wstring& name);
+		KRAWLER_API TiledImport::KTIMap* const getLevelMap(const std::wstring& name);
 
 		KRAWLER_API void setRootFolder(const std::wstring& rootFolder) { m_rootFolder = rootFolder; }
 
@@ -52,12 +54,14 @@ namespace Krawler
 		void loadShader(const std::wstring& shaderName, const std::wstring& vertShaderPath, const std::wstring& fragShaderPath);
 		void loadSound(const std::wstring& name, const std::wstring& filePath);
 		void loadFont(const std::wstring& name, const std::wstring& filePath);
+		void loadTilemap(const std::wstring& name, const std::wstring& filePath);
 
 		std::unordered_map <std::wstring, sf::Texture*> m_texturesMap;
 		std::unordered_map <std::wstring, sf::Font*> m_fontMap;
 		std::unordered_map <std::wstring, sf::SoundBuffer*> m_soundBufferMap;
-		std::unordered_map<std::wstring, sf::Shader*> m_shaderMap;
-		std::unordered_map < std::wstring, Animation::KAnimation*> m_animationsMap;
+		std::unordered_map <std::wstring, sf::Shader*> m_shaderMap;
+		std::unordered_map <std::wstring, Animation::KAnimation*> m_animationsMap;
+		std::unordered_map <std::wstring, TiledImport::KTIMap*> m_importedLevelsMap;
 
 	};
 }

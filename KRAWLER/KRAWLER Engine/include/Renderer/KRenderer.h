@@ -3,16 +3,14 @@
 
 #include "Krawler.h"
 #include "Components\KCSprite.h"
-
-#include "GameObject\KGameObject.h"
-#include "TiledMap\KTiledMap.h"
+#include <SFML\Graphics\Text.hpp>	
+#include <SFML\Graphics\Font.hpp>
 
 namespace Krawler
 {
 	namespace Renderer
 	{
 		using TextRender = std::pair < Vec2i, sf::Text>;
-		using TileMapRenderItem = std::pair<int32, TiledMap::KTiledMap*>;
 		enum KRendererType : uint32
 		{
 			Default,
@@ -27,11 +25,6 @@ namespace Krawler
 			KRAWLER_API ~KRenderer();
 
 			KRAWLER_API void render();
-
-			KRAWLER_API void addTiledMap(int32 renderOrder, TiledMap::KTiledMap* pTiledMap);
-
-			KRAWLER_API const std::vector<TileMapRenderItem>& getTileMapRenderList() const { return m_tiledMaps; }
-
 
 			KRAWLER_API KDEPRECATED(int32 addTextToScreen)(const sf::Text& pText, const Vec2i& screenPos)
 			{
@@ -50,13 +43,10 @@ namespace Krawler
 
 			Vec2f screenToWorld(const Vec2i& vec) const;
 
-			std::vector<KGameObject*> m_renderQueue;
 			std::vector<Components::KCRenderableBase*> m_renderable;
 			std::vector<TextRender>m_screenText;
-			std::vector <TileMapRenderItem> m_tiledMaps;
 			KRendererType m_renderingType;
 
-			TiledMap::KTiledMap* mp_tiledMap;
 
 			bool mb_hasTiledMap = false;
 			sf::Font mp_defaultFont;

@@ -24,6 +24,12 @@
     <ClInclude Include="PhysicsTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TiledMapTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -35,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="kconfig.cfg" />
+    <None Include="res\maps\test_level.json" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="assets.xml" />

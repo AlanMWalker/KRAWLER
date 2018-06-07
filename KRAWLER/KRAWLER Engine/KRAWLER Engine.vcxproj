@@ -131,6 +131,7 @@
       <AdditionalIncludeDirectories>C:\SFML-2.5.0\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <CallingConvention>Cdecl</CallingConvention>
       <EnablePREfast>false</EnablePREfast>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,6 +163,7 @@
       <AdditionalIncludeDirectories>C:\SFML-2.5.0\include;$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnablePREfast>false</EnablePREfast>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -247,6 +249,8 @@
     <ClCompile Include="src\Animation\KAnimation.cpp" />
     <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
+    <ClCompile Include="src\Components\KCTileMap.cpp" />
+    <ClCompile Include="src\KTiledImport.cpp" />
     <ClCompile Include="src\Maths\KOrientation.cpp" />
     <ClCompile Include="src\Components\KCollisions.cpp" />
     <ClCompile Include="src\Components\KCOrientedBoxCollider.cpp" />
@@ -266,7 +270,6 @@
     <ClCompile Include="src\Components\KCTransform.cpp" />
     <ClCompile Include="src\KScene.cpp" />
     <ClCompile Include="src\Renderer\KRenderer.cpp" />
-    <ClCompile Include="src\TiledMap\KTiledMap.cpp" />
     <ClCompile Include="src\Utilities\KDebug.cpp" />
     <ClCompile Include="src\Utilities\KEngineMacros.cpp" />
     <ClCompile Include="src\Utilities\KQuadtree.cpp" />
@@ -283,6 +286,7 @@
     <ClInclude Include="include\Components\KCRenderableBase.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\Animation\KAnimation.h" />
+    <ClInclude Include="include\Components\KCTileMap.h" />
     <ClInclude Include="include\JSON\json.hpp" />
     <ClInclude Include="include\KComponent.h" />
     <ClInclude Include="include\KEntity.h" />
@@ -300,7 +304,7 @@
     <ClInclude Include="include\Physics\KPhysicsStructs.h" />
     <ClInclude Include="include\Physics\KPhysicsWorld.h" />
     <ClInclude Include="include\Renderer\KRenderer.h" />
-    <ClInclude Include="include\TiledMap\KTiledMap.h" />
+    <ClInclude Include="include\Tiled\KTiledImport.h" />
     <ClInclude Include="include\Utilities\KDebug.h" />
     <ClInclude Include="include\Utilities\KEngineMacros.h" />
     <ClInclude Include="include\Utilities\KQuadtree.h" />

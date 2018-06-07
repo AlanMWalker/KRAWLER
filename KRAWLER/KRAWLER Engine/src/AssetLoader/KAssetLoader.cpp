@@ -48,6 +48,13 @@ void KAssetLoader::cleanupAssetLoader()
 		KFREE(pair.second);
 	}
 	m_animationsMap.clear();
+
+	for (auto& pair : m_importedLevelsMap)
+	{
+		TiledImport::cleanupLevelMap(pair.second);
+		pair.second = nullptr;
+	}
+	m_importedLevelsMap.clear();
 }
 
 sf::Texture * const KAssetLoader::getTexture(const std::wstring & name)

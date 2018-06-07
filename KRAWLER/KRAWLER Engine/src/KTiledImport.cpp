@@ -35,6 +35,21 @@ else \
 {\
 	floatVar = jsonElement[name].get<float>();\
 }\
+
+#define GET_NUMBER_INT(jsonElement, name, intVar) \
+if (jsonElement[name].is_number_integer())\
+{\
+	intVar = jsonElement[name].get<int32>();\
+}\
+else if( jsonElement[name].is_number_unsigned()) \
+{\
+	intVar = (signed)jsonElement[name].get<uint32>();\
+}\
+else \
+{\
+	intVar = (int)jsonElement[name].get<float>();\
+}\
+
 // --- FUNCTION DECLERATIONS --- \\
 
 //Desc: Is the the map file valid in terms of type (has a property called 'type' with a value of 'map') 
@@ -107,6 +122,16 @@ static void extract_object_data(const json & objectsArray, KTIObject * pObj);
 //Return:
 static void extract_tile_layer_data(const json& tileLayerJson, KTILayer* pTileLayerData);
 
+//Desc: 
+//Params:
+//Return:
+static bool extract_tile_sets(const json& tileLayerJson, KTIMap* pMap);
+
+//Desc: 
+//Params:
+//Return:
+static bool extract_singular_tileset(const json& tilesetJson, KTITileset* pTilesetData);
+
 //--- PUBLIC FUNCTION DEFINITIONS --- \\
 
 KTIMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
@@ -145,6 +170,7 @@ KTIMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
 
 void Krawler::TiledImport::cleanupLevelMap(KTIMap * pMap)
 {
+
 }
 
 // -- STATIC FUNCTION DEFINITIONS  -- \\
@@ -214,6 +240,11 @@ bool load_tiled_map(const json& rootJson, KTIMap* pMap)
 	extract_properties_to_map(rootJson, pMap->properties, pMap->propertyTypes);
 
 	if (!extract_map_layers(rootJson, pMap))
+	{
+		return false;
+	}
+
+	if (!extract_tile_sets(rootJson, pMap))
 	{
 		return false;
 	}
@@ -534,7 +565,7 @@ bool is_template_object(const json & mapObjectJson)
 void extract_object_layer_data(const json & objectLayerJson, KTILayer * pObjLayerData)
 {
 	//extract layer level properties 
-	extract_properties_to_map(objectLayerJson, pObjLayerData->propertiesMap, pObjLayerData->propertTypesMap);
+	extract_properties_to_map(objectLayerJson, pObjLayerData->propertiesMap, pObjLayerData->propertyTypesMap);
 
 	if (!objectLayerJson.is_object())
 	{
@@ -668,7 +699,95 @@ void extract_tile_layer_data(const json & tileLayerJson, KTILayer * pTileLayerDa
 	pTileLayerData->tileData.resize(TILE_TOTAL);
 	memcpy_s(&pTileLayerData->tileData[0], sizeof(int32) * TILE_TOTAL, &arr[0], sizeof(int32) * TILE_TOTAL);
 
-	extract_properties_to_map(tileLayerJson, pTileLayerData->propertiesMap, pTileLayerData->propertTypesMap);
+	extract_properties_to_map(tileLayerJson, pTileLayerData->propertiesMap, pTileLayerData->propertyTypesMap);
+}
+
+bool extract_tile_sets(const json & mapJson, KTIMap * pMap)
+{
+	if (mapJson.count("tilesets") == 0)
+	{
+		return true;
+	}
+
+	auto tilesetJson = mapJson["tilesets"];
+
+	if (!tilesetJson.is_array())
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("Invalid tileset array!\n");
+		return false;
+	}
+
+	const int32 TILESET_COUNT = tilesetJson.size();
+
+	if (TILESET_COUNT == 0)
+	{
+		return true;
+	}
+	pMap->tilesetVector.resize(TILESET_COUNT);
+
+	for (int32 i = 0; i < TILESET_COUNT; ++i)
+	{
+		if (!extract_singular_tileset(tilesetJson[i], &pMap->tilesetVector[i]))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool extract_singular_tileset(const json & tilesetJson, KTITileset * pTilesetData)
+{
+	if (!DOES_ELEMENT_EXIST("tilewidth", tilesetJson))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("No tilewidth field on tileset!\n");
+		return false;
+	}
+	GET_NUMBER_INT(tilesetJson, "tilewidth", pTilesetData->tileWidth);
+
+	if (!DOES_ELEMENT_EXIST("tileheight", tilesetJson))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("No tileheight field on tileset!\n");
+		return false;
+	}
+	GET_NUMBER_INT(tilesetJson, "tileheight", pTilesetData->tileHeight);
+
+	if (!DOES_ELEMENT_EXIST("firstgid", tilesetJson))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("No firstgid field on tileset!\n");
+		return false;
+	}
+	GET_NUMBER_INT(tilesetJson, "firstgid", pTilesetData->firstGID);
+	
+	if (!DOES_ELEMENT_EXIST("imagewidth", tilesetJson))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("No imagewidth field on tileset!\n");
+		return false;
+	}
+	GET_NUMBER_FLOAT(tilesetJson, "imagewidth", pTilesetData->width);
+
+	if (!DOES_ELEMENT_EXIST("imageheight", tilesetJson))
+	{
+		MAP_PARSE_ERR;
+		KPRINTF("No imageheight field on tileset!\n");
+		return false;
+	}
+	GET_NUMBER_FLOAT(tilesetJson, "imageheight", pTilesetData->height);
+
+
+
+	if (tilesetJson.count("name") > 0)
+	{
+		pTilesetData->name = sf::String(tilesetJson["name"].get<string>()).toWideString();
+	}
+	extract_properties_to_map(tilesetJson, pTilesetData->propertiesMap, pTilesetData->propertyTypesMap);
+
+	return true;
 }
 
 bool get_string_if_present(wstring & value, const string & name, const json & jsonObj)

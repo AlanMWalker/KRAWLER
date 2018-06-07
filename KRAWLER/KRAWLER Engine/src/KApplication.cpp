@@ -17,7 +17,7 @@ KInitStatus Krawler::KApplication::initialiseScenes()
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
 {
 	m_pRenderWindow = new RenderWindow;
-
+	m_pRenderWindow->setView(sf::View(Rectf(0, 0, 1920, 1080)));
 	//setup game fps values
 	m_gameFPS = Maths::Clamp(24u, 80u, appInit.gameFps);
 	m_physicsFPS = Maths::Clamp(24u, 80u, appInit.physicsFps);

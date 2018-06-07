@@ -31,7 +31,7 @@ public:
 		pEntity->addComponent(new KCAnimatedSprite(pEntity, assetLoader.getAnimation(KTEXT("player_run_anim"))));
 		pEntity->getComponent<KCAnimatedSprite>()->setRepeatingState(true);
 		pEntity->getTransformComponent()->setTranslation(Vec2f(120, 210));
-		pEntity->getTransformComponent()->setScale(10, 10);
+		pEntity->getTransformComponent()->setScale(1, 1);
 		return KComponentBase::init();
 	}
 

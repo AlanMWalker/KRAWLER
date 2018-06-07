@@ -49,56 +49,60 @@ namespace Krawler
 		using KTIPropertiesMap = std::map<std::wstring, KTIProperty>;
 		using KTIPropertyTypesMap = std::map<std::wstring, KTIPropertyTypes>;
 
-		struct KTIObject
+		struct KTIMapBase
 		{
+			virtual ~KTIMapBase() = default;
 			std::wstring name;
-			Krawler::int32 gid;
-			Krawler::int32 id;
-			float height;
-			float width;
 			float x;
 			float y;
-			float rotation; //degrees
+			float width;
+			float height;
 			KTIPropertiesMap propertiesMap;
 			KTIPropertyTypesMap propertyTypesMap;
+		};
+
+		struct KTIObject : public KTIMapBase
+		{
+			int32 gid;
+			int32 id;
+			float rotation; //degrees
 			KTIObjectTypes objectType;
 		};
 
-		struct KTILayer
+		struct KTILayer : public KTIMapBase
 		{
 			std::vector<KTIObject> objectsVector;
 			std::vector<Krawler::int32> tileData; //1D array of tile guid's
 			std::wstring name;
-			float x;
-			float y;
 			float offsetX;
 			float offsetY;
-			float width; // 0 for object layer, grid width for tile layer
-			float height; // 0 for object layer, grid height for tile layer
-			KTIPropertiesMap propertiesMap;
-			KTIPropertyTypesMap propertTypesMap;
+			// width = 0 for object layer, grid width for tile layer
+			// height = 0 for object layer, grid height for tile layer
 			KTILayerTypes layerType;
 		};
 
-		struct KTITileset
+		struct KTITileset : public KTIMapBase
 		{
-
+			int32 tileWidth;
+			int32 tileHeight;
+			int32 margin;
+			int32 spacing;
+			int32 firstGID;
+			int32 tileCount;
 		};
 
 		struct KTIMap
 		{
-			Krawler::int32 height;
-			Krawler::int32 width;
-			Krawler::int32 tileWidth;
-			Krawler::int32 tileHeight;
-			Krawler::int32 nextObjectID;
+			int32 height;
+			int32 width;
+			int32 tileWidth;
+			int32 tileHeight;
+			int32 nextObjectID;
 
 			std::wstring orientation;
 
 			std::vector<KTILayer> layersVector;
-
-			KTITileset* tilesets = nullptr;
-			Krawler::uint32 tilesetsCount;
+			std::vector<KTITileset> tilesetVector;
 
 			KTIPropertiesMap properties;
 			KTIPropertyTypesMap propertyTypes;

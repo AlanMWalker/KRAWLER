@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "vld.h"
+#include <vld.h>
 #include <future>
 #include <list>
 
@@ -21,7 +21,7 @@
 //#include "OBBTest.h"
 //#include "ColliderTest.h"
 //#include "PhysicsTest.h"
-//#include "AnimationTest.h"
+#include "AnimationTest.h"
 
 #include <SFML\Graphics.hpp>
 #include <KScene.h>
@@ -117,7 +117,13 @@ int main(void)
 	////_CrtDbgBreak();
 
 
-	KApplicationInitialise initApp(true);
+	KApplicationInitialise initApp(false);
+	initApp.gameFps = 60;
+	initApp.physicsFps = 60;
+	initApp.width = sf::VideoMode::getDesktopMode().width;
+	initApp.height = sf::VideoMode::getDesktopMode().height;
+	initApp.windowStyle = KWindowStyle::Windowed_Resizeable;
+	initApp.windowTitle = KTEXT("Testing TiledMaps");
 	StartupEngine(&initApp);
 
 	auto app = KApplication::getApp();
@@ -127,7 +133,7 @@ int main(void)
 	auto entity = pCurrentScene->addEntityToScene();
 	//entity->addComponent(new PhysicsTest(entity));
 	//entity->addComponent(new DeallocTest(entity));
-	//entity->addComponent(new AnimationTest(entity));
+	entity->addComponent(new AnimationTest(entity));
 	InitialiseSubmodules();
 
 	RunApplication();

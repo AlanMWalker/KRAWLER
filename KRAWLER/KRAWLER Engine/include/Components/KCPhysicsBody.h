@@ -44,14 +44,17 @@ namespace Krawler
 
 			KRAWLER_API const Vec2f& getForce() const { return m_force; }
 			KRAWLER_API const Vec2f& getVelocity() const { return m_velocity; }
-			
+
 			KRAWLER_API void applyImpulse(const Vec2f& impulse)
 			{
 				m_velocity += m_properties.invMass * impulse;
 			}
 
+			KRAWLER_API bool isBodyStatic() const;
+
 		private:
 
+			bool m_bIsStatic = false;
 			KPhysicsBodyProperties m_properties;
 
 			Vec2f m_velocity;

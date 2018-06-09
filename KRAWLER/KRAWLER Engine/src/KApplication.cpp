@@ -46,7 +46,8 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 		break;
 	}
 
-	m_pRenderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style);
+	sf::ContextSettings settings;
+	m_pRenderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style, settings);
 	m_pRenderWindow->setFramerateLimit(m_gameFPS);
 
 	m_pRenderer = new KRenderer;

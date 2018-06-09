@@ -89,6 +89,8 @@ namespace Krawler
 			int32 spacing;
 			int32 firstGID;
 			int32 tileCount;
+			std::map<std::wstring, KTIPropertiesMap> tilePropertiesMap;
+			std::map<std::wstring, KTIPropertyTypesMap> tilePropertyTypesMap;
 			//width & height represet image width & image height
 		};
 

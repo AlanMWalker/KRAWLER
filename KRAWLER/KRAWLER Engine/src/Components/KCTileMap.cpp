@@ -51,6 +51,7 @@ KInitStatus Krawler::Components::KCTileMap::init()
 	}
 
 	m_layerVertexBufferVector.resize(tile_layer_count);
+	m_tileStates.resize(tile_layer_count, KTileStateEnum::Walkable);
 
 	int32 layerIdx = 0;
 	auto& tileset = m_pTiledImportData->tilesetVector[0];
@@ -102,6 +103,12 @@ KInitStatus Krawler::Components::KCTileMap::init()
 					pQuad[1].texCoords = Vec2f((texX + 1) * tileset.tileWidth, texY * tileset.tileHeight);
 					pQuad[2].texCoords = Vec2f((texX + 1) * tileset.tileWidth, (texY + 1) * tileset.tileHeight);
 					pQuad[3].texCoords = Vec2f(texX * tileset.tileWidth, (texY + 1) * tileset.tileHeight);
+				}
+				//Check if tile is blocked
+				if (tileset.tilePropertiesMap.count(std::to_wstring(tileIdx)) > 0)
+				{
+					//tileset.tilePropertiesMap[std::to_wstring(tileIdx)]
+					//KPrintf(KTEXT("Found blocked tile local id: %d \n"), tileIdx, );
 				}
 
 			}

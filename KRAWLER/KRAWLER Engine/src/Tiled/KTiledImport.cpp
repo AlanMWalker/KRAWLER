@@ -791,7 +791,7 @@ bool extract_singular_tileset(const json & tilesetJson, KTITileset * pTilesetDat
 		pTilesetData->name = sf::String(tilesetJson["name"].get<string>()).toWideString();
 	}
 	extract_properties_to_map(tilesetJson, pTilesetData->propertiesMap, pTilesetData->propertyTypesMap);
-	//extract_tile_properties(tilesetJson, pTilesetData->tilePropertiesMap, pTilesetData->tilePropertyTypesMap);
+	extract_tile_properties(tilesetJson, pTilesetData->tilePropertiesMap, pTilesetData->tilePropertyTypesMap);
 	return true;
 }
 

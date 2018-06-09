@@ -15,6 +15,7 @@ namespace Krawler
 {
 	namespace Components
 	{
+		
 		class KCTileMap : public KCRenderableBase
 		{
 		public:
@@ -26,10 +27,21 @@ namespace Krawler
 			KRAWLER_API Rectf getOnscreenBounds() const override { return Rectf{}; }
 			KRAWLER_API virtual KInitStatus init() override;
 
+			KRAWLER_API const TiledImport::KTIMap* const getTiledMapImportData() const { return m_pTiledImportData; }
+
+			enum KTileStateEnum : int32
+			{
+				Walkable,
+				Slowdown,
+				Impassable
+			};
+
+
 		private:
 
 			std::vector<sf::VertexBuffer> m_layerVertexBufferVector;
 			std::vector<sf::Texture*> m_texturesVector;
+			std::vector<KTileStateEnum> m_tileStates;
 
 			TiledImport::KTIMap* m_pTiledImportData;
 			const KCTransform* m_pTransformComponent;

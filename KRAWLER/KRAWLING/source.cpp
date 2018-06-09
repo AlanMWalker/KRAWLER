@@ -108,27 +108,39 @@ public:
 		KAssetLoader& assetLoad = KAssetLoader::getAssetLoader();
 
 		KEntity* pEntity = pScene->addEntityToScene();
+		pEntity->getTransformComponent()->setScale(1.0, 1.0);
 		pEntity->addComponent(new KCTileMap(pEntity, KTEXT("test_level")));
+		//m_pShader = assetLoad.getShader(L"default");
+		m_pShader = assetLoad.getShader(L"ambient");
+		pEntity->getComponent<KCRenderableBase>()->setShader(m_pShader);
+		auto r = pEntity->getComponent<KCTileMap>()->getTiledMapImportData()->properties.at(L"ambient_light_colour").type_colour;
+		m_pShader->setUniform("ambientColour", sf::Glsl::Vec4{ (float)(r.r) / 255.0f ,  (float)(r.g) / 255.0f ,(float)(r.b) / 255.0f ,(float)(r.a) / 255.0f });
+		m_pShader->setUniform("intensity", pEntity->getComponent<KCTileMap>()->getTiledMapImportData()->properties.at(L"ambient_light_intensity").type_float);
 		return KInitStatus::Success;
 	}
 
 	virtual void tick() override
 	{
-		if (KInput::JustPressed(KKey::Space))
+		if (KInput::JustPressed(KKey::Escape))
 		{
-			for (KEntity* pEntity : entityVec)
-			{
-				KApplication::getApp()->getCurrentScene()->removeEntityFromScene(pEntity);
-			}
-			entityVec.clear();
+			KApplication::getApp()->closeApplication();
 		}
 	}
 private:
 	std::vector<KEntity*> entityVec;
+
+	sf::Shader* m_pShader;
+	float intensity = 1.0f;
 };
 
+#ifndef _CONSOLE
+#include <Windows.h>
+int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nCmdShow)
+#else
 int main(void)
+#endif
 {
+	int32 i = sf::Texture::getMaximumSize();
 	KApplicationInitialise initApp(false);
 	initApp.gameFps = 60;
 	initApp.physicsFps = 60;

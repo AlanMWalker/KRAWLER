@@ -4,6 +4,9 @@
 #include "Components\KCTransform.h"
 #include "Components\KCColliderBase.h"
 
+#include "Components\KCPhysicsBody.h"
+#include "Components\KCTileMap.h"
+
 using namespace Krawler;
 using namespace Krawler::Components;
 
@@ -163,10 +166,12 @@ void Krawler::KScene::fixedTick()
 				possibleHitCollider->collisionCallback(data);
 				pCollider->collisionCallback(data);
 			}
+
 			colliderStack.pop();
 
 		}
 	}
+
 	for (uint32 i = 0; i < m_numberOfAllocatedChunks; ++i)
 	{
 		if (!m_entityChunks[i].entity.isEntityInUse())
@@ -175,8 +180,8 @@ void Krawler::KScene::fixedTick()
 		}
 		m_entityChunks[i].entity.fixedTick();
 	}
-	KApplication::getMutexInstance().unlock();
 
+	KApplication::getMutexInstance().unlock();
 }
 
 void KScene::onEnterScene()
@@ -193,6 +198,7 @@ void KScene::onEnterScene()
 
 		entityChunk.entity.onEnterScene();
 	}
+
 	KApplication::getMutexInstance().unlock();
 }
 

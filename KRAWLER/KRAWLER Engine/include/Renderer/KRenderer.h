@@ -10,11 +10,17 @@ namespace Krawler
 {
 	namespace Renderer
 	{
-		using TextRender = std::pair < Vec2i, sf::Text>;
+		using TextRender = std::pair <Vec2i, sf::Text>;
 		enum KRendererType : uint32
 		{
 			Default,
 			Raycast
+		};
+
+		enum KRenderSortType
+		{
+			LayerSort,
+			ZOrderSort
 		};
 
 		class KRenderer

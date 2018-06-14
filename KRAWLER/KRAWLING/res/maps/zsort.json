@@ -1,0 +1,67 @@
+{ "height":10,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223, 223],
+         "height":10,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":10,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "data":[1, 2, 2, 2, 2, 2, 2, 2, 2, 34, 18, 19, 19, 19, 19, 19, 19, 19, 19, 51, 35, 36, 36, 36, 36, 36, 36, 36, 36, 37, 35, 92, 226, 226, 226, 226, 226, 226, 226, 0, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 35, 0, 0, 22, 23, 24, 25, 26, 0, 0, 35, 0, 0, 39, 40, 41, 42, 43, 0, 0, 35, 0, 0, 56, 57, 58, 59, 60, 0, 0, 35, 0, 0, 259, 260, 224, 0, 0, 0, 0, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+         "height":10,
+         "name":"Tile Layer 2",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":10,
+         "x":0,
+         "y":0
+        }],
+ "nextobjectid":106,
+ "orientation":"orthogonal",
+ "properties":
+    {
+     "ambient_light_colour":"#ff666666",
+     "ambient_light_intensity":1,
+     "max_player_move_speed":7,
+     "player_mass":68,
+     "reload_timer":1.2,
+     "sprint_timer":5
+    },
+ "propertytypes":
+    {
+     "ambient_light_colour":"color",
+     "ambient_light_intensity":"float",
+     "max_player_move_speed":"float",
+     "player_mass":"float",
+     "reload_timer":"float",
+     "sprint_timer":"float"
+    },
+ "renderorder":"right-down",
+ "tiledversion":"1.1.5",
+ "tileheight":32,
+ "tilesets":[
+        {
+         "columns":17,
+         "firstgid":1,
+         "image":"..\/textures\/tileset.png",
+         "imageheight":550,
+         "imagewidth":550,
+         "margin":0,
+         "name":"map_tiles",
+         "spacing":0,
+         "tilecount":289,
+         "tileheight":32,
+         "tilewidth":32
+        }],
+ "tilewidth":32,
+ "type":"map",
+ "version":1,
+ "width":10
+}

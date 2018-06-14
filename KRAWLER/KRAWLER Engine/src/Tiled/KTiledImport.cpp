@@ -135,7 +135,7 @@ static bool extract_singular_tileset(const json& tilesetJson, KTITileset* pTiles
 //Desc: 
 //Params:
 //Return:
-static void extract_tile_properties(const json& jsonObj, KTIPropertiesMap & propMap, KTIPropertyTypesMap&  typeMap);
+static void extract_tile_properties(const json& jsonObj, std::map<std::wstring, KTIPropertiesMap>& tilePropMap, std::map<std::wstring, KTIPropertyTypesMap>);
 
 //--- PUBLIC FUNCTION DEFINITIONS --- \\
 
@@ -794,6 +794,44 @@ bool extract_singular_tileset(const json & tilesetJson, KTITileset * pTilesetDat
 	extract_tile_properties(tilesetJson, pTilesetData->tilePropertiesMap, pTilesetData->tilePropertyTypesMap);
 	return true;
 }
+
+void extract_tile_properties(const json & jsonObj, std::map<std::wstring, KTIPropertiesMap>& tilePropMap, std::map<std::wstring, KTIPropertyTypesMap>)
+{
+	auto property_obj_it = jsonObj.find("tileproperties");
+	auto property_types_it = jsonObj.find("tilepropertytypes");
+
+	if (property_obj_it == jsonObj.end() || property_types_it == jsonObj.end())
+	{ // not always likely to find properties, so return true
+		return;
+	}
+
+	//Get total number of properties 
+	const int32 Property_Count = property_obj_it->size();
+	const int32 Type_Count = property_types_it->size();
+
+	//Make sure total number of properties matches number of types
+	if (Property_Count != Type_Count)
+	{
+		MAP_PARSE_ERR;
+		KPrintf(KTEXT("Mismatch between number of map properties (%d) and propertytypes (%d)\n"), Property_Count, Type_Count);
+		return;
+	}
+
+	//@UrgentRefactor switch statement to do function calls, and also isolate out the functionality to isolate properties so its generic for other map object types which will have properties.
+	json::value_type tile_properties_obj = *property_obj_it;
+	json::value_type tile_property_types_obj = *property_types_it;
+
+	//_CrtDbgBreak();
+	//@Fix load tile properties for collision data 
+
+	
+
+	tile_properties_obj = *tile_properties_obj.begin();
+	tile_property_types_obj = *tile_property_types_obj.begin();
+
+
+}
+
 
 void extract_tile_properties(const json & jsonObj, KTIPropertiesMap & propMap, KTIPropertyTypesMap & typeMap)
 {

@@ -10,12 +10,13 @@
 
 #include <vector>
 #include <SFML\Graphics\VertexBuffer.hpp>
+#include <Renderer\KRenderer.h>	
 
 namespace Krawler
 {
 	namespace Components
 	{
-		
+			
 		class KCTileMap : public KCRenderableBase
 		{
 		public:
@@ -45,6 +46,8 @@ namespace Krawler
 
 			TiledImport::KTIMap* m_pTiledImportData;
 			const KCTransform* m_pTransformComponent;
+			Vec2i m_gridDimensions;
+			Vec2i m_tileDimensions;
 
 		};
 	}

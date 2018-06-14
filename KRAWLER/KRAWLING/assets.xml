@@ -11,6 +11,8 @@
   <sound name="fire" file_path="sound/railgun.ogg"/>
   <font name="default_font" file_path="font/Seriphim.ttf"/>
   <texture name="tilesheet" file_path="textures/tiles.png"/>
-  <level name="test_level" file_path="maps/test_level.json"/>
-  <texture name="map_tiles" file_path="textures/map_tiles.png"/>
+  <!--<level name="test_level" file_path="maps/test_level.json"/>-->
+  <level name="test_level" file_path="maps/zsort.json"/>
+  <!--<texture name="map_tiles" file_path="textures/map_tiles.png"/>-->
+  <texture name="map_tiles" file_path="textures/tileset.png"/>
 </assets>

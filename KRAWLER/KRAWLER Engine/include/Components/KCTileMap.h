@@ -5,17 +5,38 @@
 #include "KComponent.h"
 #include "KCRenderableBase.h"
 #include "KEntity.h"
+#include "Renderer\KRenderer.h"
 
 #include "Tiled\KTiledImport.h"
 
 #include <vector>
 #include <SFML\Graphics\VertexBuffer.hpp>
-#include <Renderer\KRenderer.h>	
 
 namespace Krawler
 {
 	namespace Components
 	{
+		enum KTileStateEnum : int32
+		{
+			Walkable,
+			Slowdown,
+			Impassable
+		};
+
+
+		class KCTileMapSplit : public KCRenderableBase
+		{
+		public:
+
+			KRAWLER_API KCTileMapSplit(KEntity* pEntity, const std::wstring& tiledMapName);
+			KRAWLER_API ~KCTileMapSplit() = default;
+
+
+
+		private: 
+
+
+		};
 			
 		class KCTileMap : public KCRenderableBase
 		{
@@ -29,13 +50,6 @@ namespace Krawler
 			KRAWLER_API virtual KInitStatus init() override;
 
 			KRAWLER_API const TiledImport::KTIMap* const getTiledMapImportData() const { return m_pTiledImportData; }
-
-			enum KTileStateEnum : int32
-			{
-				Walkable,
-				Slowdown,
-				Impassable
-			};
 
 
 		private:

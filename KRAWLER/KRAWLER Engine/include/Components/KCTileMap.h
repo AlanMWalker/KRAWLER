@@ -57,12 +57,15 @@ namespace Krawler
 			KRAWLER_API ~KCTileMapSplit() = default;
 
 			KRAWLER_API virtual KInitStatus init() override;
+			KRAWLER_API virtual void cleanUp() override;
 			KRAWLER_API virtual void draw(sf::RenderTarget& target, sf::RenderStates) const override;
 			KRAWLER_API const TiledImport::KTIMap* const getTiledMapImportData() const { return m_pTiledImportData; }
 
 			KRAWLER_API virtual Rectf getOnscreenBounds() const override;
 			KRAWLER_API std::vector<KCHorizontalTileLine>& getHorizontalTileLines() { return m_tileMapVec; }
 		private:
+
+			void isolateBlockedMap();
 
 			TiledImport::KTIMap* m_pTiledImportData;
 
@@ -71,6 +74,8 @@ namespace Krawler
 
 			std::vector<KCHorizontalTileLine> m_tileMapVec;
 			std::vector<sf::VertexBuffer> m_preDrawLayers;
+			std::vector<KTileStateEnum> m_tileEnumState;
+
 			const KCTransform* m_pTransformComponent;
 			sf::Texture* m_pTexture;
 

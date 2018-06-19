@@ -116,7 +116,7 @@ public:
 		auto r = pEntity->getComponent<KCTileMapSplit>()->getTiledMapImportData()->properties.at(L"ambient_light_colour").type_colour;
 		m_pShader->setUniform("ambientColour", sf::Glsl::Vec4{ (float)(r.r) / 255.0f ,  (float)(r.g) / 255.0f ,(float)(r.b) / 255.0f ,(float)(r.a) / 255.0f });
 		m_pShader->setUniform("intensity", pEntity->getComponent<KCTileMapSplit>()->getTiledMapImportData()->properties.at(L"ambient_light_intensity").type_float);
-	
+
 		m_pPlayerEntity = pScene->addEntityToScene();
 		m_pPlayerEntity->addComponent(new KCSprite(m_pPlayerEntity, Vec2f(16, 16)));
 		m_pPlayerEntity->getComponent<KCSprite>()->setTexture(assetLoad.getTexture(L"dude"));
@@ -126,9 +126,11 @@ public:
 		return KInitStatus::Success;
 	}
 	virtual void onEnterScene()
-	{	KCTileMapSplit* pSplit = pEntity->getComponent<KCTileMapSplit>();
+	{
+		KCTileMapSplit* pSplit = pEntity->getComponent<KCTileMapSplit>();
 		for (auto& line : pSplit->getHorizontalTileLines())
-			line.setShader(m_pShader);}
+			line.setShader(m_pShader);
+	}
 	virtual void tick() override
 	{
 		const float dt = KApplication::getApp()->getDeltaTime();
@@ -145,11 +147,11 @@ public:
 		}
 		if (KInput::Pressed(KKey::W))
 		{
-			pTrans->move(Vec2f(0.0f, -movSpeed *dt));
+			pTrans->move(Vec2f(0.0f, -movSpeed * dt));
 		}
 		if (KInput::Pressed(KKey::A))
 		{
-			pTrans->move(Vec2f(-movSpeed *dt, 0.0f));
+			pTrans->move(Vec2f(-movSpeed * dt, 0.0f));
 		}
 		if (KInput::Pressed(KKey::D))
 		{

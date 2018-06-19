@@ -177,7 +177,9 @@ KTIMap * Krawler::TiledImport::loadTiledJSONFile(const std::wstring filePath)
 
 void Krawler::TiledImport::cleanupLevelMap(KTIMap * pMap)
 {
-
+	pMap->layersVector.clear();
+	pMap->tilesetVector.clear();
+	KFREE(pMap);
 }
 
 // -- STATIC FUNCTION DEFINITIONS  -- \\

@@ -167,6 +167,7 @@ KInitStatus KCTileMapSplit::init()
 
 	const int32 HorizontalLineVertexCount = 4 * m_pTiledImportData->width;
 	vertices.resize(4 * m_pTiledImportData->width* m_pTiledImportData->height);
+	m_tileEnumState.resize(m_pTiledImportData->width * m_pTiledImportData->height, KTileStateEnum::Walkable);
 
 	int32 vbLayerIndex = 0;
 	int32 verticesIndex = 0;
@@ -244,6 +245,14 @@ KInitStatus KCTileMapSplit::init()
 	return KInitStatus::Success;
 }
 
+void Krawler::Components::KCTileMapSplit::cleanUp()
+{	
+	m_preDrawLayers.clear();
+	m_tileEnumState.clear();
+	m_tileMapVec.clear();
+	return ;
+}
+
 void KCTileMapSplit::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const
 {
 	rStates.transform *= m_pTransformComponent->getTransform();
@@ -266,6 +275,10 @@ Rectf KCTileMapSplit::getOnscreenBounds() const
 	scaledSize.y *= m_pTransformComponent->getScale().y;
 
 	return Rectf(m_pTransformComponent->getTransform().transformPoint(0, 0), scaledSize);
+}
+
+void Krawler::Components::KCTileMapSplit::isolateBlockedMap()
+{
 }
 
 void KCHorizontalTileLine::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const

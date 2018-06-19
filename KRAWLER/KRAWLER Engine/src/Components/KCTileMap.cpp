@@ -188,20 +188,28 @@ KInitStatus KCTileMapSplit::init()
 			{
 				const int32 TileIndex = i + j * m_pTiledImportData->width;
 				sf::Vertex* quad = &vertices[TileIndex * 4];//[verticesIndex];
-				quad[0].position = Vec2f(i * m_tileDimensions.x, j * m_tileDimensions.y);
-				quad[1].position = Vec2f((i + 1) * m_tileDimensions.x, j * m_tileDimensions.y);
-				quad[2].position = Vec2f((i + 1) * m_tileDimensions.x, (j + 1)* m_tileDimensions.y);
-				quad[3].position = Vec2f(i * m_tileDimensions.x, (j + 1) * m_tileDimensions.y);
+
 
 				if (layer.tileData[TileIndex] == 0)
 				{
+					quad[0].position = Vec2f(0.0f, 0.0f);
+					quad[1].position = Vec2f(0.0f, 0.0f);
+					quad[2].position = Vec2f(0.0f, 0.0f);
+					quad[3].position = Vec2f(0.0f, 0.0f);
+
 					quad[0].color = sf::Color::Transparent;
 					quad[1].color = sf::Color::Transparent;
 					quad[2].color = sf::Color::Transparent;
 					quad[3].color = sf::Color::Transparent;
+
 				}
 				else
 				{
+					quad[0].position = Vec2f(i * m_tileDimensions.x, j * m_tileDimensions.y);
+					quad[1].position = Vec2f((i + 1) * m_tileDimensions.x, j * m_tileDimensions.y);
+					quad[2].position = Vec2f((i + 1) * m_tileDimensions.x, (j + 1)* m_tileDimensions.y);
+					quad[3].position = Vec2f(i * m_tileDimensions.x, (j + 1) * m_tileDimensions.y);
+
 					int32 texX, texY;
 					const int32 localID = layer.tileData[TileIndex] - tileset.firstGID;
 					texX = localID % (((int)tileset.width) / tileset.tileWidth);
@@ -264,7 +272,7 @@ void KCHorizontalTileLine::draw(sf::RenderTarget & rTarget, sf::RenderStates rSt
 {
 	rStates.transform *= (*pTransform);
 	rStates.texture = pTexture;
-
+	rStates.shader = getShader();
 	for (auto it = vertexBuffersByLayerVector.begin(); it != vertexBuffersByLayerVector.end(); ++it)
 	{
 		rTarget.draw(*it, rStates);

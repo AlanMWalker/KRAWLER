@@ -61,11 +61,11 @@ namespace Krawler
 			KRAWLER_API const TiledImport::KTIMap* const getTiledMapImportData() const { return m_pTiledImportData; }
 
 			KRAWLER_API virtual Rectf getOnscreenBounds() const override;
-			KRAWLER_API const std::vector<KCHorizontalTileLine>& getHorizontalTileLines() const { return m_tileMapVec; }
+			KRAWLER_API std::vector<KCHorizontalTileLine>& getHorizontalTileLines() { return m_tileMapVec; }
 		private:
 
 			TiledImport::KTIMap* m_pTiledImportData;
-			
+
 			Vec2i m_gridDimensions;
 			Vec2i m_tileDimensions;
 

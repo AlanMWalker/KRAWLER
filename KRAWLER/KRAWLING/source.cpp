@@ -108,15 +108,15 @@ public:
 		auto pScene = KApplication::getApp()->getCurrentScene();
 		KAssetLoader& assetLoad = KAssetLoader::getAssetLoader();
 
-		KEntity* pEntity = pScene->addEntityToScene();
+		pEntity = pScene->addEntityToScene();
 		pEntity->addComponent(new KCTileMapSplit(pEntity, KTEXT("test_level")));
 		//m_pShader = assetLoad.getShader(L"default");
-		//m_pShader = assetLoad.getShader(L"ambient");
-		//pEntity->getComponent<KCRenderableBase>()->setShader(m_pShader);
-		//auto r = pEntity->getComponent<KCTileMapSplit>()->getTiledMapImportData()->properties.at(L"ambient_light_colour").type_colour;
-		//m_pShader->setUniform("ambientColour", sf::Glsl::Vec4{ (float)(r.r) / 255.0f ,  (float)(r.g) / 255.0f ,(float)(r.b) / 255.0f ,(float)(r.a) / 255.0f });
-		//m_pShader->setUniform("intensity", pEntity->getComponent<KCTileMapSplit>()->getTiledMapImportData()->properties.at(L"ambient_light_intensity").type_float);
-
+		m_pShader = assetLoad.getShader(L"ambient");
+		pEntity->getComponent<KCRenderableBase>()->setShader(m_pShader);
+		auto r = pEntity->getComponent<KCTileMapSplit>()->getTiledMapImportData()->properties.at(L"ambient_light_colour").type_colour;
+		m_pShader->setUniform("ambientColour", sf::Glsl::Vec4{ (float)(r.r) / 255.0f ,  (float)(r.g) / 255.0f ,(float)(r.b) / 255.0f ,(float)(r.a) / 255.0f });
+		m_pShader->setUniform("intensity", pEntity->getComponent<KCTileMapSplit>()->getTiledMapImportData()->properties.at(L"ambient_light_intensity").type_float);
+	
 		m_pPlayerEntity = pScene->addEntityToScene();
 		m_pPlayerEntity->addComponent(new KCSprite(m_pPlayerEntity, Vec2f(16, 16)));
 		m_pPlayerEntity->getComponent<KCSprite>()->setTexture(assetLoad.getTexture(L"dude"));
@@ -125,7 +125,10 @@ public:
 
 		return KInitStatus::Success;
 	}
-
+	virtual void onEnterScene()
+	{	KCTileMapSplit* pSplit = pEntity->getComponent<KCTileMapSplit>();
+		for (auto& line : pSplit->getHorizontalTileLines())
+			line.setShader(m_pShader);}
 	virtual void tick() override
 	{
 		const float dt = KApplication::getApp()->getDeltaTime();
@@ -160,6 +163,7 @@ public:
 private:
 	std::vector<KEntity*> entityVec;
 	KEntity* m_pPlayerEntity;
+	KEntity* pEntity;
 	sf::Shader* m_pShader;
 	float intensity = 1.0f;
 };

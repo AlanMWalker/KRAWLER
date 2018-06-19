@@ -5,7 +5,6 @@
 #include "KComponent.h"
 #include "KCRenderableBase.h"
 #include "KEntity.h"
-#include "Renderer\KRenderer.h"
 
 #include "Tiled\KTiledImport.h"
 
@@ -23,6 +22,32 @@ namespace Krawler
 			Impassable
 		};
 
+		/*
+		With a split TileMap the map is drawn as individual horizontal lines
+		each line may contain multiple layers rendered after another.
+
+		*/
+		struct KCHorizontalTileLine : KCRenderableBase
+		{
+			KCHorizontalTileLine()
+				: KCRenderableBase(nullptr)
+			{
+			}
+
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates) const override;
+
+			KRAWLER_API Krawler::Rectf getOnscreenBounds() const
+			{
+				return Rectf(pTransform->transformPoint(topLeft), Vec2f((float)horizontalGridSize * pTileset.tileWidth, (float)pTileset.tileHeight));
+			};
+
+			std::vector<sf::VertexBuffer> vertexBuffersByLayerVector;
+			const sf::Transform* pTransform = nullptr;
+			int32 horizontalGridSize;
+			Vec2f topLeft;
+			sf::Texture* pTexture;
+			TiledImport::KTITileset pTileset;
+		};
 
 		class KCTileMapSplit : public KCRenderableBase
 		{
@@ -31,13 +56,27 @@ namespace Krawler
 			KRAWLER_API KCTileMapSplit(KEntity* pEntity, const std::wstring& tiledMapName);
 			KRAWLER_API ~KCTileMapSplit() = default;
 
+			KRAWLER_API virtual KInitStatus init() override;
+			KRAWLER_API virtual void draw(sf::RenderTarget& target, sf::RenderStates) const override;
+			KRAWLER_API const TiledImport::KTIMap* const getTiledMapImportData() const { return m_pTiledImportData; }
 
+			KRAWLER_API virtual Rectf getOnscreenBounds() const override;
+			KRAWLER_API const std::vector<KCHorizontalTileLine>& getHorizontalTileLines() const { return m_tileMapVec; }
+		private:
 
-		private: 
+			TiledImport::KTIMap* m_pTiledImportData;
+			
+			Vec2i m_gridDimensions;
+			Vec2i m_tileDimensions;
+
+			std::vector<KCHorizontalTileLine> m_tileMapVec;
+			std::vector<sf::VertexBuffer> m_preDrawLayers;
+			const KCTransform* m_pTransformComponent;
+			sf::Texture* m_pTexture;
 
 
 		};
-			
+
 		class KCTileMap : public KCRenderableBase
 		{
 		public:

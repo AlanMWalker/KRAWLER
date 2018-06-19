@@ -86,6 +86,7 @@ public:
 			}
 			entityVec.clear();
 		}
+
 	}
 private:
 	std::vector<KEntity*> entityVec;
@@ -108,27 +109,56 @@ public:
 		KAssetLoader& assetLoad = KAssetLoader::getAssetLoader();
 
 		KEntity* pEntity = pScene->addEntityToScene();
-		pEntity->getTransformComponent()->setScale(1.0, 1.0);
-		pEntity->addComponent(new KCTileMap(pEntity, KTEXT("test_level")));
+		pEntity->addComponent(new KCTileMapSplit(pEntity, KTEXT("test_level")));
 		//m_pShader = assetLoad.getShader(L"default");
-		m_pShader = assetLoad.getShader(L"ambient");
-		pEntity->getComponent<KCRenderableBase>()->setShader(m_pShader);
-		auto r = pEntity->getComponent<KCTileMap>()->getTiledMapImportData()->properties.at(L"ambient_light_colour").type_colour;
-		m_pShader->setUniform("ambientColour", sf::Glsl::Vec4{ (float)(r.r) / 255.0f ,  (float)(r.g) / 255.0f ,(float)(r.b) / 255.0f ,(float)(r.a) / 255.0f });
-		m_pShader->setUniform("intensity", pEntity->getComponent<KCTileMap>()->getTiledMapImportData()->properties.at(L"ambient_light_intensity").type_float);
+		//m_pShader = assetLoad.getShader(L"ambient");
+		//pEntity->getComponent<KCRenderableBase>()->setShader(m_pShader);
+		//auto r = pEntity->getComponent<KCTileMapSplit>()->getTiledMapImportData()->properties.at(L"ambient_light_colour").type_colour;
+		//m_pShader->setUniform("ambientColour", sf::Glsl::Vec4{ (float)(r.r) / 255.0f ,  (float)(r.g) / 255.0f ,(float)(r.b) / 255.0f ,(float)(r.a) / 255.0f });
+		//m_pShader->setUniform("intensity", pEntity->getComponent<KCTileMapSplit>()->getTiledMapImportData()->properties.at(L"ambient_light_intensity").type_float);
+
+		m_pPlayerEntity = pScene->addEntityToScene();
+		m_pPlayerEntity->addComponent(new KCSprite(m_pPlayerEntity, Vec2f(16, 16)));
+		m_pPlayerEntity->getComponent<KCSprite>()->setTexture(assetLoad.getTexture(L"dude"));
+		KApplication::getApp()->getRenderer()->setSortType(Renderer::KRenderSortType::ZOrderSort);
+
+
 		return KInitStatus::Success;
 	}
 
 	virtual void tick() override
 	{
+		const float dt = KApplication::getApp()->getDeltaTime();
+
 		if (KInput::JustPressed(KKey::Escape))
 		{
 			KApplication::getApp()->closeApplication();
 		}
+		auto pTrans = m_pPlayerEntity->getTransformComponent();
+		float movSpeed = 50.0f;
+		if (KInput::Pressed(KKey::S))
+		{
+			pTrans->move(Vec2f(0.0f, movSpeed *dt));
+		}
+		if (KInput::Pressed(KKey::W))
+		{
+			pTrans->move(Vec2f(0.0f, -movSpeed *dt));
+		}
+		if (KInput::Pressed(KKey::A))
+		{
+			pTrans->move(Vec2f(-movSpeed *dt, 0.0f));
+		}
+		if (KInput::Pressed(KKey::D))
+		{
+			pTrans->move(Vec2f(movSpeed *dt, 0.0f));
+		}
+		auto view = KApplication::getApp()->getRenderWindow()->getView();
+		view.setCenter(m_pPlayerEntity->getTransformComponent()->getTranslation());
+		KApplication::getApp()->getRenderWindow()->setView(view);
 	}
 private:
 	std::vector<KEntity*> entityVec;
-
+	KEntity* m_pPlayerEntity;
 	sf::Shader* m_pShader;
 	float intensity = 1.0f;
 };

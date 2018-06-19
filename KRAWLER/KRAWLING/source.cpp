@@ -152,8 +152,9 @@ public:
 		{
 			pTrans->move(Vec2f(movSpeed *dt, 0.0f));
 		}
+		Vec2i t(m_pPlayerEntity->getTransformComponent()->getTranslation());
 		auto view = KApplication::getApp()->getRenderWindow()->getView();
-		view.setCenter(m_pPlayerEntity->getTransformComponent()->getTranslation());
+		view.setCenter(Vec2f(t));
 		KApplication::getApp()->getRenderWindow()->setView(view);
 	}
 private:

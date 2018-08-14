@@ -74,7 +74,7 @@ namespace Krawler
 
 			std::vector<KCHorizontalTileLine> m_tileMapVec;
 			std::vector<sf::VertexBuffer> m_preDrawLayers;
-			std::vector<KTileStateEnum> m_tileEnumState;
+			std::vector<KTileStateEnum> m_tileEnumStatesVector;
 
 			const KCTransform* m_pTransformComponent;
 			sf::Texture* m_pTexture;

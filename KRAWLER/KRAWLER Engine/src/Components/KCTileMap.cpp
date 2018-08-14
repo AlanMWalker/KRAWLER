@@ -1,6 +1,8 @@
 #include "Components\KCTileMap.h"
 #include "Components\KCTransform.h"
 #include "AssetLoader\KAssetLoader.h"
+#include "Components\KCBoxCollider.h"
+#include "KApplication.h"
 
 using namespace Krawler;
 using namespace Krawler::Components;
@@ -167,7 +169,7 @@ KInitStatus KCTileMapSplit::init()
 
 	const int32 HorizontalLineVertexCount = 4 * m_pTiledImportData->width;
 	vertices.resize(4 * m_pTiledImportData->width* m_pTiledImportData->height);
-	m_tileEnumState.resize(m_pTiledImportData->width * m_pTiledImportData->height, KTileStateEnum::Walkable);
+	m_tileEnumStatesVector.resize(m_pTiledImportData->width * m_pTiledImportData->height, KTileStateEnum::Walkable);
 
 	int32 vbLayerIndex = 0;
 	int32 verticesIndex = 0;
@@ -242,15 +244,17 @@ KInitStatus KCTileMapSplit::init()
 		}
 		++vbLayerIndex;
 	}
+
+	isolateBlockedMap();
 	return KInitStatus::Success;
 }
 
 void Krawler::Components::KCTileMapSplit::cleanUp()
-{	
+{
 	m_preDrawLayers.clear();
-	m_tileEnumState.clear();
+	m_tileEnumStatesVector.clear();
 	m_tileMapVec.clear();
-	return ;
+	return;
 }
 
 void KCTileMapSplit::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const
@@ -273,12 +277,66 @@ Rectf KCTileMapSplit::getOnscreenBounds() const
 	scaledSize.y = (float)(m_gridDimensions.y * m_tileDimensions.y);
 	scaledSize.x *= m_pTransformComponent->getScale().x;
 	scaledSize.y *= m_pTransformComponent->getScale().y;
-
+	scaledSize += Vec2f(20,20);
 	return Rectf(m_pTransformComponent->getTransform().transformPoint(0, 0), scaledSize);
 }
 
 void Krawler::Components::KCTileMapSplit::isolateBlockedMap()
 {
+	auto& tileset = m_pTiledImportData->tilesetVector[0];
+	const int32 FirstGID = tileset.firstGID;
+
+	for (auto& layer : m_pTiledImportData->layersVector)
+	{
+		if (layer.layerType != KTILayerTypes::TileLayer)
+		{
+			continue;
+		}
+
+		for (int32 i = 0; i < layer.tileData.size(); ++i)
+		{
+			if (layer.tileData[i] == 0)
+			{
+				continue;
+			}
+			const int32 LocalTileID = layer.tileData[i] - FirstGID;
+			const std::wstring key = std::to_wstring(LocalTileID);
+			auto findResultIterator = tileset.tilePropertiesMap.find(key);
+			if (findResultIterator != tileset.tilePropertiesMap.end())
+			{
+				if (tileset.tilePropertiesMap[key].find(L"blocked") != tileset.tilePropertiesMap[key].end())
+				{
+					if (tileset.tilePropertiesMap[key].find(L"blocked")->second.type_bool) //if is blocked
+					{
+
+						m_tileEnumStatesVector[i] = KTileStateEnum::Impassable;
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < m_tileEnumStatesVector.size(); ++i)
+	{
+		if (m_tileEnumStatesVector[i] != KTileStateEnum::Impassable)
+			continue;
+
+		int x, y, width = m_gridDimensions.x * m_tileDimensions.x;
+		x = i % (width / m_tileDimensions.x);
+		y = i / (width / m_tileDimensions.x);
+
+		KApplication* app = KApplication::getApp();
+		KScene* pScene = app->getCurrentScene();
+		KEntity* pEntity = pScene->addEntityToScene();
+		KPhysicsBodyProperties prop;
+		prop.setMass(0.0f);
+		prop.restitution = 0.0f;
+		KCHECK(pEntity != nullptr);
+		pEntity->addComponent(new KCPhysicsBody(pEntity, prop));
+		pEntity->addComponent(new KCBoxCollider(pEntity, Vec2f(m_tileDimensions)));
+		pEntity->getTransformComponent()->setTranslation(x*m_tileDimensions.x, y*m_tileDimensions.y);
+	}
+
 }
 
 void KCHorizontalTileLine::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const

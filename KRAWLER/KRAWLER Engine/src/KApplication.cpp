@@ -17,6 +17,7 @@ KInitStatus Krawler::KApplication::initialiseScenes()
 void KApplication::setupApplication(const KApplicationInitialise & appInit)
 {
 	m_pRenderWindow = new RenderWindow;
+	m_pRenderWindow->setKeyRepeatEnabled(false);
 	//setup game fps values
 	m_gameFPS = Maths::Clamp(24u, 80u, appInit.gameFps);
 	m_physicsFPS = Maths::Clamp(24u, 80u, appInit.physicsFps);
@@ -48,7 +49,7 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	sf::ContextSettings settings;
 	m_pRenderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style, settings);
 	m_pRenderWindow->setFramerateLimit(m_gameFPS);
-	//m_pRenderWindow->setView(sf::View(Rectf(0, 0, 640, 480)));
+	m_pRenderWindow->setView(sf::View(Rectf(0, 0, 1024, 768)));
 
 	m_pRenderer = new KRenderer;
 

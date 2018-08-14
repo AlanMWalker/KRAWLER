@@ -14,9 +14,9 @@ void Krawler::KPrintf(const wchar_t* szFormat, ...)
 	va_end(arg);
 	OutputDebugString(szBuff);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	wprintf(L"%s", szBuff);
-#endif 
+//#endif 
 }
 
 inline std::chrono::high_resolution_clock::time_point Krawler::Profiler::StartFunctionTimer()

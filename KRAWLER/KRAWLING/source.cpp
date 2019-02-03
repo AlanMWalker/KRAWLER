@@ -36,12 +36,6 @@ using namespace Krawler::Components;
 #define BOX_SIZE 48
 #define FLOOR_WIDTH 640
 
-extern "C"
-{
-	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
-	__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-}
-
 class DeallocTest
 	: public KComponentBase//KScene deallocation testing 
 {

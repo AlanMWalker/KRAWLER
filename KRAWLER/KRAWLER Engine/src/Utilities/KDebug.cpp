@@ -14,9 +14,9 @@ void Krawler::KPrintf(const wchar_t* szFormat, ...)
 	va_end(arg);
 	OutputDebugString(szBuff);
 
-//#ifdef _DEBUG
+	//#ifdef _DEBUG
 	wprintf(L"%s", szBuff);
-//#endif 
+	//#endif 
 }
 
 inline std::chrono::high_resolution_clock::time_point Krawler::Profiler::StartFunctionTimer()
@@ -24,14 +24,24 @@ inline std::chrono::high_resolution_clock::time_point Krawler::Profiler::StartFu
 	return std::chrono::high_resolution_clock::now();
 }
 
-inline long long Krawler::Profiler::EndFunctionTimer(const std::chrono::high_resolution_clock::time_point&  t1, std::wstring funcName, bool print)
+inline long long Krawler::Profiler::EndFunctionTimer(const std::chrono::high_resolution_clock::time_point&  t1, std::wstring funcName, bool bIsMicroseconds, bool print)
 {
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+	long long duration;
+
+	if (bIsMicroseconds)
+	{
+		duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+	}
+	else
+	{
+		duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+	}
+
 	if (print)
 	{
 		//std::cout << funcName << " execution time: " << duration << " ms" << std::endl;
-		KPrintf(L"%s execution time: %lld microsec\n", funcName.c_str(), duration);
+		KPrintf(L"%s execution time: %lld %s\n", funcName.c_str(), duration, bIsMicroseconds ? KTEXT("Microseconds") : KTEXT("Milliseconds"));
 	}
 	return duration;
 }

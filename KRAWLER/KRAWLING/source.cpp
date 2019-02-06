@@ -291,8 +291,8 @@ int main(void)
 	KApplicationInitialise initApp(false);
 	initApp.gameFps = 60;
 	initApp.physicsFps = 60;
-	initApp.width = sf::VideoMode::getDesktopMode().width;
-	initApp.height = sf::VideoMode::getDesktopMode().height;
+	initApp.width = 1024;//sf::VideoMode::getDesktopMode().width;
+	initApp.height = 768; // sf::VideoMode::getDesktopMode().height;
 	initApp.windowStyle = KWindowStyle::Windowed_Fixed_Size;
 	initApp.windowTitle = KTEXT("Testing TiledMaps");
 	StartupEngine(&initApp);

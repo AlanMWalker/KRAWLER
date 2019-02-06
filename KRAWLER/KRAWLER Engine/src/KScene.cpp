@@ -6,6 +6,7 @@
 
 #include "Components\KCPhysicsBody.h"
 #include "Components\KCTileMap.h"
+#include "Utilities\KDebug.h"
 
 using namespace Krawler;
 using namespace Krawler::Components;
@@ -88,26 +89,28 @@ void Krawler::KScene::fixedTick()
 	KApplication::getMutexInstance().lock();
 
 	vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs;
-	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
-	{
-		if (!m_entityChunks[i].allocated)
-		{
-			continue;
-		}
+	//for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
+	//{
+	//	if (!m_entityChunks[i].allocated)
+	//	{
+	//		continue;
+	//	}
 
-		if (!m_entityChunks[i].entity.isEntityInUse())
-		{
-			continue;
-		}
+	//	if (!m_entityChunks[i].entity.isEntityInUse())
+	//	{
+	//		continue;
+	//	}
 
-		//m_entities[i].tick(); // tick all components
-		if (m_entityChunks[i].entity.getInteractivity() == EntitySceneInteractivity::Dynamic)
-		{
-			m_dynamicQTree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
-		}
-	}
+	//	//m_entities[i].tick(); // tick all components
+	//	if (m_entityChunks[i].entity.getInteractivity() == EntitySceneInteractivity::Dynamic)
+	//	{
+	//		m_dynamicQTree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
+	//	}
+	//}
 
 	// handle colliders here
+	auto t1 = Profiler::StartFunctionTimer();
+
 	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
 		if (!m_entityChunks[i].allocated)
@@ -128,6 +131,7 @@ void Krawler::KScene::fixedTick()
 		}
 
 		m_dynamicQTree.getPossibleCollisions(&m_entityChunks[i].entity, colliderStack);
+
 		m_staticQTree.getPossibleCollisions(&m_entityChunks[i].entity, colliderStack);
 		const int32 stackSize = colliderStack.size();
 
@@ -190,6 +194,8 @@ void Krawler::KScene::fixedTick()
 
 		}
 	}
+	auto t2 = Profiler::EndFunctionTimer(t1, KTEXT("Fixed Tick Collision Check"), false);
+
 
 	for (uint32 i = 0; i < m_numberOfAllocatedChunks; ++i)
 	{

@@ -74,8 +74,8 @@ namespace Krawler
 		KAllocatableChunk m_entityChunks[CHUNK_POOL_SIZE];
 
 		std::wstring m_sceneName;
-		KQuadtree m_qtree;
-
+		KQuadtree m_dynamicQTree;
+		KQuadtree m_staticQTree;
 		uint32 m_numberOfAllocatedChunks;
 	};
 

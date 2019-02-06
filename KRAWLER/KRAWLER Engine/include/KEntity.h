@@ -16,6 +16,15 @@ namespace Krawler
 	{
 		class KCTransform;
 	}
+
+	//Entities default to Dynamic
+	//Dynamic = Added to a Quadtree that is regenerated per-frame
+	//Static = Added to Quadtree generated at initialise and never updated again
+	enum EntitySceneInteractivity
+	{
+		Dynamic,
+		Static
+	};
 	const int32 CHUNK_POOL_SIZE{ 120 };
 
 	class KEntity
@@ -89,11 +98,17 @@ namespace Krawler
 
 		KRAWLER_API  Components::KCTransform* const getTransformComponent() { return m_pTransform; }
 
+		KRAWLER_API void setEntityInteraction(EntitySceneInteractivity interactivity);
+
+
+		KRAWLER_API EntitySceneInteractivity getInteractivity() const;
+
 	private:
 		std::vector<KComponentBase*> m_componentVector;
 		std::wstring m_entityTag;
 		bool m_bIsInUse;
 		Components::KCTransform* m_pTransform = nullptr;
+		EntitySceneInteractivity m_interactivity;
 	};
 
 	template<typename TComponent>

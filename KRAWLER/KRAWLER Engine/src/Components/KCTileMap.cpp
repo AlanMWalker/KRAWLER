@@ -328,6 +328,7 @@ void Krawler::Components::KCTileMapSplit::isolateBlockedMap()
 		KApplication* app = KApplication::getApp();
 		KScene* pScene = app->getCurrentScene();
 		KEntity* pEntity = pScene->addEntityToScene();
+		pEntity->setEntityInteraction(EntitySceneInteractivity::Static);
 		KPhysicsBodyProperties prop;
 		prop.setMass(0.0f);
 		prop.restitution = 0.0f;

@@ -9,7 +9,7 @@ using namespace Krawler::Components;
 using namespace Krawler::Maths;
 
 KPhysicsWorld::KPhysicsWorld(KPhysicsWorldProperties properties)
-	: m_properties(properties), m_pQtree(nullptr)
+	: m_properties(properties), m_dynamicTree(nullptr), m_staticTree(nullptr)
 {
 
 }
@@ -27,14 +27,15 @@ void KPhysicsWorld::fixedTick()
 	m_collisionsToCheck.clear();
 }
 
-void KPhysicsWorld::setQuadtree(KQuadtree * pQtree)
+void KPhysicsWorld::setQuadtrees(KQuadtree * pDynamicTree, KQuadtree* pStaticTree)
 {
-	KCHECK(pQtree);
-	if (!pQtree)
+	KCHECK(pDynamicTree);
+	if (!pDynamicTree)
 	{
 		return;
 	}
-	m_pQtree = pQtree;
+	m_dynamicTree = pDynamicTree;
+	m_staticTree = pStaticTree;
 }
 
 void KPhysicsWorld::assembleEntityList()

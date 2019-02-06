@@ -293,7 +293,7 @@ int main(void)
 	initApp.physicsFps = 60;
 	initApp.width = sf::VideoMode::getDesktopMode().width;
 	initApp.height = sf::VideoMode::getDesktopMode().height;
-	initApp.windowStyle = KWindowStyle::Fullscreen;
+	initApp.windowStyle = KWindowStyle::Windowed_Fixed_Size;
 	initApp.windowTitle = KTEXT("Testing TiledMaps");
 	StartupEngine(&initApp);
 	const int sceneWidth = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->width;

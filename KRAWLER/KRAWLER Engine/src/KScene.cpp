@@ -15,19 +15,30 @@ using namespace std;
 // -- KSCENE -- \\
 
 KScene::KScene(const std::wstring & sceneName, const Rectf& sceneBounds)
-	: m_sceneName(sceneName), m_qtree(0, sceneBounds), m_numberOfAllocatedChunks(0)
+	: m_sceneName(sceneName), m_dynamicQTree(0, sceneBounds), m_numberOfAllocatedChunks(0), m_staticQTree(0, sceneBounds)
 {
 
 }
 
 KInitStatus KScene::initScene()
 {
+	//First initialisation pass => Initialise all entitys, and setup all components
 	for (auto& chunk : m_entityChunks)
 	{
 		KINIT_CHECK(chunk.entity.init()); // init components
 		//TODO Move to onenter
 		chunk.entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
 	}
+
+	//Second initialisation pass => put all static elements in static quadtree
+	for (auto& chunk : m_entityChunks)
+	{
+		if (chunk.entity.getInteractivity() == Static)
+		{
+			m_staticQTree.insert(&chunk.entity);
+		}
+	}
+
 
 	return KInitStatus::Success;
 }
@@ -38,7 +49,7 @@ void Krawler::KScene::cleanUpScene()
 	{
 		chunk.entity.cleanUp();
 	}
-	m_qtree.clear();
+	m_dynamicQTree.clear();
 }
 
 void Krawler::KScene::tick()
@@ -48,7 +59,7 @@ void Krawler::KScene::tick()
 	{
 		m_bHasTickedOnce = true;
 	}
-	m_qtree.clear();
+	m_dynamicQTree.clear();
 
 	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
@@ -60,8 +71,13 @@ void Krawler::KScene::tick()
 		{
 			continue;
 		}
+
 		m_entityChunks[i].entity.tick(); // tick all components
-		m_qtree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
+
+		if (m_entityChunks[i].entity.getInteractivity() == EntitySceneInteractivity::Dynamic)
+		{
+			m_dynamicQTree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
+		}
 	}
 	KApplication::getMutexInstance().unlock();
 }
@@ -85,7 +101,10 @@ void Krawler::KScene::fixedTick()
 		}
 
 		//m_entities[i].tick(); // tick all components
-		m_qtree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
+		if (m_entityChunks[i].entity.getInteractivity() == EntitySceneInteractivity::Dynamic)
+		{
+			m_dynamicQTree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
+		}
 	}
 
 	// handle colliders here
@@ -108,8 +127,8 @@ void Krawler::KScene::fixedTick()
 			continue;
 		}
 
-		m_qtree.getPossibleCollisions(&m_entityChunks[i].entity, colliderStack);
-
+		m_dynamicQTree.getPossibleCollisions(&m_entityChunks[i].entity, colliderStack);
+		m_staticQTree.getPossibleCollisions(&m_entityChunks[i].entity, colliderStack);
 		const int32 stackSize = colliderStack.size();
 
 		while (!colliderStack.empty())
@@ -188,7 +207,7 @@ void KScene::onEnterScene()
 {
 	KApplication::getMutexInstance().lock();
 
-	KApplication::getApp()->getPhysicsWorld()->setQuadtree(&m_qtree);
+	KApplication::getApp()->getPhysicsWorld()->setQuadtrees(&m_dynamicQTree, &m_staticQTree);
 	for (auto& entityChunk : m_entityChunks)
 	{
 		if (!entityChunk.allocated)

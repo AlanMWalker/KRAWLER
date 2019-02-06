@@ -1,228 +1,76 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="src\Animation\KAnimation.cpp" />
+    <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
+    <ClCompile Include="src\Components\KCRenderableBase.cpp" />
+    <ClCompile Include="src\Components\KCTileMap.cpp" />
+    <ClCompile Include="src\Tiled\KTiledImport.cpp" />
+    <ClCompile Include="src\Maths\KOrientation.cpp" />
+    <ClCompile Include="src\Components\KCollisions.cpp" />
+    <ClCompile Include="src\Components\KCOrientedBoxCollider.cpp" />
+    <ClCompile Include="src\Components\KCCircleCollider.cpp" />
+    <ClCompile Include="src\Components\KCColliderBase.cpp" />
+    <ClCompile Include="src\Physics\KPhysicsWorld.cpp" />
+    <ClCompile Include="src\AssetLoader\KAssetLoader.cpp" />
+    <ClCompile Include="src\Components\KCBoxCollider.cpp" />
+    <ClCompile Include="src\Components\KCPhysicsBody.cpp" />
+    <ClCompile Include="src\Components\KCSprite.cpp" />
+    <ClCompile Include="src\KComponent.cpp" />
+    <ClCompile Include="src\KEntity.cpp" />
+    <ClCompile Include="src\GameObject\KGameObject.cpp" />
+    <ClCompile Include="src\Input\KInput.cpp" />
+    <ClCompile Include="src\KApplication.cpp" />
+    <ClCompile Include="src\Krawler.cpp" />
+    <ClCompile Include="src\Components\KCTransform.cpp" />
+    <ClCompile Include="src\KScene.cpp" />
+    <ClCompile Include="src\Renderer\KRenderer.cpp" />
+    <ClCompile Include="src\Utilities\KDebug.cpp" />
+    <ClCompile Include="src\Utilities\KEngineMacros.cpp" />
+    <ClCompile Include="src\Utilities\KQuadtree.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\KApplication.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Krawler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GameObject\KGameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\KRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\KDebug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\KEngineMacros.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Input\KInput.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AssetLoader\KAssetLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\KEntity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\KComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCTransform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCSprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCBoxCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\KScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCPhysicsBody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Physics\KPhysicsWorld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Utilities\KQuadtree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCColliderBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCCircleCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCOrientedBoxCollider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCollisions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Maths\KOrientation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCRenderableBase.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Animation\KAnimation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCAnimatedSprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\KTiledImport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Components\KCTileMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
+    <ClInclude Include="include\Components\KCAnimatedSprite.h" />
+    <ClInclude Include="include\Components\KCBoxCollider.h" />
+    <ClInclude Include="include\Components\KCCircleCollider.h" />
+    <ClInclude Include="include\Components\KCColliderBase.h" />
+    <ClInclude Include="include\Components\KCollisions.h" />
+    <ClInclude Include="include\Components\KCOrientedBoxCollider.h" />
+    <ClInclude Include="include\Components\KCPhysicsBody.h" />
+    <ClInclude Include="include\Components\KCRenderableBase.h" />
+    <ClInclude Include="include\Components\KCSprite.h" />
+    <ClInclude Include="include\Animation\KAnimation.h" />
+    <ClInclude Include="include\Components\KCTileMap.h" />
+    <ClInclude Include="include\JSON\json.hpp" />
+    <ClInclude Include="include\KComponent.h" />
+    <ClInclude Include="include\KEntity.h" />
+    <ClInclude Include="include\GameObject\KGameObject.h" />
+    <ClInclude Include="include\KApplication.h" />
+    <ClInclude Include="include\Input\KInput.h" />
+    <ClInclude Include="include\Krawler.h" />
+    <ClInclude Include="include\Components\KCTransform.h" />
+    <ClInclude Include="include\KrawlerLib.h" />
+    <ClInclude Include="include\KScene.h" />
+    <ClInclude Include="include\Maths\KMaths.hpp" />
+    <ClInclude Include="include\Maths\KMathsUtilities.h" />
+    <ClInclude Include="include\Maths\KMathVector.h" />
+    <ClInclude Include="include\Maths\KOrientation.h" />
+    <ClInclude Include="include\Physics\KPhysicsStructs.h" />
+    <ClInclude Include="include\Physics\KPhysicsWorld.h" />
+    <ClInclude Include="include\Renderer\KRenderer.h" />
+    <ClInclude Include="include\Tiled\KTiledImport.h" />
+    <ClInclude Include="include\Utilities\KDebug.h" />
+    <ClInclude Include="include\Utilities\KEngineMacros.h" />
+    <ClInclude Include="include\Utilities\KQuadtree.h" />
+    <ClInclude Include="rapidxml\rapidxml.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\KApplication.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Krawler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GameObject\KGameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Maths\KMaths.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Maths\KMathsUtilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Maths\KMathVector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Renderer\KRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Utilities\KDebug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Utilities\KEngineMacros.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KrawlerLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Physics\KPhysicsStructs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Input\KInput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\AssetLoader\KAssetLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KEntity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCTransform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCBoxCollider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCPhysicsBody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Physics\KPhysicsWorld.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Utilities\KQuadtree.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCColliderBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCCircleCollider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCOrientedBoxCollider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCollisions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Maths\KOrientation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rapidxml\rapidxml_utils.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rapidxml\rapidxml.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rapidxml\rapidxml_iterators.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rapidxml\rapidxml_print.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-
-=======
->>>>>>> dev-2.1-feature-tiled-map-component
-    <ClInclude Include="include\Components\KCRenderableBase.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Animation\KAnimation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCAnimatedSprite.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\JSON\json.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Tiled\KTiledImport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Components\KCTileMap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="include\Maths\KMathsUtilities.inl">
-      <Filter>Header Files</Filter>
-    </None>
-    <None Include="include\Maths\KMathVector.inl">
-      <Filter>Header Files</Filter>
-    </None>
+    <None Include="include\Maths\KMathsUtilities.inl" />
+    <None Include="include\Maths\KMathVector.inl" />
   </ItemGroup>
 </Project>

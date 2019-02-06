@@ -31,12 +31,17 @@ KInitStatus KScene::initScene()
 		chunk.entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
 	}
 
-	//Second initialisation pass => put all static elements in static quadtree
+	//Second initialisation pass => put all static elements in static quadtree and build collider list
 	for (auto& chunk : m_entityChunks)
 	{
 		if (chunk.entity.getInteractivity() == Static)
 		{
 			m_staticQTree.insert(&chunk.entity);
+		}
+		auto pCollider = chunk.entity.getComponent<KCColliderBase>();
+		if (pCollider)
+		{
+			m_initCachedColliders.push_back(pCollider);
 		}
 	}
 
@@ -109,48 +114,44 @@ void Krawler::KScene::fixedTick()
 	//}
 
 	// handle colliders here
-	auto t1 = Profiler::StartFunctionTimer();
 
-	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
+	for (uint32 i = 0; i < m_initCachedColliders.size(); ++i)
 	{
-		if (!m_entityChunks[i].allocated)
-		{
-			continue;
-		}
 
-		if (!m_entityChunks[i].entity.isEntityInUse())
+		KEntity* pEntity = m_initCachedColliders[i]->getEntity();
+		KCHECK(pEntity);
+		if (!pEntity->isEntityInUse())
 		{//if entity isn't in use
 			continue;
 		}
 
-		auto pCollider = m_entityChunks[i].entity.getComponent<KCColliderBase>();
+		KCColliderBase* pCollider = m_initCachedColliders[i]; // cache colliders after initialisation
+		KCHECK(pCollider);
 
-		if (!pCollider) // if this entity doesn't have a box collider continue
-		{
-			continue;
-		}
+		m_dynamicQTree.getPossibleCollisions(pEntity, colliderStack);
 
-		m_dynamicQTree.getPossibleCollisions(&m_entityChunks[i].entity, colliderStack);
-
-		m_staticQTree.getPossibleCollisions(&m_entityChunks[i].entity, colliderStack);
+		m_staticQTree.getPossibleCollisions(pEntity, colliderStack);
 		const int32 stackSize = colliderStack.size();
 
 		while (!colliderStack.empty())
 		{
-			KEntity* pEntity = colliderStack.top();
+			KEntity* pEntityTestedAgainst = colliderStack.top();
 
 			//check pairs
-			KCHECK(pEntity);
+			KCHECK(pEntityTestedAgainst);
 
-			if (pEntity == &m_entityChunks[i].entity) //if they are the same entity continue
+			if (pEntityTestedAgainst == pEntity) //if they are the same entity continue
 			{
 				continue;
 			}
-			const pair<KEntity*, KEntity*> pairA(&m_entityChunks[i].entity, pEntity);
-			const pair<KEntity*, KEntity*> pairASwapped(pEntity, &m_entityChunks[i].entity);
+
+			const pair<KEntity*, KEntity*> pairA(pEntity, pEntityTestedAgainst);
+			const pair<KEntity*, KEntity*> pairASwapped(pEntityTestedAgainst, pEntity);
+			auto t1 = Profiler::StartFunctionTimer();
 
 			auto isEqualA = std::find(alreadyCheckedCollisionPairs.begin(), alreadyCheckedCollisionPairs.end(), pairA);
 			auto isEqualASwapped = std::find(alreadyCheckedCollisionPairs.begin(), alreadyCheckedCollisionPairs.end(), pairASwapped);
+			auto t2 = Profiler::EndFunctionTimer(t1, KTEXT("Fixed Tick Collision Check"));
 
 			if (isEqualA != alreadyCheckedCollisionPairs.end() || isEqualASwapped != alreadyCheckedCollisionPairs.end())
 			{
@@ -158,7 +159,17 @@ void Krawler::KScene::fixedTick()
 				continue;
 			}
 
-			KCColliderBase* const possibleHitCollider = pEntity->getComponent<KCColliderBase>();
+			KCColliderBase* possibleHitCollider = nullptr; //= pEntityTestedAgainst->getComponent<KCColliderBase>();
+
+			for (int i = 0; i < m_initCachedColliders.size(); ++i)
+			{
+				if (m_initCachedColliders[i]->getEntity() == pEntityTestedAgainst)
+				{
+					possibleHitCollider = m_initCachedColliders[i];
+				}
+			}
+
+			KCHECK(possibleHitCollider);
 
 			if (!possibleHitCollider)// if no box collider is found, continue to next collider
 			{
@@ -193,8 +204,8 @@ void Krawler::KScene::fixedTick()
 			colliderStack.pop();
 
 		}
+
 	}
-	auto t2 = Profiler::EndFunctionTimer(t1, KTEXT("Fixed Tick Collision Check"), false);
 
 
 	for (uint32 i = 0; i < m_numberOfAllocatedChunks; ++i)

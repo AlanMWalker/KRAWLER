@@ -62,8 +62,6 @@ namespace Krawler
 		//Info: Tick component (to be overridden if a component updates)
 		KRAWLER_API const std::wstring& getComponentTag() const { return m_componentTag; }
 
-	protected:
-
 		//Param: n/a
 		//Return: KEntity pointer 
 		//Info: Allows derived access to a pointer to the component base

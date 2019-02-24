@@ -230,7 +230,7 @@ public:
 		if (GetSquareLength(pPhysBody->getVelocity()) < 2.0f&& m_force != Vec2f(0.0f, 0.0f))
 		{
 			pPhysBody->applyForce(Normalise(m_force) * ((1.0f - pressTimer)  * m_initial_walk_force));
-			KPrintf(L"Applying initial force! %f (Press timer = %f) \n", (1.0f - pressTimer) *m_initial_walk_force * m_force.x, pressTimer);
+			//KPrintf(L"Applying initial force! %f (Press timer = %f) \n", (1.0f - pressTimer) *m_initial_walk_force * m_force.x, pressTimer);
 		}
 		else
 		{
@@ -291,8 +291,8 @@ int main(void)
 	KApplicationInitialise initApp(false);
 	initApp.gameFps = 60;
 	initApp.physicsFps = 60;
-	initApp.width = sf::VideoMode::getDesktopMode().width;
-	initApp.height = sf::VideoMode::getDesktopMode().height;
+	initApp.width = 1024;//sf::VideoMode::getDesktopMode().width;
+	initApp.height = 768; // sf::VideoMode::getDesktopMode().height;
 	initApp.windowStyle = KWindowStyle::Windowed_Fixed_Size;
 	initApp.windowTitle = KTEXT("Testing TiledMaps");
 	StartupEngine(&initApp);

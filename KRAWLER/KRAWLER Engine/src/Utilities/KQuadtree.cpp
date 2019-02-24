@@ -35,8 +35,8 @@ bool KQuadtree::insert(KEntity* pEntity)
 
 	if (!m_bHasSubdivided)
 	{
-		//if (m_level + 1 > MAX_NUM_LEVELS)
-		//	return false;
+		if (m_level + 1 > MAX_NUM_LEVELS)
+			return false;
 		subdivide();
 		m_bHasSubdivided = true;
 	}

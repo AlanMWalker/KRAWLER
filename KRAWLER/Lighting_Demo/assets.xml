@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assets>
+  <root_folder folder_name="res"/>
+  <shader name="default" vert_path="shaders/defaultVert.glsl" frag_path="shaders/defaultFrag.glsl"/>
+  <shader name="ambient" vert_path="shaders/defaultVert.glsl" frag_path="shaders/ambientFrag.glsl"/>
+  <texture name="tilesheet" file_path="textures/tiles.png"/>
+  <level name="test_level" file_path="maps/zsort.json"/>
+  <texture name="map_tiles" file_path="textures/tileset.png"/>
+</assets>

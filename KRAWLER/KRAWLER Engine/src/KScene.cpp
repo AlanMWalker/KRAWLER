@@ -105,7 +105,6 @@ void Krawler::KScene::fixedTick()
 	KApplication::getMutexInstance().lock();
 
 	// handle colliders here
-	auto time_point_profiler = Profiler::StartFunctionTimer();
 	KCColliderBase* pCollider = nullptr;
 	KCColliderBase* possibleHitCollider = nullptr;
 
@@ -194,7 +193,6 @@ void Krawler::KScene::fixedTick()
 
 	}
 
-	Profiler::EndFunctionTimer(time_point_profiler, KTEXT("Collision Detection Routine"), true);
 
 	for (uint32 i = 0; i < m_numberOfAllocatedChunks; ++i)
 	{

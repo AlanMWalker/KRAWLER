@@ -1,6 +1,8 @@
 #include "Components\KCTileMap.h"
 #include "Components\KCTransform.h"
 #include "AssetLoader\KAssetLoader.h"
+#include "Components\KCBoxCollider.h"
+#include "KApplication.h"
 
 using namespace Krawler;
 using namespace Krawler::Components;
@@ -49,8 +51,11 @@ KInitStatus Krawler::Components::KCTileMap::init()
 			++tile_layer_count;
 		}
 	}
+	m_tileDimensions.x = m_pTiledImportData->tilesetVector[0].tileWidth;
+	m_tileDimensions.y = m_pTiledImportData->tilesetVector[0].tileHeight;
 
 	m_layerVertexBufferVector.resize(tile_layer_count);
+	m_tileStates.resize(tile_layer_count, KTileStateEnum::Walkable);
 
 	int32 layerIdx = 0;
 	auto& tileset = m_pTiledImportData->tilesetVector[0];
@@ -68,7 +73,7 @@ KInitStatus Krawler::Components::KCTileMap::init()
 		m_layerVertexBufferVector[layerIdx].setPrimitiveType(sf::PrimitiveType::Quads);
 		m_layerVertexBufferVector[layerIdx].setUsage(sf::VertexBuffer::Usage::Static);
 		m_layerVertexBufferVector[layerIdx].create(TOTAL_TILES * 4);
-		std::vector<sf::Vertex> vertices(TOTAL_TILES * 4);
+		vertices.resize(TOTAL_TILES * 4);
 		const Vec2f TileDim((float)m_pTiledImportData->tileWidth, (float)m_pTiledImportData->tileHeight);
 
 
@@ -103,6 +108,12 @@ KInitStatus Krawler::Components::KCTileMap::init()
 					pQuad[2].texCoords = Vec2f((texX + 1) * tileset.tileWidth, (texY + 1) * tileset.tileHeight);
 					pQuad[3].texCoords = Vec2f(texX * tileset.tileWidth, (texY + 1) * tileset.tileHeight);
 				}
+				//Check if tile is blocked
+				if (tileset.tilePropertiesMap.count(std::to_wstring(tileIdx)) > 0)
+				{
+					//tileset.tilePropertiesMap[std::to_wstring(tileIdx)]
+					//KPrintf(KTEXT("Found blocked tile local id: %d \n"), tileIdx, );
+				}
 
 			}
 		}
@@ -113,4 +124,229 @@ KInitStatus Krawler::Components::KCTileMap::init()
 
 	}
 	return KInitStatus::Success;
+}
+
+// -------- KCTileMapSplit -------- 
+KCTileMapSplit::KCTileMapSplit(KEntity * pEntity, const std::wstring & tiledMapName)
+	: KCRenderableBase(pEntity)
+{
+	setComponentTag(KTEXT("KCTileMapSplit"));
+	m_pTiledImportData = KAssetLoader::getAssetLoader().getLevelMap(tiledMapName);
+	KCHECK(m_pTiledImportData);
+	m_pTransformComponent = getEntity()->getTransformComponent();
+	m_gridDimensions = Vec2i((int32)m_pTiledImportData->width, (int32)m_pTiledImportData->height);
+	m_tileDimensions.x = m_pTiledImportData->tilesetVector[0].tileWidth;
+	m_tileDimensions.y = m_pTiledImportData->tilesetVector[0].tileHeight;
+
+
+}
+
+KInitStatus KCTileMapSplit::init()
+{
+	if (!m_pTiledImportData)
+	{
+		return KInitStatus::MissingResource;
+	}
+
+	std::vector<sf::Vertex> vertices;
+	int32 tile_layer_count = 0;
+	for (auto& layer : m_pTiledImportData->layersVector)
+	{
+		if (layer.layerType == KTILayerTypes::TileLayer && layer.propertiesMap.find(KTEXT("pre_draw")) == layer.propertiesMap.end())
+		{
+			++tile_layer_count;
+		}
+	}
+	m_pTexture = KAssetLoader::getAssetLoader().getTexture(m_pTiledImportData->tilesetVector[0].name);
+	//default tile line struct state setup with map grid width & texture pointer 
+	KCHorizontalTileLine defaultTileLine;
+	defaultTileLine.pTileset = m_pTiledImportData->tilesetVector[0];
+	defaultTileLine.pTexture = m_pTexture;
+	defaultTileLine.pTransform = &m_pTransformComponent->getTransform();
+	defaultTileLine.horizontalGridSize = m_pTiledImportData->width;
+	defaultTileLine.vertexBuffersByLayerVector.resize(tile_layer_count);
+	m_tileMapVec.resize(m_pTiledImportData->height, defaultTileLine);
+
+	const int32 HorizontalLineVertexCount = 4 * m_pTiledImportData->width;
+	vertices.resize(4 * m_pTiledImportData->width* m_pTiledImportData->height);
+	m_tileEnumStatesVector.resize(m_pTiledImportData->width * m_pTiledImportData->height, KTileStateEnum::Walkable);
+
+	int32 vbLayerIndex = 0;
+	int32 verticesIndex = 0;
+	auto& tileset = m_pTiledImportData->tilesetVector[0];
+
+	for (auto& layer : m_pTiledImportData->layersVector)
+	{
+		if (layer.layerType != KTILayerTypes::TileLayer)
+		{
+			continue;
+		}
+
+
+
+		for (int j = 0; j < m_pTiledImportData->height; ++j)
+		{
+			verticesIndex = 0;
+			for (int i = 0; i < m_pTiledImportData->width; ++i)
+			{
+				const int32 TileIndex = i + j * m_pTiledImportData->width;
+				sf::Vertex* quad = &vertices[TileIndex * 4];//[verticesIndex];
+
+
+				if (layer.tileData[TileIndex] == 0)
+				{
+					quad[0].position = Vec2f(0.0f, 0.0f);
+					quad[1].position = Vec2f(0.0f, 0.0f);
+					quad[2].position = Vec2f(0.0f, 0.0f);
+					quad[3].position = Vec2f(0.0f, 0.0f);
+
+					quad[0].color = sf::Color::Transparent;
+					quad[1].color = sf::Color::Transparent;
+					quad[2].color = sf::Color::Transparent;
+					quad[3].color = sf::Color::Transparent;
+
+				}
+				else
+				{
+					quad[0].position = Vec2f(i * m_tileDimensions.x, j * m_tileDimensions.y);
+					quad[1].position = Vec2f((i + 1) * m_tileDimensions.x, j * m_tileDimensions.y);
+					quad[2].position = Vec2f((i + 1) * m_tileDimensions.x, (j + 1)* m_tileDimensions.y);
+					quad[3].position = Vec2f(i * m_tileDimensions.x, (j + 1) * m_tileDimensions.y);
+
+					int32 texX, texY;
+					const int32 localID = layer.tileData[TileIndex] - tileset.firstGID;
+					texX = localID % (((int)tileset.width) / tileset.tileWidth);
+					texY = localID / (((int)tileset.width) / tileset.tileWidth);
+					quad[0].texCoords = Vec2f(texX * tileset.tileWidth, texY * tileset.tileHeight);
+					quad[1].texCoords = Vec2f((texX + 1) * tileset.tileWidth, texY * tileset.tileHeight);
+					quad[2].texCoords = Vec2f((texX + 1) * tileset.tileWidth, (texY + 1) * tileset.tileHeight);
+					quad[3].texCoords = Vec2f(texX * tileset.tileWidth, (texY + 1) * tileset.tileHeight);
+				}
+
+				verticesIndex += 4;
+			}
+			if (layer.propertiesMap.find(KTEXT("pre_render")) != layer.propertiesMap.end())
+			{
+				m_preDrawLayers.push_back(sf::VertexBuffer());
+				m_preDrawLayers.back().create(vertices.size());
+				m_preDrawLayers.back().setUsage(sf::VertexBuffer::Usage::Static);
+				m_preDrawLayers.back().setPrimitiveType(sf::PrimitiveType::Quads);
+				m_preDrawLayers.back().update(&vertices[0]);
+			}
+			else
+			{
+				m_tileMapVec[j].vertexBuffersByLayerVector[vbLayerIndex].setPrimitiveType(sf::PrimitiveType::Quads);
+				m_tileMapVec[j].vertexBuffersByLayerVector[vbLayerIndex].setUsage(sf::VertexBuffer::Usage::Static);
+				m_tileMapVec[j].vertexBuffersByLayerVector[vbLayerIndex].create(HorizontalLineVertexCount);
+				m_tileMapVec[j].vertexBuffersByLayerVector[vbLayerIndex].update(&vertices[j * 4 * m_pTiledImportData->width]);
+				m_tileMapVec[j].topLeft = Vec2f(0, j * m_pTiledImportData->tileHeight);
+			}
+		}
+		++vbLayerIndex;
+	}
+
+	isolateBlockedMap();
+	return KInitStatus::Success;
+}
+
+void Krawler::Components::KCTileMapSplit::cleanUp()
+{
+	m_preDrawLayers.clear();
+	m_tileEnumStatesVector.clear();
+	m_tileMapVec.clear();
+	return;
+}
+
+void KCTileMapSplit::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const
+{
+	rStates.transform *= m_pTransformComponent->getTransform();
+	rStates.texture = m_pTexture;
+	rStates.shader = getShader();
+	for (auto& layer : m_preDrawLayers)
+	{
+		rTarget.draw(layer, rStates);
+	}
+
+	return;
+}
+
+Rectf KCTileMapSplit::getOnscreenBounds() const
+{
+	Vec2f scaledSize;
+	scaledSize.x = (float)(m_gridDimensions.x * m_tileDimensions.x);
+	scaledSize.y = (float)(m_gridDimensions.y * m_tileDimensions.y);
+	scaledSize.x *= m_pTransformComponent->getScale().x;
+	scaledSize.y *= m_pTransformComponent->getScale().y;
+	scaledSize += Vec2f(20,20);
+	return Rectf(m_pTransformComponent->getTransform().transformPoint(0, 0), scaledSize);
+}
+
+void Krawler::Components::KCTileMapSplit::isolateBlockedMap()
+{
+	auto& tileset = m_pTiledImportData->tilesetVector[0];
+	const int32 FirstGID = tileset.firstGID;
+
+	for (auto& layer : m_pTiledImportData->layersVector)
+	{
+		if (layer.layerType != KTILayerTypes::TileLayer)
+		{
+			continue;
+		}
+
+		for (int32 i = 0; i < layer.tileData.size(); ++i)
+		{
+			if (layer.tileData[i] == 0)
+			{
+				continue;
+			}
+			const int32 LocalTileID = layer.tileData[i] - FirstGID;
+			const std::wstring key = std::to_wstring(LocalTileID);
+			auto findResultIterator = tileset.tilePropertiesMap.find(key);
+			if (findResultIterator != tileset.tilePropertiesMap.end())
+			{
+				if (tileset.tilePropertiesMap[key].find(L"blocked") != tileset.tilePropertiesMap[key].end())
+				{
+					if (tileset.tilePropertiesMap[key].find(L"blocked")->second.type_bool) //if is blocked
+					{
+
+						m_tileEnumStatesVector[i] = KTileStateEnum::Impassable;
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < m_tileEnumStatesVector.size(); ++i)
+	{
+		if (m_tileEnumStatesVector[i] != KTileStateEnum::Impassable)
+			continue;
+
+		int x, y, width = m_gridDimensions.x * m_tileDimensions.x;
+		x = i % (width / m_tileDimensions.x);
+		y = i / (width / m_tileDimensions.x);
+
+		KApplication* app = KApplication::getApp();
+		KScene* pScene = app->getCurrentScene();
+		KEntity* pEntity = pScene->addEntityToScene();
+		pEntity->setEntityInteraction(EntitySceneInteractivity::Static);
+		KPhysicsBodyProperties prop;
+		prop.setMass(0.0f);
+		prop.restitution = 0.0f;
+		KCHECK(pEntity != nullptr);
+		pEntity->addComponent(new KCPhysicsBody(pEntity, prop));
+		pEntity->addComponent(new KCBoxCollider(pEntity, Vec2f(m_tileDimensions)));
+		pEntity->getTransformComponent()->setTranslation(x*m_tileDimensions.x, y*m_tileDimensions.y);
+	}
+
+}
+
+void KCHorizontalTileLine::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const
+{
+	rStates.transform *= (*pTransform);
+	rStates.texture = pTexture;
+	rStates.shader = getShader();
+	for (auto it = vertexBuffersByLayerVector.begin(); it != vertexBuffersByLayerVector.end(); ++it)
+	{
+		rTarget.draw(*it, rStates);
+	}
 }

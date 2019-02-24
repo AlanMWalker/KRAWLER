@@ -35,8 +35,9 @@ KInitStatus KCPhysicsBody::init()
 
 void KCPhysicsBody::fixedTick()
 {
-	if (m_properties.mass == 0.0f)
+	if (m_properties.mass == 0.0f || m_bIsStatic)
 		return;
+
 	const float dt = KApplication::getApp()->getPhysicsDelta();
 	auto pPhysWorld = KApplication::getApp()->getPhysicsWorld();
 	KCTransform* const pTransform = getEntity()->getComponent<KCTransform>();

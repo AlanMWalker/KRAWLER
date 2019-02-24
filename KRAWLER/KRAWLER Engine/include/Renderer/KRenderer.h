@@ -3,18 +3,26 @@
 
 #include "Krawler.h"
 #include "Components\KCSprite.h"
+#include "Components\KCTileMap.h"
 #include <SFML\Graphics\Text.hpp>	
 #include <SFML\Graphics\Font.hpp>
+
 
 namespace Krawler
 {
 	namespace Renderer
 	{
-		using TextRender = std::pair < Vec2i, sf::Text>;
+		using TextRender = std::pair <Vec2i, sf::Text>;
 		enum KRendererType : uint32
 		{
 			Default,
 			Raycast
+		};
+
+		enum KRenderSortType
+		{
+			LayerSort,
+			ZOrderSort
 		};
 
 		class KRenderer
@@ -25,6 +33,10 @@ namespace Krawler
 			KRAWLER_API ~KRenderer();
 
 			KRAWLER_API void render();
+
+			KRAWLER_API void setSortType(KRenderSortType sortType) { m_sortType = sortType; }
+
+			KRAWLER_API KRenderSortType getSortType() const { return m_sortType; }
 
 			KRAWLER_API KDEPRECATED(int32 addTextToScreen)(const sf::Text& pText, const Vec2i& screenPos)
 			{
@@ -38,15 +50,16 @@ namespace Krawler
 		private:
 			void generateRenderableList();
 			void sortByRenderLayer();
-
+			void sortByZOrder();
 			void defaultRender();
 
 			Vec2f screenToWorld(const Vec2i& vec) const;
 
-			std::vector<Components::KCRenderableBase*> m_renderable;
+			std::vector<Components::KCRenderableBase*> m_renderablesVector;
+			std::vector<Components::KCTileMapSplit*> m_splitMapVec;
 			std::vector<TextRender>m_screenText;
 			KRendererType m_renderingType;
-
+			KRenderSortType m_sortType;
 
 			bool mb_hasTiledMap = false;
 			sf::Font mp_defaultFont;

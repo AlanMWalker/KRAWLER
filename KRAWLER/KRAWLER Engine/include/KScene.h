@@ -19,6 +19,10 @@ namespace Krawler
 		bool allocated = 0;
 		KEntity entity;
 	};
+	namespace Components
+	{
+		class KCColliderBase;
+	}
 
 	class KScene
 	{
@@ -74,8 +78,9 @@ namespace Krawler
 		KAllocatableChunk m_entityChunks[CHUNK_POOL_SIZE];
 
 		std::wstring m_sceneName;
-		KQuadtree m_qtree;
-
+		std::vector<Components::KCColliderBase*> m_initCachedColliders;
+		KQuadtree m_dynamicQTree;
+		KQuadtree m_staticQTree;
 		uint32 m_numberOfAllocatedChunks;
 	};
 

@@ -136,6 +136,13 @@ void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & f
 		return;
 	}
 
+	if (pTex->getSize().x > 4096 || pTex->getSize().y > 4096)
+	{
+		KPrintf(KTEXT("Asset load error: Texture %s is larger in dimensions than 4096 px!\n"), name.c_str());
+	}
+
+	pTex->generateMipmap();
+	pTex->setSmooth(true);
 	m_texturesMap.emplace(name, pTex);
 }
 

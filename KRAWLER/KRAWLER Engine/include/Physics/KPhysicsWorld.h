@@ -51,7 +51,7 @@ namespace Krawler
 
 			KRAWLER_API int32 getNumberOfPhysicsBodies() const { return m_physicsEntities.size(); }
 
-			void setQuadtree(KQuadtree* pQtree);
+			void setQuadtrees(KQuadtree* pDynamicTree, KQuadtree* pStaticTree);
 
 		private:
 			void resolveCollisions(const KCollisionDetectionData& collData);
@@ -63,7 +63,8 @@ namespace Krawler
 			std::vector<KCollisionDetectionData> m_collisionsToCheck;
 
 			KPhysicsWorldProperties m_properties;
-			KQuadtree* m_pQtree;
+			KQuadtree* m_dynamicTree;
+			KQuadtree* m_staticTree;
 
 			std::function<void(const KCollisionDetectionData& collData)> m_collisionCallback = [this](const KCollisionDetectionData& collData)
 			{

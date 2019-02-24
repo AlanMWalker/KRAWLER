@@ -1,12 +1,15 @@
 #include "KApplication.h"
 #include <future>
 
+#include "imgui/imgui-SFML.h" // for process event
+
 using namespace Krawler;
 using namespace Krawler::Renderer;
 using namespace sf;
 using namespace std;
 
-std::mutex KApplication::m_mutex;
+std::mutex KApplication::s_mutex;
+
 
 KInitStatus Krawler::KApplication::initialiseScenes()
 {
@@ -52,6 +55,9 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	m_pRenderWindow->setView(sf::View(Rectf(0, 0, 1024, 768)));
 
 	m_pRenderer = new KRenderer;
+	//auto& io = ImGui::GetIO();
+	////ImFont* font = io.Fonts->AddFontFromFileTTF("res/fonts/seriphim.ttf", 10);
+	//io.Fonts->AddFontDefault();
 
 	Input::KInput::SetWindow(m_pRenderWindow);
 }
@@ -78,28 +84,29 @@ void KApplication::runApplication()
 
 		outputFPS(currentTime, fpsLastTime);
 
-		Event evnt;
+		Event sfmlEvent;
 
 		Input::KInput::Update();
 
-		while (m_pRenderWindow->pollEvent(evnt))
+		while (m_pRenderWindow->pollEvent(sfmlEvent))
 		{
-			if (evnt.type == Event::Closed)
+			if (sfmlEvent.type == Event::Closed)
 			{
 				m_pRenderWindow->close();
 			}
-			if (evnt.type == Event::GainedFocus)
+			if (sfmlEvent.type == Event::GainedFocus)
 			{
 				m_bHasFocus = true;
 			}
-			if (evnt.type == Event::LostFocus)
+			if (sfmlEvent.type == Event::LostFocus)
 			{
 				m_bHasFocus = false;
 			}
 			if (m_bHasFocus)
 			{
-				Input::KInput::HandleEvent(evnt);
+				Input::KInput::HandleEvent(sfmlEvent);
 			}
+			ImGui::SFML::ProcessEvent(sfmlEvent);
 		}
 
 		if (frameTime > seconds(m_physicsDelta * 4))
@@ -133,8 +140,12 @@ void KApplication::runApplication()
 
 		if (m_bHasFocus)
 		{
+
 			m_sceneDirector.tickActiveScene();
+
 		}
+		//m_pRenderer->render()
+
 		const float EXTRA_FPS_BUMP = 0;
 		const float timeInSec = deltaClock.getElapsedTime().asSeconds();
 		const float sleepTime = (1.0f / (m_gameFPS + EXTRA_FPS_BUMP)) - timeInSec;

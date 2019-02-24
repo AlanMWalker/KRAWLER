@@ -34,6 +34,7 @@
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="include\imgui\imgui-SFML.cpp" />
     <ClCompile Include="include\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="src\Components\KCImgui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
@@ -81,9 +82,11 @@
     <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\imgui\imgui_internal.h" />
     <ClInclude Include="include\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="include\Components\KCImgui.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\KMathsUtilities.inl" />
     <None Include="include\Maths\KMathVector.inl" />
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

@@ -72,6 +72,7 @@ namespace Krawler
 		KRAWLER_API Krawler::KScene* const getCurrentScene() { return m_sceneDirector.getCurrentScene(); }
 
 		KRAWLER_API float getElapsedTime() const;
+		KRAWLER_API float getGameFPS() const { return m_gameFPS; }
 		KRAWLER_API float getDeltaTime() const { return m_gameDelta; }
 		KRAWLER_API float getPhysicsDelta() const { return m_physicsDelta; }
 
@@ -80,7 +81,6 @@ namespace Krawler
 		KRAWLER_API void closeApplication();
 
 		static std::mutex& getMutexInstance() { return s_mutex; }
-		static std::atomic_bool& renderImgui() { return s_bDisplayImgui; }
 
 	private:
 
@@ -110,7 +110,6 @@ namespace Krawler
 		bool m_bHasFocus = true;
 
 		static std::mutex s_mutex;
-		static std::atomic_bool s_bDisplayImgui;
 	};
 }
 #endif

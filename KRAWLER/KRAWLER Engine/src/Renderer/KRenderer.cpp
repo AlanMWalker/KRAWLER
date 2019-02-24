@@ -17,7 +17,6 @@ using namespace std;
 KRenderer::KRenderer()
 	: m_renderingType(KRendererType::Default), m_sortType(KRenderSortType::ZOrderSort)
 {
-	ImGui::SFML::Init(*KApplication::getApp()->getRenderWindow());
 
 }
 
@@ -34,24 +33,17 @@ void KRenderer::render()
 	while (target->isOpen())
 	{
 
-		target->clear();
-		defaultRender();
+	target->clear();
+	defaultRender();
 
-		for (auto& text : m_screenText)
-		{
-			sf::Text t(text.second.getString(), mp_defaultFont);
-			t.setCharacterSize(text.second.getCharacterSize());
-			t.setPosition(screenToWorld(text.first));
-			target->draw(t);
-		}
-		auto& bRender = KApplication::getApp()->renderImgui();
-		if (bRender.load())
-		{
-			ImGui::SFML::Render(*target);
-			bRender.store(false);
-		}
-
-		target->display();
+	for (auto& text : m_screenText)
+	{
+		sf::Text t(text.second.getString(), mp_defaultFont);
+		t.setCharacterSize(text.second.getCharacterSize());
+		t.setPosition(screenToWorld(text.first));
+		target->draw(t);
+	}
+	target->display();
 	}
 }
 
@@ -145,10 +137,11 @@ void KRenderer::defaultRender()
 	{
 		target->draw(*pSplit);
 	}
-		
+
 	for (auto& renderable : m_renderablesVector)
 	{
 		target->draw(*renderable);
+		renderable->postRenderEvent();
 	}
 
 }

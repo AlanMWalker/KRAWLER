@@ -254,6 +254,7 @@
     <ClCompile Include="include\imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="src\Animation\KAnimation.cpp" />
     <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
+    <ClCompile Include="src\Components\KCImgui.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
     <ClCompile Include="src\Components\KCTileMap.cpp" />
     <ClCompile Include="src\Tiled\KTiledImport.cpp" />
@@ -286,6 +287,7 @@
     <ClInclude Include="include\Components\KCBoxCollider.h" />
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />
+    <ClInclude Include="include\Components\KCImgui.h" />
     <ClInclude Include="include\Components\KCollisions.h" />
     <ClInclude Include="include\Components\KCOrientedBoxCollider.h" />
     <ClInclude Include="include\Components\KCPhysicsBody.h" />
@@ -328,6 +330,7 @@
     <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="include\Maths\KMathsUtilities.inl" />
     <None Include="include\Maths\KMathVector.inl" />
   </ItemGroup>

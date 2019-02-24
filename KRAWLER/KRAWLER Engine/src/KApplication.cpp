@@ -1,9 +1,7 @@
 #include "KApplication.h"
 #include <future>
 
-// imgui 
-#include "imgui/imgui.h"
-#include "imgui/imgui-SFML.h"
+#include "imgui/imgui-SFML.h" // for process event
 
 using namespace Krawler;
 using namespace Krawler::Renderer;
@@ -11,7 +9,6 @@ using namespace sf;
 using namespace std;
 
 std::mutex KApplication::s_mutex;
-std::atomic_bool KApplication::s_bDisplayImgui = false;
 
 
 KInitStatus Krawler::KApplication::initialiseScenes()
@@ -58,9 +55,9 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	m_pRenderWindow->setView(sf::View(Rectf(0, 0, 1024, 768)));
 
 	m_pRenderer = new KRenderer;
-	auto& io = ImGui::GetIO();
-	//ImFont* font = io.Fonts->AddFontFromFileTTF("res/fonts/seriphim.ttf", 10);
-	io.Fonts->AddFontDefault();
+	//auto& io = ImGui::GetIO();
+	////ImFont* font = io.Fonts->AddFontFromFileTTF("res/fonts/seriphim.ttf", 10);
+	//io.Fonts->AddFontDefault();
 
 	Input::KInput::SetWindow(m_pRenderWindow);
 }
@@ -143,19 +140,11 @@ void KApplication::runApplication()
 
 		if (m_bHasFocus)
 		{
-			if (!s_bDisplayImgui.load())
-			{
-				ImGui::SFML::Update(*m_pRenderWindow, sf::seconds(1.0f / (float)m_gameFPS));
-
-				ImGui::Begin("Hello");
-				ImGui::Text("Hello");
-				ImGui::End();
-			}
 
 			m_sceneDirector.tickActiveScene();
 
 		}
-		s_bDisplayImgui.store(true);
+		//m_pRenderer->render()
 
 		const float EXTRA_FPS_BUMP = 0;
 		const float timeInSec = deltaClock.getElapsedTime().asSeconds();

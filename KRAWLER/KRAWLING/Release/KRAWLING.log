@@ -1,0 +1,9 @@
+﻿  source.cpp
+d:\mace code projects\krawler\krawler\krawler engine\include\kapplication.h(75): warning C4244: 'return': conversion from 'const Krawler::uint32' to 'float', possible loss of data
+     Creating library D:\Mace Code Projects\KRAWLER\KRAWLER\Release\KRAWLER Test Project.lib and object D:\Mace Code Projects\KRAWLER\KRAWLER\Release\KRAWLER Test Project.exp
+  Generating code
+  1 of 230 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  KRAWLING.vcxproj -> D:\Mace Code Projects\KRAWLER\KRAWLER\Release\KRAWLER Test Project.exe

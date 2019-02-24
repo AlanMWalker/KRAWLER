@@ -10,6 +10,7 @@
 #include <SFML\System\Clock.hpp> 
 
 #include <mutex>
+#include <atomic>
 
 //Lowest FPS for Physics & Game: 24
 //Highest FPS for Physics & Game: 80
@@ -78,7 +79,8 @@ namespace Krawler
 
 		KRAWLER_API void closeApplication();
 
-		static std::mutex& getMutexInstance() { return m_mutex; }
+		static std::mutex& getMutexInstance() { return s_mutex; }
+		static std::atomic_bool& renderImgui() { return s_bDisplayImgui; }
 
 	private:
 
@@ -107,8 +109,8 @@ namespace Krawler
 		bool m_bIsFirstUpdate = true;
 		bool m_bHasFocus = true;
 
-		static std::mutex m_mutex;
-
+		static std::mutex s_mutex;
+		static std::atomic_bool s_bDisplayImgui;
 	};
 }
 #endif

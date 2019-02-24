@@ -94,26 +94,6 @@ void Krawler::KScene::fixedTick()
 	static vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs(500);
 	KApplication::getMutexInstance().lock();
 
-
-	//for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
-	//{
-	//	if (!m_entityChunks[i].allocated)
-	//	{
-	//		continue;
-	//	}
-
-	//	if (!m_entityChunks[i].entity.isEntityInUse())
-	//	{
-	//		continue;
-	//	}
-
-	//	//m_entities[i].tick(); // tick all components
-	//	if (m_entityChunks[i].entity.getInteractivity() == EntitySceneInteractivity::Dynamic)
-	//	{
-	//		m_dynamicQTree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
-	//	}
-	//}
-
 	// handle colliders here
 	auto time_point_profiler = Profiler::StartFunctionTimer();
 	KCColliderBase* pCollider = nullptr;

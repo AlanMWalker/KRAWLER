@@ -3,6 +3,9 @@
 
 #include <algorithm>
 
+#include "imgui/imgui-SFML.h"
+#include "imgui/imgui.h"
+
 #include <SFML\Graphics.hpp>
 #include "AssetLoader\KAssetLoader.h"
 
@@ -14,6 +17,8 @@ using namespace std;
 KRenderer::KRenderer()
 	: m_renderingType(KRendererType::Default), m_sortType(KRenderSortType::ZOrderSort)
 {
+	ImGui::SFML::Init(*KApplication::getApp()->getRenderWindow());
+
 }
 
 KRenderer::~KRenderer()
@@ -28,6 +33,7 @@ void KRenderer::render()
 
 	while (target->isOpen())
 	{
+
 		target->clear();
 		defaultRender();
 
@@ -38,13 +44,19 @@ void KRenderer::render()
 			t.setPosition(screenToWorld(text.first));
 			target->draw(t);
 		}
+		auto& bRender = KApplication::getApp()->renderImgui();
+		if (bRender.load())
+		{
+			ImGui::SFML::Render(*target);
+			bRender.store(false);
+		}
+
 		target->display();
 	}
 }
 
 void KRenderer::generateRenderableList()
 {
-	KApplication::getMutexInstance().lock();
 
 	m_renderablesVector.clear();
 	m_splitMapVec.clear();
@@ -93,7 +105,6 @@ void KRenderer::generateRenderableList()
 		m_renderablesVector.erase(std::find(m_renderablesVector.begin(), m_renderablesVector.end(), pSplit));
 	}
 
-	KApplication::getMutexInstance().unlock();
 }
 
 void KRenderer::sortByRenderLayer()

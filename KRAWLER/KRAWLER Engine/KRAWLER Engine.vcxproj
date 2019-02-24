@@ -247,6 +247,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RC|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="include\imgui\imgui-SFML.cpp" />
+    <ClCompile Include="include\imgui\imgui.cpp" />
+    <ClCompile Include="include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="include\imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="src\Animation\KAnimation.cpp" />
     <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
@@ -288,6 +293,14 @@
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\Animation\KAnimation.h" />
     <ClInclude Include="include\Components\KCTileMap.h" />
+    <ClInclude Include="include\imgui\imconfig.h" />
+    <ClInclude Include="include\imgui\imgui-SFML.h" />
+    <ClInclude Include="include\imgui\imgui.h" />
+    <ClInclude Include="include\imgui\imgui_internal.h" />
+    <ClInclude Include="include\imgui\imstb_rectpack.h" />
+    <ClInclude Include="include\imgui\imstb_textedit.h" />
+    <ClInclude Include="include\imgui\imstb_truetype.h" />
+    <ClInclude Include="include\imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="include\JSON\json.hpp" />
     <ClInclude Include="include\KComponent.h" />
     <ClInclude Include="include\KEntity.h" />

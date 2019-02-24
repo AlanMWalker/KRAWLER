@@ -13,3 +13,8 @@ Alan Masimba Walker
 Sam Halme (input)
 
 Joe Thomas (raycast & lighting) 
+
+## APIs Used
+SFML https://www.sfml-dev.org
+IMGUI https://github.com/ocornut/imgui
+IMGUI SFML https://github.com/eliasdaler/imgui-sfml

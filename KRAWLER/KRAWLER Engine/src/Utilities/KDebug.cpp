@@ -1,5 +1,11 @@
 #include "Utilities\KDebug.h"
+#include <fstream> //for wofstream
 #include <Windows.h>
+#include <stdio.h>	//for sprintf
+#include <mutex>	
+
+static std::wofstream logFile;
+std::mutex logFileMutex;
 
 void Krawler::KPrintf(const wchar_t* szFormat, ...)
 {
@@ -24,10 +30,11 @@ inline std::chrono::high_resolution_clock::time_point Krawler::Profiler::StartFu
 	return std::chrono::high_resolution_clock::now();
 }
 
-inline long long Krawler::Profiler::EndFunctionTimer(const std::chrono::high_resolution_clock::time_point&  t1, std::wstring funcName, bool bIsMicroseconds, bool print)
+inline long long Krawler::Profiler::EndFunctionTimer(const std::chrono::high_resolution_clock::time_point&  t1, const std::wstring& funcName, bool bIsMicroseconds, bool bLogFileInsteadOfConsole)
 {
 	std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 	long long duration;
+	static wchar_t outputString[300];
 
 	if (bIsMicroseconds)
 	{
@@ -38,10 +45,31 @@ inline long long Krawler::Profiler::EndFunctionTimer(const std::chrono::high_res
 		duration = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
 	}
 
-	if (print)
+	swprintf_s(outputString, 300, KTEXT("%s execution time: %lld %s\n"), funcName.c_str(), duration, bIsMicroseconds ? KTEXT("Microseconds") : KTEXT("Milliseconds"));
+	if (bLogFileInsteadOfConsole)
 	{
-		//std::cout << funcName << " execution time: " << duration << " ms" << std::endl;
-		KPrintf(L"%s execution time: %lld %s\n", funcName.c_str(), duration, bIsMicroseconds ? KTEXT("Microseconds") : KTEXT("Milliseconds"));
+		logFileMutex.lock();
+		if (!logFile.fail())
+		{
+			logFile << outputString;
+		}
+		logFileMutex.unlock();
+
 	}
+	else
+	{
+		KPrintf(KTEXT("%s"), outputString);
+	}
+
 	return duration;
+}
+
+void Krawler::Profiler::SetupProfiler()
+{
+	logFile = std::wofstream("profiler_log.txt", std::ios::out);
+}
+
+void Krawler::Profiler::ShutdownProfiler()
+{
+	logFile.close();
 }

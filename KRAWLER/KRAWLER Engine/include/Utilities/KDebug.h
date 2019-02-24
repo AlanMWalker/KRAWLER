@@ -17,8 +17,11 @@ namespace Krawler
 	{
 		KRAWLER_API inline std::chrono::high_resolution_clock::time_point StartFunctionTimer();
 
-		KRAWLER_API inline long long EndFunctionTimer(const std::chrono::high_resolution_clock::time_point&  t1, std::wstring funcName, bool bIsMicroSeconds = true, bool print = true);
+		KRAWLER_API inline long long EndFunctionTimer(const std::chrono::high_resolution_clock::time_point&  t1, const std::wstring& funcName, bool bIsMicroSeconds = true, bool logFile = true);
 
+		void SetupProfiler();
+
+		void ShutdownProfiler();
 
 	}
 }

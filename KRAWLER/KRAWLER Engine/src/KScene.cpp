@@ -114,7 +114,8 @@ void Krawler::KScene::fixedTick()
 	//}
 
 	// handle colliders here
-
+	auto time_point_profiler = Profiler::StartFunctionTimer();
+	KCColliderBase* pCollider = nullptr;
 	for (uint32 i = 0; i < m_initCachedColliders.size(); ++i)
 	{
 
@@ -125,7 +126,7 @@ void Krawler::KScene::fixedTick()
 			continue;
 		}
 
-		KCColliderBase* pCollider = m_initCachedColliders[i]; // cache colliders after initialisation
+		pCollider = m_initCachedColliders[i]; // cache colliders after initialisation
 		KCHECK(pCollider);
 
 		m_dynamicQTree.getPossibleCollisions(pEntity, colliderStack);
@@ -147,11 +148,10 @@ void Krawler::KScene::fixedTick()
 
 			const pair<KEntity*, KEntity*> pairA(pEntity, pEntityTestedAgainst);
 			const pair<KEntity*, KEntity*> pairASwapped(pEntityTestedAgainst, pEntity);
-			auto t1 = Profiler::StartFunctionTimer();
 
 			auto isEqualA = std::find(alreadyCheckedCollisionPairs.begin(), alreadyCheckedCollisionPairs.end(), pairA);
 			auto isEqualASwapped = std::find(alreadyCheckedCollisionPairs.begin(), alreadyCheckedCollisionPairs.end(), pairASwapped);
-			auto t2 = Profiler::EndFunctionTimer(t1, KTEXT("Fixed Tick Collision Check"));
+			//auto t2 = Profiler::EndFunctionTimer(t1, KTEXT("Fixed Tick Collision Check"));
 
 			if (isEqualA != alreadyCheckedCollisionPairs.end() || isEqualASwapped != alreadyCheckedCollisionPairs.end())
 			{
@@ -206,8 +206,9 @@ void Krawler::KScene::fixedTick()
 		}
 
 	}
-
-
+	
+	Profiler::EndFunctionTimer(time_point_profiler, KTEXT("Collision Detection Routine"), true);
+	
 	for (uint32 i = 0; i < m_numberOfAllocatedChunks; ++i)
 	{
 		if (!m_entityChunks[i].entity.isEntityInUse())

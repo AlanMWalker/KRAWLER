@@ -30,6 +30,15 @@ KRAWLER_API KInitStatus Krawler::InitialiseSubmodules()
 		KPRINTF("ERROR! VertexBuffers are not available on this machine!");
 		return KInitStatus::Failure;
 	}
+	
+	if (!sf::Shader::isAvailable())
+	{
+		KPRINTF("ERROR! Shaders are not available on this machine!");
+		return KInitStatus::Failure;
+	}
+
+	Profiler::SetupProfiler();
+
 	return KApplication::getApp()->initialiseScenes();
 }
 
@@ -39,6 +48,7 @@ void Krawler::ShutdownEngine()
 	// Cleanup applicaiton
 	auto app = KApplication::getApp();
 	app->cleanupApplication();
+	Profiler::ShutdownProfiler();
 	KFREE(app);
 }
 

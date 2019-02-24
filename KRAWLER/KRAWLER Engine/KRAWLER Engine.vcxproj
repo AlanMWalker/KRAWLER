@@ -132,6 +132,7 @@
       <CallingConvention>Cdecl</CallingConvention>
       <EnablePREfast>false</EnablePREfast>
       <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

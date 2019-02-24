@@ -230,7 +230,7 @@ public:
 		if (GetSquareLength(pPhysBody->getVelocity()) < 2.0f&& m_force != Vec2f(0.0f, 0.0f))
 		{
 			pPhysBody->applyForce(Normalise(m_force) * ((1.0f - pressTimer)  * m_initial_walk_force));
-			KPrintf(L"Applying initial force! %f (Press timer = %f) \n", (1.0f - pressTimer) *m_initial_walk_force * m_force.x, pressTimer);
+			//KPrintf(L"Applying initial force! %f (Press timer = %f) \n", (1.0f - pressTimer) *m_initial_walk_force * m_force.x, pressTimer);
 		}
 		else
 		{

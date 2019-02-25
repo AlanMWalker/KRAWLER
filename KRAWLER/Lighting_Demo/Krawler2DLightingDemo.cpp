@@ -1,8 +1,55 @@
 #include <Krawler.h>
 #include <KApplication.h>
 #include <AssetLoader/KAssetLoader.h>
+#include <KComponent.h>
+
+#include "imgui/imgui.h"
+#include "imgui/imgui-SFML.h"
+#include <functional>
 
 using namespace Krawler;
+using namespace Krawler::Components;
+
+void processEvent(const sf::Event& e)
+{
+	ImGui::SFML::ProcessEvent(e);
+}
+
+class TempComponent : public KComponentBase
+{
+public:
+	TempComponent(KEntity* pEntity) : KComponentBase(pEntity) {}
+	~TempComponent() = default;
+
+	virtual KInitStatus init() override
+	{
+		ImGui::SFML::Init(*KApplication::getApp()->getRenderWindow());
+		std::function<void(void)> subLastDraw = std::bind(&TempComponent::draw, this);
+		//std::function<void(const sf::Event&)> subLastDraw = std::bind(&TempComponent::processEvent, this);
+		KApplication::getApp()->subscribeToEventQueue(processEvent);
+		KApplication::getApp()->getRenderer()->subscribeLastDrawCallback(subLastDraw);
+		return KInitStatus::Success;
+	}
+
+	virtual void tick() override
+	{
+		static float temp;
+		ImGui::SFML::Update(*KApplication::getApp()->getRenderWindow(), sf::seconds(1.0f / (float)(KApplication::getApp()->getGameFPS())));
+		ImGui::Begin("fuck off");
+		ImGui::InputFloat("Jesus",&temp);
+		ImGui::End();
+	}
+
+
+private:
+
+
+	void draw()
+	{
+		ImGui::SFML::Render(*KApplication::getApp()->getRenderWindow());
+	}
+
+};
 
 #ifndef _CONSOLE
 #include <Windows.h>
@@ -27,6 +74,7 @@ int main(void)
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
 	auto pCurrentScene = app->getCurrentScene();
 	auto entity = pCurrentScene->addEntityToScene();
+	entity->addComponent(new TempComponent(entity));
 
 	InitialiseSubmodules();
 

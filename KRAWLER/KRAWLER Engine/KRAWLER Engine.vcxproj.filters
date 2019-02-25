@@ -29,12 +29,6 @@
     <ClCompile Include="src\Utilities\KDebug.cpp" />
     <ClCompile Include="src\Utilities\KEngineMacros.cpp" />
     <ClCompile Include="src\Utilities\KQuadtree.cpp" />
-    <ClCompile Include="include\imgui\imgui.cpp" />
-    <ClCompile Include="include\imgui\imgui_draw.cpp" />
-    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="include\imgui\imgui-SFML.cpp" />
-    <ClCompile Include="include\imgui\misc\cpp\imgui_stdlib.cpp" />
-    <ClCompile Include="src\Components\KCImgui.cpp" />
     <ClCompile Include="src\Components\KCLight.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -75,15 +69,6 @@
     <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
     <ClInclude Include="rapidxml\rapidxml_print.hpp" />
     <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
-    <ClInclude Include="include\imgui\imgui-SFML.h" />
-    <ClInclude Include="include\imgui\imgui.h" />
-    <ClInclude Include="include\imgui\imconfig.h" />
-    <ClInclude Include="include\imgui\imstb_rectpack.h" />
-    <ClInclude Include="include\imgui\imstb_textedit.h" />
-    <ClInclude Include="include\imgui\imstb_truetype.h" />
-    <ClInclude Include="include\imgui\imgui_internal.h" />
-    <ClInclude Include="include\imgui\misc\cpp\imgui_stdlib.h" />
-    <ClInclude Include="include\Components\KCImgui.h" />
     <ClInclude Include="include\Components\KCLight.h" />
   </ItemGroup>
   <ItemGroup>

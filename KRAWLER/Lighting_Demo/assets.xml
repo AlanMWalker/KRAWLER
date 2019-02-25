@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <assets>
-  <root_folder folder_name="res"/>
+  <root_folder folder_name="media"/>
   <shader name="default" vert_path="shaders/defaultVert.glsl" frag_path="shaders/defaultFrag.glsl"/>
   <shader name="ambient" vert_path="shaders/defaultVert.glsl" frag_path="shaders/ambientFrag.glsl"/>
   <texture name="tilesheet" file_path="textures/tiles.png"/>

@@ -7,6 +7,7 @@
 #include <SFML\Graphics\Text.hpp>	
 #include <SFML\Graphics\Font.hpp>
 
+#include <functional>
 
 namespace Krawler
 {
@@ -47,6 +48,8 @@ namespace Krawler
 
 			KRAWLER_API KDEPRECATED(sf::Text& getTextByIndex)(int32 i) { return m_screenText[i].second; }
 
+			KRAWLER_API void subscribeLastDrawCallback(std::function<void(void)> func); // subscribe a callback functions to be triggered as the last draw calls post entity drawing
+
 		private:
 			void generateRenderableList();
 			void sortByRenderLayer();
@@ -58,6 +61,8 @@ namespace Krawler
 			std::vector<Components::KCRenderableBase*> m_renderablesVector;
 			std::vector<Components::KCTileMapSplit*> m_splitMapVec;
 			std::vector<TextRender>m_screenText;
+			std::vector<std::function<void(void)>> m_lastDrawCallbacks;
+
 			KRendererType m_renderingType;
 			KRenderSortType m_sortType;
 

@@ -35,6 +35,7 @@
     <ClCompile Include="include\imgui\imgui-SFML.cpp" />
     <ClCompile Include="include\imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="src\Components\KCImgui.cpp" />
+    <ClCompile Include="src\Components\KCLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
@@ -83,6 +84,7 @@
     <ClInclude Include="include\imgui\imgui_internal.h" />
     <ClInclude Include="include\imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="include\Components\KCImgui.h" />
+    <ClInclude Include="include\Components\KCLight.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\KMathsUtilities.inl" />

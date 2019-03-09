@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <assets>
   <root_folder folder_name="media"/>
-  <shader name="default" vert_path="shaders/defaultVert.glsl" frag_path="shaders/defaultFrag.glsl"/>
-  <shader name="ambient" vert_path="shaders/defaultVert.glsl" frag_path="shaders/ambientFrag.glsl"/>
+  <shader name="default" vert_path="shaders/default_v.glsl" frag_path="shaders/default_f.glsl"/>
+  <shader name="ambient" vert_path="shaders/default_v.glsl" frag_path="shaders/ambient_f.glsl"/>
+  <shader name="light_draw" vert_path="shaders/default_v.glsl" frag_path="shaders/attenuation_f.glsl"/>
   <texture name="tilesheet" file_path="textures/tiles.png"/>
   <level name="test_level" file_path="maps/zsort.json"/>
-  <texture name="map_tiles" file_path="textures/tileset.png"/>
+  <texture name="map_tiles" file_path="textures/sheet.png"/>
 </assets>

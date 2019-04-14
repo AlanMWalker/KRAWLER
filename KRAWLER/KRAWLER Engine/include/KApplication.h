@@ -11,6 +11,7 @@
 
 #include <mutex>
 #include <atomic>
+#include <functional>
 
 //Lowest FPS for Physics & Game: 24
 //Highest FPS for Physics & Game: 80
@@ -84,6 +85,8 @@ namespace Krawler
 
 		KRAWLER_API void closeApplication();
 
+		KRAWLER_API void subscribeToEventQueue(std::function<void(const sf::Event&)> function);
+
 		static std::mutex& getMutexInstance() { return s_mutex; }
 
 	private:
@@ -114,6 +117,7 @@ namespace Krawler
 		bool m_bHasFocus = true;
 
 		static std::mutex s_mutex;
+		std::vector< std::function<void(const sf::Event&)>> m_eventQueueCallbacks;
 	};
 }
 #endif

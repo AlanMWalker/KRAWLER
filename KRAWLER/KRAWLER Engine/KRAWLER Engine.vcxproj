@@ -247,14 +247,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='RC|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="include\imgui\imgui-SFML.cpp" />
-    <ClCompile Include="include\imgui\imgui.cpp" />
-    <ClCompile Include="include\imgui\imgui_draw.cpp" />
-    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="include\imgui\misc\cpp\imgui_stdlib.cpp" />
     <ClCompile Include="src\Animation\KAnimation.cpp" />
     <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
-    <ClCompile Include="src\Components\KCImgui.cpp" />
+    <ClCompile Include="src\Components\KCLight.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
     <ClCompile Include="src\Components\KCTileMap.cpp" />
     <ClCompile Include="src\Tiled\KTiledImport.cpp" />
@@ -287,7 +282,7 @@
     <ClInclude Include="include\Components\KCBoxCollider.h" />
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />
-    <ClInclude Include="include\Components\KCImgui.h" />
+    <ClInclude Include="include\Components\KCLight.h" />
     <ClInclude Include="include\Components\KCollisions.h" />
     <ClInclude Include="include\Components\KCOrientedBoxCollider.h" />
     <ClInclude Include="include\Components\KCPhysicsBody.h" />
@@ -295,14 +290,6 @@
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\Animation\KAnimation.h" />
     <ClInclude Include="include\Components\KCTileMap.h" />
-    <ClInclude Include="include\imgui\imconfig.h" />
-    <ClInclude Include="include\imgui\imgui-SFML.h" />
-    <ClInclude Include="include\imgui\imgui.h" />
-    <ClInclude Include="include\imgui\imgui_internal.h" />
-    <ClInclude Include="include\imgui\imstb_rectpack.h" />
-    <ClInclude Include="include\imgui\imstb_textedit.h" />
-    <ClInclude Include="include\imgui\imstb_truetype.h" />
-    <ClInclude Include="include\imgui\misc\cpp\imgui_stdlib.h" />
     <ClInclude Include="include\JSON\json.hpp" />
     <ClInclude Include="include\KComponent.h" />
     <ClInclude Include="include\KEntity.h" />

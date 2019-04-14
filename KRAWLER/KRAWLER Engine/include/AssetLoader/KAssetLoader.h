@@ -10,6 +10,9 @@
 
 #include <unordered_map>
 
+#ifndef KASSET
+#define KASSET() KAssetLoader::getAssetLoader()
+#endif
 namespace Krawler
 {
 	namespace Animation

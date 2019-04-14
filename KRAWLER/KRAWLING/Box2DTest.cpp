@@ -34,23 +34,33 @@ public:
 		m_pBox = pScene->addEntityToScene();
 		m_pBox->addComponent(new KCSprite(m_pBox, Vec2f(32, 32)));
 		m_pBox->getTransformComponent()->setTranslation(Vec2f(32, 32));
-
+		m_pBox->getComponent<KCSprite>()->setShader(KASSET().getShader(L"default"));
+		m_pBox->getComponent<KCSprite>()->setTexture(KASSET().getTexture(L"8ball"));
+		b2BodyDef def;
+		m_shape.SetAsBox(16, 16);
+		def.position.Set(32, 32);
+		def.type = b2_dynamicBody;
+		m_pBody = world.CreateBody(&def);
+		m_pBody->CreateFixture(&m_shape, 0);
 		return KInitStatus::Success;
 	}
 
 	virtual void onEnterScene() override
 	{
-		m_pBox->getComponent<KCSprite>()->setColour(Colour::White);
+		m_pBox->getComponent<KCSprite>()->setColour(Colour::Red);
 	}
 
 	virtual void tick() override
 	{
 		float dt = KApplication::getApp()->getDeltaTime();
 		world.Step(dt, VelocityIterations, PositionIterations);
+		m_pBox->getTransformComponent()->setTranslation(m_pBody->GetPosition().x, m_pBody->GetPosition().y);
 	}
 
 private:
 	KEntity* m_pBox;
+	b2Body* m_pBody;
+	b2PolygonShape m_shape;
 };
 
 #ifndef _CONSOLE

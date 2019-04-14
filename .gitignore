@@ -1,6 +1,7 @@
 Release/
 Debug/
 RC/
+Box2D/
 *.swp
 *.~
 *.opensdf

@@ -19,6 +19,7 @@
 #include <Components\KCAnimatedSprite.h>
 #include <Components\KCTileMap.h>
 #include <Tiled\KTiledImport.h>
+//#include <Renderer\KRenderer.h>
 //#include "OBBTest.h"
 //#include "ColliderTest.h"
 //#include "PhysicsTest.h"
@@ -28,6 +29,9 @@
 #include <KScene.h>
 
 #include <SFML\GpuPreference.hpp>
+
+#include "imgui/imgui.h"
+#include "Components/KCImgui.h"
 
 using namespace Krawler;
 using namespace Krawler::Input;
@@ -179,6 +183,9 @@ public:
 		{
 			KApplication::getApp()->closeApplication();
 		}
+		auto pImgui = KApplication::getApp()->getCurrentScene()->getImguiComponent();
+		pImgui->begin("Jesus Fingers you");
+		pImgui->end();
 
 		auto pPhysBody = m_pPlayerEntity->getComponent<KCPhysicsBody>();
 		static constexpr float MAX_MOVE_SPEED = 50.0f;

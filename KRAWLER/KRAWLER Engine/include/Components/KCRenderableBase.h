@@ -27,7 +27,7 @@ namespace Krawler
 			KRAWLER_API Krawler::int32 getRenderLayer() const { return m_renderLayer; }
 			KRAWLER_API sf::Shader* getShader() const { return m_pShader; }
 			KRAWLER_API void setShader(sf::Shader* pShader) { m_pShader = pShader; }
-
+			KRAWLER_API virtual void postRenderEvent() { return;  }
 			KRAWLER_API virtual Krawler::Rectf getOnscreenBounds() const = 0;
 
 		private:

@@ -22,6 +22,7 @@ namespace Krawler
 	namespace Components
 	{
 		class KCColliderBase;
+		class KCImgui;
 	}
 
 	class KScene
@@ -66,6 +67,8 @@ namespace Krawler
 
 		KRAWLER_API KAllocatableChunk* getEntityList() { return m_entityChunks; }
 
+		KRAWLER_API Components::KCImgui* getImguiComponent() { return m_pImguiComponent; }
+
 		bool hasSceneTickedOnce() const { return m_bHasTickedOnce; }
 
 	private:
@@ -82,6 +85,7 @@ namespace Krawler
 		KQuadtree m_dynamicQTree;
 		KQuadtree m_staticQTree;
 		uint32 m_numberOfAllocatedChunks;
+		Components::KCImgui* m_pImguiComponent = nullptr;
 	};
 
 	class KSceneDirector

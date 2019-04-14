@@ -3,6 +3,7 @@
 #include "KApplication.h"
 #include "AssetLoader\KAssetLoader.h"
 
+
 #include <future>
 #include <SFML\Graphics\VertexBuffer.hpp>
 
@@ -55,6 +56,7 @@ void Krawler::ShutdownEngine()
 void Krawler::RunApplication()
 {
 	auto app = KApplication::getApp();
+
 	app->runApplication();
 }
 

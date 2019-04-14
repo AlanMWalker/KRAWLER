@@ -7,6 +7,7 @@
 #include "Components\KCPhysicsBody.h"
 #include "Components\KCTileMap.h"
 #include "Utilities\KDebug.h"
+#include "Components/KCImgui.h"
 
 using namespace Krawler;
 using namespace Krawler::Components;
@@ -18,11 +19,20 @@ using namespace std;
 KScene::KScene(const std::wstring & sceneName, const Rectf& sceneBounds)
 	: m_sceneName(sceneName), m_dynamicQTree(0, sceneBounds), m_numberOfAllocatedChunks(0), m_staticQTree(4, sceneBounds)
 {
-
+	// insert Imgui entity 
+	auto pImguiEntity = addEntityToScene();
+	KCHECK(pImguiEntity);
+	m_pImguiComponent = new KCImgui(pImguiEntity);
+	m_pImguiComponent->setRenderLayer(INT_MAX);
+	pImguiEntity->addComponent(m_pImguiComponent);
+	pImguiEntity->setEntityInteraction(Static);
+	pImguiEntity->setEntityTag(KTEXT("IMGUI_ENTITY"));
 }
 
 KInitStatus KScene::initScene()
 {
+	
+	
 	//First initialisation pass => Initialise all entitys, and setup all components
 	for (auto& chunk : m_entityChunks)
 	{
@@ -30,7 +40,7 @@ KInitStatus KScene::initScene()
 		//TODO Move to onenter
 		chunk.entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
 	}
-
+	m_pImguiComponent->tick();
 	//Second initialisation pass => put all static elements in static quadtree and build collider list
 	for (auto& chunk : m_entityChunks)
 	{
@@ -93,26 +103,6 @@ void Krawler::KScene::fixedTick()
 	static std::stack<KEntity*> colliderStack;
 	static vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs(500);
 	KApplication::getMutexInstance().lock();
-
-
-	//for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
-	//{
-	//	if (!m_entityChunks[i].allocated)
-	//	{
-	//		continue;
-	//	}
-
-	//	if (!m_entityChunks[i].entity.isEntityInUse())
-	//	{
-	//		continue;
-	//	}
-
-	//	//m_entities[i].tick(); // tick all components
-	//	if (m_entityChunks[i].entity.getInteractivity() == EntitySceneInteractivity::Dynamic)
-	//	{
-	//		m_dynamicQTree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
-	//	}
-	//}
 
 	// handle colliders here
 	auto time_point_profiler = Profiler::StartFunctionTimer();

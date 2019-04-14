@@ -10,6 +10,7 @@
 #include <SFML\System\Clock.hpp> 
 
 #include <mutex>
+#include <atomic>
 
 //Lowest FPS for Physics & Game: 24
 //Highest FPS for Physics & Game: 80
@@ -75,6 +76,7 @@ namespace Krawler
 		KRAWLER_API Krawler::KScene* const getCurrentScene() { return m_sceneDirector.getCurrentScene(); }
 
 		KRAWLER_API float getElapsedTime() const;
+		KRAWLER_API float getGameFPS() const { return m_gameFPS; }
 		KRAWLER_API float getDeltaTime() const { return m_gameDelta; }
 		KRAWLER_API float getPhysicsDelta() const { return m_physicsDelta; }
 
@@ -82,7 +84,7 @@ namespace Krawler
 
 		KRAWLER_API void closeApplication();
 
-		static std::mutex& getMutexInstance() { return m_mutex; }
+		static std::mutex& getMutexInstance() { return s_mutex; }
 
 	private:
 
@@ -111,8 +113,7 @@ namespace Krawler
 		bool m_bIsFirstUpdate = true;
 		bool m_bHasFocus = true;
 
-		static std::mutex m_mutex;
-
+		static std::mutex s_mutex;
 	};
 }
 #endif

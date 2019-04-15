@@ -16,9 +16,7 @@
 //Lowest FPS for Physics & Game: 24
 //Highest FPS for Physics & Game: 80
 
-#ifndef GET_SCENE
 #define GET_SCENE() Krawler::KApplication::getApp()->getCurrentScene()
-#endif 
 
 namespace Krawler
 {

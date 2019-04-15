@@ -33,15 +33,48 @@ public:
 		KScene* pScene = GET_SCENE();
 		m_pBox = pScene->addEntityToScene();
 		m_pBox->addComponent(new KCSprite(m_pBox, Vec2f(32, 32)));
-		m_pBox->getTransformComponent()->setTranslation(Vec2f(32, 32));
+		m_pBox->getTransform()->setTranslation(Vec2f(32, 32));
 		m_pBox->getComponent<KCSprite>()->setShader(KASSET().getShader(L"default"));
 		m_pBox->getComponent<KCSprite>()->setTexture(KASSET().getTexture(L"8ball"));
-		b2BodyDef def;
-		m_shape.SetAsBox(16, 16);
-		def.position.Set(32, 32);
-		def.type = b2_dynamicBody;
-		m_pBody = world.CreateBody(&def);
-		m_pBody->CreateFixture(&m_shape, 0);
+		m_pBox->getTransform()->setOrigin(Vec2f(16, 16));
+
+
+		// floor
+		m_pFloor = pScene->addEntityToScene();
+		m_pFloor->addComponent(new KCSprite(m_pFloor, Vec2f(64, 32)));
+		m_pFloor->getTransform()->setTranslation(Vec2f(32, 300));
+		m_pFloor->getComponent<KCSprite>()->setShader(KASSET().getShader(L"default"));
+		m_pFloor->getComponent<KCSprite>()->setTexture(KASSET().getTexture(L"8ball"));
+		m_pFloor->getTransform()->setOrigin(Vec2f(32, 16));
+		m_pFloor->getTransform()->setRotation(-45);
+		{// falling box
+			b2BodyDef def;
+			b2MassData massData;
+			m_shape.m_radius = 16;
+			def.position.Set(32, 32);
+			def.type = b2_dynamicBody;
+
+			m_pBody = world.CreateBody(&def);
+			m_pBody->CreateFixture(&m_shape, 1);
+			m_pBody->SetActive(true);
+			m_pBody->SetAwake(true);
+			m_pBody->GetMassData(&massData);
+			massData.mass = 10.0f;
+			m_pBody->SetMassData(&massData);
+
+		}
+
+		{// floor
+			b2BodyDef def;
+			m_floorShape.SetAsBox(32, 16);
+			def.position.Set(32, 300);
+			def.angle = -45;
+			def.type = b2_staticBody;
+			m_pFloorBody = world.CreateBody(&def);
+			m_pFloorBody->CreateFixture(&m_floorShape, 1);
+
+		}
+
 		return KInitStatus::Success;
 	}
 
@@ -54,13 +87,21 @@ public:
 	{
 		float dt = KApplication::getApp()->getDeltaTime();
 		world.Step(dt, VelocityIterations, PositionIterations);
-		m_pBox->getTransformComponent()->setTranslation(m_pBody->GetPosition().x, m_pBody->GetPosition().y);
+		KCTransform* pBoxTrans = m_pBox->getTransformComponent();
+		pBoxTrans->setTranslation(m_pBody->GetPosition().x, m_pBody->GetPosition().y);
+		pBoxTrans->setRotation(m_pBody->GetAngle());
 	}
 
 private:
 	KEntity* m_pBox;
+	KEntity* m_pFloor;
+
 	b2Body* m_pBody;
-	b2PolygonShape m_shape;
+	b2CircleShape m_shape;
+
+	b2Body* m_pFloorBody;
+	b2PolygonShape m_floorShape;
+
 };
 
 #ifndef _CONSOLE

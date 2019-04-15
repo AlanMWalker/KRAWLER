@@ -73,7 +73,6 @@ namespace Krawler
 
 		KAssetLoader();
 		void scanFolderLoad();
-		void loadAssetsXML();
 		void loadAnimationsXML();
 		void matchAnimationsToTextures();
 

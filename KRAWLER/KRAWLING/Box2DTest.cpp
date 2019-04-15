@@ -69,8 +69,8 @@ int main(void)
 	initApp.windowStyle = KWindowStyle::Windowed_Fixed_Size;
 	initApp.windowTitle = KTEXT("Testing TiledMaps");
 	StartupEngine(&initApp);
-	const int sceneWidth = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->width;
-	const int sceneHeight = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->height;
+	//const int sceneWidth = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->width;
+	//const int sceneHeight = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->height;
 	auto app = KApplication::getApp();
 	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0, 0, (70 * 32), (40 * 32))));
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));

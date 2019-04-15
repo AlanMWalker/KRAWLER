@@ -10,11 +10,39 @@
 
 #include <unordered_map>
 
+
 namespace Krawler
 {
 	namespace Animation
 	{
 		struct KAnimation;
+	};
+
+	constexpr wchar_t* ACCEPTED_SHADERS[] =
+	{
+		L".glsl",
+		L".frag",
+		L".vert"
+	};
+
+	constexpr wchar_t* ACCEPTED_TEXTURES[] =
+	{
+		L".png",
+		L".bmp",
+		L".jpg"
+		//L"xml", // to be impl
+		//L"json" // not supported yet
+	};
+
+	constexpr wchar_t* ACCEPTED_AUDIO[]
+	{
+		L".wav",
+		L".ogg"
+	};
+
+	constexpr wchar_t* ACCEPTED_FONT[]
+	{
+		L".ttf"
 	};
 
 	class KAssetLoader
@@ -44,6 +72,7 @@ namespace Krawler
 	private:
 
 		KAssetLoader();
+		void scanFolderLoad();
 		void loadAssetsXML();
 		void loadAnimationsXML();
 		void matchAnimationsToTextures();
@@ -62,7 +91,7 @@ namespace Krawler
 		std::unordered_map <std::wstring, sf::Shader*> m_shaderMap;
 		std::unordered_map <std::wstring, Animation::KAnimation*> m_animationsMap;
 		std::unordered_map <std::wstring, TiledImport::KTIMap*> m_importedLevelsMap;
-
+		
 	};
 }
 

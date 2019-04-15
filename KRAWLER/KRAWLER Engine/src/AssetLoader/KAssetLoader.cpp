@@ -5,11 +5,12 @@
 #include <fstream>
 #include <stdio.h>
 #include <string.h>
+#include <filesystem>
 
 #include <..\rapidxml\rapidxml.hpp>
 #include <string.h>
 #include <JSON\json.hpp>
-#include <fstream>
+
 
 using namespace sf;
 using namespace Krawler;
@@ -18,7 +19,7 @@ using namespace rapidxml;
 
 using json = nlohmann::json;
 
-#define MAX_ANIMATION_FILE_CHARS 100000
+constexpr int32 MAX_ANIMATION_FILE_CHARS = 100000;
 
 KAssetLoader::~KAssetLoader()
 {
@@ -128,7 +129,7 @@ TiledImport::KTIMap * const KAssetLoader::getLevelMap(const std::wstring & name)
 void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & filePath)
 {
 	Texture* pTex = new Texture;
-	sf::String s(m_rootFolder + KTEXT("\\") + filePath);
+	sf::String s(filePath);
 
 	if (!pTex->loadFromFile(s.toAnsiString()))
 	{
@@ -149,7 +150,7 @@ void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & f
 void KAssetLoader::loadSound(const std::wstring & name, const std::wstring & filePath)
 {
 	SoundBuffer* sb = new SoundBuffer;
-	sf::String s(m_rootFolder + KTEXT("\\") + filePath);
+	sf::String s(filePath);
 
 	if (!sb->loadFromFile(s.toAnsiString()))
 	{
@@ -164,7 +165,7 @@ void KAssetLoader::loadSound(const std::wstring & name, const std::wstring & fil
 void KAssetLoader::loadFont(const std::wstring& name, const std::wstring& filePath)
 {
 	Font f;
-	const sf::String s(m_rootFolder + KTEXT("\\") + filePath);
+	const sf::String s(filePath);
 
 	if (!f.loadFromFile(s.toAnsiString()))
 	{
@@ -188,8 +189,8 @@ void KAssetLoader::loadTilemap(const std::wstring & name, const std::wstring & f
 
 void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & vertShader, const std::wstring & fragShader)
 {
-	const sf::String sVert(m_rootFolder + KTEXT("\\") + vertShader);
-	const sf::String sFrag(m_rootFolder + KTEXT("\\") + fragShader);
+	const sf::String sVert(vertShader);
+	const sf::String sFrag(fragShader);
 	Shader* const pShader = new Shader();
 	KCHECK(pShader);
 
@@ -201,16 +202,93 @@ void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring
 	m_shaderMap.emplace(shaderName, pShader);
 }
 
-KAssetLoader::KAssetLoader()
+KAssetLoader::KAssetLoader() : m_rootFolder(KTEXT("res"))
 {
-	std::thread thread_a(&KAssetLoader::loadAssetsXML, this);
+	std::thread thread_a(&KAssetLoader::scanFolderLoad, this);
 	std::thread thread_b(&KAssetLoader::loadAnimationsXML, this);
-
 	thread_a.join();
 	thread_b.join();
-	//loadAssetsXML();
-	//loadAnimationsXML();
 	matchAnimationsToTextures();
+}
+
+void KAssetLoader::scanFolderLoad()
+{
+	constexpr auto NUM_TEXTURE_TYPES = sizeof(ACCEPTED_TEXTURES) / sizeof(ACCEPTED_TEXTURES[0]);
+	constexpr auto NUM_AUDIO_TYPES = sizeof(ACCEPTED_AUDIO) / sizeof(ACCEPTED_AUDIO[0]);
+	constexpr auto NUM_SHADER_TYPES = sizeof(ACCEPTED_SHADERS) / sizeof(ACCEPTED_SHADERS[0]);
+	constexpr auto NUM_FONT_TYPES = sizeof(ACCEPTED_FONT) / sizeof(ACCEPTED_FONT[0]);
+
+	constexpr auto findFilename = [](std::wstring& str) -> std::wstring
+	{
+		std::wstring returnStr;
+		uint32 idx = str.size() - 1;
+		bool bIsFilename = false;
+		while (idx != 0)
+		{
+			if (!bIsFilename)
+			{
+				if (str[idx] == KTEXT('.'))
+				{
+					bIsFilename = true;
+				}
+			}
+			else
+			{
+				if (str[idx] != KTEXT('\\'))
+				{
+					returnStr.push_back(str[idx]);
+				}
+				else
+				{
+					break;
+				}
+			}
+			--idx;
+		}
+		returnStr.reserve();
+		return std::wstring(returnStr.rbegin(), returnStr.rend());
+	};
+
+
+	vector<wstring> filesList;
+	std::wstring path = m_rootFolder + KTEXT("\\");
+	for (const auto& entry : filesystem::recursive_directory_iterator(path))
+	{
+		if (!entry.is_directory())
+		{
+			filesList.push_back(entry.path());
+		}
+	}
+
+	for (auto& path : filesList)
+	{
+		for (auto textureExtension : ACCEPTED_TEXTURES)
+		{
+			if (path.find(textureExtension) != std::string::npos) // if the extension is found in the string load the image file
+			{
+				loadTexture(findFilename(path), path);
+				wcout << findFilename(path) << endl;
+			}
+		}
+
+		for (auto audioExtension : ACCEPTED_AUDIO)
+		{
+			if (path.find(audioExtension) != std::string::npos) // if the extension is found in the string load the image file
+			{
+				loadSound(findFilename(path), path);
+				wcout << findFilename(path) << endl;
+			}
+		}
+
+		for (auto fontExtension : ACCEPTED_FONT)
+		{
+			if (path.find(fontExtension) != std::string::npos) // if the extension is found in the string load the image file
+			{
+				loadFont(findFilename(path), path);
+				wcout << findFilename(path) << endl;
+			}
+		}
+	}
 }
 
 void KAssetLoader::loadAssetsXML()

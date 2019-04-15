@@ -35,7 +35,7 @@ public:
 		m_pBox->addComponent(new KCSprite(m_pBox, Vec2f(32, 32)));
 		m_pBox->getTransform()->setTranslation(Vec2f(32, 32));
 		m_pBox->getComponent<KCSprite>()->setShader(KASSET().getShader(L"default"));
-		m_pBox->getComponent<KCSprite>()->setTexture(KASSET().getTexture(L"8ball"));
+		m_pBox->getComponent<KCSprite>()->setTexture(KASSET().getTexture(L"white"));
 		m_pBox->getTransform()->setOrigin(Vec2f(16, 16));
 
 
@@ -44,18 +44,25 @@ public:
 		m_pFloor->addComponent(new KCSprite(m_pFloor, Vec2f(64, 32)));
 		m_pFloor->getTransform()->setTranslation(Vec2f(32, 300));
 		m_pFloor->getComponent<KCSprite>()->setShader(KASSET().getShader(L"default"));
-		m_pFloor->getComponent<KCSprite>()->setTexture(KASSET().getTexture(L"8ball"));
+		m_pFloor->getComponent<KCSprite>()->setTexture(KASSET().getTexture(L"white"));
 		m_pFloor->getTransform()->setOrigin(Vec2f(32, 16));
 		m_pFloor->getTransform()->setRotation(-45);
 		{// falling box
 			b2BodyDef def;
-			b2MassData massData;
-			m_shape.m_radius = 16;
 			def.position.Set(32, 32);
 			def.type = b2_dynamicBody;
-
 			m_pBody = world.CreateBody(&def);
-			m_pBody->CreateFixture(&m_shape, 1);
+
+			b2FixtureDef fixtureDef;
+			b2MassData massData;	
+			m_shape.m_radius = 16;
+
+			fixtureDef.friction = 0.2f;
+			fixtureDef.restitution = 0.8;
+			fixtureDef.shape = &m_shape;
+			m_pBody->CreateFixture(&fixtureDef);
+
+
 			m_pBody->SetActive(true);
 			m_pBody->SetAwake(true);
 			m_pBody->GetMassData(&massData);
@@ -66,13 +73,13 @@ public:
 
 		{// floor
 			b2BodyDef def;
-			m_floorShape.SetAsBox(32, 16);
 			def.position.Set(32, 300);
 			def.angle = -45;
 			def.type = b2_staticBody;
 			m_pFloorBody = world.CreateBody(&def);
-			m_pFloorBody->CreateFixture(&m_floorShape, 1);
 
+			m_floorShape.SetAsBox(32, 16);
+			m_pFloorBody->CreateFixture(&m_floorShape, 0.0f);
 		}
 
 		return KInitStatus::Success;

@@ -2,6 +2,7 @@
 <assets>
   <root_folder folder_name="res"/>
   <texture name="8ball" file_path="textures/8ball.png"/>
+  <texture name="white" file_path="textures/white.png"/>
   <texture name="player_run" file_path="textures/player_run.png"/>
   <texture name="enemy_run" file_path="textures/enemy_run.png"/>
   <texture name="enemy_explode" file_path="textures/enemy_explode.png"/>

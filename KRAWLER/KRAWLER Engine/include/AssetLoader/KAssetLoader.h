@@ -45,6 +45,12 @@ namespace Krawler
 		L".ttf"
 	};
 
+	constexpr wchar_t* SHADER_SUFFIXES[]
+	{
+		L"_v", 
+		L"_f"
+	};
+
 	class KAssetLoader
 	{
 	public:
@@ -83,6 +89,7 @@ namespace Krawler
 		void loadSound(const std::wstring& name, const std::wstring& filePath);
 		void loadFont(const std::wstring& name, const std::wstring& filePath);
 		void loadTilemap(const std::wstring& name, const std::wstring& filePath);
+		void fixupShaderRef(const std::list<std::wstring>& fileNames);
 
 		std::unordered_map <std::wstring, sf::Texture*> m_texturesMap;
 		std::unordered_map <std::wstring, sf::Font*> m_fontMap;

@@ -165,6 +165,12 @@ void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & f
 	Texture* pTex = new Texture;
 	sf::String s(filePath);
 
+	if (m_texturesMap.find(name) != m_texturesMap.end())
+	{
+		KPrintf(KTEXT("Already loaded %s - skipping!"), filePath.c_str());
+		return;
+	}
+
 	if (!pTex->loadFromFile(s.toAnsiString()))
 	{
 		KFREE(pTex);
@@ -183,21 +189,34 @@ void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & f
 
 void KAssetLoader::loadSound(const std::wstring & name, const std::wstring & filePath)
 {
-	SoundBuffer* sb = new SoundBuffer;
+	if (m_soundBufferMap.find(name) != m_soundBufferMap.end())
+	{
+		KPrintf(KTEXT("Already loaded %s - skipping!"), filePath.c_str());
+		return;
+	}
+
+	SoundBuffer* pSoundBuffer = new SoundBuffer;
+	KCHECK(pSoundBuffer);
 	sf::String s(filePath);
 
-	if (!sb->loadFromFile(s.toAnsiString()))
+	if (!pSoundBuffer->loadFromFile(s.toAnsiString()))
 	{
-		delete sb;
+		delete pSoundBuffer;
 		KPrintf(KTEXT("Failed to load sound %ws\n"), s.toWideString().c_str());
 		return;
 	}
 
-	m_soundBufferMap.emplace(name, sb);
+	m_soundBufferMap.emplace(name, pSoundBuffer);
 }
 
 void KAssetLoader::loadFont(const std::wstring& name, const std::wstring& filePath)
 {
+	if (m_fontMap.find(name) != m_fontMap.end())
+	{
+		KPrintf(KTEXT("Already loaded %s - skipping!"), filePath.c_str());
+		return;
+	}
+
 	Font f;
 	const sf::String s(filePath);
 
@@ -211,6 +230,12 @@ void KAssetLoader::loadFont(const std::wstring& name, const std::wstring& filePa
 
 void KAssetLoader::loadTilemap(const std::wstring & name, const std::wstring & filePath)
 {
+	if (m_importedLevelsMap.find(name) != m_importedLevelsMap.end())
+	{
+		KPrintf(KTEXT("Already loaded %s - skipping!"), filePath.c_str());
+		return;
+	}
+
 	TiledImport::KTIMap* pMap;
 	pMap = TiledImport::loadTiledJSONFile(m_rootFolder + KTEXT("\\") + filePath);
 	KCHECK(pMap);
@@ -221,35 +246,61 @@ void KAssetLoader::loadTilemap(const std::wstring & name, const std::wstring & f
 	m_importedLevelsMap.emplace(name, pMap);
 }
 
-void Krawler::KAssetLoader::fixupShaderRef(const std::list<std::wstring>& filename)
+void KAssetLoader::loadDefaultShadersFromString()
 {
-	for (auto fileI = filename.begin(); fileI != filename.end(); ++fileI)
-	{
-		for (auto fileJ = ++filename.begin(); fileJ != filename.end(); ++fileJ)
+	const std::string fragmentShader = R"(
+		uniform sampler2D texture;
+		
+		void main()
 		{
-			if (fileI == fileJ)
-			{
-				continue;
-			}
-			auto str = *fileI;
+			// lookup the pixel in the texture
+			vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
+		
+			// multiply it by the color
+			gl_FragColor = gl_Color * pixel;
+		})";
 
-			auto simplifiedI = FindFilename(str);
-			str = *fileJ;
-			auto simplifiedJ = FindFilename(str);
 
-			wstring filenameWithoutSuffixI(simplifiedI.begin(), simplifiedI.begin() + simplifiedI.find(L'_'));
-			wstring filenameWithoutSuffixJ(simplifiedJ.begin(), simplifiedJ.begin() + simplifiedJ.find(L'_'));
-
-			if (filenameWithoutSuffixI.find(filenameWithoutSuffixJ) != wstring::npos)
-			{
-				wcout << L"Matching shaders " << *fileI << " " << *fileJ << endl;
-			}
+	const std::string vertexShader = R"(
+		//#version 110 
+		
+		void main()
+		{
+			// transform the vertex position
+			gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+		
+			// transform the texture coordinates
+			gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+		
+			// forward the vertex color
+			gl_FrontColor = gl_Color; 
 		}
+	)";
+
+	Shader* pDefaultShader = new Shader();
+	KCHECK(pDefaultShader);
+	if (!pDefaultShader->loadFromMemory(vertexShader, fragmentShader))
+	{
+		delete pDefaultShader;
+		return;
 	}
+
+	m_shaderMap.emplace(KTEXT("default"), pDefaultShader);
 }
 
 void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & vertShader, const std::wstring & fragShader)
 {
+	if (m_texturesMap.find(shaderName) != m_texturesMap.end())
+	{
+		KPrintf(KTEXT("Already loaded %s - skipping!"), shaderName.c_str());
+		return;
+	}
+	/* 
+
+	TODO: 
+	- Split shader file int two strings 
+	- Pass split strings to loadFromMemory
+	*/
 	const sf::String sVert(vertShader);
 	const sf::String sFrag(fragShader);
 	Shader* const pShader = new Shader();
@@ -257,6 +308,7 @@ void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring
 
 	if (!pShader->loadFromFile(sVert, sFrag))
 	{
+		delete pShader;
 		return;
 	}
 
@@ -265,6 +317,8 @@ void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring
 
 KAssetLoader::KAssetLoader() : m_rootFolder(KTEXT("res"))
 {
+	auto path = m_rootFolder + KTEXT("\\") + "engine\\missing.png";
+	loadTexture(KTEXT("missing_texture"), path);
 	std::thread thread_a(&KAssetLoader::scanFolderLoad, this);
 	std::thread thread_b(&KAssetLoader::loadAnimationsXML, this);
 	thread_a.join();
@@ -299,7 +353,6 @@ void KAssetLoader::scanFolderLoad()
 			if (path.find(textureExtension) != wstring::npos) // if the extension is found in the string load the image file
 			{
 				loadTexture(FindFilename(path), path);
-				wcout << FindFilename(path) << endl;
 			}
 		}
 
@@ -308,7 +361,6 @@ void KAssetLoader::scanFolderLoad()
 			if (path.find(audioExtension) != wstring::npos)
 			{
 				loadSound(FindFilename(path), path);
-				wcout << FindFilename(path) << endl;
 			}
 		}
 
@@ -317,7 +369,6 @@ void KAssetLoader::scanFolderLoad()
 			if (path.find(fontExtension) != wstring::npos)
 			{
 				loadFont(FindFilename(path), path);
-				wcout << FindFilename(path) << endl;
 			}
 		}
 
@@ -377,7 +428,6 @@ void KAssetLoader::loadAnimationsXML()
 		KPRINTF_A("No animation nodes found in %s\n", filePath.c_str());
 		goto cleanup_branch_fail;
 	}
-
 
 	xml_attribute<wchar_t> *pAnimationName = nullptr, *pTextureName = nullptr, *pFrameTime = nullptr,
 		*pWidth = nullptr, *pHeight = nullptr;

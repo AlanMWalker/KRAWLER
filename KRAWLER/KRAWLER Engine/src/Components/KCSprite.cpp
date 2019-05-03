@@ -1,5 +1,6 @@
 #include "Components\KCSprite.h"
 
+#include "AssetLoader\KAssetLoader.h"
 //#include <SFML\Graphics\RenderTarget.hpp>
 #include <SFML\Graphics.hpp>
 
@@ -22,6 +23,7 @@ KCSprite::KCSprite(KEntity * pEntity, const Vec2f& size)
 	m_vertexArray[3].color = Colour::White;
 
 	m_pTransform = getEntity()->getTransformComponent();
+	setTexture(ASSET().getTexture(KTEXT("missing")));
 }
 
 void KCSprite::draw(sf::RenderTarget & rTarget, sf::RenderStates rStates) const

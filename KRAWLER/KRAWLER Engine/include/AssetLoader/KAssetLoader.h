@@ -10,6 +10,9 @@
 
 #include <unordered_map>
 
+#ifndef ASSET
+#define ASSET() KAssetLoader::getAssetLoader()
+#endif 
 
 namespace Krawler
 {
@@ -89,7 +92,8 @@ namespace Krawler
 		void loadSound(const std::wstring& name, const std::wstring& filePath);
 		void loadFont(const std::wstring& name, const std::wstring& filePath);
 		void loadTilemap(const std::wstring& name, const std::wstring& filePath);
-		void fixupShaderRef(const std::list<std::wstring>& fileNames);
+
+		void loadDefaultShadersFromString();
 
 		std::unordered_map <std::wstring, sf::Texture*> m_texturesMap;
 		std::unordered_map <std::wstring, sf::Font*> m_fontMap;

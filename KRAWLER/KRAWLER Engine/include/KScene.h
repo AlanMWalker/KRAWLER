@@ -19,10 +19,16 @@ namespace Krawler
 		bool allocated = 0;
 		KEntity entity;
 	};
+
+	struct KCollisionOverseer
+	{
+		KQuadtree* pStaticQTree = nullptr;
+		KQuadtree* pDynamicQTree = nullptr;
+	};
+
 	namespace Components
 	{
 		class KCColliderBase;
-		class KCImgui;
 	}
 
 	class KScene
@@ -67,7 +73,7 @@ namespace Krawler
 
 		KRAWLER_API KAllocatableChunk* getEntityList() { return m_entityChunks; }
 
-		KRAWLER_API Components::KCImgui* getImguiComponent() { return m_pImguiComponent; }
+		KRAWLER_API KCollisionOverseer getCollisionOverseer() { return KCollisionOverseer{ &m_staticQTree, &m_dynamicQTree }; }
 
 		bool hasSceneTickedOnce() const { return m_bHasTickedOnce; }
 
@@ -85,7 +91,6 @@ namespace Krawler
 		KQuadtree m_dynamicQTree;
 		KQuadtree m_staticQTree;
 		uint32 m_numberOfAllocatedChunks;
-		Components::KCImgui* m_pImguiComponent = nullptr;
 	};
 
 	class KSceneDirector

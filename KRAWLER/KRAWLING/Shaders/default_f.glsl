@@ -1,3 +1,4 @@
+#version 110
 uniform sampler2D texture;
 
 void main()

@@ -139,7 +139,7 @@ sf::Font * const KAssetLoader::getFont(const std::wstring & name)
 }
 
 Animation::KAnimation * const KAssetLoader::getAnimation(const std::wstring & name)
-{
+{ 
 	auto findResult = m_animationsMap.find(name);
 	if (findResult == m_animationsMap.end())
 	{
@@ -288,26 +288,43 @@ void KAssetLoader::loadDefaultShadersFromString()
 	m_shaderMap.emplace(KTEXT("default"), pDefaultShader);
 }
 
-void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & vertShader, const std::wstring & fragShader)
+void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & shaderPath)
 {
-	if (m_texturesMap.find(shaderName) != m_texturesMap.end())
+	if (m_shaderMap.find(shaderName) != m_shaderMap.end())
 	{
 		KPrintf(KTEXT("Already loaded %s - skipping!"), shaderName.c_str());
 		return;
 	}
-	/* 
+	/*
 
-	TODO: 
-	- Split shader file int two strings 
+	TODO:
+	- Split shader file int two strings
 	- Pass split strings to loadFromMemory
 	*/
-	const sf::String sVert(vertShader);
-	const sf::String sFrag(fragShader);
+	string contents;
+	ifstream shaderFile;
+	shaderFile.open(shaderPath, ios::in | ios::ate);
+
+	if (shaderFile.fail())
+	{
+		KPrintf(L"Unable to open shader file %s\n", shaderPath.c_str());
+	}
+
+	contents.resize(shaderFile.tellg(), '\0');
+	auto len = static_cast<long>(shaderFile.tellg());
+	shaderFile.seekg(ios::beg);
+	shaderFile.read(&contents[0], len);
+
+	auto result = contents.find("#DIVIDE");
+
+	auto strA = string(contents, 0, result);
+	auto strB = string(contents, result + strlen("#DIVIDE") + 1, contents.size() - strA.length());
 	Shader* const pShader = new Shader();
 	KCHECK(pShader);
 
-	if (!pShader->loadFromFile(sVert, sFrag))
+	if (!pShader->loadFromMemory(strA, strB))
 	{
+		KPrintf(KTEXT("Failed shader name: %s\n"), shaderName.c_str());
 		delete pShader;
 		return;
 	}
@@ -376,12 +393,10 @@ void KAssetLoader::scanFolderLoad()
 		{
 			if (path.find(shaderExtension) != wstring::npos)
 			{
-				shaderFilesList.push_back(path);
+				loadShader(FindFilename(path), path);
 			}
 		}
 	}
-
-	fixupShaderRef(shaderFilesList);
 }
 
 void KAssetLoader::loadAnimationsXML()

@@ -321,6 +321,8 @@
   <ItemGroup>
     <None Include="kconfig.cfg" />
     <None Include="res\maps\test_level.json" />
+    <None Include="res\shaders\default.glsl" />
+    <None Include="res\shaders\ambient.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="assets.xml" />

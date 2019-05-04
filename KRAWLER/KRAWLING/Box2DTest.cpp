@@ -34,8 +34,8 @@ public:
 		m_pBox = pScene->addEntityToScene();
 		m_pBox->addComponent(new KCSprite(m_pBox, Vec2f(32, 32)));
 		m_pBox->getTransform()->setTranslation(Vec2f(32, 32));
-		m_pBox->getComponent<KCSprite>()->setShader(KASSET().getShader(L"default"));
-		m_pBox->getComponent<KCSprite>()->setTexture(KASSET().getTexture(L"white"));
+		m_pBox->getComponent<KCSprite>()->setShader(ASSET().getShader(L"default"));
+		m_pBox->getComponent<KCSprite>()->setTexture(ASSET().getTexture(L"white"));
 		m_pBox->getTransform()->setOrigin(Vec2f(16, 16));
 
 
@@ -43,8 +43,8 @@ public:
 		m_pFloor = pScene->addEntityToScene();
 		m_pFloor->addComponent(new KCSprite(m_pFloor, Vec2f(64, 32)));
 		m_pFloor->getTransform()->setTranslation(Vec2f(32, 300));
-		m_pFloor->getComponent<KCSprite>()->setShader(KASSET().getShader(L"default"));
-		m_pFloor->getComponent<KCSprite>()->setTexture(KASSET().getTexture(L"white"));
+		m_pFloor->getComponent<KCSprite>()->setShader(ASSET().getShader(L"default"));
+		m_pFloor->getComponent<KCSprite>()->setTexture(ASSET().getTexture(L"white"));
 		m_pFloor->getTransform()->setOrigin(Vec2f(32, 16));
 		m_pFloor->getTransform()->setRotation(-45);
 		{// falling box
@@ -127,8 +127,8 @@ int main(void)
 	initApp.windowStyle = KWindowStyle::Windowed_Fixed_Size;
 	initApp.windowTitle = KTEXT("Testing TiledMaps");
 	StartupEngine(&initApp);
-	const int sceneWidth = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->width;
-	const int sceneHeight = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->height;
+	//const int sceneWidth = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->width;
+	//const int sceneHeight = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->height;
 	auto app = KApplication::getApp();
 	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0, 0, (70 * 32), (40 * 32))));
 	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));

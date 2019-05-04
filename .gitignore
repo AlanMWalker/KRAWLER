@@ -16,5 +16,5 @@ Box2D/
 *.ipch
 *.db-shm
 *.db-wal
-
+profiler_log.txt
 .gitignore~

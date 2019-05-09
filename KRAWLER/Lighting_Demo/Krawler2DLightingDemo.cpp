@@ -82,7 +82,6 @@ public:
 	{
 		ImGui::SFML::Init(*KApplication::getApp()->getRenderWindow());
 		std::function<void(void)> subLastDraw = std::bind(&imguicomp::draw, this);
-		//std::function<void(const sf::Event&)> subLastDraw = std::bind(&TempComponent::processEvent, this);
 		KApplication::getApp()->subscribeToEventQueue(processEvent);
 		KApplication::getApp()->getRenderer()->subscribeLastDrawCallback(subLastDraw);
 		return KInitStatus::Success;

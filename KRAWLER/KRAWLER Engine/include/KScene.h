@@ -3,6 +3,7 @@
 
 #include "Krawler.h"
 #include "KEntity.h"
+#include "Box2D\Box2D.h"
 
 #include "Physics\KPhysicsWorld.h"
 
@@ -84,6 +85,9 @@ namespace Krawler
 		Krawler::int32 getFreeChunkTotal() const;
 		bool m_bHasTickedOnce = false;
 
+		const int32 VelocityIterations = 6;
+		const int32 PositionIterations = 2;
+
 		KAllocatableChunk m_entityChunks[CHUNK_POOL_SIZE];
 
 		std::wstring m_sceneName;
@@ -91,6 +95,7 @@ namespace Krawler
 		KQuadtree m_dynamicQTree;
 		KQuadtree m_staticQTree;
 		uint32 m_numberOfAllocatedChunks;
+		b2World m_physicsWorld;
 	};
 
 	class KSceneDirector

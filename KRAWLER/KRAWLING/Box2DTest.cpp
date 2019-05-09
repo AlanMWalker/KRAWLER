@@ -43,6 +43,7 @@ void processEvent(const sf::Event& e)
 	ImGui::SFML::ProcessEvent(e);
 }
 
+// custom imgui component
 class imguicomp : public KComponentBase
 {
 public:
@@ -138,7 +139,6 @@ public:
 		{// floor
 			b2BodyDef def;
 			def.position.Set(32, 300);
-			def.angle = -Radians(45.0f);
 			def.type = b2_staticBody;
 			m_pFloorBody = world.CreateBody(&def);
 

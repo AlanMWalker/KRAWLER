@@ -1,8 +1,6 @@
 #include "KApplication.h"
 #include <future>
 
-#include "imgui/imgui-SFML.h" // for process event
-
 using namespace Krawler;
 using namespace Krawler::Renderer;
 using namespace sf;
@@ -73,8 +71,8 @@ void KApplication::runApplication()
 	sf::Clock deltaClock;
 
 
-	m_pRenderWindow->setActive(false);
-	std::thread	rThread(&KRenderer::render, m_pRenderer);
+	//m_pRenderWindow->setActive(false);
+	//std::thread	rThread(&KRenderer::render, m_pRenderer);
 	//std::thread pThread(&KApplication::fixedStep, this);
 	while (m_pRenderWindow->isOpen())
 	{
@@ -106,7 +104,11 @@ void KApplication::runApplication()
 			{
 				Input::KInput::HandleEvent(sfmlEvent);
 			}
-			ImGui::SFML::ProcessEvent(sfmlEvent);
+
+			for (auto& func : m_eventQueueCallbacks)
+			{
+				func(sfmlEvent);
+			}
 		}
 
 		if (frameTime > seconds(m_physicsDelta * 4))
@@ -144,7 +146,7 @@ void KApplication::runApplication()
 			m_sceneDirector.tickActiveScene();
 
 		}
-		//m_pRenderer->render()
+		m_pRenderer->render();
 
 		const float EXTRA_FPS_BUMP = 0;
 		const float timeInSec = deltaClock.getElapsedTime().asSeconds();
@@ -152,7 +154,7 @@ void KApplication::runApplication()
 		//sf::sleep(sf::seconds(sleepTime));
 		this_thread::sleep_for(chrono::milliseconds(static_cast<int32>(sleepTime * 1000)));
 	}
-	rThread.join();
+	//rThread.join();
 	//pThread.join();
 }
 
@@ -176,6 +178,11 @@ KRAWLER_API Vec2u Krawler::KApplication::getWindowSize() const
 KRAWLER_API void Krawler::KApplication::closeApplication()
 {
 	m_pRenderWindow->close();
+}
+
+void Krawler::KApplication::subscribeToEventQueue(std::function<void(const sf::Event&)> function)
+{
+	m_eventQueueCallbacks.push_back(function);
 }
 
 KApplication::KApplication()

@@ -15,7 +15,7 @@ KInitStatus Krawler::KApplication::initialiseScenes()
 	return KInitStatus::Success;
 }
 
-void KApplication::setupApplication(const KApplicationInitialise & appInit)
+void KApplication::setupApplication(const KApplicationInitialise& appInit)
 {
 	m_pRenderWindow = new RenderWindow;
 	m_pRenderWindow->setKeyRepeatEnabled(false);
@@ -50,7 +50,9 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	sf::ContextSettings settings;
 	m_pRenderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style, settings);
 	m_pRenderWindow->setFramerateLimit(m_gameFPS);
-	m_pRenderWindow->setView(sf::View(Rectf(0, 0, 1024, 768)));
+	m_viewSize.x = appInit.width;
+	m_viewSize.y = appInit.height;
+	m_pRenderWindow->setView(sf::View(Rectf(0, 0, appInit.width, appInit.height)));
 
 	m_pRenderer = new KRenderer;
 	//auto& io = ImGui::GetIO();
@@ -100,6 +102,13 @@ void KApplication::runApplication()
 			{
 				m_bHasFocus = false;
 			}
+
+			if (sfmlEvent.type == Event::Resized)
+			{
+				//Rectf v{ 0, 0, (float)sfmlEvent.size.width , (float)sfmlEvent.size.height };
+				//m_pRenderWindow->setView(View(v));
+			}
+
 			if (m_bHasFocus)
 			{
 				Input::KInput::HandleEvent(sfmlEvent);
@@ -242,7 +251,7 @@ void Krawler::KApplication::fixedStep()
 	}
 }
 
-inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator)
+inline void Krawler::KApplication::updateFrameTime(Time & currentTime, Time & lastTime, Time & frameTime, Time & accumulator)
 {
 	currentTime = m_elapsedClock.getElapsedTime();
 	if (m_bIsFirstUpdate)
@@ -301,7 +310,7 @@ void Krawler::KApplicationInitialise::loadFromEnginePreset()
 	engConfig.close();
 }
 
-std::wifstream& Krawler::operator >> (std::wifstream& os, KApplicationInitialise& data)
+std::wifstream& Krawler::operator >> (std::wifstream & os, KApplicationInitialise & data)
 {
 	wchar_t str[100];
 

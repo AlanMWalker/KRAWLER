@@ -99,7 +99,7 @@ sf::Texture * const KAssetLoader::getTexture(const std::wstring & name)
 
 	if (findResult == m_texturesMap.end())
 	{
-		return nullptr;
+		return m_texturesMap[KTEXT("missing")];
 	}
 
 	return findResult->second;

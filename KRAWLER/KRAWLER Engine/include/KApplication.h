@@ -113,9 +113,12 @@ namespace Krawler
 
 		bool m_bIsFirstUpdate = true;
 		bool m_bHasFocus = true;
-
+		Vec2f m_viewSize;
 		static std::mutex s_mutex;
 		std::vector< std::function<void(const sf::Event&)>> m_eventQueueCallbacks;
 	};
 }
+
+#define GET_APP() Krawler::KApplication::getApp()
+#define GET_DIRECTOR() Krawler::KApplication::getApp()->getSceneDirector()
 #endif

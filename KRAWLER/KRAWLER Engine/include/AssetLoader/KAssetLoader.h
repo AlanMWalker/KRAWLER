@@ -21,14 +21,14 @@ namespace Krawler
 		struct KAnimation;
 	};
 
-	constexpr wchar_t* ACCEPTED_SHADERS[] =
+	const std::wstring ACCEPTED_SHADERS[] =
 	{
 		L".glsl",
 		L".frag",
 		L".vert"
 	};
 
-	constexpr wchar_t* ACCEPTED_TEXTURES[] =
+	const std::wstring ACCEPTED_TEXTURES[] =
 	{
 		L".png",
 		L".bmp",
@@ -37,20 +37,20 @@ namespace Krawler
 		//L"json" // not supported yet
 	};
 
-	constexpr wchar_t* ACCEPTED_AUDIO[]
+	const std::wstring ACCEPTED_AUDIO[]
 	{
 		L".wav",
 		L".ogg"
 	};
 
-	constexpr wchar_t* ACCEPTED_FONT[]
+	const std::wstring ACCEPTED_FONT[]
 	{
 		L".ttf"
 	};
 
-	constexpr wchar_t* SHADER_SUFFIXES[]
+	const std::wstring SHADER_SUFFIXES[]
 	{
-		L"_v", 
+		L"_v",
 		L"_f"
 	};
 
@@ -101,7 +101,7 @@ namespace Krawler
 		std::unordered_map <std::wstring, sf::Shader*> m_shaderMap;
 		std::unordered_map <std::wstring, Animation::KAnimation*> m_animationsMap;
 		std::unordered_map <std::wstring, TiledImport::KTIMap*> m_importedLevelsMap;
-		
+
 	};
 }
 

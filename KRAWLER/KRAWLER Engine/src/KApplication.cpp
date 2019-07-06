@@ -281,7 +281,7 @@ void Krawler::KApplication::outputFPS(const sf::Time & currentTime, sf::Time & f
 		const float fps = (KCAST(float, m_frames) / (currentTime - fpsLastTime).asSeconds());
 
 		const float ms = 1.0f / fps;
-		KPrintf(KTEXT("FPS: %f(%f ms per frame)\n"), fps, ms);
+		wprintf_s(KTEXT("FPS: %f(%f ms per frame)\n"), fps, ms);
 		//m_fpsText.setString(std::to_string(ms) + " ms/frame\n " + "FPS: " + std::to_string(fps));
 		//
 		fpsLastTime = currentTime;

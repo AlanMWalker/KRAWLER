@@ -99,9 +99,10 @@ sf::Texture * const KAssetLoader::getTexture(const std::wstring & name)
 
 	if (findResult == m_texturesMap.end())
 	{
+		KPrintf(KTEXT("Failed to find texture with name %s\n"), name.c_str());
 		return m_texturesMap[KTEXT("missing")];
 	}
-
+	
 	return findResult->second;
 }
 
@@ -110,9 +111,10 @@ sf::SoundBuffer * const KAssetLoader::getSound(const std::wstring & name)
 	auto findResult = m_soundBufferMap.find(name);
 	if (findResult == m_soundBufferMap.end())
 	{
+		KPrintf(KTEXT("Failed to find sound with name %s\n"), name.c_str());
 		return nullptr;
 	}
-
+	
 	return findResult->second;
 }
 
@@ -121,9 +123,10 @@ sf::Shader * const KAssetLoader::getShader(const std::wstring & name)
 	auto findResult = m_shaderMap.find(name);
 	if (findResult == m_shaderMap.end())
 	{
+		KPrintf(KTEXT("Failed to find shader with name %s\n"), name.c_str());
 		return nullptr;
 	}
-
+	
 	return findResult->second;
 }
 
@@ -132,9 +135,10 @@ sf::Font * const KAssetLoader::getFont(const std::wstring & name)
 	auto findResult = m_fontMap.find(name);
 	if (findResult == m_fontMap.end())
 	{
+		KPrintf(KTEXT("Failed to font shader with name %s\n"), name.c_str());
 		return nullptr;
 	}
-
+	
 	return findResult->second;
 }
 
@@ -143,9 +147,10 @@ Animation::KAnimation * const KAssetLoader::getAnimation(const std::wstring & na
 	auto findResult = m_animationsMap.find(name);
 	if (findResult == m_animationsMap.end())
 	{
+		KPrintf(KTEXT("Failed to find animation with name %s\n"), name.c_str());
 		return nullptr;
 	}
-
+	
 	return findResult->second;
 }
 
@@ -154,6 +159,7 @@ TiledImport::KTIMap * const KAssetLoader::getLevelMap(const std::wstring & name)
 	auto findResult = m_importedLevelsMap.find(name);
 	if (findResult == m_importedLevelsMap.end())
 	{
+		KPrintf(KTEXT("Failed to find level map with name %s\n"), name.c_str());
 		return nullptr;
 	}
 

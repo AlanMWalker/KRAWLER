@@ -36,7 +36,9 @@ KInitStatus KCPhysicsBody::init()
 void KCPhysicsBody::fixedTick()
 {
 	if (m_properties.mass == 0.0f || m_bIsStatic)
+	{
 		return;
+	}
 
 	const float dt = KApplication::getApp()->getPhysicsDelta();
 	auto pPhysWorld = KApplication::getApp()->getPhysicsWorld();
@@ -44,13 +46,13 @@ void KCPhysicsBody::fixedTick()
 
 	m_prevPosition = pTransform->getPosition();
 
-	applyForce(pPhysWorld->getPhysicsWorldProperties().gravity * m_properties.mass); //apply gravity
-
 	const Vec2f acceleration = (m_properties.invMass * m_force);
-	m_velocity += acceleration * dt;
+	m_velocity += (pPhysWorld->getPhysicsWorldProperties().gravity + acceleration) * dt;
 
-	const Vec2f moveVec = m_velocity * (1.0f / pPhysWorld->getPhysicsWorldProperties().metresToPixels);
-	pTransform->move(moveVec * dt);
+	Vec2f moveVec = m_velocity * dt;
+	moveVec *= (1.0f / pPhysWorld->getPhysicsWorldProperties().metresToPixels);
+
+	pTransform->move(moveVec);
 
 	m_force = Vec2f(0.0f, 0.0f);
 }

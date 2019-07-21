@@ -21,7 +21,7 @@ KPhysicsBodyProperties::KPhysicsBodyProperties(float mass, float sFriction, floa
 
 //KCPhysicsBody
 
-KCPhysicsBody::KCPhysicsBody(KEntity * pEntity, KPhysicsBodyProperties properties)
+KCPhysicsBody::KCPhysicsBody(KEntity* pEntity, KPhysicsBodyProperties properties)
 	:KComponentBase(pEntity), m_properties(properties)
 {
 }
@@ -45,9 +45,8 @@ void KCPhysicsBody::fixedTick()
 	KCTransform* const pTransform = getEntity()->getComponent<KCTransform>();
 
 	m_prevPosition = pTransform->getPosition();
-
-	const Vec2f acceleration = (m_properties.invMass * m_force);
-	m_velocity += (pPhysWorld->getPhysicsWorldProperties().gravity + acceleration) * dt;
+	const Vec2f acceleration = pPhysWorld->getPhysicsWorldProperties().gravity + (m_properties.invMass * m_force);
+	m_velocity += acceleration * dt;
 
 	Vec2f moveVec = m_velocity * dt;
 	moveVec *= (1.0f / pPhysWorld->getPhysicsWorldProperties().metresToPixels);

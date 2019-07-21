@@ -191,8 +191,13 @@ void Krawler::KScene::fixedTick()
 	}
 
 
-	for (uint32 i = 0; i < m_numberOfAllocatedChunks; ++i)
+	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
+		if (!m_entityChunks[i].allocated)
+		{
+			continue;
+		}
+
 		if (!m_entityChunks[i].entity.isEntityInUse())
 		{
 			continue;

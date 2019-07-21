@@ -50,7 +50,15 @@ namespace Krawler
 				m_velocity += m_properties.invMass * impulse;
 			}
 
-			KRAWLER_API bool isBodyStatic() const;
+			KRAWLER_API bool isBodyStatic() const
+			{
+				return m_bIsStatic;
+			}
+
+			KRAWLER_API void setStaticState(bool bIsStatic)
+			{
+				m_bIsStatic = bIsStatic;
+			}
 
 		private:
 

@@ -1,8 +1,6 @@
 #include "KApplication.h"
 #include <future>
 
-#include "imgui/imgui-SFML.h" // for process event
-
 using namespace Krawler;
 using namespace Krawler::Renderer;
 using namespace sf;
@@ -57,9 +55,6 @@ void KApplication::setupApplication(const KApplicationInitialise& appInit)
 	m_pRenderWindow->setView(sf::View(Rectf(0, 0, appInit.width, appInit.height)));
 
 	m_pRenderer = new KRenderer;
-	//auto& io = ImGui::GetIO();
-	////ImFont* font = io.Fonts->AddFontFromFileTTF("res/fonts/seriphim.ttf", 10);
-	//io.Fonts->AddFontDefault();
 
 	Input::KInput::SetWindow(m_pRenderWindow);
 }
@@ -120,7 +115,6 @@ void KApplication::runApplication()
 			{
 				func(sfmlEvent);
 			}
-			ImGui::SFML::ProcessEvent(sfmlEvent);
 		}
 
 		if (frameTime > seconds(m_physicsDelta * 4))

@@ -21,7 +21,7 @@ KPhysicsBodyProperties::KPhysicsBodyProperties(float mass, float sFriction, floa
 
 //KCPhysicsBody
 
-KCPhysicsBody::KCPhysicsBody(KEntity * pEntity, KPhysicsBodyProperties properties)
+KCPhysicsBody::KCPhysicsBody(KEntity* pEntity, KPhysicsBodyProperties properties)
 	:KComponentBase(pEntity), m_properties(properties)
 {
 }
@@ -36,21 +36,22 @@ KInitStatus KCPhysicsBody::init()
 void KCPhysicsBody::fixedTick()
 {
 	if (m_properties.mass == 0.0f || m_bIsStatic)
+	{
 		return;
+	}
 
 	const float dt = KApplication::getApp()->getPhysicsDelta();
 	auto pPhysWorld = KApplication::getApp()->getPhysicsWorld();
 	KCTransform* const pTransform = getEntity()->getComponent<KCTransform>();
 
 	m_prevPosition = pTransform->getPosition();
-
-	applyForce(pPhysWorld->getPhysicsWorldProperties().gravity * m_properties.mass); //apply gravity
-
-	const Vec2f acceleration = (m_properties.invMass * m_force);
+	const Vec2f acceleration = pPhysWorld->getPhysicsWorldProperties().gravity + (m_properties.invMass * m_force);
 	m_velocity += acceleration * dt;
 
-	const Vec2f moveVec = m_velocity * (1.0f / pPhysWorld->getPhysicsWorldProperties().metresToPixels);
-	pTransform->move(moveVec * dt);
+	Vec2f moveVec = m_velocity * dt;
+	moveVec *= (1.0f / pPhysWorld->getPhysicsWorldProperties().metresToPixels);
+
+	pTransform->move(moveVec);
 
 	m_force = Vec2f(0.0f, 0.0f);
 }

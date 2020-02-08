@@ -30,8 +30,6 @@
 
 #include <SFML\GpuPreference.hpp>
 
-#include "imgui/imgui.h"
-#include "Components/KCImgui.h"
 
 using namespace Krawler;
 using namespace Krawler::Input;

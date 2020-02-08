@@ -25,7 +25,7 @@ namespace Krawler
 		Dynamic,
 		Static
 	};
-	const int32 CHUNK_POOL_SIZE{ 120 };
+	constexpr int32 CHUNK_POOL_SIZE{ 120 };
 
 	class KEntity
 	{
@@ -96,12 +96,14 @@ namespace Krawler
 
 		KRAWLER_API void setIsInUse(bool bInUse) { m_bIsInUse = bInUse; }
 
-		KRAWLER_API  Components::KCTransform* const getTransformComponent() { return m_pTransform; }
+		KRAWLER_API  KDEPRECATED(Components::KCTransform)* const getTransformComponent() { return m_pTransform; }
 
 		KRAWLER_API void setEntityInteraction(EntitySceneInteractivity interactivity);
 
 
 		KRAWLER_API EntitySceneInteractivity getInteractivity() const;
+		
+		KRAWLER_API Components::KCTransform* getTransform() const { return m_pTransform; }
 
 	private:
 		std::vector<KComponentBase*> m_componentVector;

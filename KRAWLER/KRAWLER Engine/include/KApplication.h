@@ -11,9 +11,12 @@
 
 #include <mutex>
 #include <atomic>
+#include <functional>
 
 //Lowest FPS for Physics & Game: 24
 //Highest FPS for Physics & Game: 80
+
+#define GET_SCENE() Krawler::KApplication::getApp()->getCurrentScene()
 
 namespace Krawler
 {
@@ -80,6 +83,8 @@ namespace Krawler
 
 		KRAWLER_API void closeApplication();
 
+		KRAWLER_API void subscribeToEventQueue(std::function<void(const sf::Event&)> function);
+
 		static std::mutex& getMutexInstance() { return s_mutex; }
 
 	private:
@@ -108,8 +113,12 @@ namespace Krawler
 
 		bool m_bIsFirstUpdate = true;
 		bool m_bHasFocus = true;
-
+		Vec2f m_viewSize;
 		static std::mutex s_mutex;
+		std::vector< std::function<void(const sf::Event&)>> m_eventQueueCallbacks;
 	};
 }
+
+#define GET_APP() Krawler::KApplication::getApp()
+#define GET_DIRECTOR() Krawler::KApplication::getApp()->getSceneDirector()
 #endif

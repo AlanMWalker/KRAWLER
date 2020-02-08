@@ -28,22 +28,26 @@ KRenderer::~KRenderer()
 void KRenderer::render()
 {
 	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
-	target->setActive(true);
+	//target->setActive(true);
 
-	while (target->isOpen())
+	//while (target->isOpen())
 	{
 
-	target->clear();
-	defaultRender();
+		target->clear();
+		defaultRender();
 
-	for (auto& text : m_screenText)
-	{
-		sf::Text t(text.second.getString(), mp_defaultFont);
-		t.setCharacterSize(text.second.getCharacterSize());
-		t.setPosition(screenToWorld(text.first));
-		target->draw(t);
-	}
-	target->display();
+		for (auto& text : m_screenText)
+		{
+			sf::Text t(text.second.getString(), mp_defaultFont);
+			t.setCharacterSize(text.second.getCharacterSize());
+			t.setPosition(screenToWorld(text.first));
+			target->draw(t);
+		}
+		for (auto& func : m_lastDrawCallbacks)
+		{
+			func();
+		}
+		target->display();
 	}
 }
 
@@ -149,4 +153,9 @@ void KRenderer::defaultRender()
 Vec2f KRenderer::screenToWorld(const Vec2i & vec) const
 {
 	return KApplication::getApp()->getRenderWindow()->mapPixelToCoords(vec);
+}
+
+void KRenderer::subscribeLastDrawCallback(std::function<void(void)> func)
+{
+	m_lastDrawCallbacks.push_back(func);
 }

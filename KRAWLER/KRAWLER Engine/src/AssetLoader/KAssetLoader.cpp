@@ -5,11 +5,12 @@
 #include <fstream>
 #include <stdio.h>
 #include <string.h>
+#include <filesystem>
 
 #include <..\rapidxml\rapidxml.hpp>
 #include <string.h>
 #include <JSON\json.hpp>
-#include <fstream>
+
 
 using namespace sf;
 using namespace Krawler;
@@ -18,8 +19,42 @@ using namespace rapidxml;
 
 using json = nlohmann::json;
 
-#define MAX_ANIMATION_FILE_CHARS 100000
+constexpr int32 MAX_ANIMATION_FILE_CHARS = 100000;
 
+// HELPER FUNCTIONS
+
+std::wstring FindFilename(std::wstring& str)
+{
+	std::wstring returnStr;
+	uint32 idx = str.size() - 1;
+	bool bIsFilename = false;
+	while (idx != 0)
+	{
+		if (!bIsFilename)
+		{
+			if (str[idx] == KTEXT('.'))
+			{
+				bIsFilename = true;
+			}
+		}
+		else
+		{
+			if (str[idx] != KTEXT('\\'))
+			{
+				returnStr.push_back(str[idx]);
+			}
+			else
+			{
+				break;
+			}
+		}
+		--idx;
+	}
+
+	return std::wstring(returnStr.rbegin(), returnStr.rend());
+}
+
+// ASSET LOADER 
 KAssetLoader::~KAssetLoader()
 {
 }
@@ -64,9 +99,10 @@ sf::Texture * const KAssetLoader::getTexture(const std::wstring & name)
 
 	if (findResult == m_texturesMap.end())
 	{
-		return nullptr;
+		KPrintf(KTEXT("Failed to find texture with name %s\n"), name.c_str());
+		return m_texturesMap[KTEXT("missing")];
 	}
-
+	
 	return findResult->second;
 }
 
@@ -75,9 +111,10 @@ sf::SoundBuffer * const KAssetLoader::getSound(const std::wstring & name)
 	auto findResult = m_soundBufferMap.find(name);
 	if (findResult == m_soundBufferMap.end())
 	{
+		KPrintf(KTEXT("Failed to find sound with name %s\n"), name.c_str());
 		return nullptr;
 	}
-
+	
 	return findResult->second;
 }
 
@@ -86,9 +123,10 @@ sf::Shader * const KAssetLoader::getShader(const std::wstring & name)
 	auto findResult = m_shaderMap.find(name);
 	if (findResult == m_shaderMap.end())
 	{
+		KPrintf(KTEXT("Failed to find shader with name %s\n"), name.c_str());
 		return nullptr;
 	}
-
+	
 	return findResult->second;
 }
 
@@ -97,20 +135,22 @@ sf::Font * const KAssetLoader::getFont(const std::wstring & name)
 	auto findResult = m_fontMap.find(name);
 	if (findResult == m_fontMap.end())
 	{
+		KPrintf(KTEXT("Failed to font shader with name %s\n"), name.c_str());
 		return nullptr;
 	}
-
+	
 	return findResult->second;
 }
 
 Animation::KAnimation * const KAssetLoader::getAnimation(const std::wstring & name)
-{
+{ 
 	auto findResult = m_animationsMap.find(name);
 	if (findResult == m_animationsMap.end())
 	{
+		KPrintf(KTEXT("Failed to find animation with name %s\n"), name.c_str());
 		return nullptr;
 	}
-
+	
 	return findResult->second;
 }
 
@@ -119,6 +159,7 @@ TiledImport::KTIMap * const KAssetLoader::getLevelMap(const std::wstring & name)
 	auto findResult = m_importedLevelsMap.find(name);
 	if (findResult == m_importedLevelsMap.end())
 	{
+		KPrintf(KTEXT("Failed to find level map with name %s\n"), name.c_str());
 		return nullptr;
 	}
 
@@ -128,7 +169,13 @@ TiledImport::KTIMap * const KAssetLoader::getLevelMap(const std::wstring & name)
 void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & filePath)
 {
 	Texture* pTex = new Texture;
-	sf::String s(m_rootFolder + KTEXT("\\") + filePath);
+	sf::String s(filePath);
+
+	if (m_texturesMap.find(name) != m_texturesMap.end())
+	{
+		KPrintf(KTEXT("Already loaded %s - skipping!"), filePath.c_str());
+		return;
+	}
 
 	if (!pTex->loadFromFile(s.toAnsiString()))
 	{
@@ -148,23 +195,36 @@ void KAssetLoader::loadTexture(const std::wstring & name, const std::wstring & f
 
 void KAssetLoader::loadSound(const std::wstring & name, const std::wstring & filePath)
 {
-	SoundBuffer* sb = new SoundBuffer;
-	sf::String s(m_rootFolder + KTEXT("\\") + filePath);
-
-	if (!sb->loadFromFile(s.toAnsiString()))
+	if (m_soundBufferMap.find(name) != m_soundBufferMap.end())
 	{
-		delete sb;
+		KPrintf(KTEXT("Already loaded %s - skipping!"), filePath.c_str());
+		return;
+	}
+
+	SoundBuffer* pSoundBuffer = new SoundBuffer;
+	KCHECK(pSoundBuffer);
+	sf::String s(filePath);
+
+	if (!pSoundBuffer->loadFromFile(s.toAnsiString()))
+	{
+		delete pSoundBuffer;
 		KPrintf(KTEXT("Failed to load sound %ws\n"), s.toWideString().c_str());
 		return;
 	}
 
-	m_soundBufferMap.emplace(name, sb);
+	m_soundBufferMap.emplace(name, pSoundBuffer);
 }
 
 void KAssetLoader::loadFont(const std::wstring& name, const std::wstring& filePath)
 {
+	if (m_fontMap.find(name) != m_fontMap.end())
+	{
+		KPrintf(KTEXT("Already loaded %s - skipping!"), filePath.c_str());
+		return;
+	}
+
 	Font f;
-	const sf::String s(m_rootFolder + KTEXT("\\") + filePath);
+	const sf::String s(filePath);
 
 	if (!f.loadFromFile(s.toAnsiString()))
 	{
@@ -176,6 +236,12 @@ void KAssetLoader::loadFont(const std::wstring& name, const std::wstring& filePa
 
 void KAssetLoader::loadTilemap(const std::wstring & name, const std::wstring & filePath)
 {
+	if (m_importedLevelsMap.find(name) != m_importedLevelsMap.end())
+	{
+		KPrintf(KTEXT("Already loaded %s - skipping!"), filePath.c_str());
+		return;
+	}
+
 	TiledImport::KTIMap* pMap;
 	pMap = TiledImport::loadTiledJSONFile(m_rootFolder + KTEXT("\\") + filePath);
 	KCHECK(pMap);
@@ -186,275 +252,157 @@ void KAssetLoader::loadTilemap(const std::wstring & name, const std::wstring & f
 	m_importedLevelsMap.emplace(name, pMap);
 }
 
-void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & vertShader, const std::wstring & fragShader)
+void KAssetLoader::loadDefaultShadersFromString()
 {
-	const sf::String sVert(m_rootFolder + KTEXT("\\") + vertShader);
-	const sf::String sFrag(m_rootFolder + KTEXT("\\") + fragShader);
+	const std::string fragmentShader = R"(
+		uniform sampler2D texture;
+		
+		void main()
+		{
+			// lookup the pixel in the texture
+			vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
+		
+			// multiply it by the color
+			gl_FragColor = gl_Color * pixel;
+		})";
+
+
+	const std::string vertexShader = R"(
+		//#version 110 
+		
+		void main()
+		{
+			// transform the vertex position
+			gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+		
+			// transform the texture coordinates
+			gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
+		
+			// forward the vertex color
+			gl_FrontColor = gl_Color; 
+		}
+	)";
+
+	Shader* pDefaultShader = new Shader();
+	KCHECK(pDefaultShader);
+	if (!pDefaultShader->loadFromMemory(vertexShader, fragmentShader))
+	{
+		delete pDefaultShader;
+		return;
+	}
+
+	m_shaderMap.emplace(KTEXT("default"), pDefaultShader);
+}
+
+void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring & shaderPath)
+{
+	if (m_shaderMap.find(shaderName) != m_shaderMap.end())
+	{
+		KPrintf(KTEXT("Already loaded %s - skipping!"), shaderName.c_str());
+		return;
+	}
+	/*
+
+	TODO:
+	- Split shader file int two strings
+	- Pass split strings to loadFromMemory
+	*/
+	string contents;
+	ifstream shaderFile;
+	shaderFile.open(shaderPath, ios::in | ios::ate);
+
+	if (shaderFile.fail())
+	{
+		KPrintf(L"Unable to open shader file %s\n", shaderPath.c_str());
+	}
+
+	contents.resize(shaderFile.tellg(), '\0');
+	auto len = static_cast<long>(shaderFile.tellg());
+	shaderFile.seekg(ios::beg);
+	shaderFile.read(&contents[0], len);
+
+	auto result = contents.find("#DIVIDE");
+
+	auto strA = string(contents, 0, result);
+	auto strB = string(contents, result + strlen("#DIVIDE") + 1, contents.size() - strA.length());
 	Shader* const pShader = new Shader();
 	KCHECK(pShader);
 
-	if (!pShader->loadFromFile(sVert, sFrag))
+	if (!pShader->loadFromMemory(strA, strB))
 	{
+		KPrintf(KTEXT("Failed shader name: %s\n"), shaderName.c_str());
+		delete pShader;
 		return;
 	}
 
 	m_shaderMap.emplace(shaderName, pShader);
 }
 
-KAssetLoader::KAssetLoader()
+KAssetLoader::KAssetLoader() : m_rootFolder(KTEXT("res"))
 {
-	std::thread thread_a(&KAssetLoader::loadAssetsXML, this);
+	auto path = m_rootFolder + KTEXT("\\") + "engine\\missing.png";
+	loadTexture(KTEXT("missing_texture"), path);
+	std::thread thread_a(&KAssetLoader::scanFolderLoad, this);
 	std::thread thread_b(&KAssetLoader::loadAnimationsXML, this);
-
 	thread_a.join();
 	thread_b.join();
-	//loadAssetsXML();
-	//loadAnimationsXML();
 	matchAnimationsToTextures();
 }
 
-void KAssetLoader::loadAssetsXML()
+void KAssetLoader::scanFolderLoad()
 {
-	FILE* pFile = NULL;
-	_wfopen_s(&pFile, KTEXT("assets.xml"), KTEXT("r"));
+	constexpr uint32 NUM_TEXTURE_TYPES = sizeof(ACCEPTED_TEXTURES) / sizeof(ACCEPTED_TEXTURES[0]);
+	constexpr uint32 NUM_AUDIO_TYPES = sizeof(ACCEPTED_AUDIO) / sizeof(ACCEPTED_AUDIO[0]);
+	constexpr uint32 NUM_SHADER_TYPES = sizeof(ACCEPTED_SHADERS) / sizeof(ACCEPTED_SHADERS[0]);
+	constexpr uint32 NUM_FONT_TYPES = sizeof(ACCEPTED_FONT) / sizeof(ACCEPTED_FONT[0]);
 
-	if (pFile == NULL)
+
+	vector<wstring> filesList;
+	list<wstring> shaderFilesList;
+
+	std::wstring path = m_rootFolder + KTEXT("\\");
+	for (const auto& entry : filesystem::recursive_directory_iterator(path))
 	{
-		KPRINTF("Failed to open asset file!");
-		return;
-	}
-	//TODO handle returns of FSEEK for data validity 
-	fseek(pFile, 0, SEEK_END);
-	const int CHAR_COUNT = ftell(pFile);
-	fseek(pFile, 0, SEEK_SET);
-
-	const int BUFFER_SIZE = sizeof(wchar_t) * CHAR_COUNT + 1;
-
-	wchar_t* const pBuffer = (wchar_t*)malloc(BUFFER_SIZE);
-	for (int i = 0; i < CHAR_COUNT; ++i)
-	{
-		pBuffer[i] = fgetwc(pFile);
-	}
-
-	int closingXMLIndex = 0;
-
-	for (int i = CHAR_COUNT; i > 0; --i)
-	{
-		if (pBuffer[i] == '>')
+		if (!entry.is_directory())
 		{
-			closingXMLIndex = i;
-			break;
+			filesList.push_back(entry.path());
 		}
 	}
-	pBuffer[closingXMLIndex + 1] = '\0';
 
-	fclose(pFile);
-
-	pFile = NULL;
-	xml_document<wchar_t> assetsXMLDoc;
-	assetsXMLDoc.parse<0>(pBuffer);
-	xml_node<wchar_t>* assetNodeVerification = assetsXMLDoc.first_node(KTEXT("assets"));
-
-	if (!assetNodeVerification)
+	for (auto& path : filesList)
 	{
-		KPRINTF("No asset node!\n");
-		goto cleanup_fail;
-	}
-
-	xml_node<wchar_t>* pRootFolderNode = assetNodeVerification->first_node();
-	if (!pRootFolderNode)
-	{
-		KPRINTF("No root folder node specified!\n");
-		goto cleanup_fail;
-	}
-
-	if (wstring(pRootFolderNode->name()) != KTEXT("root_folder"))
-	{
-		KPRINTF("No root folder node specified!\n");
-		goto cleanup_fail;
-	}
-
-	xml_attribute<wchar_t>* pRootFolderName = pRootFolderNode->first_attribute();
-	if (!pRootFolderName)
-	{
-		KPRINTF("No root folder node specified!\n");
-		goto cleanup_fail;
-	}
-
-	if (wstring(pRootFolderName->name()) != KTEXT("folder_name"))
-	{
-		KPRINTF("No root folder name specified!\n");
-		goto cleanup_fail;
-	}
-
-	m_rootFolder = pRootFolderName->value();
-
-	xml_node<wchar_t>* pAssetTypeNodes;
-	pAssetTypeNodes = pRootFolderNode->next_sibling();
-
-	while (pAssetTypeNodes)
-	{
-		xml_attribute<wchar_t>* pAttrName = nullptr;
-		xml_attribute<wchar_t>* pAttrFilepath = nullptr;
-		wstring assetName;
-		wstring assetPathA, assetPathB;
-
-		if (wstring(pAssetTypeNodes->name()) == KTEXT("texture"))
+		for (auto textureExtension : ACCEPTED_TEXTURES)
 		{
-			pAttrName = pAssetTypeNodes->first_attribute();
-			if (pAttrName)
+			if (path.find(textureExtension) != wstring::npos) // if the extension is found in the string load the image file
 			{
-				if (wstring(pAttrName->name()) == KTEXT("name"))
-				{
-					assetName = pAttrName->value();
-				}
-				pAttrFilepath = pAttrName->next_attribute();
-				if (pAttrFilepath)
-				{
-					if (wstring(pAttrFilepath->name()) == KTEXT("file_path"))
-					{
-						assetPathA = pAttrFilepath->value();
-					}
-				}
+				loadTexture(FindFilename(path), path);
 			}
-
-			if (assetName.length() == 0 || assetPathA.size() == 0)
-			{
-				KPRINTF("Asset attributes length == 0!\n");
-				goto cleanup_fail;
-			}
-			loadTexture(assetName, assetPathA);
-		}
-		else if (wstring(pAssetTypeNodes->name()) == KTEXT("shader"))
-		{
-			pAttrName = pAssetTypeNodes->first_attribute();
-			if (pAttrName)
-			{
-				if (wstring(pAttrName->name()) == KTEXT("name"))
-				{
-					assetName = pAttrName->value();
-				}
-				pAttrFilepath = pAttrName->next_attribute();
-				if (pAttrFilepath)
-				{
-					if (wstring(pAttrFilepath->name()) == KTEXT("vert_path"))
-					{
-						assetPathA = pAttrFilepath->value();
-					}
-				}
-
-				pAttrFilepath = pAttrFilepath->next_attribute();
-				if (pAttrFilepath)
-				{
-					if (wstring(pAttrFilepath->name()) == KTEXT("frag_path"))
-					{
-						assetPathB = pAttrFilepath->value();
-					}
-				}
-			}
-			if (assetName.length() == 0 || assetPathA.size() == 0 || assetPathB.size() == 0)
-			{
-				KPRINTF("Asset attributes length == 0!\n");
-				goto cleanup_fail;
-			}
-			loadShader(assetName, assetPathA, assetPathB);
-		}
-		else if (wstring(pAssetTypeNodes->name()) == KTEXT("sound"))
-		{
-			pAttrName = pAssetTypeNodes->first_attribute();
-			if (pAttrName)
-			{
-				if (wstring(pAttrName->name()) == KTEXT("name"))
-				{
-					assetName = pAttrName->value();
-				}
-				pAttrFilepath = pAttrName->next_attribute();
-				if (pAttrFilepath)
-				{
-					if (wstring(pAttrFilepath->name()) == KTEXT("file_path"))
-					{
-						assetPathA = pAttrFilepath->value();
-					}
-				}
-			}
-			if (assetName.length() == 0 || assetPathA.size() == 0)
-			{
-				KPRINTF("Asset attributes length == 0!\n");
-				goto cleanup_fail;
-			}
-			loadSound(assetName, assetPathA);
-		}
-		else if (wstring(pAssetTypeNodes->name()) == KTEXT("font"))
-		{
-			pAttrName = pAssetTypeNodes->first_attribute();
-			if (pAttrName)
-			{
-				if (wstring(pAttrName->name()) == KTEXT("name"))
-				{
-					assetName = pAttrName->value();
-				}
-				pAttrFilepath = pAttrName->next_attribute();
-				if (pAttrFilepath)
-				{
-					if (wstring(pAttrFilepath->name()) == KTEXT("file_path"))
-					{
-						assetPathA = pAttrFilepath->value();
-					}
-				}
-			}
-			if (assetName.length() == 0 || assetPathA.size() == 0)
-			{
-				KPRINTF("Asset attributes length == 0!\n");
-				goto cleanup_fail;
-			}
-			loadFont(assetName, assetPathA);
-		}
-		else if (wstring(pAssetTypeNodes->name()) == KTEXT("level"))
-		{
-			pAttrName = pAssetTypeNodes->first_attribute();
-			if (pAttrName)
-			{
-				if (wstring(pAttrName->name()) == KTEXT("name"))
-				{
-					assetName = pAttrName->value();
-				}
-			}
-			pAttrFilepath = pAttrName->next_attribute();
-			if (pAttrFilepath)
-			{
-				if (wstring(pAttrFilepath->name()) == KTEXT("file_path"))
-				{
-					assetPathA = pAttrFilepath->value();
-				}
-			}
-			if (assetName.length() == 0 || assetPathA.size() == 0)
-			{
-				KPRINTF("Asset attributes length == 0!\n");
-				goto cleanup_fail;
-			}
-			loadTilemap(assetName, assetPathA);
-		}
-		else
-		{
-			KPRINTF_A("Label %s is not a valid asset type (font, texture, shader or sound)\n", pAssetTypeNodes->name());
 		}
 
-		pAssetTypeNodes = pAssetTypeNodes->next_sibling();
+		for (auto audioExtension : ACCEPTED_AUDIO)
+		{
+			if (path.find(audioExtension) != wstring::npos)
+			{
+				loadSound(FindFilename(path), path);
+			}
+		}
+
+		for (auto fontExtension : ACCEPTED_FONT)
+		{
+			if (path.find(fontExtension) != wstring::npos)
+			{
+				loadFont(FindFilename(path), path);
+			}
+		}
+
+		for (auto shaderExtension : ACCEPTED_SHADERS)
+		{
+			if (path.find(shaderExtension) != wstring::npos)
+			{
+				loadShader(FindFilename(path), path);
+			}
+		}
 	}
-
-
-	goto cleanup_safe;
-
-cleanup_fail:
-	free(pBuffer);
-	assetsXMLDoc.clear();
-	_CrtDbgBreak();
-	return;
-
-cleanup_safe:
-	free(pBuffer);
-	assetsXMLDoc.clear();
-	return;
 }
 
 void KAssetLoader::loadAnimationsXML()
@@ -501,7 +449,6 @@ void KAssetLoader::loadAnimationsXML()
 		KPRINTF_A("No animation nodes found in %s\n", filePath.c_str());
 		goto cleanup_branch_fail;
 	}
-
 
 	xml_attribute<wchar_t> *pAnimationName = nullptr, *pTextureName = nullptr, *pFrameTime = nullptr,
 		*pWidth = nullptr, *pHeight = nullptr;

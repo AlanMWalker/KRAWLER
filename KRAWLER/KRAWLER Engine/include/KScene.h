@@ -19,6 +19,13 @@ namespace Krawler
 		bool allocated = 0;
 		KEntity entity;
 	};
+
+	struct KCollisionOverseer
+	{
+		KQuadtree* pStaticQTree = nullptr;
+		KQuadtree* pDynamicQTree = nullptr;
+	};
+
 	namespace Components
 	{
 		class KCColliderBase;
@@ -67,7 +74,7 @@ namespace Krawler
 
 		KRAWLER_API KAllocatableChunk* getEntityList() { return m_entityChunks; }
 
-		KRAWLER_API Components::KCImgui* getImguiComponent() { return m_pImguiComponent; }
+		KRAWLER_API KCollisionOverseer getCollisionOverseer() { return KCollisionOverseer{ &m_staticQTree, &m_dynamicQTree }; }
 
 		bool hasSceneTickedOnce() const { return m_bHasTickedOnce; }
 
@@ -77,6 +84,9 @@ namespace Krawler
 		// Get the total number of unallocated chunks in the memory pool
 		Krawler::int32 getFreeChunkTotal() const;
 		bool m_bHasTickedOnce = false;
+
+		const int32 VelocityIterations = 6;
+		const int32 PositionIterations = 2;
 
 		KAllocatableChunk m_entityChunks[CHUNK_POOL_SIZE];
 

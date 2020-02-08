@@ -17,7 +17,7 @@ KInitStatus Krawler::KApplication::initialiseScenes()
 	return KInitStatus::Success;
 }
 
-void KApplication::setupApplication(const KApplicationInitialise & appInit)
+void KApplication::setupApplication(const KApplicationInitialise& appInit)
 {
 	m_pRenderWindow = new RenderWindow;
 	m_pRenderWindow->setKeyRepeatEnabled(false);
@@ -52,7 +52,9 @@ void KApplication::setupApplication(const KApplicationInitialise & appInit)
 	sf::ContextSettings settings;
 	m_pRenderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style, settings);
 	m_pRenderWindow->setFramerateLimit(m_gameFPS);
-	m_pRenderWindow->setView(sf::View(Rectf(0, 0, 1024, 768)));
+	m_viewSize.x = appInit.width;
+	m_viewSize.y = appInit.height;
+	m_pRenderWindow->setView(sf::View(Rectf(0, 0, appInit.width, appInit.height)));
 
 	m_pRenderer = new KRenderer;
 	//auto& io = ImGui::GetIO();
@@ -73,8 +75,8 @@ void KApplication::runApplication()
 	sf::Clock deltaClock;
 
 
-	m_pRenderWindow->setActive(false);
-	std::thread	rThread(&KRenderer::render, m_pRenderer);
+	//m_pRenderWindow->setActive(false);
+	//std::thread	rThread(&KRenderer::render, m_pRenderer);
 	//std::thread pThread(&KApplication::fixedStep, this);
 	while (m_pRenderWindow->isOpen())
 	{
@@ -102,9 +104,21 @@ void KApplication::runApplication()
 			{
 				m_bHasFocus = false;
 			}
+
+			if (sfmlEvent.type == Event::Resized)
+			{
+				//Rectf v{ 0, 0, (float)sfmlEvent.size.width , (float)sfmlEvent.size.height };
+				//m_pRenderWindow->setView(View(v));
+			}
+
 			if (m_bHasFocus)
 			{
 				Input::KInput::HandleEvent(sfmlEvent);
+			}
+
+			for (auto& func : m_eventQueueCallbacks)
+			{
+				func(sfmlEvent);
 			}
 			ImGui::SFML::ProcessEvent(sfmlEvent);
 		}
@@ -144,7 +158,7 @@ void KApplication::runApplication()
 			m_sceneDirector.tickActiveScene();
 
 		}
-		//m_pRenderer->render()
+		m_pRenderer->render();
 
 		const float EXTRA_FPS_BUMP = 0;
 		const float timeInSec = deltaClock.getElapsedTime().asSeconds();
@@ -152,7 +166,7 @@ void KApplication::runApplication()
 		//sf::sleep(sf::seconds(sleepTime));
 		this_thread::sleep_for(chrono::milliseconds(static_cast<int32>(sleepTime * 1000)));
 	}
-	rThread.join();
+	//rThread.join();
 	//pThread.join();
 }
 
@@ -176,6 +190,11 @@ KRAWLER_API Vec2u Krawler::KApplication::getWindowSize() const
 KRAWLER_API void Krawler::KApplication::closeApplication()
 {
 	m_pRenderWindow->close();
+}
+
+void Krawler::KApplication::subscribeToEventQueue(std::function<void(const sf::Event&)> function)
+{
+	m_eventQueueCallbacks.push_back(function);
 }
 
 KApplication::KApplication()
@@ -235,7 +254,7 @@ void Krawler::KApplication::fixedStep()
 	}
 }
 
-inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& lastTime, Time & frameTime, Time & accumulator)
+inline void Krawler::KApplication::updateFrameTime(Time & currentTime, Time & lastTime, Time & frameTime, Time & accumulator)
 {
 	currentTime = m_elapsedClock.getElapsedTime();
 	if (m_bIsFirstUpdate)
@@ -265,7 +284,7 @@ void Krawler::KApplication::outputFPS(const sf::Time & currentTime, sf::Time & f
 		const float fps = (KCAST(float, m_frames) / (currentTime - fpsLastTime).asSeconds());
 
 		const float ms = 1.0f / fps;
-		KPrintf(KTEXT("FPS: %f(%f ms per frame)\n"), fps, ms);
+		wprintf_s(KTEXT("FPS: %f(%f ms per frame)\n"), fps, ms);
 		//m_fpsText.setString(std::to_string(ms) + " ms/frame\n " + "FPS: " + std::to_string(fps));
 		//
 		fpsLastTime = currentTime;
@@ -294,7 +313,7 @@ void Krawler::KApplicationInitialise::loadFromEnginePreset()
 	engConfig.close();
 }
 
-std::wifstream& Krawler::operator >> (std::wifstream& os, KApplicationInitialise& data)
+std::wifstream& Krawler::operator >> (std::wifstream & os, KApplicationInitialise & data)
 {
 	wchar_t str[100];
 

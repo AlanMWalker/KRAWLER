@@ -10,11 +10,48 @@
 
 #include <unordered_map>
 
+#ifndef ASSET
+#define ASSET() KAssetLoader::getAssetLoader()
+#endif 
+
 namespace Krawler
 {
 	namespace Animation
 	{
 		struct KAnimation;
+	};
+
+	const std::wstring ACCEPTED_SHADERS[] =
+	{
+		L".glsl",
+		L".frag",
+		L".vert"
+	};
+
+	const std::wstring ACCEPTED_TEXTURES[] =
+	{
+		L".png",
+		L".bmp",
+		L".jpg"
+		//L"xml", // to be impl
+		//L"json" // not supported yet
+	};
+
+	const std::wstring ACCEPTED_AUDIO[]
+	{
+		L".wav",
+		L".ogg"
+	};
+
+	const std::wstring ACCEPTED_FONT[]
+	{
+		L".ttf"
+	};
+
+	const std::wstring SHADER_SUFFIXES[]
+	{
+		L"_v",
+		L"_f"
 	};
 
 	class KAssetLoader
@@ -44,17 +81,19 @@ namespace Krawler
 	private:
 
 		KAssetLoader();
-		void loadAssetsXML();
+		void scanFolderLoad();
 		void loadAnimationsXML();
 		void matchAnimationsToTextures();
 
 		std::wstring m_rootFolder;
 
 		void loadTexture(const std::wstring& name, const std::wstring& filePath);
-		void loadShader(const std::wstring& shaderName, const std::wstring& vertShaderPath, const std::wstring& fragShaderPath);
+		void loadShader(const std::wstring& shaderName, const std::wstring& shaderPath);
 		void loadSound(const std::wstring& name, const std::wstring& filePath);
 		void loadFont(const std::wstring& name, const std::wstring& filePath);
 		void loadTilemap(const std::wstring& name, const std::wstring& filePath);
+
+		void loadDefaultShadersFromString();
 
 		std::unordered_map <std::wstring, sf::Texture*> m_texturesMap;
 		std::unordered_map <std::wstring, sf::Font*> m_fontMap;

@@ -16,8 +16,7 @@ using namespace std;
 // -- KSCENE -- \\
 
 KScene::KScene(const std::wstring & sceneName, const Rectf& sceneBounds)
-	: m_sceneName(sceneName), m_dynamicQTree(0, sceneBounds), m_numberOfAllocatedChunks(0), m_staticQTree(4, sceneBounds),
-	m_physicsWorld(b2Vec2(0, 9.81f))
+	: m_sceneName(sceneName), m_dynamicQTree(0, sceneBounds), m_numberOfAllocatedChunks(0), m_staticQTree(4, sceneBounds)
 {
 	
 }
@@ -94,8 +93,6 @@ void Krawler::KScene::fixedTick()
 {
 	static std::stack<KEntity*> colliderStack;
 	static vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs(500);
-
-	m_physicsWorld.Step(KApplication::getApp()->getPhysicsDelta(), VelocityIterations, PositionIterations);
 
 	//TODO remove mutex lock 
 	KApplication::getMutexInstance().lock();

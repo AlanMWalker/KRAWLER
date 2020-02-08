@@ -3,7 +3,6 @@
 
 #include "Krawler.h"
 #include "KEntity.h"
-#include "Box2D\Box2D.h"
 
 #include "Physics\KPhysicsWorld.h"
 
@@ -95,7 +94,6 @@ namespace Krawler
 		KQuadtree m_dynamicQTree;
 		KQuadtree m_staticQTree;
 		uint32 m_numberOfAllocatedChunks;
-		b2World m_physicsWorld;
 	};
 
 	class KSceneDirector

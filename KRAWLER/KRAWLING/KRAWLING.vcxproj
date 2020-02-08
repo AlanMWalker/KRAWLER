@@ -14,7 +14,7 @@
     <ProjectGuid>{4336750D-B1A8-481C-8198-60826D7E5D7E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>KRAWLING</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>KRAWLER Test Project</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -55,13 +55,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\KRAWLER Engine\include;C:\SFML-2.5.1-x64\include;$(ProjectDir);$(ProjectDir)\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\KRAWLER Engine\include;D:\SFML-2.5.1\include;$(ProjectDir);$(ProjectDir)\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SFML-2.5.1-x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -73,7 +73,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\KRAWLER Engine\include;C:\SFML-2.5.1-x64\include;$(ProjectDir);$(ProjectDir)\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\KRAWLER Engine\include;D:\SFML-2.5.1\include;$(ProjectDir);$(ProjectDir)\imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
@@ -81,59 +81,12 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SFML-2.5.1-x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-audio.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AnimationTest.h" />
-    <ClInclude Include="Box2D\Box2D.h" />
-    <ClInclude Include="Box2D\Collision\b2BroadPhase.h" />
-    <ClInclude Include="Box2D\Collision\b2Collision.h" />
-    <ClInclude Include="Box2D\Collision\b2Distance.h" />
-    <ClInclude Include="Box2D\Collision\b2DynamicTree.h" />
-    <ClInclude Include="Box2D\Collision\b2TimeOfImpact.h" />
-    <ClInclude Include="Box2D\Collision\Shapes\b2ChainShape.h" />
-    <ClInclude Include="Box2D\Collision\Shapes\b2CircleShape.h" />
-    <ClInclude Include="Box2D\Collision\Shapes\b2EdgeShape.h" />
-    <ClInclude Include="Box2D\Collision\Shapes\b2PolygonShape.h" />
-    <ClInclude Include="Box2D\Collision\Shapes\b2Shape.h" />
-    <ClInclude Include="Box2D\Common\b2BlockAllocator.h" />
-    <ClInclude Include="Box2D\Common\b2Draw.h" />
-    <ClInclude Include="Box2D\Common\b2GrowableStack.h" />
-    <ClInclude Include="Box2D\Common\b2Math.h" />
-    <ClInclude Include="Box2D\Common\b2Settings.h" />
-    <ClInclude Include="Box2D\Common\b2StackAllocator.h" />
-    <ClInclude Include="Box2D\Common\b2Timer.h" />
-    <ClInclude Include="Box2D\Dynamics\b2Body.h" />
-    <ClInclude Include="Box2D\Dynamics\b2ContactManager.h" />
-    <ClInclude Include="Box2D\Dynamics\b2Fixture.h" />
-    <ClInclude Include="Box2D\Dynamics\b2Island.h" />
-    <ClInclude Include="Box2D\Dynamics\b2TimeStep.h" />
-    <ClInclude Include="Box2D\Dynamics\b2World.h" />
-    <ClInclude Include="Box2D\Dynamics\b2WorldCallbacks.h" />
-    <ClInclude Include="Box2D\Dynamics\Contacts\b2ChainAndCircleContact.h" />
-    <ClInclude Include="Box2D\Dynamics\Contacts\b2ChainAndPolygonContact.h" />
-    <ClInclude Include="Box2D\Dynamics\Contacts\b2CircleContact.h" />
-    <ClInclude Include="Box2D\Dynamics\Contacts\b2Contact.h" />
-    <ClInclude Include="Box2D\Dynamics\Contacts\b2ContactSolver.h" />
-    <ClInclude Include="Box2D\Dynamics\Contacts\b2EdgeAndCircleContact.h" />
-    <ClInclude Include="Box2D\Dynamics\Contacts\b2EdgeAndPolygonContact.h" />
-    <ClInclude Include="Box2D\Dynamics\Contacts\b2PolygonAndCircleContact.h" />
-    <ClInclude Include="Box2D\Dynamics\Contacts\b2PolygonContact.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2DistanceJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2FrictionJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2GearJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2Joint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2MotorJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2MouseJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2PrismaticJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2PulleyJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2RevoluteJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2RopeJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2WeldJoint.h" />
-    <ClInclude Include="Box2D\Dynamics\Joints\b2WheelJoint.h" />
-    <ClInclude Include="Box2D\Rope\b2Rope.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui-SFML.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -142,65 +95,18 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="imgui\misc\cpp\imgui_stdlib.h" />
-    <ClInclude Include="PhysicsTest.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TiledMapTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Box2DTest.cpp" />
-    <ClCompile Include="Box2D\Collision\b2BroadPhase.cpp" />
-    <ClCompile Include="Box2D\Collision\b2CollideCircle.cpp" />
-    <ClCompile Include="Box2D\Collision\b2CollideEdge.cpp" />
-    <ClCompile Include="Box2D\Collision\b2CollidePolygon.cpp" />
-    <ClCompile Include="Box2D\Collision\b2Collision.cpp" />
-    <ClCompile Include="Box2D\Collision\b2Distance.cpp" />
-    <ClCompile Include="Box2D\Collision\b2DynamicTree.cpp" />
-    <ClCompile Include="Box2D\Collision\b2TimeOfImpact.cpp" />
-    <ClCompile Include="Box2D\Collision\Shapes\b2ChainShape.cpp" />
-    <ClCompile Include="Box2D\Collision\Shapes\b2CircleShape.cpp" />
-    <ClCompile Include="Box2D\Collision\Shapes\b2EdgeShape.cpp" />
-    <ClCompile Include="Box2D\Collision\Shapes\b2PolygonShape.cpp" />
-    <ClCompile Include="Box2D\Common\b2BlockAllocator.cpp" />
-    <ClCompile Include="Box2D\Common\b2Draw.cpp" />
-    <ClCompile Include="Box2D\Common\b2Math.cpp" />
-    <ClCompile Include="Box2D\Common\b2Settings.cpp" />
-    <ClCompile Include="Box2D\Common\b2StackAllocator.cpp" />
-    <ClCompile Include="Box2D\Common\b2Timer.cpp" />
-    <ClCompile Include="Box2D\Dynamics\b2Body.cpp" />
-    <ClCompile Include="Box2D\Dynamics\b2ContactManager.cpp" />
-    <ClCompile Include="Box2D\Dynamics\b2Fixture.cpp" />
-    <ClCompile Include="Box2D\Dynamics\b2Island.cpp" />
-    <ClCompile Include="Box2D\Dynamics\b2World.cpp" />
-    <ClCompile Include="Box2D\Dynamics\b2WorldCallbacks.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Contacts\b2ChainAndCircleContact.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Contacts\b2ChainAndPolygonContact.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Contacts\b2CircleContact.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Contacts\b2Contact.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Contacts\b2ContactSolver.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Contacts\b2EdgeAndCircleContact.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Contacts\b2EdgeAndPolygonContact.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Contacts\b2PolygonAndCircleContact.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Contacts\b2PolygonContact.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2DistanceJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2FrictionJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2GearJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2Joint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2MotorJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2MouseJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2PrismaticJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2PulleyJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2RevoluteJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2RopeJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2WeldJoint.cpp" />
-    <ClCompile Include="Box2D\Dynamics\Joints\b2WheelJoint.cpp" />
-    <ClCompile Include="Box2D\Rope\b2Rope.cpp" />
     <ClCompile Include="imgui\imgui-SFML.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="Pong.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

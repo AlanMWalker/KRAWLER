@@ -14,7 +14,7 @@
     <ProjectGuid>{AEC75C52-0449-4C9B-AFF0-085AC57CBCD9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>KRAWLEREngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -54,13 +54,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;KRAWLERENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\SFML-2.5.1-x64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;D:\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SFML-2.5.1-x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -72,7 +72,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;KRAWLERENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\SFML-2.5.1-x64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;D:\SFML-2.5.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -80,57 +80,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\SFML-2.5.1-x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\Box2D\Collision\b2BroadPhase.cpp" />
-    <ClCompile Include="include\Box2D\Collision\b2CollideCircle.cpp" />
-    <ClCompile Include="include\Box2D\Collision\b2CollideEdge.cpp" />
-    <ClCompile Include="include\Box2D\Collision\b2CollidePolygon.cpp" />
-    <ClCompile Include="include\Box2D\Collision\b2Collision.cpp" />
-    <ClCompile Include="include\Box2D\Collision\b2Distance.cpp" />
-    <ClCompile Include="include\Box2D\Collision\b2DynamicTree.cpp" />
-    <ClCompile Include="include\Box2D\Collision\b2TimeOfImpact.cpp" />
-    <ClCompile Include="include\Box2D\Collision\Shapes\b2ChainShape.cpp" />
-    <ClCompile Include="include\Box2D\Collision\Shapes\b2CircleShape.cpp" />
-    <ClCompile Include="include\Box2D\Collision\Shapes\b2EdgeShape.cpp" />
-    <ClCompile Include="include\Box2D\Collision\Shapes\b2PolygonShape.cpp" />
-    <ClCompile Include="include\Box2D\Common\b2BlockAllocator.cpp" />
-    <ClCompile Include="include\Box2D\Common\b2Draw.cpp" />
-    <ClCompile Include="include\Box2D\Common\b2Math.cpp" />
-    <ClCompile Include="include\Box2D\Common\b2Settings.cpp" />
-    <ClCompile Include="include\Box2D\Common\b2StackAllocator.cpp" />
-    <ClCompile Include="include\Box2D\Common\b2Timer.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\b2Body.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\b2ContactManager.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\b2Fixture.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\b2Island.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\b2World.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\b2WorldCallbacks.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Contacts\b2ChainAndCircleContact.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Contacts\b2ChainAndPolygonContact.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Contacts\b2CircleContact.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Contacts\b2Contact.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Contacts\b2ContactSolver.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Contacts\b2EdgeAndCircleContact.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Contacts\b2EdgeAndPolygonContact.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Contacts\b2PolygonAndCircleContact.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Contacts\b2PolygonContact.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2DistanceJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2FrictionJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2GearJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2Joint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2MotorJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2MouseJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2PrismaticJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2PulleyJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2RevoluteJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2RopeJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2WeldJoint.cpp" />
-    <ClCompile Include="include\Box2D\Dynamics\Joints\b2WheelJoint.cpp" />
-    <ClCompile Include="include\Box2D\Rope\b2Rope.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -168,53 +122,6 @@
     <ClCompile Include="src\Utilities\KQuadtree.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Box2D\Box2D.h" />
-    <ClInclude Include="include\Box2D\Collision\b2BroadPhase.h" />
-    <ClInclude Include="include\Box2D\Collision\b2Collision.h" />
-    <ClInclude Include="include\Box2D\Collision\b2Distance.h" />
-    <ClInclude Include="include\Box2D\Collision\b2DynamicTree.h" />
-    <ClInclude Include="include\Box2D\Collision\b2TimeOfImpact.h" />
-    <ClInclude Include="include\Box2D\Collision\Shapes\b2ChainShape.h" />
-    <ClInclude Include="include\Box2D\Collision\Shapes\b2CircleShape.h" />
-    <ClInclude Include="include\Box2D\Collision\Shapes\b2EdgeShape.h" />
-    <ClInclude Include="include\Box2D\Collision\Shapes\b2PolygonShape.h" />
-    <ClInclude Include="include\Box2D\Collision\Shapes\b2Shape.h" />
-    <ClInclude Include="include\Box2D\Common\b2BlockAllocator.h" />
-    <ClInclude Include="include\Box2D\Common\b2Draw.h" />
-    <ClInclude Include="include\Box2D\Common\b2GrowableStack.h" />
-    <ClInclude Include="include\Box2D\Common\b2Math.h" />
-    <ClInclude Include="include\Box2D\Common\b2Settings.h" />
-    <ClInclude Include="include\Box2D\Common\b2StackAllocator.h" />
-    <ClInclude Include="include\Box2D\Common\b2Timer.h" />
-    <ClInclude Include="include\Box2D\Dynamics\b2Body.h" />
-    <ClInclude Include="include\Box2D\Dynamics\b2ContactManager.h" />
-    <ClInclude Include="include\Box2D\Dynamics\b2Fixture.h" />
-    <ClInclude Include="include\Box2D\Dynamics\b2Island.h" />
-    <ClInclude Include="include\Box2D\Dynamics\b2TimeStep.h" />
-    <ClInclude Include="include\Box2D\Dynamics\b2World.h" />
-    <ClInclude Include="include\Box2D\Dynamics\b2WorldCallbacks.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Contacts\b2ChainAndCircleContact.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Contacts\b2ChainAndPolygonContact.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Contacts\b2CircleContact.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Contacts\b2Contact.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Contacts\b2ContactSolver.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Contacts\b2EdgeAndCircleContact.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Contacts\b2EdgeAndPolygonContact.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Contacts\b2PolygonAndCircleContact.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Contacts\b2PolygonContact.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2DistanceJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2FrictionJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2GearJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2Joint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2MotorJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2MouseJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2PrismaticJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2PulleyJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2RevoluteJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2RopeJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2WeldJoint.h" />
-    <ClInclude Include="include\Box2D\Dynamics\Joints\b2WheelJoint.h" />
-    <ClInclude Include="include\Box2D\Rope\b2Rope.h" />
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
     <ClInclude Include="include\Components\KCAnimatedSprite.h" />
     <ClInclude Include="include\Components\KCBoxCollider.h" />

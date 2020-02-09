@@ -718,7 +718,7 @@ void extract_tile_layer_data(const json & tileLayerJson, KTILayer * pTileLayerDa
 
 	GET_NUMBER_FLOAT(tileLayerJson, "height", pTileLayerData->height);
 
-	const Krawler::int32 TILE_TOTAL = pTileLayerData->width* pTileLayerData->height;
+	const Krawler::int32 TILE_TOTAL = static_cast<int32>(pTileLayerData->width * pTileLayerData->height);
 
 	if (tileLayerJson["data"].size() != TILE_TOTAL)
 	{
@@ -750,7 +750,7 @@ bool extract_tile_sets(const json & mapJson, KTIMap * pMap)
 		return false;
 	}
 
-	const int32 TILESET_COUNT = tilesetJson.size();
+	const uint64 TILESET_COUNT = tilesetJson.size();
 
 	if (TILESET_COUNT == 0)
 	{
@@ -758,7 +758,7 @@ bool extract_tile_sets(const json & mapJson, KTIMap * pMap)
 	}
 	pMap->tilesetVector.resize(TILESET_COUNT);
 
-	for (int32 i = 0; i < TILESET_COUNT; ++i)
+	for (uint64 i = 0; i < TILESET_COUNT; ++i)
 	{
 		if (!extract_singular_tileset(tilesetJson[i], &pMap->tilesetVector[i]))
 		{
@@ -833,8 +833,8 @@ void extract_tile_properties(const json & jsonObj, std::map<std::wstring, KTIPro
 	}
 
 	//Get total number of properties 
-	const int32 Tile_Property_Count = tile_property_obj_iterator->size();
-	const int32 Tile_Property_Type_Count = tile_property_types_obj_iterator->size();
+	const uint64 Tile_Property_Count = tile_property_obj_iterator->size();
+	const uint64 Tile_Property_Type_Count = tile_property_types_obj_iterator->size();
 
 	//Make sure total number of properties matches number of types
 	if (Tile_Property_Count != Tile_Property_Type_Count)

@@ -3,9 +3,9 @@
 #include "KApplication.h"
 
 #include "KComponent.h"
-
-#include "Components\KCBoxCollider.h"
-#include "Components\KCSprite.h"
+#include "Components/KCBoxCollider.h"
+#include "Components/KCSprite.h"
+#include "AssetLoader/KAssetLoader.h"
 
 using namespace Krawler;
 using namespace Components;
@@ -21,7 +21,6 @@ const Vec2f BALL_SIZE(32, 32);
 class PaddleControl : public KComponentBase
 {
 public:
-
 	PaddleControl(KEntity* pEntity, KKey up, KKey down)
 		: KComponentBase(pEntity), m_up(up), m_down(down), m_pTransform(nullptr)
 	{
@@ -48,12 +47,12 @@ public:
 	}
 	void moveUp()
 	{
-		m_pTransform->move(0.0f, -MOVE_SPEED*KApplication::getApp()->getDeltaTime());
+		m_pTransform->move(0.0f, -MOVE_SPEED * KApplication::getApp()->getDeltaTime());
 	}
 
 	void moveDown()
 	{
-		m_pTransform->move(0.0f, MOVE_SPEED*KApplication::getApp()->getDeltaTime());
+		m_pTransform->move(0.0f, MOVE_SPEED * KApplication::getApp()->getDeltaTime());
 	}
 
 
@@ -63,7 +62,39 @@ private:
 	const float MOVE_SPEED = 40.0f;
 };
 
+class Ball :
+	public KComponentBase
+{
+public:
+	Ball(KEntity* pEntity)
+		: KComponentBase(pEntity)
+	{
+		setComponentTag(KTEXT("ball"));
+	}
 
+	virtual KInitStatus init() override
+	{
+		m_pSprite = new KCSprite(getEntity(), Vec2f(64, 64));
+		getEntity()->addComponent(m_pSprite);
+		return KInitStatus::Success;
+	}
+
+	virtual void onEnterScene()
+	{
+		sf::Texture* pTex = KAssetLoader::getAssetLoader().getTexture(KTEXT("pong_ball"));
+		m_pSprite->setTexture(pTex);
+		m_pSprite->setColour(Colour::White);
+		getEntity()->getTransform()->setTranslation(50, 50);
+	}
+
+	virtual void tick() override
+	{
+	}
+
+private:
+
+	KCSprite* m_pSprite = nullptr;
+};
 
 void addComponents()
 {
@@ -71,8 +102,36 @@ void addComponents()
 	pPaddleLeft->addComponent(new PaddleControl(pPaddleLeft, KKey::W, KKey::S));
 	pPaddleRight->addComponent(new KCSprite(pPaddleRight, PADDLE_SIZE));
 	pPaddleRight->addComponent(new PaddleControl(pPaddleRight, KKey::Up, KKey::Down));
-	pBall->addComponent(new KCSprite(pBall, BALL_SIZE));
+	pBall->addComponent(new Ball(pBall));
 }
+
+void allocateEntities(KApplication* pApp)
+{
+	KCHECK(pApp);
+
+	auto pScene = pApp->getCurrentScene();
+
+	{ // left paddle 
+		pPaddleLeft = pScene->addEntityToScene();
+		KCHECK(pPaddleLeft);
+		pPaddleLeft->setTag(KTEXT("left_paddle"));
+	}
+
+	{ // right paddle
+		pPaddleRight = pScene->addEntityToScene();
+		KCHECK(pPaddleRight);
+		pPaddleRight->setTag(KTEXT("right_paddle"));
+
+	}
+
+	{ // ball
+		pBall = pScene->addEntityToScene();
+		KCHECK(pBall);
+		pBall->setTag(KTEXT("ball"));
+
+	}
+}
+
 
 void setupGame()
 {
@@ -97,13 +156,7 @@ int32 main(void)
 	pApp->getSceneDirector().addScene(pScene);
 	pApp->getSceneDirector().setCurrentScene(SceneName);
 
-	pPaddleLeft = pScene->addEntityToScene();
-	KCHECK(pPaddleLeft);
-	pPaddleRight = pScene->addEntityToScene();
-	KCHECK(pPaddleRight);
-	pBall = pScene->addEntityToScene();
-	KCHECK(pBall);
-
+	allocateEntities(pApp);
 	addComponents();
 
 	auto result = InitialiseSubmodules();

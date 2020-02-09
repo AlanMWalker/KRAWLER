@@ -77,7 +77,7 @@ namespace Krawler
 		//Param: string containing new tag
 		//Return: n/a
 		//Info: 
-		KRAWLER_API void setEntityTag(const std::wstring& tag) { m_entityTag = tag; }
+		KRAWLER_API void setTag(const std::wstring& tag) { m_entityTag = tag; }
 
 		//Param: Type of component being requested
 		//Return: Pointer to the component requested, if not found will return nullptr

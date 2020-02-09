@@ -17,4 +17,5 @@
   <level name="test_level" file_path="maps/zsort.json"/>
   <!--<texture name="map_tiles" file_path="textures/map_tiles.png"/>-->
   <texture name="map_tiles" file_path="textures/tileset.png"/>
+  <texture name="pong_ball" file_path="textures/pong_ball.png"/>
 </assets>

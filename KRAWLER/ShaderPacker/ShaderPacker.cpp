@@ -10,12 +10,28 @@ int main(int argc, char* argv[])
 {
 	string outputFilename;
 	string outputFileContents;
-	char fragContents[MAX_SHADER_FILE_CHARS];
-	char vertContents[MAX_SHADER_FILE_CHARS];
+	
+	char* pFragContents = nullptr;
+	char* pVertContents = nullptr;
+
+	pFragContents = new char[MAX_SHADER_FILE_CHARS];
+	if (!pFragContents)
+	{
+		cout << "Error! Not enough memory to load shaders!" << endl;
+		return 1;
+	}
+
+	pVertContents = new char[MAX_SHADER_FILE_CHARS];
+	if (!pVertContents)
+	{
+		cout << "Error! Not enough memory to load shaders" << endl;
+		return 1;
+	}
+
 	ofstream output;
 	ifstream fragFile, vertFile;
-	memset(fragContents, '\0', sizeof(char) * MAX_SHADER_FILE_CHARS);
-	memset(vertContents, '\0', sizeof(char) * MAX_SHADER_FILE_CHARS);
+	memset(pFragContents, '\0', sizeof(char) * MAX_SHADER_FILE_CHARS);
+	memset(pVertContents, '\0', sizeof(char) * MAX_SHADER_FILE_CHARS);
 	char* fragArg = nullptr, *vertArg = nullptr;
 
 	if (argc < 4)
@@ -59,11 +75,11 @@ int main(int argc, char* argv[])
 			goto bailout;
 		}
 		fragFile.seekg(ios::beg);
-		fragFile.read(fragContents, len);
+		fragFile.read(pFragContents, len);
 		fragFile.close();
 		if (len < MAX_SHADER_FILE_CHARS)
 		{
-			fragContents[len] = '\0';
+			pFragContents[len] = '\0';
 		}
 	}
 
@@ -75,17 +91,17 @@ int main(int argc, char* argv[])
 			goto bailout;
 		}
 		vertFile.seekg(ios::beg);
-		vertFile.read(vertContents, len);
+		vertFile.read(pVertContents, len);
 		vertFile.close();
 		if (len < MAX_SHADER_FILE_CHARS)
 		{
-			vertContents[len] = '\0';
+			pVertContents[len] = '\0';
 		}
 	}
 
-	outputFileContents += vertContents;
+	outputFileContents += pVertContents;
 	outputFileContents += "\n#DIVIDE\n";
-	outputFileContents += fragContents;
+	outputFileContents += pFragContents;
 
 	output.open(outputFilename, ios::out);
 

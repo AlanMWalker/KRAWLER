@@ -173,7 +173,7 @@ void Krawler::KScene::fixedTick()
 			alreadyCheckedCollisionPairs[alreadyCheckedIndex] = pairA;
 			++alreadyCheckedIndex;
 
-			const bool result = CollisionLookupTable[pCollider->getColliderType()][possibleHitCollider->getColliderType()](data);
+			const bool result = CollisionLookupTable[static_cast<uint32>(pCollider->getColliderType())][static_cast<uint32>(possibleHitCollider->getColliderType())](data);
 
 			if (result)
 			{

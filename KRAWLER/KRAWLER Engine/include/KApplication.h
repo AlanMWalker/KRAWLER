@@ -75,7 +75,7 @@ namespace Krawler
 		KRAWLER_API Krawler::KScene* const getCurrentScene() { return m_sceneDirector.getCurrentScene(); }
 
 		KRAWLER_API float getElapsedTime() const;
-		KRAWLER_API float getGameFPS() const { return m_gameFPS; }
+		KRAWLER_API uint32 getGameFPS() const { return m_gameFPS; }
 		KRAWLER_API float getDeltaTime() const { return m_gameDelta; }
 		KRAWLER_API float getPhysicsDelta() const { return m_physicsDelta; }
 

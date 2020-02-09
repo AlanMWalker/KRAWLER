@@ -49,7 +49,7 @@ namespace Krawler
 
 			KRAWLER_API void setPhysicsWorldProperties(const KPhysicsWorldProperties& properties) { m_properties = properties; }
 
-			KRAWLER_API int32 getNumberOfPhysicsBodies() const { return m_physicsEntities.size(); }
+			KRAWLER_API uint32 getNumberOfPhysicsBodies() const { return static_cast<uint32>(m_physicsEntities.size()); }
 
 			void setQuadtrees(KQuadtree* pDynamicTree, KQuadtree* pStaticTree);
 

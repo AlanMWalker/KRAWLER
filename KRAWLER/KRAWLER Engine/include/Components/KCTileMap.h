@@ -30,7 +30,7 @@ namespace Krawler
 		struct KCHorizontalTileLine : KCRenderableBase
 		{
 			KCHorizontalTileLine()
-				: KCRenderableBase(nullptr)
+				: KCRenderableBase(nullptr), horizontalGridSize(0), pTexture(nullptr)
 			{
 			}
 

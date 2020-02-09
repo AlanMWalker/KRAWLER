@@ -136,7 +136,7 @@ void KRenderer::defaultRender()
 	default:
 		sortByRenderLayer();
 	}
-	const int32 size = m_renderablesVector.size();
+	
 	for (auto& pSplit : m_splitMapVec)
 	{
 		target->draw(*pSplit);

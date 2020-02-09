@@ -5,7 +5,7 @@ using namespace Krawler;
 using namespace Krawler::Components;
 
 KCOrientedBoxCollider::KCOrientedBoxCollider(KEntity* pEntity, const Vec2f& size)
-	: KCColliderBase(pEntity, OBB), m_size(size)
+	: KCColliderBase(pEntity, KCColliderType::OBB), m_size(size)
 {
 	m_pTransform = getEntity()->getComponent<KCTransform>();
 

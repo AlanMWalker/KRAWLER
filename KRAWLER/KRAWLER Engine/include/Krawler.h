@@ -45,7 +45,7 @@ namespace Krawler
 
 	struct KApplicationInitialise;
 
-	enum KInitStatus
+	enum class KInitStatus : int32
 	{
 		Success = 0,
 		Failure = -1,
@@ -65,7 +65,7 @@ namespace Krawler
 			case Krawler::KInitStatus::Nullptr: std::cout << "Null pointer!" << std::endl; break;											\
 			case Krawler::KInitStatus::MissingResource: std::cout << "Missing Resource!" << std::endl; break;								\
 			}																																	\
-			if(status!=Success) { return status;}\
+			if(status!= Krawler::KInitStatus::Success) { return status;}\
 		}\
 	}
 	KRAWLER_API KInitStatus StartupEngine(KApplicationInitialise* windowInit);

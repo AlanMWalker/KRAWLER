@@ -79,7 +79,7 @@ void setupGame()
 
 }
 
-int main(void)
+int32 main(void)
 {
 	KApplicationInitialise init;
 	init.width = 640;
@@ -106,7 +106,11 @@ int main(void)
 
 	addComponents();
 
-	KINIT_CHECK(InitialiseSubmodules());
+	auto result = InitialiseSubmodules();
+	if (result != KInitStatus::Success)
+	{
+		return static_cast<int32>(result);
+	}
 
 	setupGame();
 
@@ -114,5 +118,5 @@ int main(void)
 	ShutdownEngine();
 
 
-	return Success;
+	return static_cast<int32>(KInitStatus::Success);
 }

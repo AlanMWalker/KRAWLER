@@ -122,7 +122,7 @@ void Krawler::KScene::fixedTick()
 		m_dynamicQTree.getPossibleCollisions(pEntity, colliderStack);
 
 		m_staticQTree.getPossibleCollisions(pEntity, colliderStack);
-		const int32 stackSize = colliderStack.size();
+		const uint64 stackSize = colliderStack.size();
 		int32 alreadyCheckedIndex = 0;
 
 		while (!colliderStack.empty())
@@ -173,7 +173,7 @@ void Krawler::KScene::fixedTick()
 			alreadyCheckedCollisionPairs[alreadyCheckedIndex] = pairA;
 			++alreadyCheckedIndex;
 
-			const bool result = CollisionLookupTable[pCollider->getColliderType()][possibleHitCollider->getColliderType()](data);
+			const bool result = CollisionLookupTable[static_cast<uint32>(pCollider->getColliderType())][static_cast<uint32>(possibleHitCollider->getColliderType())](data);
 
 			if (result)
 			{
@@ -376,7 +376,7 @@ KInitStatus KSceneDirector::initScenes()
 	if (m_scenes.size() == 0)
 	{
 		KPrintf(KTEXT("Failed to initialise scene director! No scenes added"));
-		return Failure;
+		return KInitStatus::Failure;
 	}
 
 

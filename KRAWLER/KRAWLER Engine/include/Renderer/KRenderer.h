@@ -20,7 +20,7 @@ namespace Krawler
 			Raycast
 		};
 
-		enum KRenderSortType
+		enum class KRenderSortType
 		{
 			LayerSort,
 			ZOrderSort

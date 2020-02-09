@@ -19,12 +19,11 @@ void Krawler::KPrintf(const wchar_t* szFormat, ...)
 #endif
 	static char buffer[256];
 	static char timeBuffer[256];
-	static std::stringstream timestr;
-
-	timestr.str("");
-
+	static char dt[100]; 
+	
 	std::time_t tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-	timestr << std::put_time(std::localtime(&tt), "%d-%m-%Y %H:%M:%S ");
+	ctime_s(dt, 100 * sizeof(char), &tt);
+	
 	wchar_t szBuff[1024];
 	va_list arg;
 	va_start(arg, szFormat);
@@ -35,7 +34,7 @@ void Krawler::KPrintf(const wchar_t* szFormat, ...)
 	//#ifdef _DEBUG
 	outputLogFileMutex.lock();
 	wprintf(L"%s", szBuff);
-	outputLog << sf::String(timestr.str()).toWideString() << szBuff;
+	outputLog << sf::String(dt).toWideString() << szBuff;
 	outputLogFileMutex.unlock();
 	//#endif 
 }

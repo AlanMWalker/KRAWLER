@@ -15,7 +15,7 @@ namespace Krawler
 {
 	namespace Components
 	{
-		enum KTileStateEnum : int32
+		enum class KTileStateEnum : int32
 		{
 			Walkable,
 			Slowdown,
@@ -30,7 +30,7 @@ namespace Krawler
 		struct KCHorizontalTileLine : KCRenderableBase
 		{
 			KCHorizontalTileLine()
-				: KCRenderableBase(nullptr)
+				: KCRenderableBase(nullptr), horizontalGridSize(0), pTexture(nullptr)
 			{
 			}
 

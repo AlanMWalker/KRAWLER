@@ -26,7 +26,7 @@ constexpr int32 MAX_ANIMATION_FILE_CHARS = 100000;
 std::wstring FindFilename(std::wstring& str)
 {
 	std::wstring returnStr;
-	uint32 idx = str.size() - 1;
+	uint32 idx = static_cast<unsigned>(str.size() - 1);
 	bool bIsFilename = false;
 	while (idx != 0)
 	{

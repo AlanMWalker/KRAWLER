@@ -186,10 +186,10 @@ KInitStatus KCTileMapSplit::init()
 
 
 
-		for (int j = 0; j < m_pTiledImportData->height; ++j)
+		for (uint32 j = 0; j < m_pTiledImportData->height; ++j)
 		{
 			verticesIndex = 0;
-			for (int i = 0; i < m_pTiledImportData->width; ++i)
+			for (uint32 i = 0; i < m_pTiledImportData->width; ++i)
 			{
 				const int32 TileIndex = i + j * m_pTiledImportData->width;
 				sf::Vertex* quad = &vertices[TileIndex * 4];//[verticesIndex];
@@ -337,7 +337,7 @@ void Krawler::Components::KCTileMapSplit::isolateBlockedMap()
 		KCHECK(pEntity != nullptr);
 		pEntity->addComponent(new KCPhysicsBody(pEntity, prop));
 		pEntity->addComponent(new KCBoxCollider(pEntity, Vec2f(m_tileDimensions)));
-		pEntity->getTransformComponent()->setTranslation(static_cast<float>(x * m_tileDimensions.x), static_cast<float>(y * m_tileDimensions.y));
+		pEntity->getTransform()->setTranslation(static_cast<float>(x * m_tileDimensions.x), static_cast<float>(y * m_tileDimensions.y));
 	}
 
 }

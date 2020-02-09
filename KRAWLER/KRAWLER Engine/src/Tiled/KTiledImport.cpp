@@ -331,8 +331,8 @@ void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap & propMap, 
 	}
 
 	//Get total number of properties 
-	const int32 Property_Count = property_obj_it->size();
-	const int32 Type_Count = property_types_it->size();
+	const uint32 Property_Count = static_cast<uint32>(property_obj_it->size());
+	const uint32 Type_Count = static_cast<uint32>(property_types_it->size());
 
 	//Make sure total number of properties matches number of types
 	if (Property_Count != Type_Count)
@@ -479,7 +479,7 @@ bool extract_map_layers(const json & jsonObj, KTIMap * pMap)
 
 	KCHECK(layersObject.is_array()); // layers must always be an array 
 
-	const int32 LayerCount = layersObject.size();
+	const uint64 LayerCount = layersObject.size();
 
 	// No layers == invalid file 
 	if (LayerCount == 0)
@@ -591,7 +591,7 @@ KTILayerTypes get_layer_type(const json & layerJsonObj)
 
 bool is_template_object(const json & mapObjectJson)
 {
-	mapObjectJson.count("template") > 0;
+	return mapObjectJson.count("template") > 0;
 }
 
 void extract_object_layer_data(const json & objectLayerJson, KTILayer * pObjLayerData)
@@ -609,7 +609,7 @@ void extract_object_layer_data(const json & objectLayerJson, KTILayer * pObjLaye
 		return;
 	}
 
-	const int32 ObjectCount = objectLayerJson["objects"].size();
+	const uint64 ObjectCount = objectLayerJson["objects"].size();
 	const json& mapObjectsArrayJson = objectLayerJson["objects"];
 
 	if (ObjectCount < 1)

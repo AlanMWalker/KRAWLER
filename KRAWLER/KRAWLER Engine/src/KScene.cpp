@@ -122,7 +122,7 @@ void Krawler::KScene::fixedTick()
 		m_dynamicQTree.getPossibleCollisions(pEntity, colliderStack);
 
 		m_staticQTree.getPossibleCollisions(pEntity, colliderStack);
-		const int32 stackSize = colliderStack.size();
+		const uint64 stackSize = colliderStack.size();
 		int32 alreadyCheckedIndex = 0;
 
 		while (!colliderStack.empty())

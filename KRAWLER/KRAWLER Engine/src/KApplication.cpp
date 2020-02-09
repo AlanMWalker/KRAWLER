@@ -50,9 +50,9 @@ void KApplication::setupApplication(const KApplicationInitialise& appInit)
 	sf::ContextSettings settings;
 	m_pRenderWindow->create(VideoMode(appInit.width, appInit.height), appInit.windowTitle, style, settings);
 	m_pRenderWindow->setFramerateLimit(m_gameFPS);
-	m_viewSize.x = appInit.width;
-	m_viewSize.y = appInit.height;
-	m_pRenderWindow->setView(sf::View(Rectf(0, 0, appInit.width, appInit.height)));
+	m_viewSize.x = static_cast<float>(appInit.width);
+	m_viewSize.y = static_cast<float>(appInit.height);
+	m_pRenderWindow->setView(sf::View(Rectf(0, 0, static_cast<float>(appInit.width), static_cast<float>(appInit.height))));
 
 	m_pRenderer = new KRenderer;
 

@@ -63,10 +63,10 @@ namespace Krawler
 
 		struct KTIObject : public KTIMapBase
 		{
-			int32 gid;
-			int32 id;
-			float rotation; //degrees
-			KTIObjectTypes objectType;
+			int32 gid = 0;
+			int32 id = 0;
+			float rotation = 0.0f; //degrees
+			KTIObjectTypes objectType = KTIObjectTypes::Circle;
 		};
 
 		struct KTILayer : public KTIMapBase

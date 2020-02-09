@@ -73,7 +73,8 @@ KInitStatus Krawler::Components::KCTileMap::init()
 		const uint32 TOTAL_TILES = (uint32)(layer.width * layer.height);
 		m_layerVertexBufferVector[layerIdx].setPrimitiveType(sf::PrimitiveType::Quads);
 		m_layerVertexBufferVector[layerIdx].setUsage(sf::VertexBuffer::Usage::Static);
-		m_layerVertexBufferVector[layerIdx].create(TOTAL_TILES * 4);
+		m_layerVertexBufferVector[layerIdx].create(static_cast<uint64>(TOTAL_TILES * 4));
+
 		vertices.resize(TOTAL_TILES * 4);
 		const Vec2f TileDim((float)m_pTiledImportData->tileWidth, (float)m_pTiledImportData->tileHeight);
 
@@ -218,10 +219,10 @@ KInitStatus KCTileMapSplit::init()
 					const int32 localID = layer.tileData[TileIndex] - tileset.firstGID;
 					texX = localID % (((int)tileset.width) / tileset.tileWidth);
 					texY = localID / (((int)tileset.width) / tileset.tileWidth);
-					quad[0].texCoords = Vec2f(texX * tileset.tileWidth, texY * tileset.tileHeight);
-					quad[1].texCoords = Vec2f((texX + 1) * tileset.tileWidth, texY * tileset.tileHeight);
-					quad[2].texCoords = Vec2f((texX + 1) * tileset.tileWidth, (texY + 1) * tileset.tileHeight);
-					quad[3].texCoords = Vec2f(texX * tileset.tileWidth, (texY + 1) * tileset.tileHeight);
+					quad[0].texCoords = Vec2f(static_cast<float>(texX * tileset.tileWidth), static_cast<float>(texY * tileset.tileHeight));
+					quad[1].texCoords = Vec2f(static_cast<float>((texX + 1) * tileset.tileWidth), static_cast<float>(texY * tileset.tileHeight));
+					quad[2].texCoords = Vec2f(static_cast<float>((texX + 1) * tileset.tileWidth), static_cast<float>((texY + 1) * tileset.tileHeight));
+					quad[3].texCoords = Vec2f(static_cast<float>(texX * tileset.tileWidth), static_cast<float>((texY + 1) * tileset.tileHeight));
 				}
 
 				verticesIndex += 4;
@@ -239,8 +240,8 @@ KInitStatus KCTileMapSplit::init()
 				m_tileMapVec[j].vertexBuffersByLayerVector[vbLayerIndex].setPrimitiveType(sf::PrimitiveType::Quads);
 				m_tileMapVec[j].vertexBuffersByLayerVector[vbLayerIndex].setUsage(sf::VertexBuffer::Usage::Static);
 				m_tileMapVec[j].vertexBuffersByLayerVector[vbLayerIndex].create(HorizontalLineVertexCount);
-				m_tileMapVec[j].vertexBuffersByLayerVector[vbLayerIndex].update(&vertices[j * 4 * m_pTiledImportData->width]);
-				m_tileMapVec[j].topLeft = Vec2f(0, j * m_pTiledImportData->tileHeight);
+				m_tileMapVec[j].vertexBuffersByLayerVector[vbLayerIndex].update(&vertices[static_cast<uint64> (j * 4 * m_pTiledImportData->width)]);
+				m_tileMapVec[j].topLeft = Vec2f(0, static_cast<float>(j * m_pTiledImportData->tileHeight));
 			}
 		}
 		++vbLayerIndex;
@@ -336,7 +337,7 @@ void Krawler::Components::KCTileMapSplit::isolateBlockedMap()
 		KCHECK(pEntity != nullptr);
 		pEntity->addComponent(new KCPhysicsBody(pEntity, prop));
 		pEntity->addComponent(new KCBoxCollider(pEntity, Vec2f(m_tileDimensions)));
-		pEntity->getTransformComponent()->setTranslation(x * m_tileDimensions.x, y * m_tileDimensions.y);
+		pEntity->getTransformComponent()->setTranslation(static_cast<float>(x * m_tileDimensions.x), static_cast<float>(y * m_tileDimensions.y));
 	}
 
 }

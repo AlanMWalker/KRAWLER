@@ -79,6 +79,11 @@ static bool get_string_if_present(wstring& value, const string& name, const json
 //Return: true if set, false if not
 static bool get_int_if_present(int32& value, const string& name, const json& rootJson);
 
+//Desc: get a int value if it present on a json object
+//Params: float ref of variable to be set, name of json object, json object to extract from
+//Return: true if set, false if not
+static bool get_uint_if_present(uint32 & value, const string & name, const json & rootJson);
+
 //Desc: get a float value if it present on a json object
 //Params: float ref of variable to be set, name of json object, json object to extract from
 //Return: true if set, false if not
@@ -211,35 +216,35 @@ bool load_tiled_map(const json& rootJson, KTIMap* pMap)
 		return false;
 	}
 
-	if (!get_int_if_present(pMap->width, "width", rootJson))
+	if (!get_uint_if_present(pMap->width, "width", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'width' field on map!\n");
 		return false;
 	}
 
-	if (!get_int_if_present(pMap->height, "height", rootJson))
+	if (!get_uint_if_present(pMap->height, "height", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'height' field on map!\n");
 		return false;
 	}
 
-	if (!get_int_if_present(pMap->tileWidth, "tilewidth", rootJson))
+	if (!get_uint_if_present(pMap->tileWidth, "tilewidth", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'tilewidth' field on map!\n");
 		return false;
 	}
 
-	if (!get_int_if_present(pMap->tileHeight, "tileheight", rootJson))
+	if (!get_uint_if_present(pMap->tileHeight, "tileheight", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'tileheight' field on map!\n");
 		return false;
 	}
 
-	if (!get_int_if_present(pMap->nextObjectID, "nextobjectid", rootJson))
+	if (!get_uint_if_present(pMap->nextObjectID, "nextobjectid", rootJson))
 	{
 		MAP_PARSE_ERR;
 		KPRINTF("Failed to find 'nextobjectid' field on map!\n");
@@ -276,6 +281,24 @@ bool get_int_if_present(int32 & value, const string & name, const json & rootJso
 		return false;
 	}
 	value = result.get<int>();
+	return true;
+}
+
+bool get_uint_if_present(uint32& value, const string& name, const json& rootJson)
+{
+	auto intProperty = rootJson.count(name);
+	if (intProperty == 0)
+	{
+		return false;
+	}
+
+	auto result = rootJson[name];
+
+	if (!result.is_number_integer())
+	{
+		return false;
+	}
+	value = result.get<uint32>();
 	return true;
 }
 
@@ -337,7 +360,7 @@ void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap & propMap, 
 		key = sf::String(itProperties.key()).toWideString();
 		switch (Type_Enum)
 		{
-		case String:
+		case KTIPropertyTypes::String:
 		{
 			valueWideStr = sf::String(itProperties.value().get<string>()).toWideString();
 			if (valueWideStr.size() < MAX_PROPERTY_STRING_CHARS)
@@ -355,28 +378,28 @@ void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap & propMap, 
 		}
 		break;
 
-		case Int:
+		case KTIPropertyTypes::Int:
 		{
 			mapPropertyUnion.type_int = itProperties.value().get<int>();
 			propMap.emplace(key, mapPropertyUnion);
 		}
 		break;
 
-		case Float:
+		case KTIPropertyTypes::Float:
 		{
 			mapPropertyUnion.type_float = itProperties.value().get<float>();
 			propMap.emplace(key, mapPropertyUnion);
 		}
 		break;
 
-		case Bool:
+		case KTIPropertyTypes::Bool:
 		{
 			mapPropertyUnion.type_bool = itProperties.value().get<bool>();
 			propMap.emplace(key, mapPropertyUnion);
 		}
 		break;
 
-		case HexColour:
+		case KTIPropertyTypes::HexColour:
 		{
 			//@Rethink Horrible way of parsing hex value of colours 
 			key = sf::String(itProperties.key()).toWideString();
@@ -428,7 +451,7 @@ void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap & propMap, 
 			break;
 		}
 
-		case File:
+		case KTIPropertyTypes::File:
 		{
 			bLoadedCorrectly = false;
 			MAP_PARSE_ERR;
@@ -510,11 +533,11 @@ bool extract_map_layers(const json & jsonObj, KTIMap * pMap)
 
 		switch (pMap->layersVector[i].layerType)
 		{
-		case TileLayer:
+		case KTILayerTypes::TileLayer:
 			extract_tile_layer_data(layersObject[i], &individual_layer_struct);
 			break;
 
-		case ObjectLayer:
+		case KTILayerTypes::ObjectLayer:
 
 			extract_object_layer_data(layersObject[i], &individual_layer_struct);
 			break;
@@ -853,7 +876,7 @@ void extract_tile_properties(const json & jsonObj, std::map<std::wstring, KTIPro
 			key = sf::String(properties_iterator.key()).toWideString();
 			switch (Type_Enum)
 			{
-			case String:
+			case KTIPropertyTypes::String:
 			{
 				valueWideStr = sf::String(properties_iterator.value().get<string>()).toWideString();
 				if (valueWideStr.size() < MAX_PROPERTY_STRING_CHARS)
@@ -871,28 +894,28 @@ void extract_tile_properties(const json & jsonObj, std::map<std::wstring, KTIPro
 			}
 			break;
 
-			case Int:
+			case KTIPropertyTypes::Int:
 			{
 				mapPropertyUnion.type_int = properties_iterator.value().get<int>();
 				temporary_property_map.emplace(key, mapPropertyUnion);
 			}
 			break;
 
-			case Float:
+			case KTIPropertyTypes::Float:
 			{
 				mapPropertyUnion.type_float = properties_iterator.value().get<float>();
 				temporary_property_map.emplace(key, mapPropertyUnion);
 			}
 			break;
 
-			case Bool:
+			case KTIPropertyTypes::Bool:
 			{
 				mapPropertyUnion.type_bool = properties_iterator.value().get<bool>();
 				temporary_property_map.emplace(key, mapPropertyUnion);
 			}
 			break;
 
-			case HexColour:
+			case KTIPropertyTypes::HexColour:
 			{
 				//@Rethink Horrible way of parsing hex value of colours 
 				key = sf::String(properties_iterator.key()).toWideString();
@@ -944,7 +967,7 @@ void extract_tile_properties(const json & jsonObj, std::map<std::wstring, KTIPro
 				break;
 			}
 
-			case File:
+			case KTIPropertyTypes::File:
 			{
 				bLoadedCorrectly = false;
 				MAP_PARSE_ERR;
@@ -987,8 +1010,8 @@ void extract_tile_properties(const json & jsonObj, KTIPropertiesMap & propMap, K
 	}
 
 	//Get total number of properties 
-	const int32 Property_Count = property_obj_it->size();
-	const int32 Type_Count = property_types_it->size();
+	const uint32 Property_Count = static_cast<uint32>(property_obj_it->size());
+	const uint32 Type_Count = static_cast<uint32>(property_types_it->size());
 
 	//Make sure total number of properties matches number of types
 	if (Property_Count != Type_Count)
@@ -1018,7 +1041,7 @@ void extract_tile_properties(const json & jsonObj, KTIPropertiesMap & propMap, K
 		key = sf::String(itProperties.key()).toWideString();
 		switch (Type_Enum)
 		{
-		case String:
+		case KTIPropertyTypes::String:
 		{
 			valueWideStr = sf::String(itProperties.value().get<string>()).toWideString();
 			if (valueWideStr.size() < MAX_PROPERTY_STRING_CHARS)
@@ -1036,28 +1059,28 @@ void extract_tile_properties(const json & jsonObj, KTIPropertiesMap & propMap, K
 		}
 		break;
 
-		case Int:
+		case KTIPropertyTypes::Int:
 		{
 			mapPropertyUnion.type_int = itProperties.value().get<int>();
 			propMap.emplace(key, mapPropertyUnion);
 		}
 		break;
 
-		case Float:
+		case KTIPropertyTypes::Float:
 		{
 			mapPropertyUnion.type_float = itProperties.value().get<float>();
 			propMap.emplace(key, mapPropertyUnion);
 		}
 		break;
 
-		case Bool:
+		case KTIPropertyTypes::Bool:
 		{
 			mapPropertyUnion.type_bool = itProperties.value().get<bool>();
 			propMap.emplace(key, mapPropertyUnion);
 		}
 		break;
 
-		case HexColour:
+		case KTIPropertyTypes::HexColour:
 		{
 			//@Rethink Horrible way of parsing hex value of colours 
 			key = sf::String(itProperties.key()).toWideString();
@@ -1109,7 +1132,7 @@ void extract_tile_properties(const json & jsonObj, KTIPropertiesMap & propMap, K
 			break;
 		}
 
-		case File:
+		case KTIPropertyTypes::File:
 		{
 			bLoadedCorrectly = false;
 			MAP_PARSE_ERR;

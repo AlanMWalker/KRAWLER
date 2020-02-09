@@ -20,7 +20,7 @@
 
 namespace Krawler
 {
-	enum KWindowStyle : uint8
+	enum class KWindowStyle : uint8
 	{
 		Windowed_Fixed_Size,
 		Windowed_Resizeable,
@@ -35,13 +35,13 @@ namespace Krawler
 				loadFromEnginePreset();
 		}
 
-		uint32 width; // Width of the window 
-		uint32 height; // Height of the window
+		uint32 width = 0; // Width of the window 
+		uint32 height = 0; // Height of the window
 		uint32 gameFps = 60; // Game FPS (render & update)
 		uint32 physicsFps = 100; // fps for physics engine to update at
 		std::wstring windowTitle; //title of the window
-		bool consoleWindow; // Is the console window enabled on your build
-		KWindowStyle windowStyle = Windowed_Fixed_Size; // Window style
+		bool consoleWindow = true; // Is the console window enabled on your build
+		Krawler::KWindowStyle windowStyle = Krawler::KWindowStyle::Windowed_Fixed_Size; // Window style
 
 		KRAWLER_API void loadFromEnginePreset();
 

@@ -13,13 +13,13 @@ namespace Krawler
 	namespace TiledImport
 	{
 		//TI denoting TiledImport
-		enum KTILayerTypes : int8
+		enum class KTILayerTypes : int8
 		{
 			ObjectLayer,
 			TileLayer
 		};
 		// @Remember to add a failed enum flag
-		enum KTIPropertyTypes : int8
+		enum class KTIPropertyTypes : int8
 		{
 			String,
 			Int,
@@ -29,7 +29,7 @@ namespace Krawler
 			File
 		};
 
-		enum KTIObjectTypes
+		enum class KTIObjectTypes : int8
 		{
 			Point,
 			Rect,
@@ -53,10 +53,10 @@ namespace Krawler
 		{
 			virtual ~KTIMapBase() = default;
 			std::wstring name;
-			float x;
-			float y;
-			float width;
-			float height;
+			float x = 0.0f;
+			float y = 0.0f;
+			float width = 0.0f;
+			float height = 0.0f;
 			KTIPropertiesMap propertiesMap;
 			KTIPropertyTypesMap propertyTypesMap;
 		};
@@ -83,12 +83,12 @@ namespace Krawler
 
 		struct KTITileset : public KTIMapBase
 		{
-			int32 tileWidth;
-			int32 tileHeight;
-			int32 margin;
-			int32 spacing;
-			int32 firstGID;
-			int32 tileCount;
+			uint32 tileWidth = 0;
+			uint32 tileHeight = 0;
+			uint32 margin = 0;
+			uint32 spacing = 0;
+			uint32 firstGID = 0;
+			uint32 tileCount = 0;
 			std::map<std::wstring, KTIPropertiesMap> tilePropertiesMap;
 			std::map<std::wstring, KTIPropertyTypesMap> tilePropertyTypesMap;
 			//width & height represet image width & image height
@@ -96,11 +96,11 @@ namespace Krawler
 
 		struct KTIMap
 		{
-			int32 height;
-			int32 width;
-			int32 tileWidth;
-			int32 tileHeight;
-			int32 nextObjectID;
+			uint32 height = 0;
+			uint32 width = 0;
+			uint32 tileWidth = 0;
+			uint32 tileHeight = 0;
+			uint32 nextObjectID = 0;
 
 			std::wstring orientation;
 

@@ -376,7 +376,7 @@ KInitStatus KSceneDirector::initScenes()
 	if (m_scenes.size() == 0)
 	{
 		KPrintf(KTEXT("Failed to initialise scene director! No scenes added"));
-		return Failure;
+		return KInitStatus::Failure;
 	}
 
 

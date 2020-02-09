@@ -15,7 +15,7 @@ namespace Krawler
 {
 	namespace Components
 	{
-		enum KTileStateEnum : int32
+		enum class KTileStateEnum : int32
 		{
 			Walkable,
 			Slowdown,

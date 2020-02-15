@@ -110,25 +110,33 @@ void allocateEntities(KApplication* pApp)
 	KCHECK(pApp);
 
 	auto pScene = pApp->getCurrentScene();
+	const auto SCREEN_SIZE = KCAST(Vec2f, KApplication::getApp()->getWindowSize());
 
 	{ // left paddle 
 		pPaddleLeft = pScene->addEntityToScene();
 		KCHECK(pPaddleLeft);
 		pPaddleLeft->setTag(KTEXT("left_paddle"));
+
+		pPaddleLeft->getTransform()->setTranslation(Vec2f(
+			5,
+			KCAST(float, SCREEN_SIZE.y) / 2.0f - PADDLE_SIZE.x
+		));
 	}
 
 	{ // right paddle
 		pPaddleRight = pScene->addEntityToScene();
 		KCHECK(pPaddleRight);
 		pPaddleRight->setTag(KTEXT("right_paddle"));
-
+		pPaddleRight->getTransform()->setTranslation(Vec2f(
+			SCREEN_SIZE.x - 5 - PADDLE_SIZE.x,
+			KCAST(float, SCREEN_SIZE.y / 2.0f) - PADDLE_SIZE.x
+		));
 	}
 
 	{ // ball
 		pBall = pScene->addEntityToScene();
 		KCHECK(pBall);
 		pBall->setTag(KTEXT("ball"));
-
 	}
 }
 

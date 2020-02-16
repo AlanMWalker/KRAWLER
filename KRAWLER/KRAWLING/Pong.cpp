@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "Krawler.h"
 #include "KApplication.h"
+#include "Physics/KPhysicsWorld.h"
 
 #include "KComponent.h"
 #include "Components/KCBoxCollider.h"
 #include "Components/KCCircleCollider.h"
 #include "Components/KCSprite.h"
+#include "Components/KCPhysicsBody.h"
+
 #include "AssetLoader/KAssetLoader.h"
 
 using namespace Krawler;
@@ -79,11 +82,23 @@ public:
 		getEntity()->addComponent(m_pSprite);
 
 		KCCircleCollider* pCollider = new KCCircleCollider(getEntity(), BALL_SIZE.x / 2);
+		KCHECK(pCollider);
 		if (!pCollider)
 			return KInitStatus::Nullptr;
 		getEntity()->addComponent(pCollider);
 
 		pCollider->subscribeCollisionCallback(&m_collisionCallback);
+
+		KPhysicsBodyProperties ballProperties;
+		ballProperties.setMass(1.0f);
+		ballProperties.restitution = 0.9f;
+
+		m_pPhysicsBody = new KCPhysicsBody(getEntity(), ballProperties);
+		KCHECK(m_pPhysicsBody);
+		if (!m_pPhysicsBody)
+			return KInitStatus::Nullptr;
+
+		getEntity()->addComponent(m_pPhysicsBody);
 
 		return KInitStatus::Success;
 	}
@@ -96,12 +111,14 @@ public:
 		getEntity()->getTransform()->setOrigin(BALL_SIZE * 0.5f);
 		getEntity()->getTransform()->setTranslation(KCAST(Vec2f, KApplication::getApp()->getWindowSize()) * 0.5f);
 
+		
+
 	}
 
 	virtual void tick() override
 	{
 		const Vec2f mousePos = KInput::GetMouseWorldPosition();
-		getEntity()->getTransform()->setTranslation(mousePos);
+		//getEntity()->getTransform()->setTranslation(mousePos);
 
 		if (m_bIsColliding)
 		{
@@ -110,6 +127,10 @@ public:
 		else if (!m_bIsColliding)
 		{
 			m_pSprite->setColour(Colour::Red);
+		}
+		if (KInput::JustPressed(KKey::Space))
+		{
+			m_pPhysicsBody->applyForce(Vec2f(100.0f, 0.0f));
 		}
 	}
 
@@ -125,21 +146,29 @@ private:
 	};
 
 	KCSprite* m_pSprite = nullptr;
+	KCPhysicsBody* m_pPhysicsBody = nullptr;
 	bool m_bIsColliding = false;
 };
 
 void addComponents()
 {
+	KPhysicsBodyProperties paddleProperties;
+	paddleProperties.setMass(0.0f);
+
 	{ // Left Paddle
 		pPaddleLeft->addComponent(new KCSprite(pPaddleLeft, PADDLE_SIZE));
 		pPaddleLeft->addComponent(new PaddleControl(pPaddleLeft, KKey::W, KKey::S));
 		pPaddleLeft->addComponent(new KCBoxCollider(pPaddleLeft, PADDLE_SIZE));
+
+		pPaddleLeft->addComponent(new KCPhysicsBody(pPaddleLeft, paddleProperties));
 	}
 
 	{ // Right Paddle
 		pPaddleRight->addComponent(new KCSprite(pPaddleRight, PADDLE_SIZE));
 		pPaddleRight->addComponent(new PaddleControl(pPaddleRight, KKey::Up, KKey::Down));
 		pPaddleRight->addComponent(new KCBoxCollider(pPaddleRight, PADDLE_SIZE));
+
+		pPaddleRight->addComponent(new KCPhysicsBody(pPaddleRight, paddleProperties));
 	}
 
 	{ // Ball
@@ -206,6 +235,11 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszA
 	KScene* const pScene = new KScene(SceneName, SceneBounds);
 	pApp->getSceneDirector().addScene(pScene);
 	pApp->getSceneDirector().setCurrentScene(SceneName);
+
+
+	auto prop = pApp->getPhysicsWorld()->getPhysicsWorldProperties();
+	prop.gravity = Vec2f(0.0f, 0.0f);
+	pApp->getPhysicsWorld()->setPhysicsWorldProperties(prop);
 
 	allocateEntities(pApp);
 	addComponents();

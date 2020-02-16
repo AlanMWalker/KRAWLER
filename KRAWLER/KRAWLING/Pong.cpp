@@ -4,6 +4,7 @@
 
 #include "KComponent.h"
 #include "Components/KCBoxCollider.h"
+#include "Components/KCCircleCollider.h"
 #include "Components/KCSprite.h"
 #include "AssetLoader/KAssetLoader.h"
 
@@ -76,6 +77,14 @@ public:
 	{
 		m_pSprite = new KCSprite(getEntity(), BALL_SIZE);
 		getEntity()->addComponent(m_pSprite);
+
+		KCCircleCollider* pCollider = new KCCircleCollider(getEntity(), BALL_SIZE.x / 2);
+		if (!pCollider)
+			return KInitStatus::Nullptr;
+		getEntity()->addComponent(pCollider);
+
+		pCollider->subscribeCollisionCallback(&m_collisionCallback);
+
 		return KInitStatus::Success;
 	}
 
@@ -91,20 +100,52 @@ public:
 
 	virtual void tick() override
 	{
+		const Vec2f mousePos = KInput::GetMouseWorldPosition();
+		getEntity()->getTransform()->setTranslation(mousePos);
+
+		if (m_bIsColliding)
+		{
+			m_bIsColliding = false;
+		}
+		else if (!m_bIsColliding)
+		{
+			m_pSprite->setColour(Colour::Red);
+		}
 	}
 
 private:
 
+	KCColliderBaseCallback m_collisionCallback = [this](const KCollisionDetectionData& collData)
+	{
+		if (!m_bIsColliding)
+		{
+			m_bIsColliding = true;
+			m_pSprite->setColour(Colour::Green);
+		}
+	};
+
 	KCSprite* m_pSprite = nullptr;
+	bool m_bIsColliding = false;
 };
 
 void addComponents()
 {
-	pPaddleLeft->addComponent(new KCSprite(pPaddleLeft, PADDLE_SIZE));
-	pPaddleLeft->addComponent(new PaddleControl(pPaddleLeft, KKey::W, KKey::S));
-	pPaddleRight->addComponent(new KCSprite(pPaddleRight, PADDLE_SIZE));
-	pPaddleRight->addComponent(new PaddleControl(pPaddleRight, KKey::Up, KKey::Down));
-	pBall->addComponent(new Ball(pBall));
+	{ // Left Paddle
+		pPaddleLeft->addComponent(new KCSprite(pPaddleLeft, PADDLE_SIZE));
+		pPaddleLeft->addComponent(new PaddleControl(pPaddleLeft, KKey::W, KKey::S));
+		pPaddleLeft->addComponent(new KCBoxCollider(pPaddleLeft, PADDLE_SIZE));
+	}
+
+	{ // Right Paddle
+		pPaddleRight->addComponent(new KCSprite(pPaddleRight, PADDLE_SIZE));
+		pPaddleRight->addComponent(new PaddleControl(pPaddleRight, KKey::Up, KKey::Down));
+		pPaddleRight->addComponent(new KCBoxCollider(pPaddleRight, PADDLE_SIZE));
+	}
+
+	{ // Ball
+		pBall->addComponent(new Ball(pBall));
+
+	}
 }
 
 void allocateEntities(KApplication* pApp)
@@ -142,11 +183,7 @@ void allocateEntities(KApplication* pApp)
 	}
 }
 
-void setupGame()
-{
-
-}
-
+// -- Main -- 
 #ifdef _DEBUG
 int32 main(void)
 #else
@@ -178,8 +215,6 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszA
 	{
 		return static_cast<int32>(result);
 	}
-
-	setupGame();
 
 	RunApplication();
 	ShutdownEngine();

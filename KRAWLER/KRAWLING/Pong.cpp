@@ -74,7 +74,7 @@ public:
 
 	virtual KInitStatus init() override
 	{
-		m_pSprite = new KCSprite(getEntity(), Vec2f(64, 64));
+		m_pSprite = new KCSprite(getEntity(), BALL_SIZE);
 		getEntity()->addComponent(m_pSprite);
 		return KInitStatus::Success;
 	}
@@ -84,7 +84,9 @@ public:
 		sf::Texture* pTex = KAssetLoader::getAssetLoader().getTexture(KTEXT("pong_ball"));
 		m_pSprite->setTexture(pTex);
 		m_pSprite->setColour(Colour::White);
-		getEntity()->getTransform()->setTranslation(50, 50);
+		getEntity()->getTransform()->setOrigin(BALL_SIZE * 0.5f);
+		getEntity()->getTransform()->setTranslation(KCAST(Vec2f, KApplication::getApp()->getWindowSize()) * 0.5f);
+
 	}
 
 	virtual void tick() override
@@ -119,7 +121,7 @@ void allocateEntities(KApplication* pApp)
 
 		pPaddleLeft->getTransform()->setTranslation(Vec2f(
 			5,
-			KCAST(float, SCREEN_SIZE.y) / 2.0f - PADDLE_SIZE.x
+			(KCAST(float, SCREEN_SIZE.y) / 2.0f) - (PADDLE_SIZE.y * 0.5f)
 		));
 	}
 
@@ -129,7 +131,7 @@ void allocateEntities(KApplication* pApp)
 		pPaddleRight->setTag(KTEXT("right_paddle"));
 		pPaddleRight->getTransform()->setTranslation(Vec2f(
 			SCREEN_SIZE.x - 5 - PADDLE_SIZE.x,
-			KCAST(float, SCREEN_SIZE.y / 2.0f) - PADDLE_SIZE.x
+			(KCAST(float, SCREEN_SIZE.y) / 2.0f) - (PADDLE_SIZE.y * 0.5f)
 		));
 	}
 
@@ -140,13 +142,17 @@ void allocateEntities(KApplication* pApp)
 	}
 }
 
-
 void setupGame()
 {
 
 }
 
+#ifdef _DEBUG
 int32 main(void)
+#else
+#include <Windows.h>
+int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nCmdShow)
+#endif
 {
 	KApplicationInitialise init;
 	init.width = 640;

@@ -15,12 +15,17 @@
 							ptr = nullptr;		\
 						}
 
+#ifndef KCHECK
 #define KCHECK(v) assert(v)
+#endif
 
-
+#ifndef KCAST
 #define KCAST(type, expr) static_cast<type> (expr)
+#endif 
 
+#ifndef KTEXT
 #define KTEXT(str) L##str
+#endif 
 
 #ifdef __GNUC__
 #define KDEPRECATED(func) func __attribute__ ((deprecated))

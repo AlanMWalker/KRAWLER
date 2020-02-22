@@ -5,7 +5,6 @@
 #include "KEntity.h"
 
 #include "Physics\KPhysicsWorld.h"
-
 #include "Utilities\KQuadtree.h"
 
 #include <vector>

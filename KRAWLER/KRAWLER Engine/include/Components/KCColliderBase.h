@@ -49,7 +49,7 @@ namespace Krawler
 
 	namespace Components
 	{
-		enum KCColliderType : int32
+		enum class KCColliderType : int32
 		{
 			AABB,
 			Circle,

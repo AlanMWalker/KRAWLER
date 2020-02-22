@@ -22,6 +22,8 @@ namespace Krawler
 
 			KRAWLER_API void setColour(const Colour& col);
 
+			//Sets texture for this sprite 
+			//(side effect of changing texture rect on use)
 			KRAWLER_API void setTexture(sf::Texture* pTexture);
 			KRAWLER_API void setTextureRect(const Recti& texRect);
 

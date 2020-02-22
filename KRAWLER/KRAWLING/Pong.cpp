@@ -1,11 +1,15 @@
 #include "stdafx.h"
 #include "Krawler.h"
 #include "KApplication.h"
+#include "Physics/KPhysicsWorld.h"
 
 #include "KComponent.h"
+#include "Components/KCBoxCollider.h"
+#include "Components/KCCircleCollider.h"
+#include "Components/KCSprite.h"
+#include "Components/KCPhysicsBody.h"
 
-#include "Components\KCBoxCollider.h"
-#include "Components\KCSprite.h"
+#include "AssetLoader/KAssetLoader.h"
 
 using namespace Krawler;
 using namespace Components;
@@ -21,7 +25,6 @@ const Vec2f BALL_SIZE(32, 32);
 class PaddleControl : public KComponentBase
 {
 public:
-
 	PaddleControl(KEntity* pEntity, KKey up, KKey down)
 		: KComponentBase(pEntity), m_up(up), m_down(down), m_pTransform(nullptr)
 	{
@@ -48,12 +51,12 @@ public:
 	}
 	void moveUp()
 	{
-		m_pTransform->move(0.0f, -MOVE_SPEED*KApplication::getApp()->getDeltaTime());
+		m_pTransform->move(0.0f, -MOVE_SPEED * KApplication::getApp()->getDeltaTime());
 	}
 
 	void moveDown()
 	{
-		m_pTransform->move(0.0f, MOVE_SPEED*KApplication::getApp()->getDeltaTime());
+		m_pTransform->move(0.0f, MOVE_SPEED * KApplication::getApp()->getDeltaTime());
 	}
 
 
@@ -63,23 +66,159 @@ private:
 	const float MOVE_SPEED = 40.0f;
 };
 
+class Ball :
+	public KComponentBase
+{
+public:
+	Ball(KEntity* pEntity)
+		: KComponentBase(pEntity)
+	{
+		setComponentTag(KTEXT("ball"));
+	}
 
+	virtual KInitStatus init() override
+	{
+		m_pSprite = new KCSprite(getEntity(), BALL_SIZE);
+		getEntity()->addComponent(m_pSprite);
+
+		KCCircleCollider* pCollider = new KCCircleCollider(getEntity(), BALL_SIZE.x / 2);
+		KCHECK(pCollider);
+		if (!pCollider)
+			return KInitStatus::Nullptr;
+		getEntity()->addComponent(pCollider);
+
+		pCollider->subscribeCollisionCallback(&m_collisionCallback);
+
+		KPhysicsBodyProperties ballProperties;
+		ballProperties.setMass(1.0f);
+		ballProperties.restitution = 0.9f;
+
+		m_pPhysicsBody = new KCPhysicsBody(getEntity(), ballProperties);
+		KCHECK(m_pPhysicsBody);
+		if (!m_pPhysicsBody)
+			return KInitStatus::Nullptr;
+
+		getEntity()->addComponent(m_pPhysicsBody);
+
+		return KInitStatus::Success;
+	}
+
+	virtual void onEnterScene()
+	{
+		sf::Texture* pTex = KAssetLoader::getAssetLoader().getTexture(KTEXT("pong_ball"));
+		m_pSprite->setTexture(pTex);
+		m_pSprite->setColour(Colour::White);
+		getEntity()->getTransform()->setOrigin(BALL_SIZE * 0.5f);
+		getEntity()->getTransform()->setTranslation(KCAST(Vec2f, KApplication::getApp()->getWindowSize()) * 0.5f);
+
+		
+
+	}
+
+	virtual void tick() override
+	{
+		const Vec2f mousePos = KInput::GetMouseWorldPosition();
+		//getEntity()->getTransform()->setTranslation(mousePos);
+
+		if (m_bIsColliding)
+		{
+			m_bIsColliding = false;
+		}
+		else if (!m_bIsColliding)
+		{
+			m_pSprite->setColour(Colour::Red);
+		}
+		if (KInput::JustPressed(KKey::Space))
+		{
+			m_pPhysicsBody->applyForce(Vec2f(100.0f, 0.0f));
+		}
+	}
+
+private:
+
+	KCColliderBaseCallback m_collisionCallback = [this](const KCollisionDetectionData& collData)
+	{
+		if (!m_bIsColliding)
+		{
+			m_bIsColliding = true;
+			m_pSprite->setColour(Colour::Green);
+		}
+	};
+
+	KCSprite* m_pSprite = nullptr;
+	KCPhysicsBody* m_pPhysicsBody = nullptr;
+	bool m_bIsColliding = false;
+};
 
 void addComponents()
 {
-	pPaddleLeft->addComponent(new KCSprite(pPaddleLeft, PADDLE_SIZE));
-	pPaddleLeft->addComponent(new PaddleControl(pPaddleLeft, KKey::W, KKey::S));
-	pPaddleRight->addComponent(new KCSprite(pPaddleRight, PADDLE_SIZE));
-	pPaddleRight->addComponent(new PaddleControl(pPaddleRight, KKey::Up, KKey::Down));
-	pBall->addComponent(new KCSprite(pBall, BALL_SIZE));
+	KPhysicsBodyProperties paddleProperties;
+	paddleProperties.setMass(0.0f);
+
+	{ // Left Paddle
+		pPaddleLeft->addComponent(new KCSprite(pPaddleLeft, PADDLE_SIZE));
+		pPaddleLeft->addComponent(new PaddleControl(pPaddleLeft, KKey::W, KKey::S));
+		pPaddleLeft->addComponent(new KCBoxCollider(pPaddleLeft, PADDLE_SIZE));
+
+		pPaddleLeft->addComponent(new KCPhysicsBody(pPaddleLeft, paddleProperties));
+	}
+
+	{ // Right Paddle
+		pPaddleRight->addComponent(new KCSprite(pPaddleRight, PADDLE_SIZE));
+		pPaddleRight->addComponent(new PaddleControl(pPaddleRight, KKey::Up, KKey::Down));
+		pPaddleRight->addComponent(new KCBoxCollider(pPaddleRight, PADDLE_SIZE));
+
+		pPaddleRight->addComponent(new KCPhysicsBody(pPaddleRight, paddleProperties));
+	}
+
+	{ // Ball
+		pBall->addComponent(new Ball(pBall));
+
+	}
 }
 
-void setupGame()
+void allocateEntities(KApplication* pApp)
 {
+	KCHECK(pApp);
 
+	auto pScene = pApp->getCurrentScene();
+	const auto SCREEN_SIZE = KCAST(Vec2f, KApplication::getApp()->getWindowSize());
+
+	{ // left paddle 
+		pPaddleLeft = pScene->addEntityToScene();
+		KCHECK(pPaddleLeft);
+		pPaddleLeft->setTag(KTEXT("left_paddle"));
+
+		pPaddleLeft->getTransform()->setTranslation(Vec2f(
+			5,
+			(KCAST(float, SCREEN_SIZE.y) / 2.0f) - (PADDLE_SIZE.y * 0.5f)
+		));
+	}
+
+	{ // right paddle
+		pPaddleRight = pScene->addEntityToScene();
+		KCHECK(pPaddleRight);
+		pPaddleRight->setTag(KTEXT("right_paddle"));
+		pPaddleRight->getTransform()->setTranslation(Vec2f(
+			SCREEN_SIZE.x - 5 - PADDLE_SIZE.x,
+			(KCAST(float, SCREEN_SIZE.y) / 2.0f) - (PADDLE_SIZE.y * 0.5f)
+		));
+	}
+
+	{ // ball
+		pBall = pScene->addEntityToScene();
+		KCHECK(pBall);
+		pBall->setTag(KTEXT("ball"));
+	}
 }
 
+// -- Main -- 
+#ifdef _DEBUG
 int32 main(void)
+#else
+#include <Windows.h>
+int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nCmdShow)
+#endif
 {
 	KApplicationInitialise init;
 	init.width = 640;
@@ -97,13 +236,12 @@ int32 main(void)
 	pApp->getSceneDirector().addScene(pScene);
 	pApp->getSceneDirector().setCurrentScene(SceneName);
 
-	pPaddleLeft = pScene->addEntityToScene();
-	KCHECK(pPaddleLeft);
-	pPaddleRight = pScene->addEntityToScene();
-	KCHECK(pPaddleRight);
-	pBall = pScene->addEntityToScene();
-	KCHECK(pBall);
 
+	auto prop = pApp->getPhysicsWorld()->getPhysicsWorldProperties();
+	prop.gravity = Vec2f(0.0f, 0.0f);
+	pApp->getPhysicsWorld()->setPhysicsWorldProperties(prop);
+
+	allocateEntities(pApp);
 	addComponents();
 
 	auto result = InitialiseSubmodules();
@@ -111,8 +249,6 @@ int32 main(void)
 	{
 		return static_cast<int32>(result);
 	}
-
-	setupGame();
 
 	RunApplication();
 	ShutdownEngine();

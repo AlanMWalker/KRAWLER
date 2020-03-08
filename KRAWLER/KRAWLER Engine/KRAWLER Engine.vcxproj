@@ -144,6 +144,7 @@
     <ClCompile Include="src\Components\KCLight.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
     <ClCompile Include="src\Components\KCTileMap.cpp" />
+    <ClCompile Include="src\Physics\KPhysicsWorld2D.cpp" />
     <ClCompile Include="src\Tiled\KTiledImport.cpp" />
     <ClCompile Include="src\Maths\KOrientation.cpp" />
     <ClCompile Include="src\Components\KCollisions.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="include\Maths\KOrientation.h" />
     <ClInclude Include="include\Physics\KPhysicsStructs.h" />
     <ClInclude Include="include\Physics\KPhysicsWorld.h" />
+    <ClInclude Include="include\Physics\KPhysicsWorld2D.h" />
     <ClInclude Include="include\Renderer\KRenderer.h" />
     <ClInclude Include="include\Tiled\KTiledImport.h" />
     <ClInclude Include="include\Utilities\KDebug.h" />

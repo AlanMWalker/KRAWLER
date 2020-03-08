@@ -5,6 +5,8 @@
 #include "Renderer\KRenderer.h"
 #include "Input\KInput.h"
 #include "KScene.h"
+#include "Physics\KPhysicsWorld2D.h"
+
 #include <fstream>
 #include <SFML\Graphics\RenderWindow.hpp> 
 #include <SFML\System\Clock.hpp> 
@@ -71,7 +73,7 @@ namespace Krawler
 		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return m_pRenderWindow; }
 		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return m_pRenderer; }
 		KRAWLER_API Krawler::KSceneDirector& getSceneDirector() { return m_sceneDirector; }
-		KRAWLER_API Krawler::Physics::KPhysicsWorld* const getPhysicsWorld() { return &m_physicsWorld; }
+		//KRAWLER_API Krawler::Physics::KPhysicsWorld* const getPhysicsWorld() { return &m_physicsWorld; }
 		KRAWLER_API Krawler::KScene* const getCurrentScene() { return m_sceneDirector.getCurrentScene(); }
 
 		KRAWLER_API float getElapsedTime() const;
@@ -99,8 +101,8 @@ namespace Krawler
 		sf::RenderWindow* m_pRenderWindow = nullptr;
 		Krawler::Renderer::KRenderer* m_pRenderer = nullptr;
 		Krawler::KSceneDirector m_sceneDirector;
-		Physics::KPhysicsWorld m_physicsWorld;
-
+		//Physics::KPhysicsWorld m_physicsWorld;
+		Krawler::Physics::KPhysicsWorld2D m_physicsWorld;
 		uint32 m_gameFPS;
 		uint32 m_physicsFPS;
 

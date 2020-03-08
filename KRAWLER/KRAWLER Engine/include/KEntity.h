@@ -96,7 +96,7 @@ namespace Krawler
 
 		KRAWLER_API void setIsInUse(bool bInUse) { m_bIsInUse = bInUse; }
 
-		KRAWLER_API  KDEPRECATED(Components::KCTransform)* const getTransformComponent() { return m_pTransform; }
+		KRAWLER_API  KDEPRECATED_FUNC(Components::KCTransform)* const getTransformComponent() { return m_pTransform; }
 
 		KRAWLER_API void setEntityInteraction(EntitySceneInteractivity interactivity);
 

@@ -39,14 +39,14 @@ namespace Krawler
 
 			KRAWLER_API KRenderSortType getSortType() const { return m_sortType; }
 
-			KRAWLER_API KDEPRECATED(int32 addTextToScreen)(const sf::Text& pText, const Vec2i& screenPos)
+			KRAWLER_API KDEPRECATED_FUNC(int32 addTextToScreen)(const sf::Text& pText, const Vec2i& screenPos)
 			{
 				m_screenText.push_back(TextRender(screenPos, pText));
 				m_screenText.back().second.setFont(mp_defaultFont);
 				return (int32)m_screenText.size() - 1;
 			}
 
-			KRAWLER_API KDEPRECATED(sf::Text& getTextByIndex)(int32 i) { return m_screenText[i].second; }
+			KRAWLER_API KDEPRECATED_FUNC(sf::Text& getTextByIndex)(int32 i) { return m_screenText[i].second; }
 
 			KRAWLER_API void subscribeLastDrawCallback(std::function<void(void)> func); // subscribe a callback functions to be triggered as the last draw calls post entity drawing
 

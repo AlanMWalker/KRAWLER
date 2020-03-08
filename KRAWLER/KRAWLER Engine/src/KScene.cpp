@@ -210,7 +210,7 @@ void KScene::onEnterScene()
 {
 	KApplication::getMutexInstance().lock();
 
-	KApplication::getApp()->getPhysicsWorld()->setQuadtrees(&m_dynamicQTree, &m_staticQTree);
+	//KApplication::getApp()->getPhysicsWorld()->setQuadtrees(&m_dynamicQTree, &m_staticQTree);
 	for (auto& entityChunk : m_entityChunks)
 	{
 		if (!entityChunk.allocated)

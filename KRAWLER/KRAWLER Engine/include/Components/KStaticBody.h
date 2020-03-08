@@ -1,4 +1,5 @@
-#pragma once
+#ifndef KSTATIC_BODY_H
+#define KSTATIC_BODY_H
 
 #include "Krawler.h"
 #include "KComponent.h"
@@ -19,3 +20,5 @@ namespace Krawler
 		};
 	}
 }
+
+#endif

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Krawler.h"
 #include "KComponent.h"
 
@@ -7,15 +6,17 @@ namespace Krawler
 {
 	namespace Components
 	{
-		class KStaticBody :
+		class KKinematicBody :
 			public KComponentBase
 		{
 		public:
-			KStaticBody(Krawler::KEntity& entity);
-			~KStaticBody() = default;
+			KKinematicBody(Krawler::KEntity& entity);
+			~KKinematicBody() = default;
+
 
 		private:
 
 		};
+
 	}
 }

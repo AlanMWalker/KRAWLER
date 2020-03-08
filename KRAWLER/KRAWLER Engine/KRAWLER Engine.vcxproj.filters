@@ -76,6 +76,8 @@
     <ClCompile Include="src\box2d\dynamics\b2_world_callbacks.cpp" />
     <ClCompile Include="src\box2d\rope\b2_rope.cpp" />
     <ClCompile Include="src\Physics\KPhysicsWorld2D.cpp" />
+    <ClCompile Include="src\Physics\b2dConversion.cpp" />
+    <ClCompile Include="src\Components\KStaticBody.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
@@ -163,6 +165,8 @@
     <ClInclude Include="src\box2d\dynamics\b2_polygon_circle_contact.h" />
     <ClInclude Include="src\box2d\dynamics\b2_polygon_contact.h" />
     <ClInclude Include="include\Physics\KPhysicsWorld2D.h" />
+    <ClInclude Include="include\Physics\b2dConversion.h" />
+    <ClInclude Include="include\Components\KStaticBody.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\KMathsUtilities.inl" />

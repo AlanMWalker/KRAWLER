@@ -16,7 +16,7 @@ namespace Krawler
 			KRAWLER_API KCBoxCollider(KEntity* pEntity, const Vec2f& size);
 			KRAWLER_API ~KCBoxCollider() = default;
 
-			KRAWLER_API KDEPRECATED(const Rectf& getBounds)();
+			KRAWLER_API KDEPRECATED_FUNC(const Rectf& getBounds)();
 			KRAWLER_API virtual const Rectf& getBoundingBox() override;
 			KRAWLER_API const Vec2f& getHalfSize()const { return m_halfSize; }
 			KRAWLER_API	Vec2f getTopLeftCoord() const;

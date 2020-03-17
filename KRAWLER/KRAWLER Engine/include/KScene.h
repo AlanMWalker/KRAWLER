@@ -61,7 +61,7 @@ namespace Krawler
 		KRAWLER_API KEntity* addEntityToScene();
 
 		//Will aim to always give a contiguous block. Nullptr if none available or failed
-		KRAWLER_API KDEPRECATED(KEntity* addEntitiesToScene)(Krawler::uint32 number, Krawler::int32& numberAllocated);
+		KRAWLER_API KDEPRECATED_FUNC(KEntity* addEntitiesToScene)(Krawler::uint32 number, Krawler::int32& numberAllocated);
 
 		KRAWLER_API bool addMultipleEntitiesToScene(uint32 numberToAllocate, std::vector<KEntity*>& entityVec);
 

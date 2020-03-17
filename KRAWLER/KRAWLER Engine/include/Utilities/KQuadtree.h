@@ -34,7 +34,7 @@ namespace Krawler
 		}
 
 		bool insert(KEntity* p);
-		KDEPRECATED(std::vector<KEntity*>& queryEntitiy)(KEntity* pEntity);
+		KDEPRECATED_FUNC(std::vector<KEntity*>& queryEntitiy)(KEntity* pEntity);
 		void getPossibleCollisions(KEntity* pEntity, std::stack<KEntity*>& entityStack);
 		void clear();
 

@@ -40,7 +40,7 @@ void KCPhysicsBody::fixedTick()
 		return;
 	}
 
-	const float dt = KApplication::getApp()->getPhysicsDelta();
+	/*const float dt = KApplication::getApp()->getPhysicsDelta();
 	auto pPhysWorld = KApplication::getApp()->getPhysicsWorld();
 	KCTransform* const pTransform = getEntity()->getComponent<KCTransform>();
 
@@ -51,7 +51,7 @@ void KCPhysicsBody::fixedTick()
 	Vec2f moveVec = m_velocity * dt;
 	moveVec *= (1.0f / pPhysWorld->getPhysicsWorldProperties().metresToPixels);
 
-	pTransform->move(moveVec);
+	pTransform->move(moveVec);*/
 
 	m_force = Vec2f(0.0f, 0.0f);
 }

@@ -78,28 +78,31 @@ namespace Krawler
 		{
 		public:
 
-			KCBody(KEntity& entity, const Vec2f& bounds);
-			KCBody(KEntity& entity, const Vec2f& bounds, const KBodyDef& bodyDef);
-			KCBody(KEntity& entity, const Vec2f& bounds, const KBodyDef& bodyDef, const KMatDef& matDef);
+			KRAWLER_API KCBody(KEntity& entity, const Vec2f& bounds);
+			KRAWLER_API KCBody(KEntity& entity, const Vec2f& bounds, const KBodyDef& bodyDef);
+			KRAWLER_API KCBody(KEntity& entity, const Vec2f& bounds, const KBodyDef& bodyDef, const KMatDef& matDef);
 
-			virtual ~KCBody() = default;
+			KRAWLER_API ~KCBody() = default;
 
-			virtual KInitStatus init() override;
-			virtual void tick() override;
+			KRAWLER_API virtual KInitStatus init() override;
+			KRAWLER_API virtual void tick() override;
 
-			const KMatDef& getMaterialDefinition() const { return m_matDef; }
-			const KBodyDef& getBodyDefinition() const { return m_bodyDef; }
+			KRAWLER_API const KMatDef& getMaterialDefinition() const { return m_matDef; }
+			KRAWLER_API const KBodyDef& getBodyDefinition() const { return m_bodyDef; }
 
-			void setMaterialDefinition(const KMatDef& matDef) { /* Stub for now */ };
-			void setBodyDefinition(const KBodyDef& bodyDef) { /* Stub for now */ };
+			KRAWLER_API void setMaterialDefinition(const KMatDef& matDef) { /* Stub for now */ };
+			KRAWLER_API void setBodyDefinition(const KBodyDef& bodyDef) { /* Stub for now */ };
 
 		private:
 			KBodyDef m_bodyDef;
 			KMatDef m_matDef;
-			b2Body* m_pB2Body = nullptr;
+
 			b2PolygonShape m_polygonShape;
+			
 			Vec2f m_bounds;
 			Vec2f m_halfBounds;
+
+			b2Body* m_pB2Body = nullptr;
 		};
 	}
 }

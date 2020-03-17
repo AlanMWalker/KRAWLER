@@ -1,5 +1,4 @@
 #include "Physics/KPhysicsWorld2D.h"
-#include "box2d/box2d.h"
 #include "Physics/b2dConversion.h"
 
 using namespace Krawler;
@@ -45,4 +44,9 @@ void KPhysicsWorld2D::setGravity(const Krawler::Vec2f& g)
 Vec2f KPhysicsWorld2D::getGravity() const
 {
 	return m_gravity;
+}
+
+b2Body* KPhysicsWorld2D::addNewBody(const b2BodyDef& def)
+{
+	return  m_pBox2DWorld->CreateBody(&def);
 }

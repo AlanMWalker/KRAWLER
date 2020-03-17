@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Krawler.h>
+#include "Krawler.h"
+#include "box2d/box2d.h"
 
 // Forward Declerations
 class b2World;
@@ -23,6 +24,9 @@ namespace Krawler
 			KRAWLER_API	void stepWorld(float physicsStep);
 			KRAWLER_API void setGravity(const Krawler::Vec2f& g);
 			KRAWLER_API Krawler::Vec2f getGravity() const;
+
+			// BOX2D INTERACTION FUNCTIONALITY
+			b2Body* addNewBody(const b2BodyDef& def);
 
 
 		private:

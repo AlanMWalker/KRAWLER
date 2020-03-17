@@ -1,19 +1,10 @@
 #include "Physics/KPhysicsWorld2D.h"
-#include "box2d/box2d.h"
+#include "Physics/b2dConversion.h"
 
 using namespace Krawler;
 using namespace Krawler::Physics;
 
-// Utility Conversion Functions
-static Vec2f&& b2ToVec2f(const b2Vec2& in)
-{
-	return Vec2f(in.x, in.y);
-}
 
-static b2Vec2&& Vec2fTob2(const Vec2f& in)
-{
-	return b2Vec2(in.x, in.y);
-}
 
 KPhysicsWorld2D::KPhysicsWorld2D()
 {
@@ -53,4 +44,9 @@ void KPhysicsWorld2D::setGravity(const Krawler::Vec2f& g)
 Vec2f KPhysicsWorld2D::getGravity() const
 {
 	return m_gravity;
+}
+
+b2Body* KPhysicsWorld2D::addNewBody(const b2BodyDef& def)
+{
+	return  m_pBox2DWorld->CreateBody(&def);
 }

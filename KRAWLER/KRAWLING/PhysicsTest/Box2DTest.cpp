@@ -9,6 +9,7 @@
 #include <AssetLoader\KAssetLoader.h>
 #include <Utilities\KDebug.h>
 
+#include <Components\KCBody.h>
 //external
 #include "imgui-SFML.h"
 #include "imgui.h"
@@ -66,9 +67,24 @@ public:
 
 	virtual KInitStatus init() override
 	{
+		const Vec2f BOX_BOUNDS(20, 20);
 		KScene* pScene = GET_SCENE();
 
-		
+		auto testBox = pScene->addEntityToScene();
+		testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
+		auto& trans = *testBox->getTransform();
+
+		trans.setOrigin(BOX_BOUNDS * 0.5f);
+		trans.setTranslation(Vec2f(100, 100));
+
+		KMatDef matDef;
+		matDef.density = 1.0f;
+		KBodyDef bodyDef;
+		bodyDef.bodyType = BodyType::Dynamic_Body;
+		bodyDef.position = Vec2f(100, 100);
+
+		testBox->addComponent(new KCBody(*testBox, Vec2f(10, 10), bodyDef, matDef));
+
 
 		return KInitStatus::Success;
 	}
@@ -79,9 +95,10 @@ public:
 
 	virtual void tick() override
 	{
+		static bool bOpen = true;
 		ImGui::SFML::Update(*KApplication::getApp()->getRenderWindow(), sf::seconds(1.0f / (float)(KApplication::getApp()->getGameFPS())));
-		ImGui::Begin("Physics Setup Editor");
-		
+		ImGui::Begin("Physics Setup Editor", &bOpen);
+
 
 		ImGui::End();
 	}

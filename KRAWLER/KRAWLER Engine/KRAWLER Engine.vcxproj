@@ -93,6 +93,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Components\KCBody.cpp" />
     <ClCompile Include="src\Animation\KAnimation.cpp" />
     <ClCompile Include="src\box2d\collision\b2_broad_phase.cpp" />
     <ClCompile Include="src\box2d\collision\b2_chain_shape.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="src\Components\KCLight.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
     <ClCompile Include="src\Components\KCTileMap.cpp" />
+    <ClCompile Include="src\Physics\b2dConversion.cpp" />
     <ClCompile Include="src\Physics\KPhysicsWorld2D.cpp" />
     <ClCompile Include="src\Tiled\KTiledImport.cpp" />
     <ClCompile Include="src\Maths\KOrientation.cpp" />
@@ -233,6 +235,7 @@
     <ClInclude Include="include\Maths\KMathsUtilities.h" />
     <ClInclude Include="include\Maths\KMathVector.h" />
     <ClInclude Include="include\Maths\KOrientation.h" />
+    <ClInclude Include="include\Physics\b2dConversion.h" />
     <ClInclude Include="include\Physics\KPhysicsStructs.h" />
     <ClInclude Include="include\Physics\KPhysicsWorld.h" />
     <ClInclude Include="include\Physics\KPhysicsWorld2D.h" />
@@ -241,6 +244,7 @@
     <ClInclude Include="include\Utilities\KDebug.h" />
     <ClInclude Include="include\Utilities\KEngineMacros.h" />
     <ClInclude Include="include\Utilities\KQuadtree.h" />
+    <ClInclude Include="include\Components\KCBody.h" />
     <ClInclude Include="rapidxml\rapidxml.hpp" />
     <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
     <ClInclude Include="rapidxml\rapidxml_print.hpp" />

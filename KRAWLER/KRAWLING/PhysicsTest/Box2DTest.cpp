@@ -68,24 +68,41 @@ public:
 	virtual KInitStatus init() override
 	{
 		const Vec2f BOX_BOUNDS(20, 20);
+		const Vec2f FLOOR_BOUNDS((float)GET_APP()->getWindowSize().x, 50);
 		KScene* pScene = GET_SCENE();
+		{// Dynamic box
+			auto testBox = pScene->addEntityToScene();
+			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
+			auto& trans = *testBox->getTransform();
 
-		auto testBox = pScene->addEntityToScene();
-		testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
-		auto& trans = *testBox->getTransform();
+			trans.setOrigin(BOX_BOUNDS * 0.5f);
+			trans.setTranslation(Vec2f(100, 100));
 
-		trans.setOrigin(BOX_BOUNDS * 0.5f);
-		trans.setTranslation(Vec2f(100, 100));
+			KMatDef matDef;
+			matDef.density = 1.0f;
+			KBodyDef bodyDef;
+			bodyDef.bodyType = BodyType::Dynamic_Body;
+			bodyDef.position = Vec2f(100, 100);
 
-		KMatDef matDef;
-		matDef.density = 1.0f;
-		KBodyDef bodyDef;
-		bodyDef.bodyType = BodyType::Dynamic_Body;
-		bodyDef.position = Vec2f(100, 100);
+			testBox->addComponent(new KCBody(*testBox, Vec2f(10, 10), bodyDef, matDef));
+		}
 
-		testBox->addComponent(new KCBody(*testBox, Vec2f(10, 10), bodyDef, matDef));
+		{// static box
 
+			auto floor = pScene->addEntityToScene();
+			floor->addComponent(new KCSprite(floor, FLOOR_BOUNDS));
+			auto& trans = *floor->getTransform();
 
+			const Vec2f FloorPos = Vec2f(FLOOR_BOUNDS.x * 0.5f, GET_APP()->getWindowSize().y - FLOOR_BOUNDS.y * 0.5f);
+			trans.setOrigin(FLOOR_BOUNDS * 0.5f);
+			trans.setTranslation(FloorPos);
+
+			KBodyDef bodyDef;
+			bodyDef.bodyType = BodyType::Static_Body;
+			bodyDef.position = Vec2f(FloorPos);
+
+			floor->addComponent(new KCBody(*floor, Vec2f(10, 10), bodyDef));
+		}
 		return KInitStatus::Success;
 	}
 

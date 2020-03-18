@@ -65,7 +65,7 @@ KInitStatus KCBody::init()
 	m_polygonShape.SetAsBox(m_halfBounds.x, m_halfBounds.y);
 	b2FixtureDef fixtureDef = convertToB2FixtureDef(m_matDef);
 	fixtureDef.shape = &m_polygonShape;
-	m_pB2Body->CreateFixture(&fixtureDef);
+	auto f = m_pB2Body->CreateFixture(&fixtureDef);
 
 	return KInitStatus::Success;
 }

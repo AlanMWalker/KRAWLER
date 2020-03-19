@@ -37,6 +37,7 @@ public:
 		std::function<void(void)> subLastDraw = std::bind(&imguicomp::draw, this);
 		KApplication::getApp()->subscribeToEventQueue(processEvent);
 		KApplication::getApp()->getRenderer()->subscribeLastDrawCallback(subLastDraw);
+		m_bWasInitSuccessful = true;
 		return KInitStatus::Success;
 	}
 
@@ -45,13 +46,85 @@ public:
 		ImGui::SFML::Shutdown();
 	}
 
-
-private:
-	void draw()
+	// call to invoke imgui::begin
+	void begin(const std::string& name)
 	{
-		ImGui::SFML::Render(*KApplication::getApp()->getRenderWindow());
+		if (!m_bBeginCalled)
+		{
+			ImGui::Begin(name.c_str());
+			m_bBeginCalled = true;
+		}
 	}
 
+	// call to invoke imgui::end
+	void end()
+	{
+		if (!m_bEndCalled)
+		{
+			m_bEndCalled = true;
+			ImGui::End();
+		}
+	}
+
+	// Call to invoke imgui::sfml::update
+	void update()
+	{
+		if (!m_bUpdateRun)
+		{
+			ImGui::SFML::Update(*KApplication::getApp()->getRenderWindow(), sf::seconds(1.0f / (float)(KApplication::getApp()->getGameFPS())));
+			m_bUpdateRun = true;
+		}
+	}
+
+private:
+
+	void draw()
+	{
+		// If init is unsuccessful we'll avoid invoking render since this can force an abrupt halt 
+		// instead we'll print that we're skipping an imgui render call 
+		if (m_bWasInitSuccessful)
+		{
+			static bool hasBeenPrint = false;
+			if (!hasBeenPrint)
+			{
+				KPRINTF("Skipping imgui draw");
+				hasBeenPrint = true;
+			}
+		}
+
+		// If the update hasn't been run yet, we should totally avoid calling imgui draw
+		// this is an applicating halting mistake to make.
+		if (!m_bUpdateRun)
+		{
+			return;
+		}
+	
+
+		// If begin was not called, do not try render. 
+		// This is an application halting mistake to make.
+		if (!m_bBeginCalled)
+		{
+			return;
+		}
+		
+		// If end was not called, do not try render. 
+		// This is an application halting mistake to make.
+		if (!m_bEndCalled)
+		{
+			return;
+		}
+		
+		ImGui::SFML::Render(*KApplication::getApp()->getRenderWindow());
+		m_bUpdateRun = false;
+		m_bBeginCalled = false;
+		m_bEndCalled = false;
+
+
+	}
+	bool m_bUpdateRun = false;
+	bool m_bWasInitSuccessful = false;
+	bool m_bBeginCalled = false;
+	bool m_bEndCalled = false;
 };
 
 
@@ -72,6 +145,7 @@ public:
 		KScene* pScene = GET_SCENE();
 		{// Dynamic box
 			auto testBox = pScene->addEntityToScene();
+			m_pBox = testBox;
 			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
 			auto& trans = *testBox->getTransform();
 
@@ -113,14 +187,21 @@ public:
 	virtual void tick() override
 	{
 		static bool bOpen = true;
-		ImGui::SFML::Update(*KApplication::getApp()->getRenderWindow(), sf::seconds(1.0f / (float)(KApplication::getApp()->getGameFPS())));
-		ImGui::Begin("Physics Setup Editor", &bOpen);
-
-
-		ImGui::End();
+		auto imgui = getEntity()->getComponent<imguicomp>();
+		imgui->update();
+		//ImGui::SFML::Update(*KApplication::getApp()->getRenderWindow(), sf::seconds(1.0f / (float)(KApplication::getApp()->getGameFPS())));
+		//ImGui::Begin("Physics Setup Editor", &bOpen);
+		imgui->begin("Box2D Testing");
+		ImGui::Text("Position:");
+		std::string position = std::to_string(m_pBox->getTransform()->getPosition().x) + " " + std::to_string(m_pBox->getTransform()->getPosition().y);
+		ImGui::Text(position.c_str());
+		//ImGui::End();
+		imgui->end();
 	}
 
 private:
+
+	KEntity* m_pBox = nullptr;
 };
 
 #ifndef _CONSOLE

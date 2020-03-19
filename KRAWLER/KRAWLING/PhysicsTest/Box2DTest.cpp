@@ -118,9 +118,8 @@ private:
 		m_bUpdateRun = false;
 		m_bBeginCalled = false;
 		m_bEndCalled = false;
-
-
 	}
+
 	bool m_bUpdateRun = false;
 	bool m_bWasInitSuccessful = false;
 	bool m_bBeginCalled = false;
@@ -175,7 +174,7 @@ public:
 			bodyDef.bodyType = BodyType::Static_Body;
 			bodyDef.position = Vec2f(FloorPos);
 
-			floor->addComponent(new KCBody(*floor, Vec2f(10, 10), bodyDef));
+			floor->addComponent(new KCBody(*floor, FLOOR_BOUNDS, bodyDef));
 		}
 		return KInitStatus::Success;
 	}

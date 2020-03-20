@@ -37,6 +37,7 @@ public:
 		std::function<void(void)> subLastDraw = std::bind(&imguicomp::draw, this);
 		KApplication::getApp()->subscribeToEventQueue(processEvent);
 		KApplication::getApp()->getRenderer()->subscribeLastDrawCallback(subLastDraw);
+		m_bWasInitSuccessful = true;
 		return KInitStatus::Success;
 	}
 
@@ -45,13 +46,84 @@ public:
 		ImGui::SFML::Shutdown();
 	}
 
-
-private:
-	void draw()
+	// call to invoke imgui::begin
+	void begin(const std::string& name)
 	{
-		ImGui::SFML::Render(*KApplication::getApp()->getRenderWindow());
+		if (!m_bBeginCalled)
+		{
+			ImGui::Begin(name.c_str());
+			m_bBeginCalled = true;
+		}
 	}
 
+	// call to invoke imgui::end
+	void end()
+	{
+		if (!m_bEndCalled)
+		{
+			m_bEndCalled = true;
+			ImGui::End();
+		}
+	}
+
+	// Call to invoke imgui::sfml::update
+	void update()
+	{
+		if (!m_bUpdateRun)
+		{
+			ImGui::SFML::Update(*KApplication::getApp()->getRenderWindow(), sf::seconds(1.0f / (float)(KApplication::getApp()->getGameFPS())));
+			m_bUpdateRun = true;
+		}
+	}
+
+private:
+
+	void draw()
+	{
+		// If init is unsuccessful we'll avoid invoking render since this can force an abrupt halt 
+		// instead we'll print that we're skipping an imgui render call 
+		if (m_bWasInitSuccessful)
+		{
+			static bool hasBeenPrint = false;
+			if (!hasBeenPrint)
+			{
+				KPRINTF("Skipping imgui draw");
+				hasBeenPrint = true;
+			}
+		}
+
+		// If the update hasn't been run yet, we should totally avoid calling imgui draw
+		// this is an applicating halting mistake to make.
+		if (!m_bUpdateRun)
+		{
+			return;
+		}
+
+
+		// If begin was not called, do not try render. 
+		// This is an application halting mistake to make.
+		if (!m_bBeginCalled)
+		{
+			return;
+		}
+
+		// If end was not called, do not try render. 
+		// This is an application halting mistake to make.
+		if (!m_bEndCalled)
+		{
+			return;
+		}
+
+		ImGui::SFML::Render(*KApplication::getApp()->getRenderWindow());
+		m_bUpdateRun = false;
+		m_bBeginCalled = false;
+		m_bEndCalled = false;
+	}
+
+	bool m_bUpdateRun = false;
+	bool m_bWasInitSuccessful = false;
+	bool m_bBeginCalled = false;
+	bool m_bEndCalled = false;
 };
 
 
@@ -68,24 +140,64 @@ public:
 	virtual KInitStatus init() override
 	{
 		const Vec2f BOX_BOUNDS(20, 20);
+		const Vec2f FLOOR_BOUNDS(KCAST(float, GET_APP()->getWindowSize().x), 50);
 		KScene* pScene = GET_SCENE();
+		//{// Dynamic box
+		//	auto testBox = pScene->addEntityToScene();
+		//	m_pBox = testBox;
+		//	testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
+		//	auto& trans = *testBox->getTransform();
 
-		auto testBox = pScene->addEntityToScene();
-		testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
-		auto& trans = *testBox->getTransform();
+		//	trans.setOrigin(BOX_BOUNDS * 0.5f);
+		//	trans.setTranslation(Vec2f(100, 100));
 
-		trans.setOrigin(BOX_BOUNDS * 0.5f);
-		trans.setTranslation(Vec2f(100, 100));
+		//	KMatDef matDef;
+		//	matDef.density = 1.0f;
+		//	KBodyDef bodyDef;
+		//	bodyDef.bodyType = BodyType::Dynamic_Body;
+		//	bodyDef.position = Vec2f(100, 100);
 
-		KMatDef matDef;
-		matDef.density = 1.0f;
-		KBodyDef bodyDef;
-		bodyDef.bodyType = BodyType::Dynamic_Body;
-		bodyDef.position = Vec2f(100, 100);
+		//	testBox->addComponent(new KCBody(*testBox, Vec2f(10, 10), bodyDef, matDef));
+		//}
 
-		testBox->addComponent(new KCBody(*testBox, Vec2f(10, 10), bodyDef, matDef));
+		for (int32 i = 0; i < BOX_COUNT; ++i)
+		{
+			auto testBox = pScene->addEntityToScene();
+			m_pBox = testBox;
+			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
+			auto& trans = *testBox->getTransform();
 
+			trans.setOrigin(BOX_BOUNDS * 0.5f);
+			const Vec2f RandPos(Maths::RandFloat(0, 700), Maths::RandFloat(0, 150));
+			trans.setTranslation(RandPos);
 
+			KMatDef matDef;
+			matDef.density = 1.0f;
+			KBodyDef bodyDef;
+			bodyDef.bodyType = BodyType::Dynamic_Body;
+			bodyDef.position = RandPos;
+			bodyDef.bActive = true;
+
+			//testBox->setIsInUse(false);
+			testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
+		}
+
+		{// static box
+
+			auto floor = pScene->addEntityToScene();
+			floor->addComponent(new KCSprite(floor, FLOOR_BOUNDS));
+			auto& trans = *floor->getTransform();
+
+			const Vec2f FloorPos = Vec2f(FLOOR_BOUNDS.x * 0.5f, GET_APP()->getWindowSize().y - FLOOR_BOUNDS.y * 0.5f);
+			trans.setOrigin(FLOOR_BOUNDS * 0.5f);
+			trans.setTranslation(FloorPos);
+
+			KBodyDef bodyDef;
+			bodyDef.bodyType = BodyType::Static_Body;
+			bodyDef.position = Vec2f(FloorPos);
+
+			floor->addComponent(new KCBody(*floor, FLOOR_BOUNDS, bodyDef));
+		}
 		return KInitStatus::Success;
 	}
 
@@ -96,14 +208,24 @@ public:
 	virtual void tick() override
 	{
 		static bool bOpen = true;
-		ImGui::SFML::Update(*KApplication::getApp()->getRenderWindow(), sf::seconds(1.0f / (float)(KApplication::getApp()->getGameFPS())));
-		ImGui::Begin("Physics Setup Editor", &bOpen);
-
-
-		ImGui::End();
+		auto imgui = getEntity()->getComponent<imguicomp>();
+		imgui->update();
+		//ImGui::SFML::Update(*KApplication::getApp()->getRenderWindow(), sf::seconds(1.0f / (float)(KApplication::getApp()->getGameFPS())));
+		//ImGui::Begin("Physics Setup Editor", &bOpen);
+		imgui->begin("Box2D Testing");
+		ImGui::Text("Position:");
+		std::string position = std::to_string(m_pBox->getTransform()->getPosition().x) + " " + std::to_string(m_pBox->getTransform()->getPosition().y);
+		ImGui::Text(position.c_str());
+		//ImGui::End();
+		imgui->end();
 	}
 
 private:
+	const int32 BOX_COUNT = 16;
+
+	KEntity* m_pBox = nullptr;
+	std::vector<KEntity*> m_boxes;
+
 };
 
 #ifndef _CONSOLE

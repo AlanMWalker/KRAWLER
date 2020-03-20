@@ -65,17 +65,33 @@ KInitStatus KCBody::init()
 	m_polygonShape.SetAsBox(m_halfBounds.x, m_halfBounds.y);
 	b2FixtureDef fixtureDef = convertToB2FixtureDef(m_matDef);
 	fixtureDef.shape = &m_polygonShape;
-	m_pB2Body->CreateFixture(&fixtureDef);
+	auto f = m_pB2Body->CreateFixture(&fixtureDef);
 
 	return KInitStatus::Success;
 }
 
-void KCBody::tick()
+void KCBody::fixedTick()
 {
 	const Vec2f translation = b2ToVec2f(m_pB2Body->GetPosition());
 	const float rotation = Maths::Degrees(m_pB2Body->GetAngle());
 	getEntity()->getTransform()->setTranslation(translation);
 	getEntity()->getTransform()->setRotation(rotation);
-
 }
 
+void KCBody::setPosition(const Vec2f& position) const
+{
+	m_pB2Body->SetTransform(Vec2fTob2(position), m_pB2Body->GetAngle());
+}
+
+void KCBody::setRotiation(float rotation) const
+{
+	// Box2D requires angle in radians, but internally
+	// we use degrees, so convert.
+	const float rad = Maths::Radians(rotation);
+	m_pB2Body->SetTransform(m_pB2Body->GetPosition(), rad);
+}
+
+void KCBody::setActivity(bool bIsActive) const
+{
+	m_pB2Body->SetActive(bIsActive);
+}

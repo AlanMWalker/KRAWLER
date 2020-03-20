@@ -84,14 +84,24 @@ namespace Krawler
 
 			KRAWLER_API ~KCBody() = default;
 
+			// Overrides from component base
 			KRAWLER_API virtual KInitStatus init() override;
-			KRAWLER_API virtual void tick() override;
+			KRAWLER_API virtual void fixedTick() override;
 
+			// @return Material definition this body was created with
 			KRAWLER_API const KMatDef& getMaterialDefinition() const { return m_matDef; }
+			
+			// @return Body definition this body was created with
 			KRAWLER_API const KBodyDef& getBodyDefinition() const { return m_bodyDef; }
 
-			KRAWLER_API void setMaterialDefinition(const KMatDef& matDef) { /* Stub for now */ };
-			KRAWLER_API void setBodyDefinition(const KBodyDef& bodyDef) { /* Stub for now */ };
+			// @param new position
+			KRAWLER_API void setPosition(const Vec2f& position) const;
+
+			// @param Rotation in radians,
+			KRAWLER_API void setRotiation(float rotation) const;
+
+			//@param Is the body active in simulations
+			KRAWLER_API void setActivity(bool bIsActive) const;
 
 		private:
 			KBodyDef m_bodyDef;

@@ -98,7 +98,7 @@ private:
 		{
 			return;
 		}
-	
+
 
 		// If begin was not called, do not try render. 
 		// This is an application halting mistake to make.
@@ -106,14 +106,14 @@ private:
 		{
 			return;
 		}
-		
+
 		// If end was not called, do not try render. 
 		// This is an application halting mistake to make.
 		if (!m_bEndCalled)
 		{
 			return;
 		}
-		
+
 		ImGui::SFML::Render(*KApplication::getApp()->getRenderWindow());
 		m_bUpdateRun = false;
 		m_bBeginCalled = false;
@@ -140,24 +140,46 @@ public:
 	virtual KInitStatus init() override
 	{
 		const Vec2f BOX_BOUNDS(20, 20);
-		const Vec2f FLOOR_BOUNDS((float)GET_APP()->getWindowSize().x, 50);
+		const Vec2f FLOOR_BOUNDS(KCAST(float, GET_APP()->getWindowSize().x), 50);
 		KScene* pScene = GET_SCENE();
-		{// Dynamic box
+		//{// Dynamic box
+		//	auto testBox = pScene->addEntityToScene();
+		//	m_pBox = testBox;
+		//	testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
+		//	auto& trans = *testBox->getTransform();
+
+		//	trans.setOrigin(BOX_BOUNDS * 0.5f);
+		//	trans.setTranslation(Vec2f(100, 100));
+
+		//	KMatDef matDef;
+		//	matDef.density = 1.0f;
+		//	KBodyDef bodyDef;
+		//	bodyDef.bodyType = BodyType::Dynamic_Body;
+		//	bodyDef.position = Vec2f(100, 100);
+
+		//	testBox->addComponent(new KCBody(*testBox, Vec2f(10, 10), bodyDef, matDef));
+		//}
+
+		for (int32 i = 0; i < BOX_COUNT; ++i)
+		{
 			auto testBox = pScene->addEntityToScene();
 			m_pBox = testBox;
 			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
 			auto& trans = *testBox->getTransform();
 
 			trans.setOrigin(BOX_BOUNDS * 0.5f);
-			trans.setTranslation(Vec2f(100, 100));
+			const Vec2f RandPos(Maths::RandFloat(0, 700), Maths::RandFloat(0, 150));
+			trans.setTranslation(RandPos);
 
 			KMatDef matDef;
 			matDef.density = 1.0f;
 			KBodyDef bodyDef;
 			bodyDef.bodyType = BodyType::Dynamic_Body;
-			bodyDef.position = Vec2f(100, 100);
+			bodyDef.position = RandPos;
+			bodyDef.bActive = true;
 
-			testBox->addComponent(new KCBody(*testBox, Vec2f(10, 10), bodyDef, matDef));
+			//testBox->setIsInUse(false);
+			testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
 		}
 
 		{// static box
@@ -199,8 +221,11 @@ public:
 	}
 
 private:
+	const int32 BOX_COUNT = 16;
 
 	KEntity* m_pBox = nullptr;
+	std::vector<KEntity*> m_boxes;
+
 };
 
 #ifndef _CONSOLE

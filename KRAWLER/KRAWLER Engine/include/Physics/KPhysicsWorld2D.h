@@ -27,6 +27,7 @@ namespace Krawler
 
 			// BOX2D INTERACTION FUNCTIONALITY
 			b2Body* addNewBody(const b2BodyDef& def);
+			void removeBody(b2Body* const pBody);
 
 
 		private:

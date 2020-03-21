@@ -87,6 +87,7 @@ namespace Krawler
 			// Overrides from component base
 			KRAWLER_API virtual KInitStatus init() override;
 			KRAWLER_API virtual void fixedTick() override;
+			KRAWLER_API virtual void onExitScene() override; 
 
 			// @return Material definition this body was created with
 			KRAWLER_API const KMatDef& getMaterialDefinition() const { return m_matDef; }

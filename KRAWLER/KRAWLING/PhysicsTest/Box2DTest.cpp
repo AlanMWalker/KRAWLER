@@ -201,6 +201,15 @@ public:
 		ImGui::Text(position.c_str());
 		//ImGui::End();
 		imgui->end();
+		changeScene();
+	}
+
+	void changeScene()
+	{
+		if (KInput::JustPressed(KKey::C))
+		{
+			GET_APP()->getSceneDirector().transitionToScene(L"Test_Scene");
+		}
 	}
 
 private:
@@ -230,10 +239,10 @@ int main(void)
 	//const int sceneWidth = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->width;
 	//const int sceneHeight = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->height;
 	auto app = KApplication::getApp();
-	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("SceneA")), Rectf(0, 0, (70 * 32), (40 * 32))));
-	app->getSceneDirector().setCurrentScene(KTEXT("SceneA"));
-	auto pCurrentScene = app->getCurrentScene();
-	auto entity = pCurrentScene->addEntityToScene();
+	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("Main_Scene")), Rectf(0, 0, (70 * 32), (40 * 32))));
+	app->getSceneDirector().addScene(new KScene(std::wstring(KTEXT("Test_Scene")), Rectf(0, 0, (70 * 32), (40 * 32))));
+	app->getSceneDirector().setStartScene(KTEXT("Main_Scene"));
+	auto entity = GET_SCENE()->addEntityToScene();
 	entity->addComponent(new Box2DComp(entity));
 	entity->addComponent(new imguicomp(entity));
 	//DO STUFF WITH ENTITY HERE

@@ -19,7 +19,7 @@ namespace Krawler
 		KEntity entity;
 	};
 
-	struct KCollisionOverseer
+	struct __declspec(deprecated("Collision module is deprecated!")) KCollisionOverseer
 	{
 		KQuadtree* pStaticQTree = nullptr;
 		KQuadtree* pDynamicQTree = nullptr;
@@ -110,17 +110,26 @@ namespace Krawler
 		KRAWLER_API void tickActiveScene();
 		KRAWLER_API void fixedTickActiveScene();
 
-		KRAWLER_API void setCurrentScene(const std::wstring& sceneName);
+		//@param Name of scene to start the application on
+		KRAWLER_API void setStartScene(const std::wstring& sceneName);
 
-		KRAWLER_API int32 addScene(KScene* pScene); //return 0 if added, -1 if failed
-		KRAWLER_API int32 removeScene(KScene* pScene); //return 0 if removed, -1 if failed
+		//@param Name of scene to transition to
+		KRAWLER_API void transitionToScene(const std::wstring& sceneName);
+
+
+		KRAWLER_API int32 addScene(KScene* pScene); //return 0 if added, EXIT_FAILURE if failed
+		KRAWLER_API int32 removeScene(KScene* pScene); //return 0 if removed, EXIT_FAILURE if failed
 
 		KRAWLER_API KScene* const getCurrentScene() { return m_pCurrentScene; }
 
 	private:
 
+		KScene* findSceneByName(const std::wstring& name) const;
+
 		std::vector<KScene*> m_scenes;
 		KScene* m_pCurrentScene;
+		KScene* m_pNextScene;
+		bool m_bIsChangingScene = false;
 	};
 }
 #endif

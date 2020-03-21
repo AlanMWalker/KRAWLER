@@ -16,16 +16,16 @@ using namespace std;
 
 // -- KSCENE -- \\
 
-KScene::KScene(const std::wstring & sceneName, const Rectf& sceneBounds)
+KScene::KScene(const std::wstring& sceneName, const Rectf& sceneBounds)
 	: m_sceneName(sceneName), m_dynamicQTree(0, sceneBounds), m_numberOfAllocatedChunks(0), m_staticQTree(4, sceneBounds)
 {
-	
+
 }
 
 KInitStatus KScene::initScene()
 {
-	
-	
+
+
 	//First initialisation pass => Initialise all entitys, and setup all components
 	for (auto& chunk : m_entityChunks)
 	{
@@ -51,7 +51,7 @@ KInitStatus KScene::initScene()
 	return KInitStatus::Success;
 }
 
-void Krawler::KScene::cleanUpScene()
+void KScene::cleanUpScene()
 {
 	for (auto& chunk : m_entityChunks)
 	{
@@ -60,7 +60,7 @@ void Krawler::KScene::cleanUpScene()
 	m_dynamicQTree.clear();
 }
 
-void Krawler::KScene::tick()
+void KScene::tick()
 {
 	KApplication::getMutexInstance().lock();
 	if (!m_bHasTickedOnce)
@@ -90,7 +90,7 @@ void Krawler::KScene::tick()
 	KApplication::getMutexInstance().unlock();
 }
 
-void Krawler::KScene::fixedTick()
+void KScene::fixedTick()
 {
 	static std::stack<KEntity*> colliderStack;
 	static vector<pair<KEntity*, KEntity*>> alreadyCheckedCollisionPairs(500);
@@ -209,8 +209,6 @@ void Krawler::KScene::fixedTick()
 void KScene::onEnterScene()
 {
 	KApplication::getMutexInstance().lock();
-
-	//KApplication::getApp()->getPhysicsWorld()->setQuadtrees(&m_dynamicQTree, &m_staticQTree);
 	for (auto& entityChunk : m_entityChunks)
 	{
 		if (!entityChunk.allocated)
@@ -220,7 +218,6 @@ void KScene::onEnterScene()
 
 		entityChunk.entity.onEnterScene();
 	}
-
 	KApplication::getMutexInstance().unlock();
 }
 
@@ -248,7 +245,7 @@ KEntity* KScene::addEntityToScene()
 	return pEntity;
 }
 
-KEntity* KScene::addEntitiesToScene(uint32 number, int32 & numberAllocated)
+KEntity* KScene::addEntitiesToScene(uint32 number, int32& numberAllocated)
 {
 	if (m_numberOfAllocatedChunks + number <= CHUNK_POOL_SIZE) //if there is enough entities in the scene
 	{
@@ -310,16 +307,16 @@ void KScene::removeEntityFromScene(KEntity* pEntityToRemove)
 	}
 }
 
-KEntity * Krawler::KScene::findEntityByTag(const std::wstring & tag)
+KEntity* KScene::findEntityByTag(const std::wstring& tag)
 {
 	auto find = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [&tag](const KAllocatableChunk& chunk) -> bool
-	{
-		if (chunk.entity.getEntityTag() == tag)
 		{
-			return true;
-		}
-		return false;
-	});
+			if (chunk.entity.getEntityTag() == tag)
+			{
+				return true;
+			}
+			return false;
+		});
 
 	if (find == std::end(m_entityChunks))
 	{
@@ -329,12 +326,12 @@ KEntity * Krawler::KScene::findEntityByTag(const std::wstring & tag)
 }
 
 //private
-Krawler::KEntity* KScene::getAllocatableEntity()
+KEntity* KScene::getAllocatableEntity()
 {
 	auto findResult = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [](KAllocatableChunk& entity) -> bool
-	{
-		return !entity.allocated;
-	});
+		{
+			return !entity.allocated;
+		});
 
 	if (findResult == std::end(m_entityChunks))
 	{
@@ -345,19 +342,22 @@ Krawler::KEntity* KScene::getAllocatableEntity()
 	return &findResult->entity;
 }
 
-Krawler::int32 Krawler::KScene::getFreeChunkTotal() const
+int32 KScene::getFreeChunkTotal() const
 {
 	int32 count = 0;
 	for (auto& chunk : m_entityChunks)
+	{
 		if (!chunk.allocated)
 			++count;
+	}
+
 	return count;
 }
 
 //-- KSCENEDIRECTOR -- \\
 
-Krawler::KSceneDirector::KSceneDirector()
-	: m_pCurrentScene(nullptr)
+KSceneDirector::KSceneDirector()
+	: m_pCurrentScene(nullptr), m_pNextScene(nullptr)
 {
 }
 
@@ -395,10 +395,27 @@ void KSceneDirector::cleanupScenes()
 
 void KSceneDirector::tickActiveScene()
 {
+	// If we're transitioning between scenes
+	// then close the last scene and exit
+	// the next tick after this will invoke 
+	// onEnterScene for the new scene
+	if (m_bIsChangingScene)
+	{
+		KCHECK(m_pNextScene);
+		m_pCurrentScene->onExitScene();
+		m_pCurrentScene = m_pNextScene;
+		m_bIsChangingScene = false;
+		m_pNextScene = nullptr;
+		return;
+	}
+
+	// If this is the first tick for a scene
+	// then we'll call onEnterScene() routine
 	if (!m_pCurrentScene->hasSceneTickedOnce())
 	{
 		m_pCurrentScene->onEnterScene();
 	}
+
 	m_pCurrentScene->tick();
 }
 
@@ -407,41 +424,64 @@ void KSceneDirector::fixedTickActiveScene()
 	m_pCurrentScene->fixedTick();
 }
 
-void KSceneDirector::setCurrentScene(const std::wstring& sceneName)
+void KSceneDirector::setStartScene(const std::wstring& sceneName)
 {
-	auto findResult = std::find_if(m_scenes.begin(), m_scenes.end(), [&sceneName](KScene* pScene) -> bool
-	{
-		return pScene->getSceneName() == sceneName;
-	});
-	if (findResult == m_scenes.end())
+	auto const pScene = findSceneByName(sceneName);
+	if (!pScene)
 	{
 		return;
 	}
-	m_pCurrentScene = *findResult;
 
+	m_pCurrentScene = pScene;
 }
 
-int32 KSceneDirector::addScene(KScene * pScene)
+void KSceneDirector::transitionToScene(const std::wstring& sceneName)
+{
+	auto const pScene = findSceneByName(sceneName);
+	if (!pScene)
+	{
+		return;
+	}
+	m_bIsChangingScene = true;
+	m_pNextScene = pScene;
+}
+
+int32 KSceneDirector::addScene(KScene* pScene)
 {
 	KCHECK(pScene);
 	if (!pScene)
 	{
-		return -EXIT_FAILURE;
+		return EXIT_FAILURE;
 	}
 
 	m_scenes.push_back(pScene);
 	return EXIT_SUCCESS;
 }
 
-int32 KSceneDirector::removeScene(KScene * pScene)
+int32 KSceneDirector::removeScene(KScene* pScene)
 {
 	auto findResult = std::find(m_scenes.begin(), m_scenes.end(), pScene);
 
 	if (findResult == m_scenes.end())
 	{
-		return -EXIT_FAILURE;
+		return EXIT_FAILURE;
 	}
 
 	m_scenes.erase(findResult);
 	return EXIT_SUCCESS;
+}
+
+KScene* KSceneDirector::findSceneByName(const std::wstring& name) const
+{
+	auto findResult = std::find_if(m_scenes.begin(), m_scenes.end(), [&name](KScene* pScene) -> bool
+		{
+			return pScene->getSceneName() == name;
+		});
+
+	if (findResult == m_scenes.end())
+	{
+		return nullptr;
+	}
+
+	return *findResult;
 }

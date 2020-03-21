@@ -50,3 +50,8 @@ b2Body* KPhysicsWorld2D::addNewBody(const b2BodyDef& def)
 {
 	return  m_pBox2DWorld->CreateBody(&def);
 }
+
+void KPhysicsWorld2D::removeBody(b2Body* const pBody)
+{
+	m_pBox2DWorld->DestroyBody(pBody);
+}

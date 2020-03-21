@@ -78,6 +78,13 @@ void KCBody::fixedTick()
 	getEntity()->getTransform()->setRotation(rotation);
 }
 
+void KCBody::onExitScene()
+{
+	auto& physWorld = GET_APP()->getPhysicsWorld();
+	physWorld.removeBody(m_pB2Body);
+	m_pB2Body = nullptr;
+}
+
 void KCBody::setPosition(const Vec2f& position) const
 {
 	m_pB2Body->SetTransform(Vec2fTob2(position), m_pB2Body->GetAngle());

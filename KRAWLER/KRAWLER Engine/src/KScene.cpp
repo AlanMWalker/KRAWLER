@@ -325,6 +325,20 @@ KEntity* KScene::findEntityByTag(const std::wstring& tag)
 	return &(*find).entity;
 }
 
+std::vector<KEntity*> KScene::getAllocatedEntityList()
+{
+	std::vector<KEntity*> out;
+	for (auto& c : m_entityChunks)
+	{
+		if (!c.allocated)
+		{
+			continue;
+		}
+		out.push_back(&c.entity);
+	}
+	return out;
+}
+
 //private
 KEntity* KScene::getAllocatableEntity()
 {
@@ -406,6 +420,7 @@ void KSceneDirector::tickActiveScene()
 		m_pCurrentScene = m_pNextScene;
 		m_bIsChangingScene = false;
 		m_pNextScene = nullptr;
+		GET_APP()->getOverlord().triggerSceneCleanup();
 		return;
 	}
 
@@ -414,6 +429,7 @@ void KSceneDirector::tickActiveScene()
 	if (!m_pCurrentScene->hasSceneTickedOnce())
 	{
 		m_pCurrentScene->onEnterScene();
+		GET_APP()->getOverlord().triggerSceneConstruct();
 	}
 
 	m_pCurrentScene->tick();

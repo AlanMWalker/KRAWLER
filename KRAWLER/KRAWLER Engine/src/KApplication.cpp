@@ -54,7 +54,7 @@ void KApplication::setupApplication(const KApplicationInitialise& appInit)
 	m_viewSize.y = static_cast<float>(appInit.height);
 	m_pRenderWindow->setView(sf::View(Rectf(0, 0, static_cast<float>(appInit.width), static_cast<float>(appInit.height))));
 
-	m_pRenderer = new KRenderer;
+	//m_pRenderer = new KRenderer;
 	
 	// TODO check physics world return
 	m_physicsWorld.initialiseWorld();
@@ -155,7 +155,7 @@ void KApplication::runApplication()
 			m_sceneDirector.tickActiveScene();
 
 		}
-		m_pRenderer->render();
+		m_pRenderer.render();
 
 		const float EXTRA_FPS_BUMP = 0;
 		const float timeInSec = deltaClock.getElapsedTime().asSeconds();
@@ -172,7 +172,7 @@ void Krawler::KApplication::cleanupApplication()
 	m_physicsWorld.cleanupWorld();
 	m_sceneDirector.cleanupScenes();
 	KFREE(m_pRenderWindow);
-	KFREE(m_pRenderer);
+	//KFREE(m_pRenderer);
 }
 
 float Krawler::KApplication::getElapsedTime() const

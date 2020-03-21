@@ -78,6 +78,7 @@
     <ClCompile Include="src\Physics\KPhysicsWorld2D.cpp" />
     <ClCompile Include="src\Physics\b2dConversion.cpp" />
     <ClCompile Include="src\Components\KCBody.cpp" />
+    <ClCompile Include="src\Collisions\KCollisionOverlord.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="include\Physics\KPhysicsWorld2D.h" />
     <ClInclude Include="include\Physics\b2dConversion.h" />
     <ClInclude Include="include\Components\KCBody.h" />
+    <ClInclude Include="include\Collisions\KCollisionOverlord.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\KMathsUtilities.inl" />

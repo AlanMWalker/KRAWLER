@@ -71,6 +71,8 @@ namespace Krawler
 
 		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_numberOfAllocatedChunks; }
 
+		KRAWLER_API std::vector<KEntity*> getAllocatedEntityList();
+
 		KRAWLER_API KAllocatableChunk* getEntityList() { return m_entityChunks; }
 
 		KRAWLER_API KCollisionOverseer getCollisionOverseer() { return KCollisionOverseer{ &m_staticQTree, &m_dynamicQTree }; }

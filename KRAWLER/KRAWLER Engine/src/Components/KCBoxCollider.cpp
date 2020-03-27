@@ -12,6 +12,7 @@ KCBoxCollider::KCBoxCollider(KEntity * pEntity, const Vec2f& size) :
 	m_pTransform = getEntity()->getComponent<KCTransform>();
 	auto p = getB2Shape().lock();
 	m_pBoxShapeb2 = std::dynamic_pointer_cast<b2PolygonShape>(p);
+	m_pBoxShapeb2.lock()->SetAsBox(m_halfSize.x, m_halfSize.y);
 }
 
 const Rectf & KCBoxCollider::getBounds()

@@ -47,7 +47,7 @@ namespace Krawler
 
 		float penetration = 0.0f;
 		Vec2f collisionNormal = Vec2f(0.0f, 0.0f);
-		uint32 contactCount = 0;
+		uint32 contactCount = 0; 
 		Vec2f contacts[2];
 	};
 
@@ -92,7 +92,6 @@ namespace Krawler
 
 			KRAWLER_API const KCColliderFilteringData& getCollisionFilteringData() const { return m_filterData; }
 
-		protected:
 			std::weak_ptr<b2Shape> getB2Shape() { return std::weak_ptr<b2Shape>(m_pShape); }
 
 		private:

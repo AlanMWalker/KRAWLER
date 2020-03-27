@@ -134,8 +134,40 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 {
 	// We need the narrow phase queue to be populated before we do in depth searches
 	generateNarrowPhaseQueue();
+	for (auto pair : m_narrowPhaseQueue)
+	{
+		const ProxyInfo& proxyA = m_proxies[getProxyIndexFromId(pair.first)];
+		const ProxyInfo& proxyB = m_proxies[getProxyIndexFromId(pair.second)];
+
+		auto pShapeA = proxyA.pCollider->getB2Shape();
+		auto pShapeB = proxyB.pCollider->getB2Shape();
+		b2Transform transA, transB;
+
+		const b2Vec2 positionA = Vec2fTob2(proxyA.pEntity->getTransform()->getTranslation());
+		const float rotationA = Maths::Radians(proxyA.pEntity->getTransform()->getRotation());
+		transA.Set(positionA, rotationA);
+		
+		const b2Vec2 positionB = Vec2fTob2(proxyB.pEntity->getTransform()->getTranslation());
+		const float rotationB = Maths::Radians(proxyB.pEntity->getTransform()->getRotation());
+		transB.Set(positionB, rotationB);
 
 
+		const bool bOverlapFound = b2TestOverlap(pShapeA.lock().get(), 0, pShapeB.lock().get(), 0, transA, transB);
+		if (!bOverlapFound)
+		{
+			continue;
+		}
+
+		KCollisionDetectionData data;
+		data.entityA = proxyA.pEntity;
+		data.entityB = proxyB.pEntity;
+
+		b2Manifold manifoldA;
+		b2Manifold manifoldB; 
+
+
+		proxyA.pCollider->collisionCallback(data);
+	}
 }
 
 void KCollisionOverlord::generateNarrowPhaseQueue()

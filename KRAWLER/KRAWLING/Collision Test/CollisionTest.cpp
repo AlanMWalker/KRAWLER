@@ -10,9 +10,17 @@
 #include <Utilities\KDebug.h>
 
 #include <Components\KCBoxCollider.h>
+#include <Components\KCBody.h>
 //external
 #include "imgui-SFML.h"
 #include "imgui.h"
+
+#ifdef _DEBUG
+// CRT 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
 
 using namespace Krawler;
 using namespace Krawler::Input;
@@ -145,15 +153,25 @@ public:
 
 		for (int32 i = 0; i < BOX_COUNT; ++i)
 		{
-			auto testBox = pScene->addEntityToScene();
+			auto const testBox = pScene->addEntityToScene();
 			m_pBox = testBox;
 			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
 			auto& trans = *testBox->getTransform();
 
 			const Vec2f RandPos(Maths::RandFloat(0, 700), Maths::RandFloat(0, 150));
 			trans.setTranslation(RandPos);
+			trans.setOrigin(BOX_BOUNDS * 0.5f);
 
 			testBox->addComponent(new KCBoxCollider(testBox, Vec2f(BOX_BOUNDS)));
+
+			KMatDef matDef;
+			matDef.density = 1.0f;
+			KBodyDef bodyDef;
+			bodyDef.bodyType = BodyType::Dynamic_Body;
+			bodyDef.position = RandPos;
+			bodyDef.bActive = true;
+
+			testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
 		}
 
 		return KInitStatus::Success;
@@ -171,7 +189,7 @@ public:
 
 		imgui->begin("Box2D Testing");
 		ImGui::Text("Position:");
-		std::string position = std::to_string(m_pBox->getTransform()->getPosition().x) + " " + std::to_string(m_pBox->getTransform()->getPosition().y);
+		const std::string position = std::to_string(m_pBox->getTransform()->getPosition().x) + " " + std::to_string(m_pBox->getTransform()->getPosition().y);
 		ImGui::Text(position.c_str());
 		imgui->end();
 	}
@@ -198,7 +216,7 @@ int main(void)
 	initApp.width = 1024;//sf::VideoMode::getDesktopMode().width;
 	initApp.height = 768; // sf::VideoMode::getDesktopMode().height;
 	initApp.windowStyle = KWindowStyle::Windowed_Fixed_Size;
-	initApp.windowTitle = KTEXT("New Physics Component Check");
+	initApp.windowTitle = KTEXT("Collision Module Check");
 	StartupEngine(&initApp);
 	//const int sceneWidth = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->width;
 	//const int sceneHeight = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->height;
@@ -215,7 +233,7 @@ int main(void)
 	RunApplication();
 
 	ShutdownEngine();
-
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
 

@@ -5,7 +5,6 @@ using namespace Krawler;
 using namespace Krawler::Physics;
 
 
-
 KPhysicsWorld2D::KPhysicsWorld2D()
 {
 

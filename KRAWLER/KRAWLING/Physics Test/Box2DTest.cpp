@@ -208,7 +208,7 @@ public:
 	{
 		if (KInput::JustPressed(KKey::C))
 		{
-			GET_APP()->getSceneDirector().transitionToScene(L"Test_Scene");
+			GET_APP()->getSceneDirector().transitionToScene(KTEXT("Test_Scene"));
 		}
 	}
 

@@ -10,6 +10,10 @@
 #include <functional>
 #include <vector>
 
+#include <memory>
+
+class b2Shape;
+
 namespace Krawler
 {
 
@@ -32,7 +36,7 @@ namespace Krawler
 				return false;
 			}
 
-			if (collisionNormal != rhs.collisionNormal && collisionNormal != (rhs.collisionNormal*-1.0f))
+			if (collisionNormal != rhs.collisionNormal && collisionNormal != (rhs.collisionNormal * -1.0f))
 			{
 				return false;
 			}
@@ -53,7 +57,8 @@ namespace Krawler
 		{
 			AABB,
 			Circle,
-			OBB
+			OBB, // Implement with Polygon
+			Polygon
 		};
 
 		struct KCColliderFilteringData
@@ -87,6 +92,9 @@ namespace Krawler
 
 			KRAWLER_API const KCColliderFilteringData& getCollisionFilteringData() const { return m_filterData; }
 
+		protected:
+			std::weak_ptr<b2Shape> getB2Shape() { return std::weak_ptr<b2Shape>(m_pShape); }
+
 		private:
 
 			std::vector<KCColliderBaseCallback*> m_callbacks;
@@ -95,6 +103,8 @@ namespace Krawler
 
 			KCColliderFilteringData m_filterData;
 			KCColliderType m_colliderType;
+
+			std::shared_ptr<b2Shape> m_pShape;
 		};
 	}
 }

@@ -4,6 +4,8 @@
 #include "Krawler.h"
 #include "KCColliderBase.h"
 
+class b2PolygonShape; 
+
 namespace Krawler
 {
 	namespace Components
@@ -28,6 +30,8 @@ namespace Krawler
 			Vec2f m_halfSize;
 			Rectf m_aabb;
 
+			std::weak_ptr<b2PolygonShape> m_pBoxShapeb2;
+			
 			KCTransform* m_pTransform;
 		};
 	}

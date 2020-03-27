@@ -1,6 +1,9 @@
 #include "Components\KCColliderBase.h"
 
 #include "Components\KCTransform.h"
+#include "box2d\b2_shape.h"
+#include "box2d\b2_polygon_shape.h"
+#include "box2d\b2_circle_shape.h"
 
 using namespace Krawler;
 using namespace Krawler::Components;
@@ -8,9 +11,24 @@ using namespace Krawler::Components;
 using namespace std;
 
 //--Components::KCColliderBase--\\ 
-KCColliderBase::KCColliderBase(KEntity * pEntity, KCColliderType type)
+KCColliderBase::KCColliderBase(KEntity* pEntity, KCColliderType type)
 	: KComponentBase(pEntity), m_colliderType(type), m_collisionLayer(0)
 {
+	switch (type)
+	{
+	case KCColliderType::Polygon:
+	case KCColliderType::AABB:
+		m_pShape = make_shared<b2PolygonShape>();
+		break;
+	case KCColliderType::Circle:
+		m_pShape = make_shared<b2CircleShape>();
+		break;
+	case KCColliderType::OBB:
+		KPRINTF("OBB no longer a primitive type, consider using KCPolyCollider to achieve the same result\n");
+		break;
+	default:
+		KPRINTF("Unexpected behaviour within KCColliderBase ctor\n");
+	}
 }
 
 int32 KCColliderBase::subscribeCollisionCallback(KCColliderBaseCallback* callback)
@@ -46,14 +64,14 @@ void KCColliderBase::collisionCallback(const KCollisionDetectionData& collData)
 	}
 }
 
-bool KCColliderBase::isCallbackSubscribed(KCColliderBaseCallback * callback) const
+bool KCColliderBase::isCallbackSubscribed(KCColliderBaseCallback* callback) const
 {
 	auto findResult = std::find(m_callbacks.begin(), m_callbacks.end(), callback);
 
 	return findResult != m_callbacks.end();
 }
 
-void KCColliderBase::setCollisionFilteringData(const KCColliderFilteringData & filteringPOD)
+void KCColliderBase::setCollisionFilteringData(const KCColliderFilteringData& filteringPOD)
 {
 	m_filterData = filteringPOD;
 }

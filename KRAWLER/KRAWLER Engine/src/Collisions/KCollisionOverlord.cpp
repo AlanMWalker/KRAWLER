@@ -1,4 +1,5 @@
 #include <functional>
+#include <stack>
 
 #include "Collisions\KCollisionOverlord.h"
 #include "box2d\box2d.h"
@@ -57,6 +58,7 @@ void KCollisionOverlord::triggerSceneConstruct()
 		proxy.proxyId = m_pBroadPhase->CreateProxy(*proxy.aabb, nullptr);
 		proxy.pEntity = e;
 		proxy.pCollider = collider;
+		proxy.pToCheck = &m_intersectionsToCheck;
 
 		m_proxies.push_back(proxy);
 	}
@@ -66,6 +68,7 @@ void KCollisionOverlord::tick()
 {
 	relocateProxies();
 	checkForProxyInteractions();
+	performNarrowPhaseForProxies();
 }
 
 void KCollisionOverlord::cleanupProxies()
@@ -116,17 +119,63 @@ void KCollisionOverlord::relocateProxies()
 
 void KCollisionOverlord::checkForProxyInteractions()
 {
+	m_intersectionsToCheck.clear();
 	for (auto& p : m_proxies)
 	{
 		if (!p.pEntity->isEntityInUse())
 		{
 			continue;
 		}
-		
-		auto queryCallback = [](int32 proxyId) -> void {
-
-		};
-
-		m_pBroadPhase->Query(&p,*p.aabb);
+		m_pBroadPhase->Query(&p, *p.aabb);
 	}
+}
+
+void KCollisionOverlord::performNarrowPhaseForProxies()
+{
+	// We need the narrow phase queue to be populated before we do in depth searches
+	generateNarrowPhaseQueue();
+
+
+}
+
+void KCollisionOverlord::generateNarrowPhaseQueue()
+{
+	m_narrowPhaseQueue.clear();
+	for (auto& pair : m_intersectionsToCheck)
+	{
+		const auto result = std::find_if(m_narrowPhaseQueue.begin(), m_narrowPhaseQueue.end(), [pair](const ProxyPair& toCheckPair) -> bool
+			{
+				if (pair == toCheckPair)
+				{
+					return true;
+				}
+
+				if (pair == ProxyPair(toCheckPair.second, toCheckPair.first))
+				{
+					return true;
+				}
+
+				return false;
+			});
+
+		if (result == m_narrowPhaseQueue.end())
+		{
+			m_narrowPhaseQueue.push_back(pair);
+		}
+	}
+}
+
+int32 KCollisionOverlord::getProxyIndexFromId(int32 proxyId) const
+{
+	const auto result = std::find_if(m_proxies.begin(), m_proxies.end(), [proxyId](const ProxyInfo& p) -> bool
+		{
+			return proxyId == p.proxyId;
+		});
+
+	if (result == m_proxies.end())
+	{
+		return -1;
+	}
+
+	return KCAST(int32, std::distance(m_proxies.begin(), result));
 }

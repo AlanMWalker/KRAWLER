@@ -151,29 +151,29 @@ public:
 		const Vec2f FLOOR_BOUNDS(KCAST(float, GET_APP()->getWindowSize().x), 50);
 		KScene* pScene = GET_SCENE();
 
-		for (int32 i = 0; i < BOX_COUNT; ++i)
+		//for (int32 i = 0; i < BOX_COUNT; ++i)
+		for (int32 i = 0; i < 5; ++i)
 		{
 			auto const testBox = pScene->addEntityToScene();
 			m_pBox = testBox;
 			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
 			auto& trans = *testBox->getTransform();
 
-			const Vec2f RandPos(Maths::RandFloat(0, 700), Maths::RandFloat(0, 150));
+			const Vec2f RandPos(Maths::RandFloat(0, 60), Maths::RandFloat(0, 50));
 			trans.setTranslation(RandPos);
 			trans.setOrigin(BOX_BOUNDS * 0.5f);
 
 			testBox->addComponent(new KCBoxCollider(testBox, Vec2f(BOX_BOUNDS)));
 
-			KMatDef matDef;
-			matDef.density = 1.0f;
-			KBodyDef bodyDef;
-			bodyDef.bodyType = BodyType::Dynamic_Body;
-			bodyDef.position = RandPos;
-			bodyDef.bActive = true;
+			//KMatDef matDef;
+			//matDef.density = 1.0f;
+			//KBodyDef bodyDef;
+			//bodyDef.bodyType = BodyType::Dynamic_Body;
+			//bodyDef.position = RandPos;
+			//bodyDef.bActive = true;
 
-			testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
+			//testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
 		}
-
 		return KInitStatus::Success;
 	}
 

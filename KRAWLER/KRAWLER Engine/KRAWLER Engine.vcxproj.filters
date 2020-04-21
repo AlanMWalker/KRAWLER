@@ -9,7 +9,6 @@
     <ClCompile Include="src\Tiled\KTiledImport.cpp" />
     <ClCompile Include="src\Maths\KOrientation.cpp" />
     <ClCompile Include="src\Components\KCollisions.cpp" />
-    <ClCompile Include="src\Components\KCOrientedBoxCollider.cpp" />
     <ClCompile Include="src\Components\KCCircleCollider.cpp" />
     <ClCompile Include="src\Components\KCColliderBase.cpp" />
     <ClCompile Include="src\Physics\KPhysicsWorld.cpp" />
@@ -87,7 +86,6 @@
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />
     <ClInclude Include="include\Components\KCollisions.h" />
-    <ClInclude Include="include\Components\KCOrientedBoxCollider.h" />
     <ClInclude Include="include\Components\KCPhysicsBody.h" />
     <ClInclude Include="include\Components\KCRenderableBase.h" />
     <ClInclude Include="include\Components\KCSprite.h" />

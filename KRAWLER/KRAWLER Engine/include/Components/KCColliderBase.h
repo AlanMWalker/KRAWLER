@@ -56,9 +56,10 @@ namespace Krawler
 		enum class KCColliderType : int32
 		{
 			AABB,
-			Circle,
-			OBB, // Implement with Polygon
-			Polygon
+			Circle
+			// Not currently supported
+			//OBB, 
+			//Polygon
 		};
 
 		struct KCColliderFilteringData

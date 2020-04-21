@@ -20,6 +20,7 @@ namespace Krawler
 		/* Engine internal use only class.
 		Won't be exposed through DLL. */
 
+	
 		class KCollisionOverlord
 		{
 		public:
@@ -80,7 +81,11 @@ namespace Krawler
 			std::vector<ProxyInfo> m_proxies;
 			std::vector<ProxyPair> m_intersectionsToCheck;
 			std::deque<ProxyPair> m_narrowPhaseQueue;
+
 		};
+
+
+		
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "box2d\box2d.h"
 #include "KApplication.h"
 #include "KScene.h"
+#include "Components\KCollisions.h"
 
 #include "Physics\b2dConversion.h"
 
@@ -146,14 +147,20 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		const b2Vec2 positionA = Vec2fTob2(proxyA.pEntity->getTransform()->getTranslation());
 		const float rotationA = Maths::Radians(proxyA.pEntity->getTransform()->getRotation());
 		transA.Set(positionA, rotationA);
-		
+
 		const b2Vec2 positionB = Vec2fTob2(proxyB.pEntity->getTransform()->getTranslation());
 		const float rotationB = Maths::Radians(proxyB.pEntity->getTransform()->getRotation());
 		transB.Set(positionB, rotationB);
 
+		const int32 colliderTypeA = static_cast<int32>(proxyA.pCollider->getColliderType());
+		const int32 colliderTypeB = static_cast<int32>(proxyB.pCollider->getColliderType());
 
-		const bool bOverlapFound = b2TestOverlap(pShapeA.lock().get(), 0, pShapeB.lock().get(), 0, transA, transB);
-		if (!bOverlapFound)
+		KCollisionDetectionData d;
+		d.entityA = proxyA.pEntity;
+		d.entityB = proxyB.pEntity;
+
+		const auto collision = CollisionLookupTable[colliderTypeA][colliderTypeB](d);
+		if (!collision)
 		{
 			continue;
 		}
@@ -163,7 +170,7 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		data.entityB = proxyB.pEntity;
 
 		b2Manifold manifoldA;
-		b2Manifold manifoldB; 
+		b2Manifold manifoldB;
 
 
 		proxyA.pCollider->collisionCallback(data);

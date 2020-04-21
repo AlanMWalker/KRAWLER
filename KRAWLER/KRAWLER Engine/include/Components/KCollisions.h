@@ -12,18 +12,18 @@ namespace Krawler
 	KRAWLER_API bool AABBvsCircle(KCollisionDetectionData& data);
 	KRAWLER_API bool CirclevsAABB(KCollisionDetectionData& data);
 
-	KRAWLER_API bool OBBvsAABB(KCollisionDetectionData& data);
-	KRAWLER_API bool AABBvsOBB(KCollisionDetectionData& data);
-	KRAWLER_API bool OBBvsCircle(KCollisionDetectionData& data);
-	KRAWLER_API bool CirclevsOBB(KCollisionDetectionData& data);
-	KRAWLER_API bool OBBvsOBB(KCollisionDetectionData& data);
+	//KRAWLER_API bool OBBvsAABB(KCollisionDetectionData& data);
+	//KRAWLER_API bool AABBvsOBB(KCollisionDetectionData& data);
+	//KRAWLER_API bool OBBvsCircle(KCollisionDetectionData& data);
+	//KRAWLER_API bool CirclevsOBB(KCollisionDetectionData& data);
+	//KRAWLER_API bool OBBvsOBB(KCollisionDetectionData& data);
 
-	constexpr int32 MAX_COLLIDER_TYPE = 3;
+	constexpr int32 MAX_COLLIDER_TYPE = 2;
 	static bool(*CollisionLookupTable[MAX_COLLIDER_TYPE][MAX_COLLIDER_TYPE])(KCollisionDetectionData&) =
 	{
-		{ AABBvsAABB, AABBvsCircle, AABBvsOBB },
-		{ CirclevsAABB, CirclevsCircle, CirclevsOBB },
-		{ OBBvsAABB, OBBvsCircle, OBBvsOBB }
+		{ AABBvsAABB, AABBvsCircle/*, AABBvsOBB */},
+		{ CirclevsAABB, CirclevsCircle/*, CirclevsOBB */},
+		//{ OBBvsAABB, OBBvsCircle, OBBvsOBB }
 	};
 }
 #endif 

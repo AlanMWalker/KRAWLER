@@ -16,16 +16,16 @@ KCColliderBase::KCColliderBase(KEntity* pEntity, KCColliderType type)
 {
 	switch (type)
 	{
-	case KCColliderType::Polygon:
+	//case KCColliderType::Polygon:
 	case KCColliderType::AABB:
 		m_pShape = make_shared<b2PolygonShape>();
 		break;
 	case KCColliderType::Circle:
 		m_pShape = make_shared<b2CircleShape>();
 		break;
-	case KCColliderType::OBB:
-		KPRINTF("OBB no longer a primitive type, consider using KCPolyCollider to achieve the same result\n");
-		break;
+	//case KCColliderType::OBB:
+	//	KPRINTF("OBB no longer a primitive type, consider using KCPolyCollider to achieve the same result\n");
+	//	break;
 	default:
 		KPRINTF("Unexpected behaviour within KCColliderBase ctor\n");
 	}

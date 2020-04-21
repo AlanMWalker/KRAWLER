@@ -157,10 +157,10 @@ public:
 			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
 			auto& trans = *testBox->getTransform();
 
-			const Vec2f RandPos(Maths::RandFloat(0, 200), Maths::RandFloat(0, 200));
+			const Vec2f RandPos(Maths::RandFloat(0, 400), Maths::RandFloat(0, 400));
 			trans.setTranslation(RandPos);
 			trans.setOrigin(BOX_BOUNDS * 0.5f);
-
+			trans.setRotation(Maths::RandFloat(0, 359));
 			auto collider = new KCBoxCollider(testBox, Vec2f(BOX_BOUNDS));
 			testBox->addComponent(collider);
 			
@@ -188,7 +188,6 @@ public:
 		static bool bOpen = true;
 		auto imgui = getEntity()->getComponent<imguicomp>();
 		imgui->update();
-
 		imgui->begin("Box2D Testing");
 		ImGui::Text("Position:");
 		const std::string position = std::to_string(m_pBox->getTransform()->getPosition().x) + " " + std::to_string(m_pBox->getTransform()->getPosition().y);
@@ -205,6 +204,7 @@ private:
 	KCColliderBaseCallback m_callback = [this](const KCollisionDetectionData& collData)
 	{
 		collData.entityA->getComponent<KCSprite>()->setColour(Colour::Green);
+		collData.entityB->getComponent<KCSprite>()->setColour(Colour::Green);
 	};
 
 };

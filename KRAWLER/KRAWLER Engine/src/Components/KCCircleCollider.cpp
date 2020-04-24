@@ -1,6 +1,9 @@
 #include <Components\KCCircleCollider.h>
 #include <Components\KCTransform.h>
 
+#include "box2d\b2_circle_shape.h"
+
+
 using namespace Krawler;
 using namespace Krawler::Components;
 
@@ -9,9 +12,12 @@ KCCircleCollider::KCCircleCollider(KEntity* pEntity, float radius)
 
 {
 	m_pTransform = pEntity->getComponent<KCTransform>();
+	auto p = getB2Shape().lock();
+	m_pCircleShape = std::dynamic_pointer_cast<b2CircleShape>(p);
+	m_pCircleShape.lock()->m_radius = m_radius;
 }
 
-const Vec2f & KCCircleCollider::getCentrePosition()
+const Vec2f& KCCircleCollider::getCentrePosition()
 {
 	updateCentrePosition();
 	return m_centrePos;
@@ -22,13 +28,13 @@ float Krawler::Components::KCCircleCollider::getRadius() const
 	return m_radius;
 }
 
-const Rectf & Krawler::Components::KCCircleCollider::getBoundingBox()
+const Rectf& Krawler::Components::KCCircleCollider::getBoundingBox()
 {
 	updateCentrePosition();
 	constexpr float mutliplier = 2.0f;
 	m_boundingBox.left = m_centrePos.x - m_radius * mutliplier;
 	m_boundingBox.top = m_centrePos.y - m_radius * mutliplier;
-	m_boundingBox.height = m_boundingBox.width = 2 * (m_radius*mutliplier);
+	m_boundingBox.height = m_boundingBox.width = 2 * (m_radius * mutliplier);
 	return m_boundingBox;
 }
 

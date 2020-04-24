@@ -10,6 +10,7 @@
 #include <Utilities\KDebug.h>
 
 #include <Components\KCBoxCollider.h>
+#include <Components\KCCircleCollider.h>
 #include <Components\KCBody.h>
 //external
 #include "imgui-SFML.h"
@@ -146,9 +147,10 @@ public:
 
 	virtual KInitStatus init() override
 	{
-		const Vec2f BOX_BOUNDS(20, 20);
+		const Vec2f BOX_BOUNDS(20.0f, 20.0f);
 		const Vec2f FLOOR_BOUNDS(KCAST(float, GET_APP()->getWindowSize().x), 50);
 		KScene* const pScene = GET_SCENE();
+
 
 		for (int32 i = 0; i < BOX_COUNT; ++i)
 		{
@@ -161,26 +163,24 @@ public:
 			trans.setTranslation(RandPos);
 			trans.setOrigin(BOX_BOUNDS * 0.5f);
 			trans.setRotation(Maths::RandFloat(0, 359));
-			auto collider = new KCBoxCollider(testBox, Vec2f(BOX_BOUNDS));
+			//auto collider = new KCBoxCollider(testBox, Vec2f(BOX_BOUNDS));
+			auto collider = new KCCircleCollider(testBox, BOX_BOUNDS.x / 2.0f);
 			testBox->addComponent(collider);
 			m_boxes.push_back(testBox);
 
 			collider->subscribeCollisionCallback(&m_callback);
-
-			//KMatDef matDef;
-			//matDef.density = 1.0f;
-			//KBodyDef bodyDef;
-			//bodyDef.bodyType = BodyType::Dynamic_Body;
-			//bodyDef.position = RandPos;
-			//bodyDef.bActive = true;
-
-			//testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
 		}
 		return KInitStatus::Success;
 	}
 
 	virtual void onEnterScene() override
 	{
+		auto const boxTexture = ASSET().getTexture(L"8Ball");
+
+		for (auto& box : m_boxes)
+		{
+			box->getComponent<KCSprite>()->setTexture(boxTexture);
+		}
 	}
 
 	virtual void tick() override
@@ -210,7 +210,7 @@ private:
 
 	KCColliderBaseCallback m_callback = [this](const KCollisionDetectionData& collData)
 	{
-	
+
 		collData.entityA->getComponent<KCSprite>()->setColour(Colour::Green);
 		collData.entityB->getComponent<KCSprite>()->setColour(Colour::Green);
 		std::cout << "setting green" << std::endl;

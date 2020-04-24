@@ -331,11 +331,7 @@ void Krawler::Components::KCTileMapSplit::isolateBlockedMap()
 		KScene* pScene = app->getCurrentScene();
 		KEntity* pEntity = pScene->addEntityToScene();
 		pEntity->setEntityInteraction(EntitySceneInteractivity::Static);
-		KPhysicsBodyProperties prop;
-		prop.setMass(0.0f);
-		prop.restitution = 0.0f;
 		KCHECK(pEntity != nullptr);
-		pEntity->addComponent(new KCPhysicsBody(pEntity, prop));
 		pEntity->addComponent(new KCBoxCollider(pEntity, Vec2f(m_tileDimensions)));
 		pEntity->getTransform()->setTranslation(static_cast<float>(x * m_tileDimensions.x), static_cast<float>(y * m_tileDimensions.y));
 	}

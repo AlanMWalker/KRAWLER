@@ -5,10 +5,13 @@
 #include <KComponent.h>
 #include <KEntity.h>
 
-#include <Components\KCollisions.h>
-
 #include <functional>
 #include <vector>
+
+#include <memory>
+
+class b2Shape;
+class b2Transform;
 
 namespace Krawler
 {
@@ -32,7 +35,7 @@ namespace Krawler
 				return false;
 			}
 
-			if (collisionNormal != rhs.collisionNormal && collisionNormal != (rhs.collisionNormal*-1.0f))
+			if (collisionNormal != rhs.collisionNormal && collisionNormal != (rhs.collisionNormal * -1.0f))
 			{
 				return false;
 			}
@@ -43,7 +46,7 @@ namespace Krawler
 
 		float penetration = 0.0f;
 		Vec2f collisionNormal = Vec2f(0.0f, 0.0f);
-		uint32 contactCount = 0;
+		uint32 contactCount = 0; 
 		Vec2f contacts[2];
 	};
 
@@ -52,8 +55,10 @@ namespace Krawler
 		enum class KCColliderType : int32
 		{
 			AABB,
-			Circle,
-			OBB
+			Circle
+			// Not currently supported
+			//OBB, 
+			//Polygon
 		};
 
 		struct KCColliderFilteringData
@@ -87,6 +92,10 @@ namespace Krawler
 
 			KRAWLER_API const KCColliderFilteringData& getCollisionFilteringData() const { return m_filterData; }
 
+			std::weak_ptr<b2Shape> getB2Shape() { return std::weak_ptr<b2Shape>(m_pShape); }
+
+			b2Transform getB2Transform();
+
 		private:
 
 			std::vector<KCColliderBaseCallback*> m_callbacks;
@@ -95,6 +104,8 @@ namespace Krawler
 
 			KCColliderFilteringData m_filterData;
 			KCColliderType m_colliderType;
+
+			std::shared_ptr<b2Shape> m_pShape;
 		};
 	}
 }

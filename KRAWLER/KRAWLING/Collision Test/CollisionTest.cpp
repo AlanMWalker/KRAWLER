@@ -9,10 +9,18 @@
 #include <AssetLoader\KAssetLoader.h>
 #include <Utilities\KDebug.h>
 
+#include <Components\KCBoxCollider.h>
 #include <Components\KCBody.h>
 //external
 #include "imgui-SFML.h"
 #include "imgui.h"
+
+#ifdef _DEBUG
+// CRT 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
 
 using namespace Krawler;
 using namespace Krawler::Input;
@@ -126,7 +134,6 @@ private:
 	bool m_bEndCalled = false;
 };
 
-
 class Box2DComp : public KComponentBase
 {
 public:
@@ -141,45 +148,33 @@ public:
 	{
 		const Vec2f BOX_BOUNDS(20, 20);
 		const Vec2f FLOOR_BOUNDS(KCAST(float, GET_APP()->getWindowSize().x), 50);
-		KScene* pScene = GET_SCENE();
+		KScene* const pScene = GET_SCENE();
 
 		for (int32 i = 0; i < BOX_COUNT; ++i)
 		{
-			auto testBox = pScene->addEntityToScene();
+			auto const testBox = pScene->addEntityToScene();
 			m_pBox = testBox;
 			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
 			auto& trans = *testBox->getTransform();
 
-			trans.setOrigin(BOX_BOUNDS * 0.5f);
-			const Vec2f RandPos(Maths::RandFloat(0, 700), Maths::RandFloat(0, 150));
+			const Vec2f RandPos(Maths::RandFloat(0, 250), Maths::RandFloat(0, 250));
 			trans.setTranslation(RandPos);
+			trans.setOrigin(BOX_BOUNDS * 0.5f);
+			trans.setRotation(Maths::RandFloat(0, 359));
+			auto collider = new KCBoxCollider(testBox, Vec2f(BOX_BOUNDS));
+			testBox->addComponent(collider);
+			m_boxes.push_back(testBox);
 
-			KMatDef matDef;
-			matDef.density = 1.0f;
-			KBodyDef bodyDef;
-			bodyDef.bodyType = BodyType::Dynamic_Body;
-			bodyDef.position = RandPos;
-			bodyDef.bActive = true;
+			collider->subscribeCollisionCallback(&m_callback);
 
-			//testBox->setIsInUse(false);
-			testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
-		}
+			//KMatDef matDef;
+			//matDef.density = 1.0f;
+			//KBodyDef bodyDef;
+			//bodyDef.bodyType = BodyType::Dynamic_Body;
+			//bodyDef.position = RandPos;
+			//bodyDef.bActive = true;
 
-		{// static box
-
-			auto floor = pScene->addEntityToScene();
-			floor->addComponent(new KCSprite(floor, FLOOR_BOUNDS));
-			auto& trans = *floor->getTransform();
-
-			const Vec2f FloorPos = Vec2f(FLOOR_BOUNDS.x * 0.5f, GET_APP()->getWindowSize().y - FLOOR_BOUNDS.y * 0.5f);
-			trans.setOrigin(FLOOR_BOUNDS * 0.5f);
-			trans.setTranslation(FloorPos);
-
-			KBodyDef bodyDef;
-			bodyDef.bodyType = BodyType::Static_Body;
-			bodyDef.position = Vec2f(FloorPos);
-
-			floor->addComponent(new KCBody(*floor, FLOOR_BOUNDS, bodyDef));
+			//testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
 		}
 		return KInitStatus::Success;
 	}
@@ -193,30 +188,33 @@ public:
 		static bool bOpen = true;
 		auto imgui = getEntity()->getComponent<imguicomp>();
 		imgui->update();
-		//ImGui::SFML::Update(*KApplication::getApp()->getRenderWindow(), sf::seconds(1.0f / (float)(KApplication::getApp()->getGameFPS())));
-		//ImGui::Begin("Physics Setup Editor", &bOpen);
 		imgui->begin("Box2D Testing");
 		ImGui::Text("Position:");
-		std::string position = std::to_string(m_pBox->getTransform()->getPosition().x) + " " + std::to_string(m_pBox->getTransform()->getPosition().y);
+		const std::string position = std::to_string(m_pBox->getTransform()->getPosition().x) + " " + std::to_string(m_pBox->getTransform()->getPosition().y);
 		ImGui::Text(position.c_str());
-		//ImGui::End();
 		imgui->end();
-		changeScene();
-	}
 
-	void changeScene()
-	{
-		if (KInput::JustPressed(KKey::C))
+		for (auto& b : m_boxes)
 		{
-			GET_APP()->getSceneDirector().transitionToScene(L"Test_Scene");
+			//b->getComponent<KCSprite>()->setColour(Colour::White);
 		}
+
+		m_boxes[0]->getTransform()->setTranslation(KInput::GetMouseWorldPosition());
 	}
 
 private:
-	const int32 BOX_COUNT = 16;
+	const int32 BOX_COUNT = 20;
 
 	KEntity* m_pBox = nullptr;
 	std::vector<KEntity*> m_boxes;
+
+	KCColliderBaseCallback m_callback = [this](const KCollisionDetectionData& collData)
+	{
+	
+		collData.entityA->getComponent<KCSprite>()->setColour(Colour::Green);
+		collData.entityB->getComponent<KCSprite>()->setColour(Colour::Green);
+		std::cout << "setting green" << std::endl;
+	};
 
 };
 
@@ -234,7 +232,7 @@ int main(void)
 	initApp.width = 1024;//sf::VideoMode::getDesktopMode().width;
 	initApp.height = 768; // sf::VideoMode::getDesktopMode().height;
 	initApp.windowStyle = KWindowStyle::Windowed_Fixed_Size;
-	initApp.windowTitle = KTEXT("New Physics Component Check");
+	initApp.windowTitle = KTEXT("Collision Module Check");
 	StartupEngine(&initApp);
 	//const int sceneWidth = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->width;
 	//const int sceneHeight = KAssetLoader::getAssetLoader().getLevelMap(L"test_level")->height;
@@ -251,7 +249,7 @@ int main(void)
 	RunApplication();
 
 	ShutdownEngine();
-
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
 

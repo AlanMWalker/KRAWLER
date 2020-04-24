@@ -59,7 +59,7 @@
     <ClCompile Include="imgui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PhysicsTest\Box2DTest.cpp">
+    <ClCompile Include="Collision Test\CollisionTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -17,7 +17,7 @@ using namespace std;
 // -- KSCENE -- \\
 
 KScene::KScene(const std::wstring& sceneName, const Rectf& sceneBounds)
-	: m_sceneName(sceneName), m_dynamicQTree(0, sceneBounds), m_numberOfAllocatedChunks(0), m_staticQTree(4, sceneBounds)
+	: m_sceneName(sceneName), m_numberOfAllocatedChunks(0)
 {
 
 }
@@ -33,21 +33,6 @@ KInitStatus KScene::initScene()
 		//TODO Move to onenter
 		chunk.entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
 	}
-	//Second initialisation pass => put all static elements in static quadtree and build collider list
-	for (auto& chunk : m_entityChunks)
-	{
-		if (chunk.entity.getInteractivity() == Static)
-		{
-			m_staticQTree.insert(&chunk.entity);
-		}
-		auto pCollider = chunk.entity.getComponent<KCColliderBase>();
-		if (pCollider)
-		{
-			m_initCachedColliders.push_back(pCollider);
-		}
-	}
-
-
 	return KInitStatus::Success;
 }
 
@@ -57,7 +42,6 @@ void KScene::cleanUpScene()
 	{
 		chunk.entity.cleanUp();
 	}
-	m_dynamicQTree.clear();
 }
 
 void KScene::tick()
@@ -67,7 +51,6 @@ void KScene::tick()
 	{
 		m_bHasTickedOnce = true;
 	}
-	m_dynamicQTree.clear();
 
 	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
@@ -81,11 +64,6 @@ void KScene::tick()
 		}
 
 		m_entityChunks[i].entity.tick(); // tick all components
-
-		if (m_entityChunks[i].entity.getInteractivity() == EntitySceneInteractivity::Dynamic)
-		{
-			m_dynamicQTree.insert(&m_entityChunks[i].entity); // insert entity into quadtree before handling box colliders
-		}
 	}
 	KApplication::getMutexInstance().unlock();
 }
@@ -97,98 +75,6 @@ void KScene::fixedTick()
 
 	//TODO remove mutex lock 
 	KApplication::getMutexInstance().lock();
-
-	//TODO remove this form of querying dynamic quadtree
-	// handle colliders here
-	KCColliderBase* pCollider = nullptr;
-	KCColliderBase* possibleHitCollider = nullptr;
-
-	for (uint32 i = 0; i < m_initCachedColliders.size(); ++i)
-	{
-
-		KEntity* pEntity = m_initCachedColliders[i]->getEntity();
-		KCHECK(pEntity);
-		if (!pEntity->isEntityInUse())
-		{//if entity isn't in use
-			continue;
-		}
-
-		if (pEntity->getInteractivity() == Static)
-			continue;
-
-		pCollider = m_initCachedColliders[i]; // cache colliders after initialisation
-		KCHECK(pCollider);
-
-		m_dynamicQTree.getPossibleCollisions(pEntity, colliderStack);
-
-		m_staticQTree.getPossibleCollisions(pEntity, colliderStack);
-		const uint64 stackSize = colliderStack.size();
-		int32 alreadyCheckedIndex = 0;
-
-		while (!colliderStack.empty())
-		{
-			KEntity* pEntityTestedAgainst = colliderStack.top();
-
-			//check pairs
-			KCHECK(pEntityTestedAgainst);
-
-			if (pEntityTestedAgainst == pEntity) //if they are the same entity continue
-			{
-				continue;
-			}
-
-			const pair<KEntity*, KEntity*> pairA(pEntity, pEntityTestedAgainst);
-
-			for (int i = 0; i < m_initCachedColliders.size(); ++i)
-			{
-				if (m_initCachedColliders[i]->getEntity() == pEntityTestedAgainst)
-				{
-					possibleHitCollider = m_initCachedColliders[i];
-				}
-			}
-
-			KCHECK(possibleHitCollider);
-
-			if (!possibleHitCollider)// if no box collider is found, continue to next collider
-			{
-				colliderStack.pop();
-				continue;
-			}
-			const KCColliderFilteringData& filterA = pCollider->getCollisionFilteringData();
-			const KCColliderFilteringData& filterB = possibleHitCollider->getCollisionFilteringData();
-
-			// if collision filters tested against collision masks for entity a & b exclude them from being allowed
-			// to collide with one another, then continue onto the next pair.
-
-			if ((filterA.collisionFilter & filterB.collisionMask) == 0 || (filterB.collisionFilter & filterA.collisionMask) == 0)
-			{
-				colliderStack.pop();
-				continue;
-			}
-
-			KCollisionDetectionData data;
-			data.entityA = pairA.first;
-			data.entityB = pairA.second;
-
-			alreadyCheckedCollisionPairs[alreadyCheckedIndex] = pairA;
-			++alreadyCheckedIndex;
-
-			const bool result = CollisionLookupTable[static_cast<uint32>(pCollider->getColliderType())][static_cast<uint32>(possibleHitCollider->getColliderType())](data);
-
-			if (result)
-			{
-				//handle collision callbacks
-				possibleHitCollider->collisionCallback(data);
-				pCollider->collisionCallback(data);
-			}
-
-			colliderStack.pop();
-
-		}
-
-	}
-
-
 	for (uint32 i = 0; i < CHUNK_POOL_SIZE; ++i)
 	{
 		if (!m_entityChunks[i].allocated)
@@ -325,6 +211,20 @@ KEntity* KScene::findEntityByTag(const std::wstring& tag)
 	return &(*find).entity;
 }
 
+std::vector<KEntity*> KScene::getAllocatedEntityList()
+{
+	std::vector<KEntity*> out;
+	for (auto& c : m_entityChunks)
+	{
+		if (!c.allocated)
+		{
+			continue;
+		}
+		out.push_back(&c.entity);
+	}
+	return out;
+}
+
 //private
 KEntity* KScene::getAllocatableEntity()
 {
@@ -406,6 +306,7 @@ void KSceneDirector::tickActiveScene()
 		m_pCurrentScene = m_pNextScene;
 		m_bIsChangingScene = false;
 		m_pNextScene = nullptr;
+		GET_APP()->getOverlord().triggerSceneCleanup();
 		return;
 	}
 
@@ -414,6 +315,7 @@ void KSceneDirector::tickActiveScene()
 	if (!m_pCurrentScene->hasSceneTickedOnce())
 	{
 		m_pCurrentScene->onEnterScene();
+		GET_APP()->getOverlord().triggerSceneConstruct();
 	}
 
 	m_pCurrentScene->tick();

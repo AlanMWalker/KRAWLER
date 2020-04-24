@@ -4,6 +4,8 @@
 #include <Krawler.h>
 #include <Components\KCColliderBase.h>
 
+class b2CircleShape;
+
 namespace Krawler
 {
 	namespace Components
@@ -23,6 +25,8 @@ namespace Krawler
 		private:
 
 			void updateCentrePosition();
+
+			std::weak_ptr<b2CircleShape> m_pCircleShape;
 
 			float m_radius;
 			Vec2f m_centrePos;

@@ -5,14 +5,13 @@
 #include <KComponent.h>
 #include <KEntity.h>
 
-#include <Components\KCollisions.h>
-
 #include <functional>
 #include <vector>
 
 #include <memory>
 
 class b2Shape;
+class b2Transform;
 
 namespace Krawler
 {
@@ -94,6 +93,8 @@ namespace Krawler
 			KRAWLER_API const KCColliderFilteringData& getCollisionFilteringData() const { return m_filterData; }
 
 			std::weak_ptr<b2Shape> getB2Shape() { return std::weak_ptr<b2Shape>(m_pShape); }
+
+			b2Transform getB2Transform();
 
 		private:
 

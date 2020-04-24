@@ -30,15 +30,6 @@ const Rectf& KCBoxCollider::getBoundingBox()
 Vec2f KCBoxCollider::getTopLeftCoord() const
 {
 	const Vec2f& origin = m_pTransform->getOrigin();
-	//if (origin == Vec2f(0, 0))
-	//{
-	//	//return m_pTransform->getTranslation();
-	//	return m_pTransform->getPosition();
-	//
-	//}
-	//const Vec2f coord = -(Vec2f(origin.x * m_pTransform->getScale().x, origin.y * m_pTransform->getScale().y));
-	//return m_pTransform->getTranslation() - origin;
-
 	const Vec2f pos = m_pTransform->getTransform().transformPoint(0.0f, 0.0f);
 	return pos;
 }

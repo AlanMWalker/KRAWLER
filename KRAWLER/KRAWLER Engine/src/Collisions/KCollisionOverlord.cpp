@@ -5,7 +5,6 @@
 #include "box2d\box2d.h"
 #include "KApplication.h"
 #include "KScene.h"
-#include "Components\KCollisions.h"
 
 #include "Physics\b2dConversion.h"
 
@@ -127,6 +126,10 @@ void KCollisionOverlord::checkForProxyInteractions()
 		{
 			continue;
 		}
+		m_pBroadPhase->TouchProxy(p.proxyId);
+	}
+	for (auto& p : m_proxies)
+	{
 		m_pBroadPhase->Query(&p, *p.aabb);
 	}
 }
@@ -140,9 +143,12 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		const ProxyInfo& proxyA = m_proxies[getProxyIndexFromId(pair.first)];
 		const ProxyInfo& proxyB = m_proxies[getProxyIndexFromId(pair.second)];
 
-		auto pShapeA = proxyA.pCollider->getB2Shape();
-		auto pShapeB = proxyB.pCollider->getB2Shape();
-		b2Transform transA, transB;
+		// Need as raw pointer since box2d uses raw
+		b2Shape* pShapeA = proxyA.pCollider->getB2Shape().lock().get();
+		b2Shape* pShapeB = proxyB.pCollider->getB2Shape().lock().get();
+		
+		b2Transform transA = proxyA.pCollider->getB2Transform();
+		b2Transform transB = proxyB.pCollider->getB2Transform();
 
 		const b2Vec2 positionA = Vec2fTob2(proxyA.pEntity->getTransform()->getTranslation());
 		const float rotationA = Maths::Radians(proxyA.pEntity->getTransform()->getRotation());
@@ -159,7 +165,13 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		d.entityA = proxyA.pEntity;
 		d.entityB = proxyB.pEntity;
 
-		const auto collision = CollisionLookupTable[colliderTypeA][colliderTypeB](d);
+	/*	const auto collision = CollisionLookupTable[colliderTypeA][colliderTypeB](d);
+		if (!collision)
+		{
+			continue;
+		}*/
+		
+		auto collision = b2TestOverlap(pShapeA, 0, pShapeB, 0, transA, transB);
 		if (!collision)
 		{
 			continue;

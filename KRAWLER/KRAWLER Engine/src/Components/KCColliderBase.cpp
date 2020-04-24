@@ -1,9 +1,7 @@
 #include "Components\KCColliderBase.h"
-
+#include "Physics\b2dConversion.h"
 #include "Components\KCTransform.h"
-#include "box2d\b2_shape.h"
-#include "box2d\b2_polygon_shape.h"
-#include "box2d\b2_circle_shape.h"
+#include "box2d\box2d.h"
 
 using namespace Krawler;
 using namespace Krawler::Components;
@@ -16,16 +14,16 @@ KCColliderBase::KCColliderBase(KEntity* pEntity, KCColliderType type)
 {
 	switch (type)
 	{
-	//case KCColliderType::Polygon:
+		//case KCColliderType::Polygon:
 	case KCColliderType::AABB:
 		m_pShape = make_shared<b2PolygonShape>();
 		break;
 	case KCColliderType::Circle:
 		m_pShape = make_shared<b2CircleShape>();
 		break;
-	//case KCColliderType::OBB:
-	//	KPRINTF("OBB no longer a primitive type, consider using KCPolyCollider to achieve the same result\n");
-	//	break;
+		//case KCColliderType::OBB:
+		//	KPRINTF("OBB no longer a primitive type, consider using KCPolyCollider to achieve the same result\n");
+		//	break;
 	default:
 		KPRINTF("Unexpected behaviour within KCColliderBase ctor\n");
 	}
@@ -74,5 +72,12 @@ bool KCColliderBase::isCallbackSubscribed(KCColliderBaseCallback* callback) cons
 void KCColliderBase::setCollisionFilteringData(const KCColliderFilteringData& filteringPOD)
 {
 	m_filterData = filteringPOD;
+}
+
+b2Transform KCColliderBase::getB2Transform()
+{
+	const float angleInRad = Maths::Radians(getEntity()->getTransform()->getRotation());
+	const b2Vec2 position = Vec2fTob2(getEntity()->getTransform()->getTranslation());
+	return b2Transform(position, b2Rot(angleInRad));
 }
 

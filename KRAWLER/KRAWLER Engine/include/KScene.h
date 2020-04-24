@@ -4,7 +4,6 @@
 #include "Krawler.h"
 #include "KEntity.h"
 
-#include "Physics\KPhysicsWorld.h"
 #include "Utilities\KQuadtree.h"
 
 #include <vector>
@@ -17,12 +16,6 @@ namespace Krawler
 	{
 		bool allocated = 0;
 		KEntity entity;
-	};
-
-	struct __declspec(deprecated("Collision module is deprecated!")) KCollisionOverseer
-	{
-		KQuadtree* pStaticQTree = nullptr;
-		KQuadtree* pDynamicQTree = nullptr;
 	};
 
 	namespace Components
@@ -75,8 +68,6 @@ namespace Krawler
 
 		KRAWLER_API KAllocatableChunk* getEntityList() { return m_entityChunks; }
 
-		KRAWLER_API KCollisionOverseer getCollisionOverseer() { return KCollisionOverseer{ &m_staticQTree, &m_dynamicQTree }; }
-
 		bool hasSceneTickedOnce() const { return m_bHasTickedOnce; }
 
 	private:
@@ -93,8 +84,6 @@ namespace Krawler
 
 		std::wstring m_sceneName;
 		std::vector<Components::KCColliderBase*> m_initCachedColliders;
-		KQuadtree m_dynamicQTree;
-		KQuadtree m_staticQTree;
 		uint32 m_numberOfAllocatedChunks;
 		Components::KCImgui* m_pImguiComponent = nullptr;
 	};

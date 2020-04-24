@@ -83,9 +83,6 @@ namespace Krawler
 			std::deque<ProxyPair> m_narrowPhaseQueue;
 
 		};
-
-
-		
 	}
 }
 

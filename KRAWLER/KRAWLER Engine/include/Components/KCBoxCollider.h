@@ -20,8 +20,9 @@ namespace Krawler
 
 			KRAWLER_API KDEPRECATED_FUNC(const Rectf& getBounds)();
 			KRAWLER_API virtual const Rectf& getBoundingBox() override;
-			KRAWLER_API const Vec2f& getHalfSize()const { return m_halfSize; }
+			KRAWLER_API const Vec2f& getHalfSize() const { return m_halfSize; }
 			KRAWLER_API	Vec2f getTopLeftCoord() const;
+
 		private:
 
 			void updateAABB();

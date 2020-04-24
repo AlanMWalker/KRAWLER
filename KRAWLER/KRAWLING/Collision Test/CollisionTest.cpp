@@ -157,13 +157,13 @@ public:
 			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
 			auto& trans = *testBox->getTransform();
 
-			const Vec2f RandPos(Maths::RandFloat(0, 400), Maths::RandFloat(0, 400));
+			const Vec2f RandPos(Maths::RandFloat(0, 250), Maths::RandFloat(0, 250));
 			trans.setTranslation(RandPos);
 			trans.setOrigin(BOX_BOUNDS * 0.5f);
 			trans.setRotation(Maths::RandFloat(0, 359));
 			auto collider = new KCBoxCollider(testBox, Vec2f(BOX_BOUNDS));
 			testBox->addComponent(collider);
-			
+			m_boxes.push_back(testBox);
 
 			collider->subscribeCollisionCallback(&m_callback);
 
@@ -193,18 +193,27 @@ public:
 		const std::string position = std::to_string(m_pBox->getTransform()->getPosition().x) + " " + std::to_string(m_pBox->getTransform()->getPosition().y);
 		ImGui::Text(position.c_str());
 		imgui->end();
+
+		for (auto& b : m_boxes)
+		{
+			//b->getComponent<KCSprite>()->setColour(Colour::White);
+		}
+
+		m_boxes[0]->getTransform()->setTranslation(KInput::GetMouseWorldPosition());
 	}
 
 private:
-	const int32 BOX_COUNT = 16;
+	const int32 BOX_COUNT = 20;
 
 	KEntity* m_pBox = nullptr;
 	std::vector<KEntity*> m_boxes;
 
 	KCColliderBaseCallback m_callback = [this](const KCollisionDetectionData& collData)
 	{
+	
 		collData.entityA->getComponent<KCSprite>()->setColour(Colour::Green);
 		collData.entityB->getComponent<KCSprite>()->setColour(Colour::Green);
+		std::cout << "setting green" << std::endl;
 	};
 
 };

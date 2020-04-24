@@ -402,6 +402,14 @@ void KAssetLoader::scanFolderLoad()
 				loadShader(FindFilename(path), path);
 			}
 		}
+
+		for (auto mapExtension : ACCEPTED_MAP)
+		{
+			if (path.find(mapExtension) != std::string::npos)
+			{
+
+			}
+		}
 	}
 }
 

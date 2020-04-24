@@ -24,8 +24,6 @@ KScene::KScene(const std::wstring& sceneName, const Rectf& sceneBounds)
 
 KInitStatus KScene::initScene()
 {
-
-
 	//First initialisation pass => Initialise all entitys, and setup all components
 	for (auto& chunk : m_entityChunks)
 	{

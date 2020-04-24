@@ -36,7 +36,7 @@ void Krawler::Components::KCCircleCollider::updateCentrePosition()
 {
 	Vec2f topLeft;
 
-	topLeft = m_pTransform->getPosition();// -pTransform->getOrigin();
+	topLeft = m_pTransform->getPosition();
 
 	if (m_pTransform->getOrigin() == Vec2f(m_radius, m_radius))
 	{

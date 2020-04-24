@@ -8,14 +8,10 @@
     <ClCompile Include="src\Components\KCTileMap.cpp" />
     <ClCompile Include="src\Tiled\KTiledImport.cpp" />
     <ClCompile Include="src\Maths\KOrientation.cpp" />
-    <ClCompile Include="src\Components\KCollisions.cpp" />
-    <ClCompile Include="src\Components\KCOrientedBoxCollider.cpp" />
     <ClCompile Include="src\Components\KCCircleCollider.cpp" />
     <ClCompile Include="src\Components\KCColliderBase.cpp" />
-    <ClCompile Include="src\Physics\KPhysicsWorld.cpp" />
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp" />
     <ClCompile Include="src\Components\KCBoxCollider.cpp" />
-    <ClCompile Include="src\Components\KCPhysicsBody.cpp" />
     <ClCompile Include="src\Components\KCSprite.cpp" />
     <ClCompile Include="src\KComponent.cpp" />
     <ClCompile Include="src\KEntity.cpp" />
@@ -78,6 +74,7 @@
     <ClCompile Include="src\Physics\KPhysicsWorld2D.cpp" />
     <ClCompile Include="src\Physics\b2dConversion.cpp" />
     <ClCompile Include="src\Components\KCBody.cpp" />
+    <ClCompile Include="src\Collisions\KCollisionOverlord.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
@@ -85,9 +82,6 @@
     <ClInclude Include="include\Components\KCBoxCollider.h" />
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />
-    <ClInclude Include="include\Components\KCollisions.h" />
-    <ClInclude Include="include\Components\KCOrientedBoxCollider.h" />
-    <ClInclude Include="include\Components\KCPhysicsBody.h" />
     <ClInclude Include="include\Components\KCRenderableBase.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\Animation\KAnimation.h" />
@@ -106,7 +100,6 @@
     <ClInclude Include="include\Maths\KMathVector.h" />
     <ClInclude Include="include\Maths\KOrientation.h" />
     <ClInclude Include="include\Physics\KPhysicsStructs.h" />
-    <ClInclude Include="include\Physics\KPhysicsWorld.h" />
     <ClInclude Include="include\Renderer\KRenderer.h" />
     <ClInclude Include="include\Tiled\KTiledImport.h" />
     <ClInclude Include="include\Utilities\KDebug.h" />
@@ -167,6 +160,7 @@
     <ClInclude Include="include\Physics\KPhysicsWorld2D.h" />
     <ClInclude Include="include\Physics\b2dConversion.h" />
     <ClInclude Include="include\Components\KCBody.h" />
+    <ClInclude Include="include\Collisions\KCollisionOverlord.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\Maths\KMathsUtilities.inl" />

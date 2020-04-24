@@ -93,6 +93,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Collisions\KCollisionOverlord.cpp" />
     <ClCompile Include="src\Components\KCBody.cpp" />
     <ClCompile Include="src\Animation\KAnimation.cpp" />
     <ClCompile Include="src\box2d\collision\b2_broad_phase.cpp" />
@@ -149,14 +150,10 @@
     <ClCompile Include="src\Physics\KPhysicsWorld2D.cpp" />
     <ClCompile Include="src\Tiled\KTiledImport.cpp" />
     <ClCompile Include="src\Maths\KOrientation.cpp" />
-    <ClCompile Include="src\Components\KCollisions.cpp" />
-    <ClCompile Include="src\Components\KCOrientedBoxCollider.cpp" />
     <ClCompile Include="src\Components\KCCircleCollider.cpp" />
     <ClCompile Include="src\Components\KCColliderBase.cpp" />
-    <ClCompile Include="src\Physics\KPhysicsWorld.cpp" />
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp" />
     <ClCompile Include="src\Components\KCBoxCollider.cpp" />
-    <ClCompile Include="src\Components\KCPhysicsBody.cpp" />
     <ClCompile Include="src\Components\KCSprite.cpp" />
     <ClCompile Include="src\KComponent.cpp" />
     <ClCompile Include="src\KEntity.cpp" />
@@ -210,14 +207,12 @@
     <ClInclude Include="include\box2d\b2_world.h" />
     <ClInclude Include="include\box2d\b2_world_callbacks.h" />
     <ClInclude Include="include\box2d\box2d.h" />
+    <ClInclude Include="include\Collisions\KCollisionOverlord.h" />
     <ClInclude Include="include\Components\KCAnimatedSprite.h" />
     <ClInclude Include="include\Components\KCBoxCollider.h" />
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />
     <ClInclude Include="include\Components\KCLight.h" />
-    <ClInclude Include="include\Components\KCollisions.h" />
-    <ClInclude Include="include\Components\KCOrientedBoxCollider.h" />
-    <ClInclude Include="include\Components\KCPhysicsBody.h" />
     <ClInclude Include="include\Components\KCRenderableBase.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\Animation\KAnimation.h" />
@@ -237,7 +232,6 @@
     <ClInclude Include="include\Maths\KOrientation.h" />
     <ClInclude Include="include\Physics\b2dConversion.h" />
     <ClInclude Include="include\Physics\KPhysicsStructs.h" />
-    <ClInclude Include="include\Physics\KPhysicsWorld.h" />
     <ClInclude Include="include\Physics\KPhysicsWorld2D.h" />
     <ClInclude Include="include\Renderer\KRenderer.h" />
     <ClInclude Include="include\Tiled\KTiledImport.h" />

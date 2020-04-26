@@ -43,7 +43,7 @@ KInitStatus Krawler::Components::KCTileMap::init()
 		return KInitStatus::MissingResource;
 	}
 
-	std::vector<sf::Vertex> vertices;
+	
 	int32 tile_layer_count = 0;
 	for (auto& layer : m_pTiledImportData->layersVector)
 	{
@@ -67,6 +67,7 @@ KInitStatus Krawler::Components::KCTileMap::init()
 	{
 		if (layer.layerType == KTILayerTypes::ObjectLayer) // if it's an object layer, continue cause it's not rendered
 		{
+			++layerIdx;
 			continue;
 		}
 
@@ -74,10 +75,9 @@ KInitStatus Krawler::Components::KCTileMap::init()
 		m_layerVertexBufferVector[layerIdx].setPrimitiveType(sf::PrimitiveType::Quads);
 		m_layerVertexBufferVector[layerIdx].setUsage(sf::VertexBuffer::Usage::Static);
 		m_layerVertexBufferVector[layerIdx].create(static_cast<uint64>(TOTAL_TILES * 4));
-
+		std::vector<sf::Vertex> vertices;
 		vertices.resize(TOTAL_TILES * 4);
 		const Vec2f TileDim((float)m_pTiledImportData->tileWidth, (float)m_pTiledImportData->tileHeight);
-
 
 		for (uint32 i = 0; i < (uint32)layer.width; ++i)
 		{
@@ -121,7 +121,6 @@ KInitStatus Krawler::Components::KCTileMap::init()
 		}
 
 		m_layerVertexBufferVector[layerIdx].update(&vertices[0]);
-
 		++layerIdx;
 
 	}
@@ -150,7 +149,6 @@ KInitStatus KCTileMapSplit::init()
 		return KInitStatus::MissingResource;
 	}
 
-	std::vector<sf::Vertex> vertices;
 	int32 tile_layer_count = 0;
 	for (auto& layer : m_pTiledImportData->layersVector)
 	{
@@ -170,7 +168,6 @@ KInitStatus KCTileMapSplit::init()
 	m_tileMapVec.resize(m_pTiledImportData->height, defaultTileLine);
 
 	const int32 HorizontalLineVertexCount = 4 * m_pTiledImportData->width;
-	vertices.resize(4 * m_pTiledImportData->width * m_pTiledImportData->height);
 	m_tileEnumStatesVector.resize(m_pTiledImportData->width * m_pTiledImportData->height, KTileStateEnum::Walkable);
 
 	int32 vbLayerIndex = 0;
@@ -179,12 +176,14 @@ KInitStatus KCTileMapSplit::init()
 
 	for (auto& layer : m_pTiledImportData->layersVector)
 	{
+		std::vector<sf::Vertex> vertices;
+		vertices.resize(4 * m_pTiledImportData->width * m_pTiledImportData->height);
+
 		if (layer.layerType != KTILayerTypes::TileLayer)
 		{
+			++vbLayerIndex;
 			continue;
 		}
-
-
 
 		for (uint32 j = 0; j < m_pTiledImportData->height; ++j)
 		{

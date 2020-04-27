@@ -6,6 +6,7 @@
 #include "Components\KCTileMap.h"
 #include <SFML\Graphics\Text.hpp>	
 #include <SFML\Graphics\Font.hpp>
+#include <SFML\Graphics\Shape.hpp>
 
 #include <functional>
 
@@ -50,6 +51,9 @@ namespace Krawler
 
 			KRAWLER_API void subscribeLastDrawCallback(std::function<void(void)> func); // subscribe a callback functions to be triggered as the last draw calls post entity drawing
 
+			KRAWLER_API void addDebugShape(sf::Shape* pShape) { m_debugShapes.push_back(pShape); }
+			KRAWLER_API void removeDebugShape(sf::Shape* pShape);
+
 		private:
 			void generateRenderableList();
 			void sortByRenderLayer();
@@ -60,8 +64,10 @@ namespace Krawler
 
 			std::vector<Components::KCRenderableBase*> m_renderablesVector;
 			std::vector<Components::KCTileMapSplit*> m_splitMapVec;
-			std::vector<TextRender>m_screenText;
+			std::vector<TextRender> m_screenText;
 			std::vector<std::function<void(void)>> m_lastDrawCallbacks;
+
+			std::vector<sf::Shape*> m_debugShapes;
 
 			KRendererType m_renderingType;
 			KRenderSortType m_sortType;

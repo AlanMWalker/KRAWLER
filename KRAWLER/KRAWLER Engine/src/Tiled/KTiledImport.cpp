@@ -77,12 +77,12 @@ static bool get_string_if_present(wstring& value, const string& name, const json
 //Desc: get a int value if it present on a json object
 //Params: float ref of variable to be set, name of json object, json object to extract from
 //Return: true if set, false if not
-static bool get_int_if_present(int32& value, const string& name, const json& rootJson);
+static bool get_int_if_present(int32 & value, const string & name, const json & rootJson);
 
 //Desc: get a int value if it present on a json object
 //Params: float ref of variable to be set, name of json object, json object to extract from
 //Return: true if set, false if not
-static bool get_uint_if_present(uint32& value, const string& name, const json& rootJson);
+static bool get_uint_if_present(uint32 & value, const string & name, const json & rootJson);
 
 //Desc: get a float value if it present on a json object
 //Params: float ref of variable to be set, name of json object, json object to extract from

@@ -58,7 +58,7 @@ namespace Krawler
 		KRAWLER_API static KApplication* const getApp()
 		{
 			static KApplication* pApplication = new KApplication();
-
+		
 			return pApplication;
 		}
 

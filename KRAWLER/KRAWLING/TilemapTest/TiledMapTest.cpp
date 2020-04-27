@@ -204,6 +204,8 @@ int main(void)
 	auto entity = GET_SCENE()->addEntityToScene();
 	entity->addComponent(new Box2DComp(entity));
 	entity->addComponent(new imguicomp(entity));
+	
+
 	//DO STUFF WITH ENTITY HERE
 	InitialiseSubmodules();
 

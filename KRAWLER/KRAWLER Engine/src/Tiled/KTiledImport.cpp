@@ -77,12 +77,12 @@ static bool get_string_if_present(wstring& value, const string& name, const json
 //Desc: get a int value if it present on a json object
 //Params: float ref of variable to be set, name of json object, json object to extract from
 //Return: true if set, false if not
-static bool get_int_if_present(int32 & value, const string & name, const json & rootJson);
+static bool get_int_if_present(int32& value, const string& name, const json& rootJson);
 
 //Desc: get a int value if it present on a json object
 //Params: float ref of variable to be set, name of json object, json object to extract from
 //Return: true if set, false if not
-static bool get_uint_if_present(uint32 & value, const string & name, const json & rootJson);
+static bool get_uint_if_present(uint32& value, const string& name, const json& rootJson);
 
 //Desc: get a float value if it present on a json object
 //Params: float ref of variable to be set, name of json object, json object to extract from
@@ -332,7 +332,7 @@ void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap& propMap, K
 
 	//Get total number of properties 
 	const uint32 Property_Count = static_cast<uint32>(property_obj_it->size());
-	
+
 
 	//@UrgentRefactor switch statement to do function calls, and also isolate out the functionality to isolate properties so its generic for other map object types which will have properties.
 	json::value_type properties_obj = *property_obj_it;
@@ -349,7 +349,7 @@ void extract_properties_to_map(const json& jsonObj, KTIPropertiesMap& propMap, K
 		KTIProperty mapPropertyUnion{ 0 };
 		bool bLoadedCorrectly = true;
 		std::wstring key, valueWideStr, type;
-		
+
 		tempStr = itProperties.value().find("name").value().get<string>();
 		key = sf::String(tempStr).toWideString();
 
@@ -818,61 +818,43 @@ bool extract_singular_tileset(const json& tilesetJson, KTITileset* pTilesetData)
 
 void extract_tile_properties(const json& jsonObj, std::map<std::wstring, KTIPropertiesMap>& tilePropMap, std::map<std::wstring, KTIPropertyTypesMap>& tilePropTypeMap)
 {
-	auto tile_property_obj_iterator = jsonObj.find("tileproperties");
-	auto tile_property_types_obj_iterator = jsonObj.find("tilepropertytypes");
-
-	if (tile_property_obj_iterator == jsonObj.end() || tile_property_types_obj_iterator == jsonObj.end())
+	auto tile_property_array = jsonObj.find("tiles");
+	if (tile_property_array == jsonObj.end())
 	{ // not always likely to find properties, so return true
 		return;
 	}
 
 	//Get total number of properties 
-	const uint64 Tile_Property_Count = tile_property_obj_iterator->size();
-	const uint64 Tile_Property_Type_Count = tile_property_types_obj_iterator->size();
-
-	//Make sure total number of properties matches number of types
-	if (Tile_Property_Count != Tile_Property_Type_Count)
-	{
-		MAP_PARSE_ERR;
-		KPrintf(KTEXT("Mismatch between number of map properties (%d) and propertytypes (%d)\n"), Tile_Property_Count, Tile_Property_Type_Count);
-		return;
-	}
-
 	KTIPropertiesMap temporary_property_map;
 	KTIPropertyTypesMap temporary_property_types_map;
-	auto tile_property_iterator = tile_property_obj_iterator->begin();
-	auto tile_property_types_iterator = tile_property_types_obj_iterator->begin();
-	while (tile_property_iterator != tile_property_obj_iterator->end() &&
-		tile_property_types_iterator != tile_property_types_obj_iterator->end())
+	auto tile_property_iterator = tile_property_array->begin();
+	while (tile_property_iterator != tile_property_array->end())
 	{
 		//@UrgentRefactor switch statement to do function calls, and also isolate out the functionality to isolate properties so its generic for other map object types which will have properties.
-		json::value_type tile_properties_obj = *tile_property_obj_iterator;
-		json::value_type tile_property_types_obj = *tile_property_types_obj_iterator;
-
-		auto object = tile_properties_obj.object();
-		//_CrtDbgBreak();
+		const json::value_type& tile_properties_obj = (*tile_property_iterator);
 		//@Fix load tile properties for collision data 
-		const std::wstring TILE_KEY = TO_WSTR(tile_property_iterator.key());
-		const auto beginProp = tile_property_iterator.value().begin(), beginPropType = tile_property_types_iterator.value().begin();
-		const auto endProp = tile_property_iterator.value().end(), endPropType = tile_property_types_iterator.value().end();
+		int tileKeyInt = 0;
+		GET_NUMBER_INT(tile_properties_obj, "id", tileKeyInt);
+		const std::wstring TILE_KEY = std::to_wstring(tileKeyInt);
 
-		auto properties_iterator = beginProp;
-		auto propertyTypes_iterator = beginPropType;
-		while (properties_iterator != endProp && propertyTypes_iterator != endPropType)
+		const auto beginProp = tile_properties_obj["properties"].begin();
+		const auto endProp = tile_properties_obj["properties"].end();
+
+		for (auto i = beginProp; i != endProp; ++i)
 		{
-
-			const std::wstring Type_Name = sf::String(propertyTypes_iterator.value().get<string>()).toWideString();
+			auto tilePropEntry = *i;
+			const std::wstring Type_Name = TO_WSTR(tilePropEntry["type"].get<string>());
 			const KTIPropertyTypes Type_Enum = get_property_type_by_string(Type_Name); //isolate the data type of this property 
-
 			KTIProperty mapPropertyUnion{ 0 };
 			bool bLoadedCorrectly = true;
+
 			std::wstring key, valueWideStr, type;
-			key = sf::String(properties_iterator.key()).toWideString();
+			key = TO_WSTR(tilePropEntry["name"].get<string>());
 			switch (Type_Enum)
 			{
 			case KTIPropertyTypes::String:
 			{
-				valueWideStr = sf::String(properties_iterator.value().get<string>()).toWideString();
+				valueWideStr = TO_WSTR(tilePropEntry["value"].get<string>());
 				if (valueWideStr.size() < MAX_PROPERTY_STRING_CHARS)
 				{
 					wcsncpy_s(mapPropertyUnion.type_string, valueWideStr.c_str(), valueWideStr.size());
@@ -890,21 +872,21 @@ void extract_tile_properties(const json& jsonObj, std::map<std::wstring, KTIProp
 
 			case KTIPropertyTypes::Int:
 			{
-				mapPropertyUnion.type_int = properties_iterator.value().get<int>();
+				mapPropertyUnion.type_int = tilePropEntry["value"].get<int>();
 				temporary_property_map.emplace(key, mapPropertyUnion);
 			}
 			break;
 
 			case KTIPropertyTypes::Float:
 			{
-				mapPropertyUnion.type_float = properties_iterator.value().get<float>();
+				mapPropertyUnion.type_float = tilePropEntry["value"].get<float>();
 				temporary_property_map.emplace(key, mapPropertyUnion);
 			}
 			break;
 
 			case KTIPropertyTypes::Bool:
 			{
-				mapPropertyUnion.type_bool = properties_iterator.value().get<bool>();
+				mapPropertyUnion.type_bool = tilePropEntry["value"].get<bool>();
 				temporary_property_map.emplace(key, mapPropertyUnion);
 			}
 			break;
@@ -912,18 +894,18 @@ void extract_tile_properties(const json& jsonObj, std::map<std::wstring, KTIProp
 			case KTIPropertyTypes::HexColour:
 			{
 				//@Rethink Horrible way of parsing hex value of colours 
-				key = sf::String(properties_iterator.key()).toWideString();
-				valueWideStr = sf::String(properties_iterator.value().get<string>()).toWideString();
+				//key = sf::String(properties_iterator.key()).toWideString();
+				valueWideStr = TO_WSTR(tilePropEntry["value"].get<string>());
 
-				/*
-				Colours are represented by tiled as
-				# ALPHA_BITS RED_BITS BLUE_BITS GREEN_BITS
-				Example
-				#ff2d0044 => # FF 2d 00 44 (or 45,0,68,255 as RGBA)
-
-				To parse this correctly 4 strings contain each channels hex string representation of the value.
-				This is then put through a stringstream to allow conversion directly to int
-				*/
+				
+				//Colours are represented by tiled as
+				//# ALPHA_BITS RED_BITS BLUE_BITS GREEN_BITS
+				//Example
+				//#ff2d0044 => # FF 2d 00 44 (or 45,0,68,255 as RGBA)
+				//
+				//To parse this correctly 4 strings contain each channels hex string representation of the value.
+				//This is then put through a stringstream to allow conversion directly to int
+				
 
 				std::wstring alphaChannelChars, redChannelHexChars, greenChannelHexChars, blueChannelHexChars;
 				alphaChannelChars.push_back(valueWideStr[1]);
@@ -963,13 +945,14 @@ void extract_tile_properties(const json& jsonObj, std::map<std::wstring, KTIProp
 
 			case KTIPropertyTypes::File:
 			{
-				bLoadedCorrectly = false;
-				MAP_PARSE_ERR;
 				KPRINTF("File property not supported in this parser!\n");
 			}
 			break;
 
 			default:
+				bLoadedCorrectly = false;
+				MAP_PARSE_ERR;
+				KPRINTF("Unknown tile property type found in tileset, map failed to load correctly!\n");
 				break;
 			}
 
@@ -977,19 +960,14 @@ void extract_tile_properties(const json& jsonObj, std::map<std::wstring, KTIProp
 			{
 				temporary_property_types_map.emplace(key, Type_Enum);
 			}
-			++properties_iterator;
-			++propertyTypes_iterator;
 		}
 
 		tilePropMap.emplace(TILE_KEY, temporary_property_map);
 		tilePropTypeMap.emplace(TILE_KEY, temporary_property_types_map);
-
 		//clear to be re-used in next loop iteration
 		temporary_property_map.clear();
 		temporary_property_types_map.clear();
 		++tile_property_iterator;
-		++tile_property_types_iterator;
-
 	}
 }
 

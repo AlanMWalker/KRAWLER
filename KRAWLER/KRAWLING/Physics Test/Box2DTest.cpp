@@ -163,6 +163,7 @@ public:
 
 			//testBox->setIsInUse(false);
 			testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
+			m_boxes.push_back(testBox);
 		}
 
 		{// static box
@@ -206,7 +207,9 @@ public:
 		if (KInput::JustPressed(KKey::D))
 		{
 			for (auto box : m_boxes)
+			{
 				box->getComponent<KCBody>()->applyLinearImpulseToCenter(Vec2f(100000000, 0), true);
+			}
 		}
 		changeScene();
 

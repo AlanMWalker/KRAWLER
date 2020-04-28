@@ -54,13 +54,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;KRAWLERENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;D:\SFML-2.5.1\include;$(ProjectDir)\src\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\..\..\..\..\SFML-2.5.1\include;$(ProjectDir)\src\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\..\..\..\..\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -72,7 +72,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;KRAWLERENGINE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;D:\SFML-2.5.1\include;$(ProjectDir)\src\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;$(ProjectDir)\..\..\..\..\SFML-2.5.1\include;$(ProjectDir)\src\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -80,7 +80,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>D:\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\..\..\..\..\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -93,8 +93,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Collisions\KCollisionOverlord.cpp" />
-    <ClCompile Include="src\Components\KCBody.cpp" />
     <ClCompile Include="src\Animation\KAnimation.cpp" />
     <ClCompile Include="src\box2d\collision\b2_broad_phase.cpp" />
     <ClCompile Include="src\box2d\collision\b2_chain_shape.cpp" />
@@ -142,6 +140,7 @@
     <ClCompile Include="src\box2d\dynamics\b2_world.cpp" />
     <ClCompile Include="src\box2d\dynamics\b2_world_callbacks.cpp" />
     <ClCompile Include="src\box2d\rope\b2_rope.cpp" />
+    <ClCompile Include="src\Collisions\KCollisionOverlord.cpp" />
     <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
     <ClCompile Include="src\Components\KCLight.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
@@ -154,6 +153,7 @@
     <ClCompile Include="src\Components\KCColliderBase.cpp" />
     <ClCompile Include="src\AssetLoader\KAssetLoader.cpp" />
     <ClCompile Include="src\Components\KCBoxCollider.cpp" />
+    <ClCompile Include="src\Components\KCPhysicsBody.cpp" />
     <ClCompile Include="src\Components\KCSprite.cpp" />
     <ClCompile Include="src\KComponent.cpp" />
     <ClCompile Include="src\KEntity.cpp" />
@@ -213,6 +213,8 @@
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />
     <ClInclude Include="include\Components\KCLight.h" />
+    <ClInclude Include="include\Components\KCollisions.h" />
+    <ClInclude Include="include\Components\KCPhysicsBody.h" />
     <ClInclude Include="include\Components\KCRenderableBase.h" />
     <ClInclude Include="include\Components\KCSprite.h" />
     <ClInclude Include="include\Animation\KAnimation.h" />
@@ -238,7 +240,6 @@
     <ClInclude Include="include\Utilities\KDebug.h" />
     <ClInclude Include="include\Utilities\KEngineMacros.h" />
     <ClInclude Include="include\Utilities\KQuadtree.h" />
-    <ClInclude Include="include\Components\KCBody.h" />
     <ClInclude Include="rapidxml\rapidxml.hpp" />
     <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
     <ClInclude Include="rapidxml\rapidxml_print.hpp" />

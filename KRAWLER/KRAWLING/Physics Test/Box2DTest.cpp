@@ -163,7 +163,6 @@ public:
 
 			//testBox->setIsInUse(false);
 			testBox->addComponent(new KCBody(*testBox, BOX_BOUNDS, bodyDef, matDef));
-			m_boxes.push_back(testBox);
 		}
 
 		{// static box
@@ -182,8 +181,6 @@ public:
 
 			floor->addComponent(new KCBody(*floor, FLOOR_BOUNDS, bodyDef));
 		}
-
-		GET_APP()->getPhysicsWorld().setGravity(Vec2f());
 		return KInitStatus::Success;
 	}
 
@@ -204,22 +201,7 @@ public:
 		ImGui::Text(position.c_str());
 		//ImGui::End();
 		imgui->end();
-		if (KInput::JustPressed(KKey::D))
-		{
-			for (auto box : m_boxes)
-			{
-				box->getComponent<KCBody>()->setAngularVelocity(10.0f);
-			}
-		}
-		if (KInput::JustPressed(KKey::A))
-		{
-			for (auto box : m_boxes)
-			{
-				box->getComponent<KCBody>()->setAngularVelocity(-10.0f);
-			}
-		}
 		changeScene();
-
 	}
 
 	void changeScene()

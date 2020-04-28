@@ -208,7 +208,14 @@ public:
 		{
 			for (auto box : m_boxes)
 			{
-				box->getComponent<KCBody>()->applyLinearImpulseToCenter(Vec2f(100000000, 0), true);
+				box->getComponent<KCBody>()->setAngularVelocity(10.0f);
+			}
+		}
+		if (KInput::JustPressed(KKey::A))
+		{
+			for (auto box : m_boxes)
+			{
+				box->getComponent<KCBody>()->setAngularVelocity(-10.0f);
 			}
 		}
 		changeScene();

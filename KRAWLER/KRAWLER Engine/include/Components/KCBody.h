@@ -127,19 +127,26 @@ namespace Krawler
 
 			/// @param torque about the z-axis (out of the screen), usually in N-m.
 			/// @param wake also wake up the body
-			KRAWLER_API void applyTorque(float torque, bool wake);
+			KRAWLER_API void applyTorque(float torque, bool wake = true);
 
 			/// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
 			/// @param point the world position of the point of application.
 			/// @param wake also wake up the body
-			KRAWLER_API void applyLinearImpulse(const Vec2f& impulse, const Vec2f& point, bool wake);
+			KRAWLER_API void applyLinearImpulse(const Vec2f& impulse, const Vec2f& point, bool wake = true);
 			
 			/// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
 			/// @param wake also wake up the body
-			KRAWLER_API void applyLinearImpulseToCenter(const Vec2f& impulse, bool wake);
+			KRAWLER_API void applyLinearImpulseToCenter(const Vec2f& impulse, bool wake = true);
 			
 			/// @return the mass, usually in kilograms (kg).
 			KRAWLER_API void getMass() const;
+
+			/// Get the gravity scale of the body.
+			KRAWLER_API float getGravityScale() const;
+
+			/// Set the gravity scale of the body.
+			KRAWLER_API void setGravityScale(float scale = 1.0f);
+
 
 		private:
 			KBodyDef m_bodyDef;

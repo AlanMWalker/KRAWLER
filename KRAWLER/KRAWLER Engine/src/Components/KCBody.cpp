@@ -152,3 +152,13 @@ void KCBody::getMass() const
 {
 	m_pB2Body->GetMass();
 }
+
+float KCBody::getGravityScale() const
+{
+	return m_pB2Body->GetGravityScale();
+}
+
+void KCBody::setGravityScale(float scale)
+{
+	m_pB2Body->SetGravityScale(scale);
+}

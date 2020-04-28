@@ -4,7 +4,6 @@
 #include "Krawler.h"
 #include "KEntity.h"
 
-#include "Physics\KPhysicsWorld.h"
 #include "Utilities\KQuadtree.h"
 
 #include <vector>
@@ -17,12 +16,6 @@ namespace Krawler
 	{
 		bool allocated = 0;
 		KEntity entity;
-	};
-
-	struct KCollisionOverseer
-	{
-		KQuadtree* pStaticQTree = nullptr;
-		KQuadtree* pDynamicQTree = nullptr;
 	};
 
 	namespace Components
@@ -61,7 +54,7 @@ namespace Krawler
 		KRAWLER_API KEntity* addEntityToScene();
 
 		//Will aim to always give a contiguous block. Nullptr if none available or failed
-		KRAWLER_API KDEPRECATED(KEntity* addEntitiesToScene)(Krawler::uint32 number, Krawler::int32& numberAllocated);
+		KRAWLER_API KDEPRECATED_FUNC(KEntity* addEntitiesToScene)(Krawler::uint32 number, Krawler::int32& numberAllocated);
 
 		KRAWLER_API bool addMultipleEntitiesToScene(uint32 numberToAllocate, std::vector<KEntity*>& entityVec);
 
@@ -71,9 +64,9 @@ namespace Krawler
 
 		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_numberOfAllocatedChunks; }
 
-		KRAWLER_API KAllocatableChunk* getEntityList() { return m_entityChunks; }
+		KRAWLER_API std::vector<KEntity*> getAllocatedEntityList();
 
-		KRAWLER_API KCollisionOverseer getCollisionOverseer() { return KCollisionOverseer{ &m_staticQTree, &m_dynamicQTree }; }
+		KRAWLER_API KAllocatableChunk* getEntityList() { return m_entityChunks; }
 
 		bool hasSceneTickedOnce() const { return m_bHasTickedOnce; }
 
@@ -91,8 +84,6 @@ namespace Krawler
 
 		std::wstring m_sceneName;
 		std::vector<Components::KCColliderBase*> m_initCachedColliders;
-		KQuadtree m_dynamicQTree;
-		KQuadtree m_staticQTree;
 		uint32 m_numberOfAllocatedChunks;
 		Components::KCImgui* m_pImguiComponent = nullptr;
 	};
@@ -110,17 +101,26 @@ namespace Krawler
 		KRAWLER_API void tickActiveScene();
 		KRAWLER_API void fixedTickActiveScene();
 
-		KRAWLER_API void setCurrentScene(const std::wstring& sceneName);
+		//@param Name of scene to start the application on
+		KRAWLER_API void setStartScene(const std::wstring& sceneName);
 
-		KRAWLER_API int32 addScene(KScene* pScene); //return 0 if added, -1 if failed
-		KRAWLER_API int32 removeScene(KScene* pScene); //return 0 if removed, -1 if failed
+		//@param Name of scene to transition to
+		KRAWLER_API void transitionToScene(const std::wstring& sceneName);
+
+
+		KRAWLER_API int32 addScene(KScene* pScene); //return 0 if added, EXIT_FAILURE if failed
+		KRAWLER_API int32 removeScene(KScene* pScene); //return 0 if removed, EXIT_FAILURE if failed
 
 		KRAWLER_API KScene* const getCurrentScene() { return m_pCurrentScene; }
 
 	private:
 
+		KScene* findSceneByName(const std::wstring& name) const;
+
 		std::vector<KScene*> m_scenes;
 		KScene* m_pCurrentScene;
+		KScene* m_pNextScene;
+		bool m_bIsChangingScene = false;
 	};
 }
 #endif

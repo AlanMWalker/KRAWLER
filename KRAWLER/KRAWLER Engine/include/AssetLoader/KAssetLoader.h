@@ -54,6 +54,12 @@ namespace Krawler
 		L"_f"
 	};
 
+	const std::wstring ACCEPTED_MAP[]
+	{
+		L".tmx", 
+		L".json"
+	};
+
 	class KAssetLoader
 	{
 	public:

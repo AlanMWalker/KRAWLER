@@ -27,7 +27,7 @@ namespace Krawler
 			float restitution;
 		};
 
-		class KCPhysicsBody : public KComponentBase
+		class __declspec(deprecated("KPhysicsBody is deprecated, consider using KKinematicBody or KStaticBody instead.")) KCPhysicsBody : public KComponentBase
 		{
 		public:
 

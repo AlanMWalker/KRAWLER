@@ -18,3 +18,4 @@ Box2D/
 *.db-wal
 profiler_log.txt
 .gitignore~
+KRAWLER/KRAWLING/output.txt

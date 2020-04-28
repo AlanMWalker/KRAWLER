@@ -73,7 +73,7 @@ template<typename T>
 __forceinline sf::Vector2<T> RotateVector(const sf::Vector2<T>& Vector, float Angle)
 {
 	sf::Vector2<T> Vec;
-	Angle = Maths::Radians(Angle);
+	Angle = Krawler::Maths::Radians(Angle);
 
 	Vec.x = static_cast<T> ((Vector.x * cos(Angle)) - (Vector.y * sin(Angle)));
 	Vec.y = static_cast<T> ((Vector.x * sin(Angle)) + (Vector.y * cos(Angle)));

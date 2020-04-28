@@ -36,7 +36,7 @@ namespace Krawler
 			float correctionThreshold;
 		};
 
-		class KPhysicsWorld
+		class __declspec(deprecated("KPhysicsWorld is now deprecated. Please use KPhysicsWorld2D.")) KPhysicsWorld
 		{
 		public:
 

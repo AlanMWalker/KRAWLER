@@ -9,11 +9,11 @@ namespace Krawler
 {
 	namespace Maths
 	{
-		const float PI{ 3.141592f };
+		constexpr float PI{ 3.141592f };
 
-		const float PI_OVER_2{ PI / 2.f };
+		constexpr float PI_OVER_2{ PI / 2.f };
 
-		const float PI_BY_2{ PI  * 2.f };
+		constexpr float PI_BY_2{ PI  * 2.f };
 
 		template<typename T>
 		T Degrees(T Theta);

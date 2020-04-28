@@ -11,7 +11,6 @@
 #include <string.h>
 #include <JSON\json.hpp>
 
-
 using namespace sf;
 using namespace Krawler;
 using namespace std;
@@ -243,7 +242,7 @@ void KAssetLoader::loadTilemap(const std::wstring & name, const std::wstring & f
 	}
 
 	TiledImport::KTIMap* pMap;
-	pMap = TiledImport::loadTiledJSONFile(m_rootFolder + KTEXT("\\") + filePath);
+	pMap = TiledImport::loadTiledJSONFile(filePath);
 	KCHECK(pMap);
 	if (!pMap)
 	{
@@ -351,12 +350,6 @@ KAssetLoader::KAssetLoader() : m_rootFolder(KTEXT("res"))
 
 void KAssetLoader::scanFolderLoad()
 {
-	constexpr uint32 NUM_TEXTURE_TYPES = sizeof(ACCEPTED_TEXTURES) / sizeof(ACCEPTED_TEXTURES[0]);
-	constexpr uint32 NUM_AUDIO_TYPES = sizeof(ACCEPTED_AUDIO) / sizeof(ACCEPTED_AUDIO[0]);
-	constexpr uint32 NUM_SHADER_TYPES = sizeof(ACCEPTED_SHADERS) / sizeof(ACCEPTED_SHADERS[0]);
-	constexpr uint32 NUM_FONT_TYPES = sizeof(ACCEPTED_FONT) / sizeof(ACCEPTED_FONT[0]);
-
-
 	vector<wstring> filesList;
 	list<wstring> shaderFilesList;
 
@@ -400,6 +393,14 @@ void KAssetLoader::scanFolderLoad()
 			if (path.find(shaderExtension) != wstring::npos)
 			{
 				loadShader(FindFilename(path), path);
+			}
+		}
+
+		for (auto mapExtension : ACCEPTED_MAP)
+		{
+			if (path.find(mapExtension) != std::string::npos)
+			{
+				loadTilemap(FindFilename(path), path);
 			}
 		}
 	}

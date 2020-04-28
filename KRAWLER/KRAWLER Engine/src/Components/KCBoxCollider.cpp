@@ -1,6 +1,8 @@
 #include "Components\KCBoxCollider.h"
 #include "Components\KCTransform.h"
 
+#include "box2d\b2_polygon_shape.h"
+
 using namespace Krawler;
 using namespace Krawler::Components;
 
@@ -8,6 +10,9 @@ KCBoxCollider::KCBoxCollider(KEntity * pEntity, const Vec2f& size) :
 	KCColliderBase(pEntity, KCColliderType::AABB), m_size(size), m_halfSize(size*0.5f)
 {
 	m_pTransform = getEntity()->getComponent<KCTransform>();
+	auto p = getB2Shape().lock();
+	m_pBoxShapeb2 = std::dynamic_pointer_cast<b2PolygonShape>(p);
+	m_pBoxShapeb2.lock()->SetAsBox(m_halfSize.x, m_halfSize.y);
 }
 
 const Rectf & KCBoxCollider::getBounds()
@@ -25,15 +30,6 @@ const Rectf& KCBoxCollider::getBoundingBox()
 Vec2f KCBoxCollider::getTopLeftCoord() const
 {
 	const Vec2f& origin = m_pTransform->getOrigin();
-	//if (origin == Vec2f(0, 0))
-	//{
-	//	//return m_pTransform->getTranslation();
-	//	return m_pTransform->getPosition();
-	//
-	//}
-	//const Vec2f coord = -(Vec2f(origin.x * m_pTransform->getScale().x, origin.y * m_pTransform->getScale().y));
-	//return m_pTransform->getTranslation() - origin;
-
 	const Vec2f pos = m_pTransform->getTransform().transformPoint(0.0f, 0.0f);
 	return pos;
 }

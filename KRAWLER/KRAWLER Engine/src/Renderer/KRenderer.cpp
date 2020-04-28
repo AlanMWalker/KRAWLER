@@ -106,20 +106,20 @@ void KRenderer::generateRenderableList()
 void KRenderer::sortByRenderLayer()
 {
 	std::sort(m_renderablesVector.begin(), m_renderablesVector.end(), [](Components::KCRenderableBase* objA, Components::KCRenderableBase* objB)
-	{
-		return objA->getRenderLayer() < objB->getRenderLayer();
-	});
+		{
+			return objA->getRenderLayer() < objB->getRenderLayer();
+		});
 }
 
 void Krawler::Renderer::KRenderer::sortByZOrder()
 {
 	std::sort(m_renderablesVector.begin(), m_renderablesVector.end(), [](Components::KCRenderableBase* objA, Components::KCRenderableBase* objB) -> bool
-	{
-		auto objABounds = objA->getOnscreenBounds();
-		auto objBBounds = objB->getOnscreenBounds();
+		{
+			auto objABounds = objA->getOnscreenBounds();
+			auto objBBounds = objB->getOnscreenBounds();
 
-		return (objABounds.top + objABounds.height) < (objBBounds.top + objBBounds.height);
-	});
+			return (objABounds.top + objABounds.height) < (objBBounds.top + objBBounds.height);
+		});
 }
 
 void KRenderer::defaultRender()
@@ -136,7 +136,7 @@ void KRenderer::defaultRender()
 	default:
 		sortByRenderLayer();
 	}
-	
+
 	for (auto& pSplit : m_splitMapVec)
 	{
 		target->draw(*pSplit);
@@ -148,9 +148,13 @@ void KRenderer::defaultRender()
 		renderable->postRenderEvent();
 	}
 
+	for (auto& s : m_debugShapes)
+	{
+		target->draw(*s);
+	}
 }
 
-Vec2f KRenderer::screenToWorld(const Vec2i & vec) const
+Vec2f KRenderer::screenToWorld(const Vec2i& vec) const
 {
 	return KApplication::getApp()->getRenderWindow()->mapPixelToCoords(vec);
 }
@@ -158,4 +162,17 @@ Vec2f KRenderer::screenToWorld(const Vec2i & vec) const
 void KRenderer::subscribeLastDrawCallback(std::function<void(void)> func)
 {
 	m_lastDrawCallbacks.push_back(func);
+}
+
+void KRenderer::removeDebugShape(sf::Shape* pShape)
+{
+	auto result = find_if(m_debugShapes.begin(), m_debugShapes.end(), [pShape](sf::Shape* ele) -> bool
+		{
+			return ele == pShape;
+		});
+
+	if (result != m_debugShapes.end())
+	{
+		m_debugShapes.erase(result);
+	}
 }

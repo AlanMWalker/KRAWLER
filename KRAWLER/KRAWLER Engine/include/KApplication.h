@@ -5,6 +5,9 @@
 #include "Renderer\KRenderer.h"
 #include "Input\KInput.h"
 #include "KScene.h"
+#include "Physics\KPhysicsWorld2D.h"
+#include "Collisions\KCollisionOverlord.h"
+
 #include <fstream>
 #include <SFML\Graphics\RenderWindow.hpp> 
 #include <SFML\System\Clock.hpp> 
@@ -55,7 +58,7 @@ namespace Krawler
 		KRAWLER_API static KApplication* const getApp()
 		{
 			static KApplication* pApplication = new KApplication();
-
+		
 			return pApplication;
 		}
 
@@ -69,10 +72,12 @@ namespace Krawler
 
 		//TODO do not expose this function in the dll
 		KRAWLER_API sf::RenderWindow* const getRenderWindow() { return m_pRenderWindow; }
-		KRAWLER_API Krawler::Renderer::KRenderer* const getRenderer() { return m_pRenderer; }
-		KRAWLER_API Krawler::KSceneDirector& getSceneDirector() { return m_sceneDirector; }
-		KRAWLER_API Krawler::Physics::KPhysicsWorld* const getPhysicsWorld() { return &m_physicsWorld; }
-		KRAWLER_API Krawler::KScene* const getCurrentScene() { return m_sceneDirector.getCurrentScene(); }
+		KRAWLER_API Renderer::KRenderer* const getRenderer() { return &m_pRenderer; }
+		KRAWLER_API KSceneDirector& getSceneDirector() { return m_sceneDirector; }
+		KRAWLER_API Physics::KPhysicsWorld2D& const getPhysicsWorld() { return m_physicsWorld; }
+		KRAWLER_API KScene* const getCurrentScene() { return m_sceneDirector.getCurrentScene(); }
+
+		Collisions::KCollisionOverlord& getOverlord() { return m_overlord; }
 
 		KRAWLER_API float getElapsedTime() const;
 		KRAWLER_API uint32 getGameFPS() const { return m_gameFPS; }
@@ -97,9 +102,10 @@ namespace Krawler
 		__forceinline void outputFPS(const sf::Time& currentTime, sf::Time& fpsLastTime);
 
 		sf::RenderWindow* m_pRenderWindow = nullptr;
-		Krawler::Renderer::KRenderer* m_pRenderer = nullptr;
-		Krawler::KSceneDirector m_sceneDirector;
-		Physics::KPhysicsWorld m_physicsWorld;
+		Renderer::KRenderer m_pRenderer;
+		KSceneDirector m_sceneDirector;
+		Physics::KPhysicsWorld2D m_physicsWorld;
+		Collisions::KCollisionOverlord m_overlord;
 
 		uint32 m_gameFPS;
 		uint32 m_physicsFPS;
@@ -115,7 +121,7 @@ namespace Krawler
 		bool m_bHasFocus = true;
 		Vec2f m_viewSize;
 		static std::mutex s_mutex;
-		std::vector< std::function<void(const sf::Event&)>> m_eventQueueCallbacks;
+		std::vector<std::function<void(const sf::Event&)>> m_eventQueueCallbacks;
 	};
 }
 

@@ -5,7 +5,6 @@ using namespace Krawler;
 using namespace Krawler::Components;
 
 KPhysicsBodyProperties::KPhysicsBodyProperties()
-
 {
 	setMass(1.0f);
 	restitution = 1.0f;
@@ -39,20 +38,6 @@ void KCPhysicsBody::fixedTick()
 	{
 		return;
 	}
-
-	const float dt = KApplication::getApp()->getPhysicsDelta();
-	auto pPhysWorld = KApplication::getApp()->getPhysicsWorld();
-	KCTransform* const pTransform = getEntity()->getComponent<KCTransform>();
-
-	m_prevPosition = pTransform->getPosition();
-	const Vec2f acceleration = pPhysWorld->getPhysicsWorldProperties().gravity + (m_properties.invMass * m_force);
-	m_velocity += acceleration * dt;
-
-	Vec2f moveVec = m_velocity * dt;
-	moveVec *= (1.0f / pPhysWorld->getPhysicsWorldProperties().metresToPixels);
-
-	pTransform->move(moveVec);
-
 	m_force = Vec2f(0.0f, 0.0f);
 }
 
@@ -79,16 +64,4 @@ void KPhysicsBodyProperties::computeMass(float density, KCColliderType colliderT
 {
 	density = 0.0;
 	colliderType = KCColliderType::Circle;
-	//switch (colliderType)
-	//{
-	//default:
-	//case AABB:
-	//	float mass = ;
-	//	setMass();
-	//	break;
-	//
-	//case Circle:
-	//	// cast to circle collider
-	//	break;
-	//}
 }

@@ -181,6 +181,8 @@ public:
 
 			floor->addComponent(new KCBody(*floor, FLOOR_BOUNDS, bodyDef));
 		}
+
+		GET_APP()->getPhysicsWorld().setGravity(Vec2f());
 		return KInitStatus::Success;
 	}
 
@@ -201,7 +203,13 @@ public:
 		ImGui::Text(position.c_str());
 		//ImGui::End();
 		imgui->end();
+		if (KInput::JustPressed(KKey::D))
+		{
+			for (auto box : m_boxes)
+				box->getComponent<KCBody>()->applyLinearImpulseToCenter(Vec2f(100000000, 0), true);
+		}
 		changeScene();
+
 	}
 
 	void changeScene()

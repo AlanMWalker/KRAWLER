@@ -101,8 +101,45 @@ namespace Krawler
 			// @param Rotation in radians,
 			KRAWLER_API void setRotiation(float rotation) const;
 
-			//@param Is the body active in simulations
+			// @param Is the body active in simulations
 			KRAWLER_API void setActivity(bool bIsActive) const;
+			
+			/// @return the linear velocity of the center of mass.
+			KRAWLER_API Vec2f getLinearVelocity() const;
+
+			/// @param v the new linear velocity of the center of mass.
+			KRAWLER_API void setLinearVelocity(const Vec2f& velocity);
+
+			/// @return the angular velocity in radians/second.
+			KRAWLER_API float getAngularVelocity() const;
+
+			/// @param omega the new angular velocity in radians/second.
+			KRAWLER_API void setAngularVelocity(float velocity);
+
+			/// @param force the world force vector, usually in Newtons (N).
+			/// @param point the world position of the point of application.
+			/// @param wake also wake up the body
+			KRAWLER_API void applyForce(const Vec2f& force, const Vec2f& point, bool wake = true);
+
+			/// @param force the world force vector, usually in Newtons (N).
+			/// @param wake also wake up the body
+			KRAWLER_API void applyForceToCentre(const Vec2f& force, bool wake = true);
+
+			/// @param torque about the z-axis (out of the screen), usually in N-m.
+			/// @param wake also wake up the body
+			KRAWLER_API void applyTorque(float torque, bool wake);
+
+			/// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
+			/// @param point the world position of the point of application.
+			/// @param wake also wake up the body
+			KRAWLER_API void applyLinearImpulse(const Vec2f& impulse, const Vec2f& point, bool wake);
+			
+			/// @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
+			/// @param wake also wake up the body
+			KRAWLER_API void applyLinearImpulseToCenter(const Vec2f& impulse, bool wake);
+			
+			/// @return the mass, usually in kilograms (kg).
+			KRAWLER_API void getMass() const;
 
 		private:
 			KBodyDef m_bodyDef;

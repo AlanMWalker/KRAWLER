@@ -142,6 +142,7 @@
     <ClCompile Include="src\box2d\rope\b2_rope.cpp" />
     <ClCompile Include="src\Collisions\KCollisionOverlord.cpp" />
     <ClCompile Include="src\Components\KCAnimatedSprite.cpp" />
+    <ClCompile Include="src\Components\KCBody.cpp" />
     <ClCompile Include="src\Components\KCLight.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
     <ClCompile Include="src\Components\KCTileMap.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="include\box2d\box2d.h" />
     <ClInclude Include="include\Collisions\KCollisionOverlord.h" />
     <ClInclude Include="include\Components\KCAnimatedSprite.h" />
+    <ClInclude Include="include\Components\KCBody.h" />
     <ClInclude Include="include\Components\KCBoxCollider.h" />
     <ClInclude Include="include\Components\KCCircleCollider.h" />
     <ClInclude Include="include\Components\KCColliderBase.h" />

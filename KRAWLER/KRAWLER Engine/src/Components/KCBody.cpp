@@ -102,3 +102,63 @@ void KCBody::setActivity(bool bIsActive) const
 {
 	m_pB2Body->SetActive(bIsActive);
 }
+
+Vec2f KCBody::getLinearVelocity() const
+{
+	return Vec2f(b2ToVec2f(m_pB2Body->GetLinearVelocity()));
+}
+
+void KCBody::setLinearVelocity(const Vec2f& velocity) 
+{
+	m_pB2Body->SetLinearVelocity(Vec2fTob2(velocity));
+}
+
+float KCBody::getAngularVelocity() const
+{
+	return m_pB2Body->GetAngularVelocity();
+}
+
+void KCBody::setAngularVelocity(float velocity)
+{
+	m_pB2Body->SetAngularVelocity(velocity);
+}
+
+void KCBody::applyForce(const Vec2f& force, const Vec2f& point, bool wake)
+{
+	m_pB2Body->ApplyForce(Vec2fTob2(force), Vec2fTob2(force), wake);
+}
+
+void KCBody::applyForceToCentre(const Vec2f& force, bool wake)
+{
+	m_pB2Body->ApplyForceToCenter(Vec2fTob2(force), wake);
+}
+
+void KCBody::applyTorque(float torque, bool wake)
+{
+	m_pB2Body->ApplyTorque(torque, wake);
+}
+
+void KCBody::applyLinearImpulse(const Vec2f& impulse, const Vec2f& point, bool wake)
+{
+	m_pB2Body->ApplyLinearImpulse(Vec2fTob2(impulse), Vec2fTob2(point), wake);
+}
+
+void KCBody::applyLinearImpulseToCenter(const Vec2f& impulse, bool wake)
+{
+	m_pB2Body->ApplyLinearImpulseToCenter(Vec2fTob2(impulse), wake);
+}
+
+void KCBody::getMass() const
+{
+	m_pB2Body->GetMass();
+}
+
+float KCBody::getGravityScale() const
+{
+	return m_pB2Body->GetGravityScale();
+}
+
+void KCBody::setGravityScale(float scale)
+{
+	m_pB2Body->SetGravityScale(scale);
+}

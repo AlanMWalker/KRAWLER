@@ -74,7 +74,7 @@ void KCBody::fixedTick()
 {
 	const Vec2f translation = b2ToVec2f(m_pB2Body->GetPosition());
 	const float rotation = Maths::Degrees(m_pB2Body->GetAngle());
-	getEntity()->getTransform()->setTranslation(translation);
+	getEntity()->getTransform()->setPosition(translation);
 	getEntity()->getTransform()->setRotation(rotation);
 }
 

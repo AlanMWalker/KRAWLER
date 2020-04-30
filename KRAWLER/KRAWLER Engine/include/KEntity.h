@@ -92,9 +92,9 @@ namespace Krawler
 		KRAWLER_API const std::wstring& getEntityTag() const { return m_entityTag; }
 
 		//todo change to enabled
-		KRAWLER_API bool isEntityInUse() const { return m_bIsInUse; }
+		KRAWLER_API bool isEntityAwake() const { return m_bIsAwake; }
 
-		KRAWLER_API void setIsInUse(bool bInUse) { m_bIsInUse = bInUse; }
+		KRAWLER_API void setAwake(bool bAwake) { m_bIsAwake = bAwake; }
 
 		KRAWLER_API  KDEPRECATED_FUNC(Components::KCTransform)* const getTransformComponent() { return m_pTransform; }
 
@@ -108,7 +108,7 @@ namespace Krawler
 	private:
 		std::vector<KComponentBase*> m_componentVector;
 		std::wstring m_entityTag;
-		bool m_bIsInUse;
+		bool m_bIsAwake;
 		Components::KCTransform* m_pTransform = nullptr;
 		EntitySceneInteractivity m_interactivity;
 	};

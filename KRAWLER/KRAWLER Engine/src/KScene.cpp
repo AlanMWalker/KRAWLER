@@ -56,7 +56,7 @@ void KScene::tick()
 		{
 			continue;
 		}
-		if (!m_entityChunks[i].entity.isEntityAwake())
+		if (!m_entityChunks[i].entity.isEntityActive())
 		{
 			continue;
 		}
@@ -80,7 +80,7 @@ void KScene::fixedTick()
 			continue;
 		}
 
-		if (!m_entityChunks[i].entity.isEntityAwake())
+		if (!m_entityChunks[i].entity.isEntityActive())
 		{
 			continue;
 		}
@@ -138,7 +138,7 @@ KEntity* KScene::addEntitiesToScene(uint32 number, int32& numberAllocated)
 		m_numberOfAllocatedChunks += number;
 		for (uint32 i = 0; i < number; ++i)
 		{
-			pEntity[i].setAwake(true);
+			pEntity[i].setActive(true);
 		}
 		return pEntity;
 	}
@@ -165,7 +165,7 @@ KRAWLER_API bool KScene::addMultipleEntitiesToScene(uint32 numberToAllocate, vec
 		if (!it->allocated)
 		{
 			it->allocated = true;
-			it->entity.setAwake(true);
+			it->entity.setActive(true);
 			entityVec[count] = &it->entity;
 			++count;
 		}
@@ -236,7 +236,7 @@ KEntity* KScene::getAllocatableEntity()
 		return nullptr;
 	}
 	findResult->allocated = true;
-	findResult->entity.setAwake(true);
+	findResult->entity.setActive(true);
 	return &findResult->entity;
 }
 

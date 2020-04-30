@@ -100,7 +100,6 @@ void KRenderer::generateRenderableList()
 		}
 		m_renderablesVector.erase(std::find(m_renderablesVector.begin(), m_renderablesVector.end(), pSplit));
 	}
-
 }
 
 void KRenderer::sortByRenderLayer()
@@ -125,7 +124,6 @@ void Krawler::Renderer::KRenderer::sortByZOrder()
 void KRenderer::defaultRender()
 {
 	sf::RenderWindow* const target = KApplication::getApp()->getRenderWindow();
-
 	generateRenderableList();
 	switch (m_sortType)
 	{
@@ -148,9 +146,12 @@ void KRenderer::defaultRender()
 		renderable->postRenderEvent();
 	}
 
-	for (auto& s : m_debugShapes)
+	if (m_bShowDebugDrawables)
 	{
-		target->draw(*s);
+		for (auto& s : m_debugShapes)
+		{
+			target->draw(*s);
+		}
 	}
 }
 

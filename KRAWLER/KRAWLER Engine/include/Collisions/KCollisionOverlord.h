@@ -38,7 +38,10 @@ namespace Krawler
 			// Update proxy positions on tick
 			void tick();
 			
-			KRAWLER_API void castRayInScene(const Vec2f& start, const Vec2f& end, KEntity* pCastingEntity = nullptr);
+			KRAWLER_API bool castRayInScene(const Vec2f& start, const Vec2f& end, const std::wstring& tagToQuitOn, KEntity* pCastingEntity = nullptr);
+
+			// Does the tag passed match as the tag on the proxy id given
+			bool doesTagMatchProxyId(const std::wstring& tag, int id) const;
 
 		private:
 			using ProxyPair = std::pair<int32, int32>;
@@ -66,8 +69,11 @@ namespace Krawler
 
 			struct RaycastCB
 			{
+				KCollisionOverlord* pOverlord = nullptr;
 				int castingID = -1;
+				std::wstring tag;
 				float RayCastCallback(const b2RayCastInput& input, int id);
+				bool bDidHit = false;
 			};
 
 			void cleanupProxies();

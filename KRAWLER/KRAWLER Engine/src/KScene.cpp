@@ -195,7 +195,7 @@ KEntity* KScene::findEntityByTag(const std::wstring& tag)
 {
 	auto find = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [&tag](const KAllocatableChunk& chunk) -> bool
 		{
-			if (chunk.entity.getEntityTag() == tag)
+			if (chunk.entity.getTag() == tag)
 			{
 				return true;
 			}

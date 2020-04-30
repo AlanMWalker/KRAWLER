@@ -54,3 +54,12 @@ void KPhysicsWorld2D::removeBody(b2Body* const pBody)
 {
 	m_pBox2DWorld->DestroyBody(pBody);
 }
+
+void KPhysicsWorld2D::rayCast(const Vec2f& start, const Vec2f& end)
+{
+	RaycastCB cb;
+	if (GetSquareLength(end - start) <= 0.0f)
+		return;
+
+	m_pBox2DWorld->RayCast(&cb, Vec2fTob2(start), Vec2fTob2(end));
+}

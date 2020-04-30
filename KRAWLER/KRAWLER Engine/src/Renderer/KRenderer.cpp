@@ -164,9 +164,9 @@ void KRenderer::subscribeLastDrawCallback(std::function<void(void)> func)
 	m_lastDrawCallbacks.push_back(func);
 }
 
-void KRenderer::removeDebugShape(sf::Shape* pShape)
+void KRenderer::removeDebugShape(sf::Drawable* pShape)
 {
-	auto result = find_if(m_debugShapes.begin(), m_debugShapes.end(), [pShape](sf::Shape* ele) -> bool
+	auto result = find_if(m_debugShapes.begin(), m_debugShapes.end(), [pShape](sf::Drawable* ele) -> bool
 		{
 			return ele == pShape;
 		});

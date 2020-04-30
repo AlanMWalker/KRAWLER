@@ -12,6 +12,7 @@
 class b2DynamicTree;
 class b2AABB;
 class b2BroadPhase;
+class b2RayCastInput;
 
 namespace Krawler
 {
@@ -36,6 +37,8 @@ namespace Krawler
 
 			// Update proxy positions on tick
 			void tick();
+			
+			KRAWLER_API void castRayInScene(const Vec2f& start, const Vec2f& end, KEntity* pCastingEntity = nullptr);
 
 		private:
 			using ProxyPair = std::pair<int32, int32>;
@@ -61,6 +64,12 @@ namespace Krawler
 				}
 			};
 
+			struct RaycastCB
+			{
+				int castingID = -1;
+				float RayCastCallback(const b2RayCastInput& input, int id);
+			};
+
 			void cleanupProxies();
 
 			// Handles the movement of proxies withing the dynamic trees
@@ -81,7 +90,6 @@ namespace Krawler
 			std::vector<ProxyInfo> m_proxies;
 			std::vector<ProxyPair> m_intersectionsToCheck;
 			std::deque<ProxyPair> m_narrowPhaseQueue;
-
 		};
 	}
 }

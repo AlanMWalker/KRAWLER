@@ -77,7 +77,7 @@ namespace Krawler
 		KRAWLER_API Physics::KPhysicsWorld2D& const getPhysicsWorld() { return m_physicsWorld; }
 		KRAWLER_API KScene* const getCurrentScene() { return m_sceneDirector.getCurrentScene(); }
 
-		Collisions::KCollisionOverlord& getOverlord() { return m_overlord; }
+		KRAWLER_API Collisions::KCollisionOverlord& getOverlord() { return m_overlord; }
 
 		KRAWLER_API float getElapsedTime() const;
 		KRAWLER_API uint32 getGameFPS() const { return m_gameFPS; }

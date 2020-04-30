@@ -71,7 +71,18 @@ void KCollisionOverlord::tick()
 	performNarrowPhaseForProxies();
 }
 
-void Krawler::Collisions::KCollisionOverlord::castRayInScene(const Vec2f& start, const Vec2f& end, KEntity* pCastingEntity)
+bool KCollisionOverlord::doesTagMatchProxyId(const std::wstring& tag, int id) const
+{
+	const int32 idx = getProxyIndexFromId(id);
+	if (idx == -1)
+	{
+		return false;
+	}
+
+	return m_proxies[idx].pEntity->getTag() == tag;
+}
+
+bool KCollisionOverlord::castRayInScene(const Vec2f& start, const Vec2f& end, const std::wstring& tagToQuitOn, KEntity* pCastingEntity)
 {
 	b2RayCastInput input;
 	input.maxFraction = 1.0f;
@@ -79,14 +90,22 @@ void Krawler::Collisions::KCollisionOverlord::castRayInScene(const Vec2f& start,
 	input.p2 = Vec2fTob2(end);
 
 	RaycastCB cb;
-	for (auto& p : m_proxies)
+	cb.pOverlord = this;
+	cb.tag = tagToQuitOn;
+	if (pCastingEntity)
 	{
-		if (p.pEntity == pCastingEntity)
+		for (auto& p : m_proxies)
 		{
-			cb.castingID = p.proxyId;
+			if (p.pEntity == pCastingEntity)
+			{
+				cb.castingID = p.proxyId;
+			}
 		}
 	}
+
 	m_pBroadPhase->RayCast(&cb, input);
+
+	return cb.bDidHit;
 }
 
 void KCollisionOverlord::cleanupProxies()
@@ -259,7 +278,11 @@ float KCollisionOverlord::RaycastCB::RayCastCallback(const b2RayCastInput& input
 			return 1.0f;
 		}
 	}
-	KPRINTF("RAYCAST CB CALLED\n");
-
-	return 0.0f;
+	
+	if (pOverlord->doesTagMatchProxyId(tag,id))
+	{
+		bDidHit = true;
+		return 0.0f;
+	}
+	return 1.0f;
 }

@@ -89,7 +89,7 @@ namespace Krawler
 		//Param: n/a 
 		//Return: wstring tag of entity
 		//Info:   
-		KRAWLER_API const std::wstring& getEntityTag() const { return m_entityTag; }
+		KRAWLER_API const std::wstring& getTag() const { return m_entityTag; }
 
 		//todo change to enabled
 		KRAWLER_API bool isEntityAwake() const { return m_bIsAwake; }

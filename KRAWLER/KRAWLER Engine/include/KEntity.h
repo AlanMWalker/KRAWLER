@@ -25,7 +25,7 @@ namespace Krawler
 		Dynamic,
 		Static
 	};
-	constexpr int32 CHUNK_POOL_SIZE{ 120 };
+	constexpr int32 CHUNK_POOL_SIZE{ 300 };
 
 	class KEntity
 	{
@@ -89,12 +89,12 @@ namespace Krawler
 		//Param: n/a 
 		//Return: wstring tag of entity
 		//Info:   
-		KRAWLER_API const std::wstring& getEntityTag() const { return m_entityTag; }
+		KRAWLER_API const std::wstring& getTag() const { return m_entityTag; }
 
 		//todo change to enabled
-		KRAWLER_API bool isEntityInUse() const { return m_bIsInUse; }
+		KRAWLER_API bool isEntityActive() const { return m_bIsActive; }
 
-		KRAWLER_API void setIsInUse(bool bInUse) { m_bIsInUse = bInUse; }
+		KRAWLER_API void setActive(bool bActive) { m_bIsActive = bActive; }
 
 		KRAWLER_API  KDEPRECATED_FUNC(Components::KCTransform)* const getTransformComponent() { return m_pTransform; }
 
@@ -108,7 +108,7 @@ namespace Krawler
 	private:
 		std::vector<KComponentBase*> m_componentVector;
 		std::wstring m_entityTag;
-		bool m_bIsInUse;
+		bool m_bIsActive;
 		Components::KCTransform* m_pTransform = nullptr;
 		EntitySceneInteractivity m_interactivity;
 	};

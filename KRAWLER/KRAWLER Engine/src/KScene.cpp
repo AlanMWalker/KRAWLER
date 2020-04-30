@@ -56,7 +56,7 @@ void KScene::tick()
 		{
 			continue;
 		}
-		if (!m_entityChunks[i].entity.isEntityInUse())
+		if (!m_entityChunks[i].entity.isEntityActive())
 		{
 			continue;
 		}
@@ -80,7 +80,7 @@ void KScene::fixedTick()
 			continue;
 		}
 
-		if (!m_entityChunks[i].entity.isEntityInUse())
+		if (!m_entityChunks[i].entity.isEntityActive())
 		{
 			continue;
 		}
@@ -138,7 +138,7 @@ KEntity* KScene::addEntitiesToScene(uint32 number, int32& numberAllocated)
 		m_numberOfAllocatedChunks += number;
 		for (uint32 i = 0; i < number; ++i)
 		{
-			pEntity[i].setIsInUse(true);
+			pEntity[i].setActive(true);
 		}
 		return pEntity;
 	}
@@ -165,7 +165,7 @@ KRAWLER_API bool KScene::addMultipleEntitiesToScene(uint32 numberToAllocate, vec
 		if (!it->allocated)
 		{
 			it->allocated = true;
-			it->entity.setIsInUse(true);
+			it->entity.setActive(true);
 			entityVec[count] = &it->entity;
 			++count;
 		}
@@ -195,7 +195,7 @@ KEntity* KScene::findEntityByTag(const std::wstring& tag)
 {
 	auto find = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [&tag](const KAllocatableChunk& chunk) -> bool
 		{
-			if (chunk.entity.getEntityTag() == tag)
+			if (chunk.entity.getTag() == tag)
 			{
 				return true;
 			}
@@ -236,7 +236,7 @@ KEntity* KScene::getAllocatableEntity()
 		return nullptr;
 	}
 	findResult->allocated = true;
-	findResult->entity.setIsInUse(true);
+	findResult->entity.setActive(true);
 	return &findResult->entity;
 }
 

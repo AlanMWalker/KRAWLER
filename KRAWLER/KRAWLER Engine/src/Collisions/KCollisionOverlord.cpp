@@ -71,6 +71,24 @@ void KCollisionOverlord::tick()
 	performNarrowPhaseForProxies();
 }
 
+void Krawler::Collisions::KCollisionOverlord::castRayInScene(const Vec2f& start, const Vec2f& end, KEntity* pCastingEntity)
+{
+	b2RayCastInput input;
+	input.maxFraction = 1.0f;
+	input.p1 = Vec2fTob2(start);
+	input.p2 = Vec2fTob2(end);
+
+	RaycastCB cb;
+	for (auto& p : m_proxies)
+	{
+		if (p.pEntity == pCastingEntity)
+		{
+			cb.castingID = p.proxyId;
+		}
+	}
+	m_pBroadPhase->RayCast(&cb, input);
+}
+
 void KCollisionOverlord::cleanupProxies()
 {
 	for (auto& proxy : m_proxies)
@@ -146,7 +164,7 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		// Need as raw pointer since box2d uses raw
 		b2Shape* pShapeA = proxyA.pCollider->getB2Shape().lock().get();
 		b2Shape* pShapeB = proxyB.pCollider->getB2Shape().lock().get();
-		
+
 		b2Transform transA = proxyA.pCollider->getB2Transform();
 		b2Transform transB = proxyB.pCollider->getB2Transform();
 
@@ -165,12 +183,12 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		d.entityA = proxyA.pEntity;
 		d.entityB = proxyB.pEntity;
 
-	/*	const auto collision = CollisionLookupTable[colliderTypeA][colliderTypeB](d);
-		if (!collision)
-		{
-			continue;
-		}*/
-		
+		/*	const auto collision = CollisionLookupTable[colliderTypeA][colliderTypeB](d);
+			if (!collision)
+			{
+				continue;
+			}*/
+
 		auto collision = b2TestOverlap(pShapeA, 0, pShapeB, 0, transA, transB);
 		if (!collision)
 		{
@@ -186,6 +204,7 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 
 
 		proxyA.pCollider->collisionCallback(data);
+		proxyB.pCollider->collisionCallback(data);
 	}
 }
 
@@ -229,4 +248,18 @@ int32 KCollisionOverlord::getProxyIndexFromId(int32 proxyId) const
 	}
 
 	return KCAST(int32, std::distance(m_proxies.begin(), result));
+}
+
+float KCollisionOverlord::RaycastCB::RayCastCallback(const b2RayCastInput& input, int id)
+{
+	if (castingID != -1)
+	{
+		if (id == castingID)
+		{
+			return 1.0f;
+		}
+	}
+	KPRINTF("RAYCAST CB CALLED\n");
+
+	return 0.0f;
 }

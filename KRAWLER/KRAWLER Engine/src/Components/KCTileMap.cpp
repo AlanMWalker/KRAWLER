@@ -284,57 +284,56 @@ Rectf KCTileMapSplit::getOnscreenBounds() const
 
 void Krawler::Components::KCTileMapSplit::isolateBlockedMap()
 {
-	auto& tileset = m_pTiledImportData->tilesetVector[0];
-	const int32 FirstGID = tileset.firstGID;
+	//auto& tileset = m_pTiledImportData->tilesetVector[0];
+	//const int32 FirstGID = tileset.firstGID;
 
-	for (auto& layer : m_pTiledImportData->layersVector)
-	{
-		if (layer.layerType != KTILayerTypes::TileLayer)
-		{
-			continue;
-		}
+	//for (auto& layer : m_pTiledImportData->layersVector)
+	//{
+	//	if (layer.layerType != KTILayerTypes::TileLayer)
+	//	{
+	//		continue;
+	//	}
 
-		for (int32 i = 0; i < layer.tileData.size(); ++i)
-		{
-			if (layer.tileData[i] == 0)
-			{
-				continue;
-			}
-			const int32 LocalTileID = layer.tileData[i] - FirstGID;
-			const std::wstring key = std::to_wstring(LocalTileID);
-			auto findResultIterator = tileset.tilePropertiesMap.find(key);
-			if (findResultIterator != tileset.tilePropertiesMap.end())
-			{
-				if (tileset.tilePropertiesMap[key].find(L"blocked") != tileset.tilePropertiesMap[key].end())
-				{
-					if (tileset.tilePropertiesMap[key].find(L"blocked")->second.type_bool) //if is blocked
-					{
+	//	for (int32 i = 0; i < layer.tileData.size(); ++i)
+	//	{
+	//		if (layer.tileData[i] == 0)
+	//		{
+	//			continue;
+	//		}
+	//		const int32 LocalTileID = layer.tileData[i] - FirstGID;
+	//		const std::wstring key = std::to_wstring(LocalTileID);
+	//		auto findResultIterator = tileset.tilePropertiesMap.find(key);
+	//		if (findResultIterator != tileset.tilePropertiesMap.end())
+	//		{
+	//			if (tileset.tilePropertiesMap[key].find(L"blocked") != tileset.tilePropertiesMap[key].end())
+	//			{
+	//				if (tileset.tilePropertiesMap[key].find(L"blocked")->second.type_bool) //if is blocked
+	//				{
 
-						m_tileEnumStatesVector[i] = KTileStateEnum::Impassable;
-					}
-				}
-			}
-		}
-	}
+	//					m_tileEnumStatesVector[i] = KTileStateEnum::Impassable;
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 
-	for (int i = 0; i < m_tileEnumStatesVector.size(); ++i)
-	{
-		if (m_tileEnumStatesVector[i] != KTileStateEnum::Impassable)
-			continue;
+	//for (int i = 0; i < m_tileEnumStatesVector.size(); ++i)
+	//{
+	//	if (m_tileEnumStatesVector[i] != KTileStateEnum::Impassable)
+	//		continue;
 
-		int x, y, width = m_gridDimensions.x * m_tileDimensions.x;
-		x = i % (width / m_tileDimensions.x);
-		y = i / (width / m_tileDimensions.x);
+	//	int x, y, width = m_gridDimensions.x * m_tileDimensions.x;
+	//	x = i % (width / m_tileDimensions.x);
+	//	y = i / (width / m_tileDimensions.x);
 
-		KApplication* app = KApplication::getApp();
-		KScene* pScene = app->getCurrentScene();
-		KEntity* pEntity = pScene->addEntityToScene();
-		pEntity->setEntityInteraction(EntitySceneInteractivity::Static);
-		KCHECK(pEntity != nullptr);
-		pEntity->addComponent(new KCBoxCollider(pEntity, Vec2f(m_tileDimensions)));
-		pEntity->getTransform()->setTranslation(static_cast<float>(x * m_tileDimensions.x), static_cast<float>(y * m_tileDimensions.y));
-	}
-
+	//	KApplication* app = KApplication::getApp();
+	//	KScene* pScene = app->getCurrentScene();
+	//	KEntity* pEntity = pScene->addEntityToScene();
+	//	pEntity->setEntityInteraction(EntitySceneInteractivity::Static);
+	//	KCHECK(pEntity != nullptr);
+	//	pEntity->addComponent(new KCBoxCollider(pEntity, Vec2f(m_tileDimensions)));
+	//	pEntity->getTransform()->setTranslation(static_cast<float>(x * m_tileDimensions.x), static_cast<float>(y * m_tileDimensions.y));
+	//}
 }
 
 void KCHorizontalTileLine::draw(sf::RenderTarget& rTarget, sf::RenderStates rStates) const

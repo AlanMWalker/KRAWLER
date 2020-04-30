@@ -29,8 +29,22 @@ namespace Krawler
 			b2Body* addNewBody(const b2BodyDef& def);
 			void removeBody(b2Body* const pBody);
 
+			KRAWLER_API void rayCast(const Vec2f& start, const Vec2f& end);
+
 
 		private:
+
+			struct RaycastCB : public b2RayCastCallback
+			{
+				virtual float ReportFixture(b2Fixture* fixture, const b2Vec2& point,
+					const b2Vec2& normal, float fraction) override
+				{
+					Krawler::KPrintf(L"Found intersection on raycast with fraction of %f \n", fraction);
+					return 0.0f;
+				}
+
+			};
+
 			b2World* m_pBox2DWorld = nullptr;
 			Krawler::Vec2f m_gravity = Krawler::Vec2f(0, 9.81f);
 			int32 m_velocityIterations = 6;

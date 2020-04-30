@@ -68,7 +68,7 @@ void KRenderer::generateRenderableList()
 		}
 
 		KEntity& entity = entityList[i].entity;
-		if (!entity.isEntityInUse())
+		if (!entity.isEntityAwake())
 		{
 			continue;
 		}

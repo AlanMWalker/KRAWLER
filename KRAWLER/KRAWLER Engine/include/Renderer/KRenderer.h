@@ -54,7 +54,11 @@ namespace Krawler
 			KRAWLER_API void addDebugShape(sf::Drawable* pShape) { m_debugShapes.push_back(pShape); }
 			KRAWLER_API void removeDebugShape(sf::Drawable* pShape);
 
+			KRAWLER_API void showDebugDrawables(bool bIsDrawingDebugShapes) { m_bShowDebugDrawables = bIsDrawingDebugShapes; }
+			KRAWLER_API bool isShowingDebugDrawables() const { return m_bShowDebugDrawables; }
+
 		private:
+
 			void generateRenderableList();
 			void sortByRenderLayer();
 			void sortByZOrder();
@@ -72,7 +76,9 @@ namespace Krawler
 			KRendererType m_renderingType;
 			KRenderSortType m_sortType;
 
-			bool mb_hasTiledMap = false;
+			bool m_bHasTiledMap = false;
+			bool m_bShowDebugDrawables = false;
+
 			sf::Font mp_defaultFont;
 
 		};

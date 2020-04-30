@@ -51,10 +51,14 @@ namespace Krawler
 
 			KRAWLER_API void subscribeLastDrawCallback(std::function<void(void)> func); // subscribe a callback functions to be triggered as the last draw calls post entity drawing
 
-			KRAWLER_API void addDebugShape(sf::Shape* pShape) { m_debugShapes.push_back(pShape); }
-			KRAWLER_API void removeDebugShape(sf::Shape* pShape);
+			KRAWLER_API void addDebugShape(sf::Drawable* pShape) { m_debugShapes.push_back(pShape); }
+			KRAWLER_API void removeDebugShape(sf::Drawable* pShape);
+
+			KRAWLER_API void showDebugDrawables(bool bIsDrawingDebugShapes) { m_bShowDebugDrawables = bIsDrawingDebugShapes; }
+			KRAWLER_API bool isShowingDebugDrawables() const { return m_bShowDebugDrawables; }
 
 		private:
+
 			void generateRenderableList();
 			void sortByRenderLayer();
 			void sortByZOrder();
@@ -67,12 +71,14 @@ namespace Krawler
 			std::vector<TextRender> m_screenText;
 			std::vector<std::function<void(void)>> m_lastDrawCallbacks;
 
-			std::vector<sf::Shape*> m_debugShapes;
+			std::vector<sf::Drawable*> m_debugShapes;
 
 			KRendererType m_renderingType;
 			KRenderSortType m_sortType;
 
-			bool mb_hasTiledMap = false;
+			bool m_bHasTiledMap = false;
+			bool m_bShowDebugDrawables = false;
+
 			sf::Font mp_defaultFont;
 
 		};

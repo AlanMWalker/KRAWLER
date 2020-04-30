@@ -71,6 +71,43 @@ void KCollisionOverlord::tick()
 	performNarrowPhaseForProxies();
 }
 
+bool KCollisionOverlord::doesTagMatchProxyId(const std::wstring& tag, int id) const
+{
+	const int32 idx = getProxyIndexFromId(id);
+	if (idx == -1)
+	{
+		return false;
+	}
+
+	return m_proxies[idx].pEntity->getTag() == tag;
+}
+
+bool KCollisionOverlord::castRayInScene(const Vec2f& start, const Vec2f& end, const std::wstring& tagToQuitOn, KEntity* pCastingEntity)
+{
+	b2RayCastInput input;
+	input.maxFraction = 1.0f;
+	input.p1 = Vec2fTob2(start);
+	input.p2 = Vec2fTob2(end);
+
+	RaycastCB cb;
+	cb.pOverlord = this;
+	cb.tag = tagToQuitOn;
+	if (pCastingEntity)
+	{
+		for (auto& p : m_proxies)
+		{
+			if (p.pEntity == pCastingEntity)
+			{
+				cb.castingID = p.proxyId;
+			}
+		}
+	}
+
+	m_pBroadPhase->RayCast(&cb, input);
+
+	return cb.bDidHit;
+}
+
 void KCollisionOverlord::cleanupProxies()
 {
 	for (auto& proxy : m_proxies)
@@ -122,7 +159,7 @@ void KCollisionOverlord::checkForProxyInteractions()
 	m_intersectionsToCheck.clear();
 	for (auto& p : m_proxies)
 	{
-		if (!p.pEntity->isEntityInUse())
+		if (!p.pEntity->isEntityActive())
 		{
 			continue;
 		}
@@ -146,7 +183,7 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		// Need as raw pointer since box2d uses raw
 		b2Shape* pShapeA = proxyA.pCollider->getB2Shape().lock().get();
 		b2Shape* pShapeB = proxyB.pCollider->getB2Shape().lock().get();
-		
+
 		b2Transform transA = proxyA.pCollider->getB2Transform();
 		b2Transform transB = proxyB.pCollider->getB2Transform();
 
@@ -165,12 +202,12 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		d.entityA = proxyA.pEntity;
 		d.entityB = proxyB.pEntity;
 
-	/*	const auto collision = CollisionLookupTable[colliderTypeA][colliderTypeB](d);
-		if (!collision)
-		{
-			continue;
-		}*/
-		
+		/*	const auto collision = CollisionLookupTable[colliderTypeA][colliderTypeB](d);
+			if (!collision)
+			{
+				continue;
+			}*/
+
 		auto collision = b2TestOverlap(pShapeA, 0, pShapeB, 0, transA, transB);
 		if (!collision)
 		{
@@ -186,6 +223,7 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 
 
 		proxyA.pCollider->collisionCallback(data);
+		proxyB.pCollider->collisionCallback(data);
 	}
 }
 
@@ -229,4 +267,22 @@ int32 KCollisionOverlord::getProxyIndexFromId(int32 proxyId) const
 	}
 
 	return KCAST(int32, std::distance(m_proxies.begin(), result));
+}
+
+float KCollisionOverlord::RaycastCB::RayCastCallback(const b2RayCastInput& input, int id)
+{
+	if (castingID != -1)
+	{
+		if (id == castingID)
+		{
+			return 1.0f;
+		}
+	}
+	
+	if (pOverlord->doesTagMatchProxyId(tag,id))
+	{
+		bDidHit = true;
+		return 0.0f;
+	}
+	return 1.0f;
 }

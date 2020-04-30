@@ -86,15 +86,15 @@ void Krawler::Components::KCTransform::setOrigin(float x, float y)
 	setOrigin(Vec2f(x, y));
 }
 
-void Krawler::Components::KCTransform::setTranslation(const Vec2f & trans)
+void Krawler::Components::KCTransform::setPosition(const Vec2f & trans)
 {
 	m_trans = trans;
 	m_bUpdateTransform = true;
 }
 
-void Krawler::Components::KCTransform::setTranslation(float dx, float dy)
+void Krawler::Components::KCTransform::setPosition(float dx, float dy)
 {
-	setTranslation(Vec2f(dx, dy));
+	setPosition(Vec2f(dx, dy));
 }
 
 const Vec2f Krawler::Components::KCTransform::getPosition() const
@@ -143,7 +143,7 @@ void Krawler::Components::KCTransform::move(float dx, float dy)
 
 void Krawler::Components::KCTransform::move(const Vec2f & trans)
 {
-	setTranslation(m_trans + trans);
+	setPosition(m_trans + trans);
 	m_bUpdateTransform = true;
 }
 

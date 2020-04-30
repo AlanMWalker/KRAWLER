@@ -140,7 +140,7 @@ void KCollisionOverlord::checkForProxyInteractions()
 	m_intersectionsToCheck.clear();
 	for (auto& p : m_proxies)
 	{
-		if (!p.pEntity->isEntityInUse())
+		if (!p.pEntity->isEntityAwake())
 		{
 			continue;
 		}

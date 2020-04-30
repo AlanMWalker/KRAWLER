@@ -5,7 +5,7 @@ using namespace Krawler;
 using namespace Krawler::Components;
 
 KEntity::KEntity()
-	: m_componentVector(1, nullptr), m_entityTag(GenerateUUID()), m_bIsInUse(false), m_interactivity(EntitySceneInteractivity::Dynamic)
+	: m_componentVector(1, nullptr), m_entityTag(GenerateUUID()), m_bIsAwake(false), m_interactivity(EntitySceneInteractivity::Dynamic)
 {
 	m_componentVector[0] = new KCTransform(this);
 	m_pTransform = dynamic_cast<KCTransform*>(m_componentVector[0]);

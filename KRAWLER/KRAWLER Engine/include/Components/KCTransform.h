@@ -65,8 +65,8 @@ namespace Krawler
 			//Param: Vec2f translation/float transX, transY
 			//Return: n/a
 			//Info: set translation of entity 
-			KRAWLER_API void setTranslation(const Vec2f& trans);
-			KRAWLER_API void setTranslation(float dx, float dy);
+			KRAWLER_API void setPosition(const Vec2f& trans);
+			KRAWLER_API void setPosition(float dx, float dy);
 
 			//Param: n/a
 			//Return: Vec2f position

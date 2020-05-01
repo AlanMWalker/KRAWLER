@@ -191,7 +191,7 @@ void KScene::removeEntityFromScene(KEntity* pEntityToRemove)
 	}
 }
 
-KEntity* KScene::findEntityByTag(const std::wstring& tag)
+KEntity* KScene::findEntity(const std::wstring& tag)
 {
 	auto find = std::find_if(std::begin(m_entityChunks), std::end(m_entityChunks), [&tag](const KAllocatableChunk& chunk) -> bool
 		{

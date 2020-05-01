@@ -60,7 +60,7 @@ namespace Krawler
 
 		KRAWLER_API void removeEntityFromScene(KEntity* pEntityToRemove);
 
-		KRAWLER_API KEntity* findEntityByTag(const std::wstring& tag);
+		KRAWLER_API KEntity* findEntity(const std::wstring& tag);
 
 		KRAWLER_API uint32 getNumbrOfEntitiesAllocated() const { return m_numberOfAllocatedChunks; }
 

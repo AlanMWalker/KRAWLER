@@ -20,7 +20,6 @@ json.hpp libray uses std::string, while the internals of KRAWLER use std::wstrin
 is to use sf::String(string_object).toWideString().
 */
 //to wide string conversion via SFML
-#define TO_WSTR(str) sf::String(str).toWideString()
 
 #define MAP_PARSE_ERR KPRINTF("JSON PARSE ERROR! ")
 #define DOES_ELEMENT_EXIST(name, jsonObj) (jsonObj.count(name) > 0)

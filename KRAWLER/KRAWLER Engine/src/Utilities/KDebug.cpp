@@ -6,6 +6,8 @@
 #include <sstream>
 #include <iomanip>
 #include <SFML/System/String.hpp>
+#include <chrono>
+
 static std::wofstream profilerLog;
 static std::wofstream outputLog;
 
@@ -19,11 +21,16 @@ void Krawler::KPrintf(const wchar_t* szFormat, ...)
 #endif
 	static char buffer[256];
 	static char timeBuffer[256];
-	static char dt[100]; 
-	
+	static char dt[100];
+
 	std::time_t tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	ctime_s(dt, 100 * sizeof(char), &tt);
-	
+	//while (!outputLogFileMutex.try_lock())
+	//{
+	//	std::this_thread::sleep_for(std::chrono::milliseconds(5));
+	//}
+	//outputLogFileMutex.lock();
+	std::lock_guard<std::mutex> lock(outputLogFileMutex);
 	wchar_t szBuff[1024];
 	va_list arg;
 	va_start(arg, szFormat);
@@ -32,10 +39,10 @@ void Krawler::KPrintf(const wchar_t* szFormat, ...)
 	OutputDebugString(szBuff);
 
 	//#ifdef _DEBUG
-	outputLogFileMutex.lock();
 	wprintf(L"%s", szBuff);
 	outputLog << sf::String(dt).toWideString() << szBuff;
-	outputLogFileMutex.unlock();
+	//outputLogFileMutex.unlock();
+
 	//#endif 
 }
 

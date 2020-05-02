@@ -36,4 +36,7 @@
 #define KDEPRECATED(func) func
 #endif
 
+#define TO_WSTR(str) sf::String(str).toWideString()
+#define TO_ASTR(str) sf::String(str).toAnsiString()
+
 #endif 

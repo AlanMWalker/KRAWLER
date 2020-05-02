@@ -12,6 +12,8 @@ std::set<sf::Keyboard::Key> KInput::m_keysJustReleased;
 std::set<sf::Mouse::Button> KInput::m_mouseJustPressed;
 std::set<sf::Mouse::Button> KInput::m_mousePressed;
 std::set<sf::Mouse::Button> KInput::m_mouseJustReleased;
+std::set<unsigned int> KInput::m_joystickJustPressed;
+std::set<unsigned int> KInput::m_joystickJustReleased;
 std::wstring KInput::m_textEntered;
 
 sf::Vector2i KInput::m_mousePosition;
@@ -33,6 +35,8 @@ void KInput::Update()
 	m_mouseJustReleased.clear();
 	m_mouseScrollDelta = 0.0f;
 	m_textEntered.clear();
+	m_joystickJustPressed.clear();
+	m_joystickJustReleased.clear();
 
 	if (mp_window)
 	{
@@ -72,6 +76,11 @@ void KInput::HandleEvent(const sf::Event& evt)
 	case sf::Event::MouseWheelScrolled:
 		EventMouseScrollMoved(evt.mouseWheelScroll.delta);
 		break;
+	case sf::Event::JoystickButtonPressed:
+		EventJoystickButtonPressed(evt.joystickButton.button);
+		break;
+	case sf::Event::JoystickButtonReleased:
+		EventJoystickButtonReleased(evt.joystickButton.button);
 	default:
 		//TODO log warning here.. 
 		//LOG_WARNING(std::to_string(evt.type) + " is not a valid event type for KInput to handle");
@@ -117,6 +126,16 @@ void KInput::EventTextEntered(sf::Uint32 charCode)
 	m_textEntered += (wchar_t)charCode;
 }
 
+void KInput::EventJoystickButtonPressed(unsigned int button)
+{
+	m_joystickJustPressed.insert(button);
+}
+
+void KInput::EventJoystickButtonReleased(unsigned int button)
+{
+	m_joystickJustReleased.insert(button);
+}
+
 bool KInput::JustPressed(sf::Keyboard::Key key)
 {
 	return ((m_keysJustPressed.find(key) != m_keysJustPressed.end()));
@@ -145,6 +164,16 @@ bool KInput::MousePressed(sf::Mouse::Button button)
 bool KInput::MouseJustReleased(sf::Mouse::Button button)
 {
 	return (m_mouseJustReleased.find(button) != m_mouseJustReleased.end());
+}
+
+bool KInput::JoystickJustPressed(unsigned int button)
+{
+	return ((m_joystickJustPressed.find(button) != m_joystickJustPressed.end()));
+}
+
+bool KInput::JoystickJustReleased(unsigned int button)
+{
+	return ((m_joystickJustReleased.find(button) != m_joystickJustReleased.end()));
 }
 
 void KInput::SetMouseLocked(bool mouseLocked)

@@ -37,6 +37,8 @@ namespace Krawler
 			KRAWLER_API static bool MouseJustPressed(sf::Mouse::Button button);
 			KRAWLER_API static bool MousePressed(sf::Mouse::Button button);
 			KRAWLER_API static bool MouseJustReleased(sf::Mouse::Button button);
+			KRAWLER_API static bool JoystickJustPressed(unsigned int button);
+			KRAWLER_API static bool JoystickJustReleased(unsigned int button);
 
 			KRAWLER_API static void SetMouseLocked(bool mouseLocked);
 
@@ -60,6 +62,8 @@ namespace Krawler
 			static void EventMouseButtonReleased(sf::Mouse::Button button);
 			static void EventMouseScrollMoved(float delta);
 			static void EventTextEntered(sf::Uint32 charCode);
+			static void EventJoystickButtonPressed(unsigned int);
+			static void EventJoystickButtonReleased(unsigned int);
 
 			static sf::RenderWindow* mp_window;
 
@@ -73,6 +77,9 @@ namespace Krawler
 			static std::set<sf::Mouse::Button> m_mouseJustPressed;
 			static std::set<sf::Mouse::Button> m_mousePressed;
 			static std::set<sf::Mouse::Button> m_mouseJustReleased;
+
+			static std::set<unsigned int> m_joystickJustPressed;
+			static std::set<unsigned int> m_joystickJustReleased;
 
 			static std::wstring m_textEntered;
 

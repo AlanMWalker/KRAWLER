@@ -109,7 +109,7 @@ void KApplication::runApplication()
 				//m_pRenderWindow->setView(View(v));
 			}
 
-			if (m_bHasFocus)
+			//if (m_bHasFocus)
 			{
 				Input::KInput::HandleEvent(sfmlEvent);
 			}
@@ -130,7 +130,7 @@ void KApplication::runApplication()
 			accumulator = seconds(m_physicsDelta * 2);
 		}
 
-		if (m_bHasFocus)
+		//if (m_bHasFocus)
 		{
 			while (accumulator.asSeconds() > m_physicsDelta)
 			{
@@ -149,7 +149,7 @@ void KApplication::runApplication()
 		//DO: KScene renderer lerp
 		//mp_logicStateDirector->physicsLerp(alpha);
 
-		if (m_bHasFocus)
+		//if (m_bHasFocus)
 		{
 
 			m_sceneDirector.tickActiveScene();
@@ -278,12 +278,12 @@ void Krawler::KApplication::outputFPS(const sf::Time& currentTime, sf::Time& fps
 		return;
 	}
 
-	if (currentTime - fpsLastTime > seconds(0.25f) && m_frames > 10)
+	if (currentTime - fpsLastTime > seconds(0.25f) && m_frames > 50)
 	{
 		const float fps = (KCAST(float, m_frames) / (currentTime - fpsLastTime).asSeconds());
 
 		const float ms = 1.0f / fps;
-		wprintf_s(KTEXT("FPS: %f(%f ms per frame)\n"), fps, ms);
+		KPrintf(KTEXT("FPS: %f(%f ms per frame)\n"), fps, ms);
 		//m_fpsText.setString(std::to_string(ms) + " ms/frame\n " + "FPS: " + std::to_string(fps));
 		//
 		fpsLastTime = currentTime;

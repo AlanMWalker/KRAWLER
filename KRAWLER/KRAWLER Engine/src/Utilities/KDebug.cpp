@@ -21,27 +21,27 @@ void Krawler::KPrintf(const wchar_t* szFormat, ...)
 #endif
 	static char buffer[256];
 	static char timeBuffer[256];
-	static char dt[100];
+	static wchar_t dt[100];
 
 	std::time_t tt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-	ctime_s(dt, 100 * sizeof(char), &tt);
-	//while (!outputLogFileMutex.try_lock())
-	//{
-	//	std::this_thread::sleep_for(std::chrono::milliseconds(5));
-	//}
-	//outputLogFileMutex.lock();
+	_wctime_s(dt, 100 * sizeof(char), &tt);
+	std::wstring timestamp(dt);
+	timestamp = std::wstring(timestamp.begin(), timestamp.end() - 1);
+	timestamp.append(L" | ");
+
 	std::lock_guard<std::mutex> lock(outputLogFileMutex);
 	wchar_t szBuff[1024];
 	va_list arg;
 	va_start(arg, szFormat);
+	OutputDebugString(timestamp.c_str());
 	_vsnwprintf_s(szBuff, sizeof(szBuff), szFormat, arg);
 	va_end(arg);
 	OutputDebugString(szBuff);
 
 	//#ifdef _DEBUG
 	wprintf(L"%s", szBuff);
-	outputLog << sf::String(dt).toWideString() << szBuff;
-	//outputLogFileMutex.unlock();
+
+	outputLog << timestamp << szBuff;
 
 	//#endif 
 }

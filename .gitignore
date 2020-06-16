@@ -2,6 +2,7 @@ Release/
 Debug/
 RC/
 KRAWLER/KRAWLER Engine/include/box2d/
+KRAWLER/KRAWLER Engine/src/box2d
 *.swp
 *.~
 *.opensdf

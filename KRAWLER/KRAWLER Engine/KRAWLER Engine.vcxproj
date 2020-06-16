@@ -146,6 +146,8 @@
     <ClCompile Include="src\Components\KCLight.cpp" />
     <ClCompile Include="src\Components\KCRenderableBase.cpp" />
     <ClCompile Include="src\Components\KCTileMap.cpp" />
+    <ClCompile Include="src\Maths\KMathsUtilities.cpp" />
+    <ClCompile Include="src\Maths\KMathVector.cpp" />
     <ClCompile Include="src\Physics\b2dConversion.cpp" />
     <ClCompile Include="src\Physics\KPhysicsWorld2D.cpp" />
     <ClCompile Include="src\Tiled\KTiledImport.cpp" />
@@ -166,7 +168,6 @@
     <ClCompile Include="src\Renderer\KRenderer.cpp" />
     <ClCompile Include="src\Utilities\KDebug.cpp" />
     <ClCompile Include="src\Utilities\KEngineMacros.cpp" />
-    <ClCompile Include="src\Utilities\KQuadtree.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetLoader\KAssetLoader.h" />
@@ -235,7 +236,6 @@
     <ClInclude Include="include\Maths\KMathVector.h" />
     <ClInclude Include="include\Maths\KOrientation.h" />
     <ClInclude Include="include\Physics\b2dConversion.h" />
-    <ClInclude Include="include\Physics\KPhysicsStructs.h" />
     <ClInclude Include="include\Physics\KPhysicsWorld2D.h" />
     <ClInclude Include="include\Renderer\KRenderer.h" />
     <ClInclude Include="include\Tiled\KTiledImport.h" />

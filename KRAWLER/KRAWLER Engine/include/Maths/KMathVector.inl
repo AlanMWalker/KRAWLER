@@ -21,21 +21,6 @@ FORCE_INLINE T DotProduct(const sf::Vector2<T>& Vector1, const sf::Vector2<T>& V
 	return{ static_cast<T> ((Vector1.x * Vector2.x) + (Vector1.y * Vector2.y)) };
 }
 
-FORCE_INLINE KRAWLER_API float CrossProduct(const sf::Vector2<float>& Vector1, const sf::Vector2<float>& Vector2)
-{
-	return (Vector1.x * Vector2.y - Vector1.y * Vector2.x);
-}
-
-inline KRAWLER_API sf::Vector2<float> CrossProduct(const sf::Vector2<float>& Vector1, float Scalar)
-{
-	return sf::Vector2<float>(Scalar * Vector1.y, -Scalar * Vector1.x);
-}
-
-inline KRAWLER_API sf::Vector2<float> CrossProduct(float Scalar, const sf::Vector2<float>& Vector1)
-{
-	return sf::Vector2<float>(-Scalar* Vector1.y, Scalar * Vector1.x);
-}
-
 template<typename T>
 FORCE_INLINE T GetLength(const sf::Vector2<T>& Vector)
 {

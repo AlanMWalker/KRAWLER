@@ -14,7 +14,7 @@
 #ifndef LINUX
 #define FORCE_INLINE __forceinline
 #else
-#define FORCE_INLINE __attribute__((always_inline))
+#define FORCE_INLINE //__attribute__((always_inline))
 #endif
 
 #endif 

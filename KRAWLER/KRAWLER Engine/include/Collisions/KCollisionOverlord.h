@@ -61,6 +61,7 @@ namespace Krawler
 						// we've stumbled upon ourselves
 						return true;
 					}
+
 					//possibleIntersections.push(neighbourProxyId);
 					pToCheck->push_back(ProxyPair(proxyId, neighbourProxyId));
 					return true;

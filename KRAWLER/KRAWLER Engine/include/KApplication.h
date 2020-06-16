@@ -20,6 +20,7 @@
 //Highest FPS for Physics & Game: 80
 
 #define GET_SCENE() Krawler::KApplication::getApp()->getCurrentScene()
+#define PROFILING_ENABLED 0
 
 namespace Krawler
 {
@@ -58,7 +59,7 @@ namespace Krawler
 		KRAWLER_API static KApplication* const getApp()
 		{
 			static KApplication* pApplication = new KApplication();
-		
+
 			return pApplication;
 		}
 
@@ -90,6 +91,8 @@ namespace Krawler
 
 		KRAWLER_API void subscribeToEventQueue(std::function<void(const sf::Event&)> function);
 
+		KRAWLER_API void setPrintFPS(bool bLogFPS) { m_bLogFPS = bLogFPS; }
+
 		static std::mutex& getMutexInstance() { return s_mutex; }
 
 	private:
@@ -119,6 +122,7 @@ namespace Krawler
 
 		bool m_bIsFirstUpdate = true;
 		bool m_bHasFocus = true;
+		bool m_bLogFPS = true;
 		Vec2f m_viewSize;
 		static std::mutex s_mutex;
 		std::vector<std::function<void(const sf::Event&)>> m_eventQueueCallbacks;

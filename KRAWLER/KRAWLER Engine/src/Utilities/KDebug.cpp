@@ -40,9 +40,12 @@ void Krawler::KPrintf(const wchar_t* szFormat, ...)
 
 	//#ifdef _DEBUG
 	wprintf(L"%s", szBuff);
-
+	if (!outputLog.is_open())
+	{
+		outputLog.open("output.txt", std::ios::app);
+	}
 	outputLog << timestamp << szBuff;
-
+	outputLog.close();
 	//#endif 
 }
 

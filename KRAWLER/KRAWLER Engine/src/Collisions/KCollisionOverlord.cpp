@@ -175,6 +175,7 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 {
 	// We need the narrow phase queue to be populated before we do in depth searches
 	generateNarrowPhaseQueue();
+
 	for (auto pair : m_narrowPhaseQueue)
 	{
 		const ProxyInfo& proxyA = m_proxies[getProxyIndexFromId(pair.first)];
@@ -232,6 +233,25 @@ void KCollisionOverlord::generateNarrowPhaseQueue()
 	m_narrowPhaseQueue.clear();
 	for (auto& pair : m_intersectionsToCheck)
 	{
+
+		const int32 indexA = getProxyIndexFromId(pair.first);
+		const int32 indexB = getProxyIndexFromId(pair.second);
+
+		auto pColliderA = m_proxies[indexA].pCollider;
+		auto pColliderB = m_proxies[indexB].pCollider;
+
+		const KCColliderFilteringData& filterA = pColliderA->getCollisionFilteringData();
+		const KCColliderFilteringData& filterB = pColliderB->getCollisionFilteringData();
+
+		// if collision filters tested against collision masks for entity a & b exclude them from being allowed
+		// to collide with one another, then continue onto the next pair.
+
+		if ((filterA.collisionFilter & filterB.collisionMask) == 0 || (filterB.collisionFilter & filterA.collisionMask) == 0)
+		{
+			continue;
+		}
+
+
 		const auto result = std::find_if(m_narrowPhaseQueue.begin(), m_narrowPhaseQueue.end(), [pair](const ProxyPair& toCheckPair) -> bool
 			{
 				if (pair == toCheckPair)

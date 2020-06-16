@@ -14,7 +14,7 @@ namespace Krawler
 		{
 		public:
 
-			KRAWLER_API KCAnimatedSprite(Krawler::KEntity *pEntity, Animation::KAnimation* pAnimation);
+			KRAWLER_API KCAnimatedSprite(Krawler::KEntity* pEntity, Animation::KAnimation* pAnimation);
 			KRAWLER_API ~KCAnimatedSprite() = default;
 
 			KRAWLER_API virtual void draw(sf::RenderTarget& rTarget, sf::RenderStates rStates) const override;
@@ -33,19 +33,21 @@ namespace Krawler
 			KRAWLER_API bool isRepeatingAnimation() const { return m_bRepeat; }
 			KRAWLER_API void setRepeatingState(bool bRepeat) { m_bRepeat = bRepeat; }
 
+			KRAWLER_API bool isPlaying() const { return m_bIsPlaying; }
+
 		private:
 
 			void updateTextureRect(const Rectf& texRect);
 			void setupVertArray();
 
-			Animation::KAnimation * m_pCurrentAnim = nullptr;
+			Animation::KAnimation* m_pCurrentAnim = nullptr;
 			KCTransform* m_pTransformComponent = nullptr;
-			
+
 			sf::VertexArray m_verts;
 
 			float m_animTimer;
 			Krawler::uint32 m_frameIdx;
-			
+
 			bool m_bIsPlaying;
 			bool m_bRepeat;
 		};

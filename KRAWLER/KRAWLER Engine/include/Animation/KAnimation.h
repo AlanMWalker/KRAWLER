@@ -17,7 +17,7 @@ namespace Krawler
 			std::wstring textureName; // name of texture bound to this animation
 			sf::Texture* pTexture = nullptr;
 			Krawler::Vec2f bounds; //width & height for each sub-image
-			std::vector<Vec2f> frameData; //vector of all animations
+			std::vector<Krawler::Vec2f> frameData; //vector of all animations
 		};
 
 	}

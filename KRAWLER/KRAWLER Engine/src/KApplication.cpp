@@ -82,7 +82,10 @@ void KApplication::runApplication()
 		Time frameTime;
 		updateFrameTime(currentTime, lastTime, frameTime, accumulator);
 
-		outputFPS(currentTime, fpsLastTime);
+		if (m_bLogFPS)
+		{
+			outputFPS(currentTime, fpsLastTime);
+		}
 
 		Event sfmlEvent;
 
@@ -151,12 +154,31 @@ void KApplication::runApplication()
 
 		//if (m_bHasFocus)
 		{
-
+#if PROFILING_ENABLED 
+			auto beforeDraw = Profiler::StartFunctionTimer();
+#endif
 			m_sceneDirector.tickActiveScene();
-			m_overlord.tick();
+#if PROFILING_ENABLED 
+			Profiler::EndFunctionTimer(beforeDraw, L"KSceneDirectir::tickActiveScene", false, true);
+#endif
 
+#if PROFILING_ENABLED 
+			beforeDraw = Profiler::StartFunctionTimer();
+#endif
+			m_overlord.tick();
+#if PROFILING_ENABLED 
+			Profiler::EndFunctionTimer(beforeDraw, L"KCollisionOverlord::tick", false, true);
+#endif
 		}
+		
+#if PROFILING_ENABLED 
+		auto beforeDraw = Profiler::StartFunctionTimer();
+#endif
 		m_pRenderer.render();
+
+#if PROFILING_ENABLED 
+		Profiler::EndFunctionTimer(beforeDraw, L"KRenderer::render", false, true);
+#endif
 
 		const float EXTRA_FPS_BUMP = 0;
 		const float timeInSec = deltaClock.getElapsedTime().asSeconds();

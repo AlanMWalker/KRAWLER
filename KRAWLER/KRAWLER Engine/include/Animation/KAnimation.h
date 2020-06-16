@@ -1,10 +1,10 @@
 #ifndef KANIMATION_H
-#define KANIMAITON_H
+#define KANIMATION_H
 
 #include "Krawler.h"
 
 #include <vector>
-#include <SFML\Graphics\Texture.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 namespace Krawler
 {

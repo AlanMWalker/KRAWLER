@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <filesystem>
+#include <list>
 
 #include <../rapidxml/rapidxml.hpp>
 #include <string.h>
@@ -306,9 +307,9 @@ void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring
 	- Split shader file int two strings
 	- Pass split strings to loadFromMemory
 	*/
-	string contents;
-	ifstream shaderFile;
-	shaderFile.open(shaderPath, ios::in | ios::ate);
+	wstring contents;
+	wifstream shaderFile;
+	shaderFile.open(TO_ASTR(shaderPath), ios::in | ios::ate);
 
 	if (shaderFile.fail())
 	{
@@ -320,14 +321,14 @@ void KAssetLoader::loadShader(const std::wstring& shaderName, const std::wstring
 	shaderFile.seekg(ios::beg);
 	shaderFile.read(&contents[0], len);
 
-	auto result = contents.find("#DIVIDE");
+	auto result = contents.find(L"#DIVIDE");
 
-	auto strA = string(contents, 0, result);
-	auto strB = string(contents, result + strlen("#DIVIDE") + 1, contents.size() - strA.length());
+	auto strA = wstring(contents, 0, result);
+	auto strB = wstring(contents, result + strlen("#DIVIDE") + 1, contents.size() - strA.length());
 	Shader* const pShader = new Shader();
 	KCHECK(pShader);
 
-	if (!pShader->loadFromMemory(strA, strB))
+	if (!pShader->loadFromMemory(TO_ASTR(strA), TO_ASTR(strB)))
 	{
 		KPrintf(KTEXT("Failed shader name: %s\n"), shaderName.c_str());
 		delete pShader;
@@ -358,7 +359,7 @@ void KAssetLoader::scanFolderLoad()
 	{
 		if (!entry.is_directory())
 		{
-			filesList.push_back(entry.path());
+			filesList.push_back(TO_WSTR(entry.path()));
 		}
 	}
 
@@ -410,7 +411,7 @@ void KAssetLoader::loadAnimationsXML()
 {
 	wifstream animationsXMLFile;
 	const wstring filePath = m_rootFolder + L"\\animations.xml";
-	animationsXMLFile.open(filePath, ios::in);
+	animationsXMLFile.open(TO_ASTR(filePath), ios::in);
 	animationsXMLFile >> noskipws;
 
 	if (animationsXMLFile.fail())

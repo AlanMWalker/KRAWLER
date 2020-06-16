@@ -33,38 +33,38 @@ namespace Krawler
 		template<typename T>
 		T Lerp(T A, T B, float t);
 
-		KRAWLER_API __forceinline void InitRand()
+		KRAWLER_API FORCE_INLINE void InitRand()
 		{
 			srand(static_cast<unsigned>(time(0)));
 		}
 
 		//Random float between 0 - 1
-		KRAWLER_API	__forceinline float RandFloat()
+		KRAWLER_API	FORCE_INLINE float RandFloat()
 		{
 			return (static_cast<float> (rand()) / static_cast<float>(RAND_MAX));
 		}
 
 		//Random float between 0 and Max
-		KRAWLER_API __forceinline float RandFloat(float Max)
+		KRAWLER_API FORCE_INLINE float RandFloat(float Max)
 		{
 			if (Max != 0)
 			{
-				return static_cast<float>(rand()) / static_cast<float> (RAND_MAX / Max);
+				return static_cast<float>(rand()) / static_cast<float> (RAND_MAX) / Max;
 			}
 			return(0.f);
 		}
 
 		//Random float between max & min
-		KRAWLER_API __forceinline float RandFloat(float Min, float Max)
+		KRAWLER_API FORCE_INLINE float RandFloat(float Min, float Max)
 		{
 			if (Max - Min != 0)
 			{
-				return Min + static_cast<float> (rand()) / static_cast<float> (RAND_MAX / (Max - Min));
+				return Min + static_cast<float> (rand()) / static_cast<float> (RAND_MAX) / (Max - Min);
 			}
-			return{ 0.f };
+			return 0.f;
 		}
 
-		KRAWLER_API __forceinline signed int RandInt(signed int val)
+		KRAWLER_API FORCE_INLINE signed int RandInt(signed int val)
 		{
 			return rand() % val;
 		}

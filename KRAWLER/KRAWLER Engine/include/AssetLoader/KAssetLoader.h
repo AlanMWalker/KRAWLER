@@ -2,11 +2,11 @@
 #define KASSET_LOADER_H
 
 #include "Krawler.h"
-#include <SFML\Graphics\Texture.hpp>
-#include <SFML\Graphics\Font.hpp>
-#include <SFML\Audio\SoundBuffer.hpp>
-#include <SFML\Graphics\Shader.hpp>
-#include <Tiled\KTiledImport.h>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
+#include <SFML/Graphics/Shader.hpp>
+#include <Tiled/KTiledImport.h>
 
 #include <unordered_map>
 

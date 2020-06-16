@@ -8,11 +8,12 @@
 #include "Components/KCColliderBase.h"
 
 #include <unordered_set>
+#include <deque>
 
 class b2DynamicTree;
-class b2AABB;
+struct b2AABB;
 class b2BroadPhase;
-class b2RayCastInput;
+struct b2RayCastInput;
 
 namespace Krawler
 {

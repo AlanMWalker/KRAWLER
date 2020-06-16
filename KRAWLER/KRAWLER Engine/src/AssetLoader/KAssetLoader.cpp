@@ -1,5 +1,5 @@
-#include "AssetLoader\KAssetLoader.h"
-#include "Animation\KAnimation.h"
+#include "AssetLoader/KAssetLoader.h"
+#include "Animation/KAnimation.h"
 
 #include <future>
 #include <fstream>
@@ -7,9 +7,9 @@
 #include <string.h>
 #include <filesystem>
 
-#include <..\rapidxml\rapidxml.hpp>
+#include <../rapidxml/rapidxml.hpp>
 #include <string.h>
-#include <JSON\json.hpp>
+#include "JSON/json.hpp"
 
 using namespace sf;
 using namespace Krawler;

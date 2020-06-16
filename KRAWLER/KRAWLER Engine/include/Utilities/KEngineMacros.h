@@ -28,9 +28,11 @@
 #endif 
 
 #ifdef __GNUC__
-#define KDEPRECATED(func) func __attribute__ ((deprecated))
+#define KDEPRECATED_FUNC(func)  __attribute__ ((deprecated)) func
+#define KDEPRECATED_CLASS(msg) __attribute__((deprecated(msg)))
 #elif defined(_MSC_VER)
 #define KDEPRECATED_FUNC(func) __declspec(deprecated) func
+#define KDEPRECATED_CLASS(msg) __declspec(deprecated(msg))
 #else
 #pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 #define KDEPRECATED(func) func

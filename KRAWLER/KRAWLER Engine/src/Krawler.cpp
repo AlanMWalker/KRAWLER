@@ -1,11 +1,10 @@
 
 #include "Krawler.h"
 #include "KApplication.h"
-#include "AssetLoader\KAssetLoader.h"
-
+#include "AssetLoader/KAssetLoader.h"
 
 #include <future>
-#include <SFML\Graphics\VertexBuffer.hpp>
+#include <SFML/Graphics/VertexBuffer.hpp>
 
 #define UUID_PREFIX L"18-5E-0F-45-8D-BA"
 

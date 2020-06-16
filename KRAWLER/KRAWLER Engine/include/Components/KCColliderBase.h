@@ -11,7 +11,7 @@
 #include <memory>
 
 class b2Shape;
-class b2Transform;
+struct b2Transform;
 
 namespace Krawler
 {

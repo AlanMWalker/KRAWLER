@@ -4,7 +4,7 @@
 #include "Krawler.h"
 #include "KEntity.h"
 
-#include "Utilities/KQuadtree.h"
+// #include "Utilities/KQuadtree.h"
 
 #include <vector>
 #include <list>
@@ -29,7 +29,7 @@ namespace Krawler
 	public:
 
 		KRAWLER_API KScene(const std::wstring& sceneName, const Rectf& sceneBounds);
-		KRAWLER_API ~KScene() = default;
+		KRAWLER_API virtual ~KScene() = default;
 
 		//override but call base impl before returning from derived 
 		KRAWLER_API virtual KInitStatus initScene(); //init components
@@ -77,15 +77,14 @@ namespace Krawler
 		Krawler::int32 getFreeChunkTotal() const;
 		bool m_bHasTickedOnce = false;
 
-		const int32 VelocityIterations = 6;
-		const int32 PositionIterations = 2;
+		//const int32 VelocityIterations = 6;
+		//const int32 PositionIterations = 2;
 
 		KAllocatableChunk m_entityChunks[CHUNK_POOL_SIZE];
 
 		std::wstring m_sceneName;
-		std::vector<Components::KCColliderBase*> m_initCachedColliders;
+		std::vector<Krawler::Components::KCColliderBase*> m_initCachedColliders;
 		uint32 m_numberOfAllocatedChunks;
-		Components::KCImgui* m_pImguiComponent = nullptr;
 	};
 
 	class KSceneDirector

@@ -1,20 +1,20 @@
+#include <stack>
 #include "KScene.h"
 #include "KApplication.h"
 
-#include "Components\KCTransform.h"
-#include "Components\KCColliderBase.h"
+#include "Components/KCTransform.h"
+#include "Components/KCColliderBase.h"
 
-#include "Components\KCPhysicsBody.h"
-#include "Components\KCTileMap.h"
-#include "Utilities\KDebug.h"
-#include "Components/KCImgui.h"
+#include "Components/KCPhysicsBody.h"
+#include "Components/KCTileMap.h"
+#include "Utilities/KDebug.h"
 
 using namespace Krawler;
 using namespace Krawler::Components;
 
 using namespace std;
 
-// -- KSCENE -- \\
+// KSCENE  
 
 KScene::KScene(const std::wstring& sceneName, const Rectf& sceneBounds)
 	: m_sceneName(sceneName), m_numberOfAllocatedChunks(0)
@@ -27,7 +27,22 @@ KInitStatus KScene::initScene()
 	//First initialisation pass => Initialise all entitys, and setup all components
 	for (auto& chunk : m_entityChunks)
 	{
-		KINIT_CHECK(chunk.entity.init()); // init components
+		auto result = chunk.entity.init(); // init components
+		switch(result)
+		{
+		case KInitStatus::Failure:
+		KPrintf(L"Unknown error when trying to init entity %s \n", chunk.entity.getTag().c_str());
+		case KInitStatus::Nullptr:
+		KPrintf(L"Nullptr when trying to init entity %s \n", chunk.entity.getTag().c_str());
+		case KInitStatus::MissingResource:
+		KPrintf(L"Missing resource when trying to init entity %s \n", chunk.entity.getTag().c_str());
+		default:
+		return result;
+		break;
+		
+		case KInitStatus::Success:	
+		break;
+		}
 		//TODO Move to onenter
 		chunk.entity.getComponent<KCTransform>()->tick(); //tick transforms incase of transforms were applied during init of components
 	}
@@ -252,7 +267,7 @@ int32 KScene::getFreeChunkTotal() const
 	return count;
 }
 
-//-- KSCENEDIRECTOR -- \\
+// KSCENEDIRECTOR 
 
 KSceneDirector::KSceneDirector()
 	: m_pCurrentScene(nullptr), m_pNextScene(nullptr)
@@ -266,7 +281,11 @@ KInitStatus KSceneDirector::initScenes()
 
 	for (auto& pScene : m_scenes)
 	{
-		KINIT_CHECK(pScene->initScene());
+		auto result = pScene->initScene();
+		if (result != KInitStatus::Success)
+		{
+			return result;
+		}
 	}
 
 	KCHECK(m_scenes.size() > 0); // check we have scenes available

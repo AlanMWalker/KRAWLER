@@ -11,4 +11,10 @@
 #endif
 #endif  
 
+#ifndef LINUX
+#define FORCE_INLINE __forcelinline
+#else
+#define FORCE_INLINE __attribute__((always_inline))
+#endif
+
 #endif 

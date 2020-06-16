@@ -11,7 +11,23 @@ std::mutex KApplication::s_mutex;
 
 KInitStatus Krawler::KApplication::initialiseScenes()
 {
-	KINIT_CHECK(m_sceneDirector.initScenes());
+	auto result = m_sceneDirector.initScenes();
+
+	switch(result)
+	{
+	case KInitStatus::Failure:
+	KPrintf(L"Unknown error when trying to initilise SceneDirector::initScnes\n");
+	break;
+	case KInitStatus::Nullptr:
+	KPrintf(L"Nullptr when trying to initilise SceneDirector::initScnes\n");
+	break;
+	case KInitStatus::MissingResource:
+	KPrintf(L"Missing resource when trying to initilise SceneDirector::initScnes\n");
+	break;
+	case KInitStatus::Success:	
+	default:
+	break;
+	}
 	return KInitStatus::Success;
 }
 
@@ -148,7 +164,7 @@ void KApplication::runApplication()
 
 		++m_frames;
 
-		const float alpha = accumulator.asSeconds() / m_physicsDelta;
+		// const float alpha = accumulator.asSeconds() / m_physicsDelta;
 		//DO: KScene renderer lerp
 		//mp_logicStateDirector->physicsLerp(alpha);
 

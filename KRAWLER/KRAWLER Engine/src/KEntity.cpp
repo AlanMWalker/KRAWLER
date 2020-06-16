@@ -1,5 +1,5 @@
 #include "KEntity.h"	
-#include "Components\KCTransform.h"
+#include "Components/KCTransform.h"
 
 using namespace Krawler;
 using namespace Krawler::Components;
@@ -27,7 +27,22 @@ KInitStatus KEntity::init()
 	for (int32 componentIdx = 0; componentIdx < (signed)m_componentVector.size(); ++componentIdx)
 	{
 		KCHECK(m_componentVector[componentIdx]);
-		KINIT_CHECK(m_componentVector[componentIdx]->init());
+		auto result = m_componentVector[componentIdx]->init();
+		switch(result)
+		{
+		case KInitStatus::Failure:
+		KPrintf(L"Unknown error when trying to initilise KComponentBase::init() within KEntity::init()\n");
+		break;
+		case KInitStatus::Nullptr:
+		KPrintf(L"Nullptr  when trying to initilise KComponentBase::init() within KEntity::init()\n");
+		break;
+		case KInitStatus::MissingResource:
+		KPrintf(L"Missing resource  when trying to initilise KComponentBase::init() within KEntity::init()\n");
+		break;
+		case KInitStatus::Success:	
+		default:
+		break;
+		}
 	}
 	return KInitStatus::Success;
 }

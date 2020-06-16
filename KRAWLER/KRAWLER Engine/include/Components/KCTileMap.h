@@ -36,7 +36,7 @@ namespace Krawler
 
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates) const override;
 
-			KRAWLER_API Krawler::Rectf getOnscreenBounds() const
+			KRAWLER_API Krawler::Rectf getOnscreenBounds() const override
 			{
 				return Rectf(pTransform->transformPoint(topLeft), Vec2f((float)horizontalGridSize * pTileset.tileWidth, (float)pTileset.tileHeight));
 			};

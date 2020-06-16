@@ -2,11 +2,11 @@
 #define KRENDERER_H
 
 #include "Krawler.h"
-#include "Components\KCSprite.h"
-#include "Components\KCTileMap.h"
-#include <SFML\Graphics\Text.hpp>	
-#include <SFML\Graphics\Font.hpp>
-#include <SFML\Graphics\Shape.hpp>
+#include "Components/KCSprite.h"
+#include "Components/KCTileMap.h"
+#include <SFML/Graphics/Text.hpp>	
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Shape.hpp>
 
 #include <functional>
 

@@ -1,7 +1,7 @@
 #ifndef KMATH_VECTOR_H
 #define KMATH_VECTOR_H
 
-#include <SFML\System\Vector2.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <ostream>
 #include <iostream>
 #include <istream>

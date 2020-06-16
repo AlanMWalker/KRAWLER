@@ -3,8 +3,12 @@
 
 #ifdef KRAWLERENGINE_EXPORTS
 #define KRAWLER_API __declspec(dllexport)   
-#else  
+#else 
+#ifdef LINUX
+#define KRAWLER_API
+#else
 #define KRAWLER_API __declspec(dllimport)   
+#endif
 #endif  
 
 #endif 

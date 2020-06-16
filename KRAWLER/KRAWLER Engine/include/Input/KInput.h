@@ -8,11 +8,11 @@
 #include <string>
 
 //SFML includes
-#include <SFML\Graphics\RenderWindow.hpp>
-#include <SFML\Window\Event.hpp>
-#include <SFML\Window\Keyboard.hpp>
-#include <SFML\Window\Mouse.hpp>
-#include <SFML\Window\Joystick.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <SFML/Window/Joystick.hpp>
 
 //TODO change set to list
 

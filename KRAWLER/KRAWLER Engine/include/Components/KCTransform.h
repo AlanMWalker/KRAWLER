@@ -4,7 +4,7 @@
 #include "Krawler.h"
 #include "KComponent.h"
 #include "KEntity.h"
-#include <SFML\Graphics\Transform.hpp>
+#include <SFML/Graphics/Transform.hpp>
 
 namespace Krawler
 {

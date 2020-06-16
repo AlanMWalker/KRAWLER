@@ -3,16 +3,16 @@
 
 #include <KrawlerLib.h>
 
-#include <Utilities\KEngineMacros.h>
-#include <Maths\KMaths.hpp>
+#include <Utilities/KEngineMacros.h>
+#include <Maths/KMaths.hpp>
 
-#include <Utilities\KEngineMacros.h>
-#include <Utilities\KDebug.h>
-#include <SFML\Graphics\Color.hpp>
+#include <Utilities/KEngineMacros.h>
+#include <Utilities/KDebug.h>
+#include <SFML/Graphics/Color.hpp>
 #include <map>
 
-#include <SFML\Graphics\Rect.hpp>
-#include <SFML\System\Vector3.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector3.hpp>
 
 namespace Krawler
 {

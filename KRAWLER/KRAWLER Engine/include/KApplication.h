@@ -2,15 +2,15 @@
 #define KAPPLICATION_H
 
 #include "Krawler.h"
-#include "Renderer\KRenderer.h"
-#include "Input\KInput.h"
+#include "Renderer/KRenderer.h"
+#include "Input/KInput.h"
 #include "KScene.h"
-#include "Physics\KPhysicsWorld2D.h"
-#include "Collisions\KCollisionOverlord.h"
+#include "Physics/KPhysicsWorld2D.h"
+#include "Collisions/KCollisionOverlord.h"
 
 #include <fstream>
-#include <SFML\Graphics\RenderWindow.hpp> 
-#include <SFML\System\Clock.hpp> 
+#include <SFML/Graphics/RenderWindow.hpp> 
+#include <SFML/System/Clock.hpp> 
 
 #include <mutex>
 #include <atomic>

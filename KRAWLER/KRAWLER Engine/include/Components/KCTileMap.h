@@ -6,10 +6,10 @@
 #include "KCRenderableBase.h"
 #include "KEntity.h"
 
-#include "Tiled\KTiledImport.h"
+#include "Tiled/KTiledImport.h"
 
 #include <vector>
-#include <SFML\Graphics\VertexBuffer.hpp>
+#include <SFML/Graphics/VertexBuffer.hpp>
 
 namespace Krawler
 {

@@ -1,12 +1,12 @@
 #include <functional>
 #include <stack>
 
-#include "Collisions\KCollisionOverlord.h"
-#include "box2d\box2d.h"
+#include "Collisions/KCollisionOverlord.h"
+#include "box2d/box2d.h"
 #include "KApplication.h"
 #include "KScene.h"
 
-#include "Physics\b2dConversion.h"
+#include "Physics/b2dConversion.h"
 
 using namespace Krawler;
 using namespace Krawler::Collisions;
@@ -40,7 +40,7 @@ void KCollisionOverlord::triggerSceneCleanup()
 void KCollisionOverlord::triggerSceneConstruct()
 {
 	const uint32 ENTITY_COUNT = GET_SCENE()->getNumbrOfEntitiesAllocated();
-	auto& entities = GET_SCENE()->getAllocatedEntityList();
+	auto entities = GET_SCENE()->getAllocatedEntityList();
 
 	// Iterate over the list of all entites
 	for (auto& e : entities)

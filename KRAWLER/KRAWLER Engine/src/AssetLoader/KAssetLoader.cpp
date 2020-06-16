@@ -8,6 +8,10 @@
 #include <filesystem>
 #include <list>
 
+#ifdef LINUX
+#include <wchar.h>
+#endif
+
 #include <../rapidxml/rapidxml.hpp>
 #include <string.h>
 #include "JSON/json.hpp"
@@ -446,14 +450,15 @@ void KAssetLoader::loadAnimationsXML()
 	xml_node<wchar_t>* animation_node = animationsXMLDoc.first_node(KTEXT("data"))->first_node(KTEXT("animation"));
 	Animation::KAnimation animDataStruct;
 
+	xml_attribute<wchar_t> *pAnimationName = nullptr, *pTextureName = nullptr, *pFrameTime = nullptr,
+		*pWidth = nullptr, *pHeight = nullptr;
+		
 	if (!animation_node)
 	{
 		KPRINTF_A("No animation nodes found in %s\n", filePath.c_str());
 		goto cleanup_branch_fail;
 	}
 
-	xml_attribute<wchar_t> *pAnimationName = nullptr, *pTextureName = nullptr, *pFrameTime = nullptr,
-		*pWidth = nullptr, *pHeight = nullptr;
 
 	while (animation_node)
 	{
@@ -509,7 +514,12 @@ void KAssetLoader::loadAnimationsXML()
 				KPRINTF_A("No value given for fps, animation name: %s\n", animDataStruct.animationName.c_str());
 				goto cleanup_branch_fail;
 			}
+#ifndef LINUX
 			const float denominator = static_cast<float> (_wtof(pFrameTime->value()));
+#else
+			
+			const float denominator = wcstof(pFrameTime->value(), NULL);
+#endif
 			if (denominator != 0.0f)
 			{
 				animDataStruct.frameTime = 1.0f / denominator;
@@ -531,7 +541,7 @@ void KAssetLoader::loadAnimationsXML()
 				goto cleanup_branch_fail;
 			}
 
-			animDataStruct.bounds.x = (float)_wtoi(pWidth->value());
+			animDataStruct.bounds.x = (float)wcstol(pWidth->value(), NULL, 10);
 			pHeight = animation_node->first_attribute(KTEXT("height"));
 
 			if (!pHeight)
@@ -545,7 +555,7 @@ void KAssetLoader::loadAnimationsXML()
 				KPRINTF_A("height property length == 0, animation name: %s \n", animDataStruct.animationName.c_str());
 				goto cleanup_branch_fail;
 			}
-			animDataStruct.bounds.y = (float)_wtoi(pHeight->value());
+			animDataStruct.bounds.y = (float)wcstol(pHeight->value(), NULL, 10);
 		}
 
 		xml_node<wchar_t>* pFrameNode = animation_node->first_node(KTEXT("frame"));
@@ -559,7 +569,7 @@ void KAssetLoader::loadAnimationsXML()
 			{
 				if (wcslen(pXPosAttr->value()) > 0)
 				{
-					frameData.x = (float)_wtoi(pXPosAttr->value());
+					frameData.x = (float)wcstol(pXPosAttr->value(), NULL, 10);
 				}
 				else
 				{
@@ -576,7 +586,7 @@ void KAssetLoader::loadAnimationsXML()
 			{
 				if (wcslen(pYPosAttr->value()) > 0)
 				{
-					frameData.y = (float)_wtoi(pYPosAttr->value());
+					frameData.y = (float)wcstol(pYPosAttr->value(), NULL, 10);
 				}
 				else
 				{

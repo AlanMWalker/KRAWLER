@@ -107,11 +107,16 @@ namespace Krawler
 		//@param Name of scene to transition to
 		KRAWLER_API void transitionToScene(const std::wstring& sceneName);
 
-
+		//@param Pointer to new scene
 		KRAWLER_API int32 addScene(KScene* pScene); //return 0 if added, EXIT_FAILURE if failed
+		
+		//@param pointer to scene to remove
 		KRAWLER_API int32 removeScene(KScene* pScene); //return 0 if removed, EXIT_FAILURE if failed
 
 		KRAWLER_API KScene* const getCurrentScene() { return m_pCurrentScene; }
+
+		//@return returns pointer to scene or nullptr if no scene with name found
+		KRAWLER_API KScene* const getSceneByName(const std::wstring& sceneName);
 
 	private:
 

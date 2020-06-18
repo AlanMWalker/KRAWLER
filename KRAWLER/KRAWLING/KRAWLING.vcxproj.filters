@@ -65,7 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="kconfig.cfg" />
-    <None Include="res\maps\test_level.json" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="assets.xml" />

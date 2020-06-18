@@ -87,6 +87,7 @@ namespace Krawler
 			// Overrides from component base
 			KRAWLER_API virtual KInitStatus init() override;
 			KRAWLER_API virtual void fixedTick() override;
+			KRAWLER_API virtual void onEnterScene() override;
 			KRAWLER_API virtual void onExitScene() override; 
 
 			// @return Material definition this body was created with
@@ -99,7 +100,7 @@ namespace Krawler
 			KRAWLER_API void setPosition(const Vec2f& position) const;
 
 			// @param Rotation in radians,
-			KRAWLER_API void setRotiation(float rotation) const;
+			KRAWLER_API void setRotation(float rotation) const;
 
 			// @param Is the body active in simulations
 			KRAWLER_API void setActivity(bool bIsActive) const;
@@ -147,6 +148,8 @@ namespace Krawler
 			/// Set the gravity scale of the body.
 			KRAWLER_API void setGravityScale(float scale = 1.0f);
 
+			// @param Density in Kg/m^2
+			KRAWLER_API void setDensity(float density);
 
 		private:
 			KBodyDef m_bodyDef;
@@ -158,6 +161,7 @@ namespace Krawler
 			Vec2f m_halfBounds;
 
 			b2Body* m_pB2Body = nullptr;
+			b2Fixture* m_pCurrentFixture = nullptr;
 		};
 	}
 }

@@ -2,6 +2,9 @@
 #include "Components\KCBody.h"
 #include "Physics\b2dConversion.h"
 
+#include "Components/KCCircleCollider.h"
+#include "Components/KCBoxCollider.h"
+#include "box2d/box2d.h"
 using namespace Krawler;
 using namespace Krawler::Components;
 
@@ -62,20 +65,35 @@ KInitStatus KCBody::init()
 	auto convertedBodyDef = convertToB2BodyDef(m_bodyDef);
 	m_pB2Body = physWorld.addNewBody(convertedBodyDef);
 
-	m_polygonShape.SetAsBox(m_halfBounds.x, m_halfBounds.y);
+	const float ppm = physWorld.getPPM();
+
+	m_polygonShape.SetAsBox(m_halfBounds.x / ppm, m_halfBounds.y / ppm);
 	b2FixtureDef fixtureDef = convertToB2FixtureDef(m_matDef);
 	fixtureDef.shape = &m_polygonShape;
-	auto f = m_pB2Body->CreateFixture(&fixtureDef);
+	m_pCurrentFixture = m_pB2Body->CreateFixture(&fixtureDef);
 
 	return KInitStatus::Success;
 }
 
 void KCBody::fixedTick()
 {
+	const float ppm = GET_APP()->getPhysicsWorld().getPPM();
 	const Vec2f translation = b2ToVec2f(m_pB2Body->GetPosition());
 	const float rotation = Maths::Degrees(m_pB2Body->GetAngle());
-	getEntity()->getTransform()->setPosition(translation);
+	getEntity()->getTransform()->setPosition(translation * ppm);
 	getEntity()->getTransform()->setRotation(rotation);
+}
+
+void KCBody::onEnterScene()
+{
+	auto pCollider = getEntity()->getComponent<KCColliderBase>();
+	if (pCollider != nullptr)
+	{
+		m_pB2Body->DestroyFixture(m_pCurrentFixture);
+		b2FixtureDef fixtureDef = convertToB2FixtureDef(m_matDef);
+		fixtureDef.shape = pCollider->getB2Shape().lock().get();
+		m_pCurrentFixture = m_pB2Body->CreateFixture(&fixtureDef);
+	}
 }
 
 void KCBody::onExitScene()
@@ -87,10 +105,12 @@ void KCBody::onExitScene()
 
 void KCBody::setPosition(const Vec2f& position) const
 {
-	m_pB2Body->SetTransform(Vec2fTob2(position), m_pB2Body->GetAngle());
+	const float ppm = GET_APP()->getPhysicsWorld().getPPM();
+
+	m_pB2Body->SetTransform(Vec2fTob2(position / ppm), m_pB2Body->GetAngle());
 }
 
-void KCBody::setRotiation(float rotation) const
+void KCBody::setRotation(float rotation) const
 {
 	// Box2D requires angle in radians, but internally
 	// we use degrees, so convert.
@@ -108,7 +128,7 @@ Vec2f KCBody::getLinearVelocity() const
 	return Vec2f(b2ToVec2f(m_pB2Body->GetLinearVelocity()));
 }
 
-void KCBody::setLinearVelocity(const Vec2f& velocity) 
+void KCBody::setLinearVelocity(const Vec2f& velocity)
 {
 	m_pB2Body->SetLinearVelocity(Vec2fTob2(velocity));
 }
@@ -161,4 +181,9 @@ float KCBody::getGravityScale() const
 void KCBody::setGravityScale(float scale)
 {
 	m_pB2Body->SetGravityScale(scale);
+}
+
+void KCBody::setDensity(float density)
+{
+	m_pB2Body->GetFixtureList()->SetDensity(density);
 }

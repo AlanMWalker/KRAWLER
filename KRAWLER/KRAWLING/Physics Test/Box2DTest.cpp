@@ -152,13 +152,13 @@ public:
 
 			trans.setOrigin(BOX_BOUNDS * 0.5f);
 			const Vec2f RandPos(Maths::RandFloat(0, 700), Maths::RandFloat(0, 150));
-			trans.setTranslation(RandPos);
+			trans.setPosition(RandPos);
 
 			KMatDef matDef;
 			matDef.density = 1.0f;
 			KBodyDef bodyDef;
 			bodyDef.bodyType = BodyType::Dynamic_Body;
-			bodyDef.position = RandPos;
+			bodyDef.position = RandPos / GET_APP()->getPhysicsWorld().getPPM();
 			bodyDef.bActive = true;
 
 			//testBox->setIsInUse(false);
@@ -173,11 +173,11 @@ public:
 
 			const Vec2f FloorPos = Vec2f(FLOOR_BOUNDS.x * 0.5f, GET_APP()->getWindowSize().y - FLOOR_BOUNDS.y * 0.5f);
 			trans.setOrigin(FLOOR_BOUNDS * 0.5f);
-			trans.setTranslation(FloorPos);
+			trans.setPosition(FloorPos);
 
 			KBodyDef bodyDef;
 			bodyDef.bodyType = BodyType::Static_Body;
-			bodyDef.position = Vec2f(FloorPos);
+			bodyDef.position = Vec2f(FloorPos) / GET_APP()->getPhysicsWorld().getPPM();
 
 			floor->addComponent(new KCBody(*floor, FLOOR_BOUNDS, bodyDef));
 		}
@@ -245,6 +245,7 @@ int main(void)
 	auto entity = GET_SCENE()->addEntityToScene();
 	entity->addComponent(new Box2DComp(entity));
 	entity->addComponent(new imguicomp(entity));
+	GET_APP()->getPhysicsWorld().setPPM(0.05f);
 	//DO STUFF WITH ENTITY HERE
 	InitialiseSubmodules();
 

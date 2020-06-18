@@ -26,7 +26,8 @@ void KCTransform::operator=(KCTransform & toCopy)
 	m_origin = toCopy.m_origin;
 	m_scale = toCopy.m_scale;
 	m_trans = toCopy.m_trans;
-	m_bUpdateTransform = true;
+	//m_bUpdateTransform = true;
+	reconstructTransform();
 }
 
 void Krawler::Components::KCTransform::tick()
@@ -72,13 +73,15 @@ void Krawler::Components::KCTransform::setRotation(float angleInDeg)
 	{
 		m_rotation = fmod(m_rotation, 360.0f);
 	}
-	m_bUpdateTransform = true;
+	//m_bUpdateTransform = true;
+	reconstructTransform();
 }
 
 void Krawler::Components::KCTransform::setOrigin(const Vec2f & origin)
 {
 	m_origin = origin;
-	m_bUpdateTransform = true;
+	//m_bUpdateTransform = true;
+	reconstructTransform();
 }
 
 void Krawler::Components::KCTransform::setOrigin(float x, float y)
@@ -89,7 +92,8 @@ void Krawler::Components::KCTransform::setOrigin(float x, float y)
 void Krawler::Components::KCTransform::setPosition(const Vec2f & trans)
 {
 	m_trans = trans;
-	m_bUpdateTransform = true;
+	//m_bUpdateTransform = true;
+	reconstructTransform();
 }
 
 void Krawler::Components::KCTransform::setPosition(float dx, float dy)
@@ -121,7 +125,8 @@ const Vec2f & Krawler::Components::KCTransform::getOrigin() const
 void Krawler::Components::KCTransform::setScale(const Vec2f & scale)
 {
 	m_scale = scale;
-	m_bUpdateTransform = true;
+	//m_bUpdateTransform = true;
+	reconstructTransform();
 }
 
 void Krawler::Components::KCTransform::setScale(float x, float y)
@@ -144,7 +149,8 @@ void Krawler::Components::KCTransform::move(float dx, float dy)
 void Krawler::Components::KCTransform::move(const Vec2f & trans)
 {
 	setPosition(m_trans + trans);
-	m_bUpdateTransform = true;
+	//m_bUpdateTransform = true;
+	reconstructTransform();
 }
 
 void Krawler::Components::KCTransform::rotate(float angleInDeg)

@@ -61,5 +61,14 @@ void KPhysicsWorld2D::rayCast(const Vec2f& start, const Vec2f& end)
 	if (GetSquareLength(end - start) <= 0.0f)
 		return;
 
-	m_pBox2DWorld->RayCast(&cb, Vec2fTob2(start), Vec2fTob2(end));
+	m_pBox2DWorld->RayCast(&cb, Vec2fTob2(start / m_ppm), Vec2fTob2(end / m_ppm));
+}
+
+void KPhysicsWorld2D::setPPM(float ppm)
+{
+	//prevent division by 0
+	if (ppm != 0.0f)
+	{
+		m_ppm = ppm;
+	}
 }

@@ -371,6 +371,20 @@ int32 KSceneDirector::removeScene(KScene* pScene)
 	return EXIT_SUCCESS;
 }
 
+KScene* const Krawler::KSceneDirector::getSceneByName(const std::wstring& sceneName)
+{
+	auto result = std::find_if(m_scenes.begin(), m_scenes.end(), [sceneName](KScene* pScene)
+		{
+			return sceneName == pScene->getSceneName();
+		});
+
+	if (result == m_scenes.end())
+	{
+		return nullptr;
+	}
+	return *result;
+}
+
 KScene* KSceneDirector::findSceneByName(const std::wstring& name) const
 {
 	auto findResult = std::find_if(m_scenes.begin(), m_scenes.end(), [&name](KScene* pScene) -> bool

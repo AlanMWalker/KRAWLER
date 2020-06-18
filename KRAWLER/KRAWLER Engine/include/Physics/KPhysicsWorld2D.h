@@ -31,6 +31,9 @@ namespace Krawler
 
 			KRAWLER_API void rayCast(const Vec2f& start, const Vec2f& end);
 
+			KRAWLER_API void setPPM(float ppm);
+
+			KRAWLER_API float getPPM() const { return m_ppm; }
 
 		private:
 
@@ -49,6 +52,8 @@ namespace Krawler
 			Krawler::Vec2f m_gravity = Krawler::Vec2f(0, 9.81f);
 			int32 m_velocityIterations = 6;
 			int32 m_positionIterations = 2;
+
+			float m_ppm = 1.0f;
 		};
 	}
 }

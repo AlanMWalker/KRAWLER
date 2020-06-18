@@ -1,5 +1,6 @@
 #include <Components\KCCircleCollider.h>
 #include <Components\KCTransform.h>
+#include "KApplication.h"
 
 #include "box2d\b2_circle_shape.h"
 
@@ -14,7 +15,8 @@ KCCircleCollider::KCCircleCollider(KEntity* pEntity, float radius)
 	m_pTransform = pEntity->getComponent<KCTransform>();
 	auto p = getB2Shape().lock();
 	m_pCircleShape = std::dynamic_pointer_cast<b2CircleShape>(p);
-	m_pCircleShape.lock()->m_radius = m_radius;
+	auto ppm = GET_APP()->getPhysicsWorld().getPPM();
+	m_pCircleShape.lock()->m_radius = m_radius / ppm;
 }
 
 const Vec2f& KCCircleCollider::getCentrePosition()

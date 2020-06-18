@@ -114,7 +114,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="kconfig.cfg" />
-    <None Include="res\maps\test_level.json" />
     <Text Include="res\shaders\ambient.glsl">
       <FileType>Document</FileType>
     </Text>

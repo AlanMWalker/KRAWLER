@@ -80,8 +80,8 @@ void KCBody::fixedTick()
 	const float ppm = GET_APP()->getPhysicsWorld().getPPM();
 	const Vec2f translation = b2ToVec2f(m_pB2Body->GetPosition());
 	const float rotation = Maths::Degrees(m_pB2Body->GetAngle());
-	getEntity()->getTransform()->setPosition(translation * ppm);
-	getEntity()->getTransform()->setRotation(rotation);
+	getEntity()->m_pTransform->setPosition(translation * ppm);
+	getEntity()->m_pTransform->setRotation(rotation);
 }
 
 void KCBody::onEnterScene()

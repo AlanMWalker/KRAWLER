@@ -20,7 +20,7 @@ KCAnimatedSprite::KCAnimatedSprite(Krawler::KEntity *pEntity, KAnimation * pAnim
 	m_verts = sf::VertexArray(sf::Quads, 4);
 
 	setupVertArray();
-	m_pTransformComponent = pEntity->getTransform();
+	m_pTransformComponent = pEntity->m_pTransform;
 }
 
 void Krawler::Components::KCAnimatedSprite::updateTextureRect(const Rectf & texRect)

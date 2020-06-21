@@ -17,7 +17,7 @@ KTiledMap::KTiledMap()
 
 void Krawler::TiledMap::KTiledMap::draw(sf::RenderTarget & rTarget, RenderStates rStates) const
 {
-	rStates.transform *= getTransform();
+	rStates.transform *= m_pTransform;
 	rStates.texture = mp_texture;
 	rStates.shader = m_pShader;
 	rTarget.draw(m_vertArray, rStates);

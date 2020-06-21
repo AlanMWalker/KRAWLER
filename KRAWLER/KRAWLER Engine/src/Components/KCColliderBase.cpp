@@ -76,8 +76,8 @@ void KCColliderBase::setCollisionFilteringData(const KCColliderFilteringData& fi
 
 b2Transform KCColliderBase::getB2Transform()
 {
-	const float angleInRad = Maths::Radians(getEntity()->getTransform()->getRotation());
-	const b2Vec2 position = Vec2fTob2(getEntity()->getTransform()->getTranslation());
+	const float angleInRad = Maths::Radians(getEntity()->m_pTransform->getRotation());
+	const b2Vec2 position = Vec2fTob2(getEntity()->m_pTransform->getTranslation());
 	return b2Transform(position, b2Rot(angleInRad));
 }
 

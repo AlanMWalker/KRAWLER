@@ -5,7 +5,7 @@ using namespace Krawler::Components;
 
 KCTransform::KCTransform(KEntity* pEntity)
 	: KComponentBase(pEntity), m_pParentTransform(nullptr), m_bHasParent(false),
-	m_rotation(0.0f), m_origin(0.0f, 0.0f), m_scale(1.0f, 1.0f), m_trans(1.0, 0.0f)
+	m_rotation(0.0f), m_origin(0.0f, 0.0f), m_scale(1.0f, 1.0f), m_trans(0.0, 0.0f)
 {
 
 }

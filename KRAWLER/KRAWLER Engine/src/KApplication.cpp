@@ -87,6 +87,13 @@ void KApplication::runApplication()
 			outputFPS(currentTime, fpsLastTime);
 		}
 
+		if (m_bIsFirstUpdate)
+		{
+			m_frames = 0;
+			m_bIsFirstUpdate = false;
+			fpsLastTime = currentTime;
+		}
+
 		Event sfmlEvent;
 
 		Input::KInput::Update();
@@ -170,7 +177,7 @@ void KApplication::runApplication()
 			Profiler::EndFunctionTimer(beforeDraw, L"KCollisionOverlord::tick", false, true);
 #endif
 		}
-		
+
 #if PROFILING_ENABLED 
 		auto beforeDraw = Profiler::StartFunctionTimer();
 #endif
@@ -185,10 +192,10 @@ void KApplication::runApplication()
 		const float sleepTime = (1.0f / (m_gameFPS + EXTRA_FPS_BUMP)) - timeInSec;
 		//sf::sleep(sf::seconds(sleepTime));
 		this_thread::sleep_for(chrono::milliseconds(static_cast<int32>(sleepTime * 1000)));
-	}
+		}
 	//rThread.join();
 	//pThread.join();
-}
+	}
 
 void Krawler::KApplication::cleanupApplication()
 {
@@ -292,13 +299,8 @@ inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& last
 
 void Krawler::KApplication::outputFPS(const sf::Time& currentTime, sf::Time& fpsLastTime)
 {
-	if (m_bIsFirstUpdate)
-	{
-		m_frames = 0;
-		m_bIsFirstUpdate = false;
-		fpsLastTime = currentTime;
+	if (!m_bIsFirstUpdate)
 		return;
-	}
 
 	if (currentTime - fpsLastTime > seconds(0.25f) && m_frames > 50)
 	{

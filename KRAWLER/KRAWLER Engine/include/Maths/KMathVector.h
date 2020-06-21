@@ -71,9 +71,9 @@ KRAWLER_API __forceinline T GetAngleBetween(const sf::Vector2<T>& VectorA, const
 template<typename T>
 KRAWLER_API __forceinline float GetAngle(const sf::Vector2<T>&Vector);
 
-///Rotate a vector by angle theta (in radians)
+///Rotate a vector by angle theta (in degrees)
 ///Param: ref Vector2
-///Param: float Angle (radians)
+///Param: float Angle (degrees)
 ///Return: Type of vector
 template<typename T>
 KRAWLER_API __forceinline sf::Vector2<T> RotateVector(const sf::Vector2<T>& Vector, float Angle);

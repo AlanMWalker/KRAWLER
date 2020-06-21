@@ -50,8 +50,8 @@ namespace Krawler
 
 			b2World* m_pBox2DWorld = nullptr;
 			Krawler::Vec2f m_gravity = Krawler::Vec2f(0, 9.81f);
-			int32 m_velocityIterations = 6;
-			int32 m_positionIterations = 2;
+			int32 m_velocityIterations = 8;
+			int32 m_positionIterations = 3;
 
 			float m_ppm = 1.0f;
 		};

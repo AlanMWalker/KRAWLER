@@ -22,7 +22,7 @@ KCSprite::KCSprite(KEntity * pEntity, const Vec2f& size)
 	m_vertexArray[2].color = Colour::White;
 	m_vertexArray[3].color = Colour::White;
 
-	m_pTransform = getEntity()->getTransform();
+	m_pTransform = getEntity()->m_pTransform;
 	setTexture(ASSET().getTexture(KTEXT("missing")));
 }
 
@@ -72,5 +72,5 @@ void KCSprite::operator = (const KCSprite& spr)
 	m_vertexArray = spr.m_vertexArray;
 	m_pTexture = spr.m_pTexture;
 
-	m_pTransform = getEntity()->getTransform();
+	m_pTransform = getEntity()->m_pTransform;
 }

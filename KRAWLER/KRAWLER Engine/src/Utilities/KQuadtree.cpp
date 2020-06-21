@@ -12,7 +12,7 @@ bool KQuadtree::insert(KEntity* pEntity)
 {
 	auto pCollider = pEntity->getComponent<KCColliderBase>();
 
-	if (!pCollider || !pEntity->isEntityActive()) // if there's no collider then return false for not added
+	if (!pCollider || !pEntity->isActive()) // if there's no collider then return false for not added
 	{
 		return false;
 	}

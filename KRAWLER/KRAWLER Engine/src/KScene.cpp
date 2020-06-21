@@ -56,7 +56,7 @@ void KScene::tick()
 		{
 			continue;
 		}
-		if (!m_entityChunks[i].entity.isEntityActive())
+		if (!m_entityChunks[i].entity.isActive())
 		{
 			continue;
 		}
@@ -80,7 +80,7 @@ void KScene::fixedTick()
 			continue;
 		}
 
-		if (!m_entityChunks[i].entity.isEntityActive())
+		if (!m_entityChunks[i].entity.isActive())
 		{
 			continue;
 		}

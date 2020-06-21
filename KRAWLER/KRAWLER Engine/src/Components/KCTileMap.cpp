@@ -17,7 +17,7 @@ KCTileMap::KCTileMap(KEntity* pEntity, const std::wstring& tiledMapName)
 	: KCRenderableBase(pEntity)
 {
 	setComponentTag(KTEXT("KCTiledMap"));
-	m_pTransformComponent = getEntity()->getTransform();
+	m_pTransformComponent = getEntity()->m_pTransform;
 
 	m_pTiledImportData = KAssetLoader::getAssetLoader().getLevelMap(tiledMapName);
 
@@ -134,7 +134,7 @@ KCTileMapSplit::KCTileMapSplit(KEntity* pEntity, const std::wstring& tiledMapNam
 	setComponentTag(KTEXT("KCTileMapSplit"));
 	m_pTiledImportData = KAssetLoader::getAssetLoader().getLevelMap(tiledMapName);
 	KCHECK(m_pTiledImportData);
-	m_pTransformComponent = getEntity()->getTransform();
+	m_pTransformComponent = getEntity()->m_pTransform;
 	m_gridDimensions = Vec2i((int32)m_pTiledImportData->width, (int32)m_pTiledImportData->height);
 	m_tileDimensions.x = m_pTiledImportData->tilesetVector[0].tileWidth;
 	m_tileDimensions.y = m_pTiledImportData->tilesetVector[0].tileHeight;
@@ -332,7 +332,7 @@ void Krawler::Components::KCTileMapSplit::isolateBlockedMap()
 	//	pEntity->setEntityInteraction(EntitySceneInteractivity::Static);
 	//	KCHECK(pEntity != nullptr);
 	//	pEntity->addComponent(new KCBoxCollider(pEntity, Vec2f(m_tileDimensions)));
-	//	pEntity->getTransform()->setTranslation(static_cast<float>(x * m_tileDimensions.x), static_cast<float>(y * m_tileDimensions.y));
+	//	pEntity->m_pTransform->setTranslation(static_cast<float>(x * m_tileDimensions.x), static_cast<float>(y * m_tileDimensions.y));
 	//}
 }
 

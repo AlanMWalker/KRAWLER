@@ -129,11 +129,11 @@ void KCollisionOverlord::relocateProxies()
 	{
 		if (!bHasTickedOnce)
 		{
-			proxy.lastPos = proxy.pEntity->getTransform()->getTranslation();
+			proxy.lastPos = proxy.pEntity->m_pTransform->getTranslation();
 		}
 		else
 		{
-			const Vec2f currentPosition = proxy.pEntity->getTransform()->getTranslation();
+			const Vec2f currentPosition = proxy.pEntity->m_pTransform->getTranslation();
 			const Vec2f displacement = currentPosition - proxy.lastPos;
 			// if no displacement we can continue the main loop
 			if (displacement == Vec2f(0.0f, 0.0f))
@@ -159,7 +159,7 @@ void KCollisionOverlord::checkForProxyInteractions()
 	m_intersectionsToCheck.clear();
 	for (auto& p : m_proxies)
 	{
-		if (!p.pEntity->isEntityActive())
+		if (!p.pEntity->isActive())
 		{
 			continue;
 		}
@@ -188,12 +188,12 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		b2Transform transA = proxyA.pCollider->getB2Transform();
 		b2Transform transB = proxyB.pCollider->getB2Transform();
 
-		const b2Vec2 positionA = Vec2fTob2(proxyA.pEntity->getTransform()->getTranslation());
-		const float rotationA = Maths::Radians(proxyA.pEntity->getTransform()->getRotation());
+		const b2Vec2 positionA = Vec2fTob2(proxyA.pEntity->m_pTransform->getTranslation());
+		const float rotationA = Maths::Radians(proxyA.pEntity->m_pTransform->getRotation());
 		transA.Set(positionA, rotationA);
 
-		const b2Vec2 positionB = Vec2fTob2(proxyB.pEntity->getTransform()->getTranslation());
-		const float rotationB = Maths::Radians(proxyB.pEntity->getTransform()->getRotation());
+		const b2Vec2 positionB = Vec2fTob2(proxyB.pEntity->m_pTransform->getTranslation());
+		const float rotationB = Maths::Radians(proxyB.pEntity->m_pTransform->getRotation());
 		transB.Set(positionB, rotationB);
 
 		const int32 colliderTypeA = static_cast<int32>(proxyA.pCollider->getColliderType());

@@ -28,7 +28,7 @@ KCOrientedBoxCollider::KCOrientedBoxCollider(KEntity* pEntity, const Vec2f& size
 const Rectf & KCOrientedBoxCollider::getBoundingBox()
 {
 	Vec2f pos = m_pTransform->getTranslation();
-	m_boundingBox = Rectf(m_pTransform->getTransform().transformPoint(pos), m_size);
+	m_boundingBox = Rectf(m_pTransform->m_pTransform.transformPoint(pos), m_size);
 	return m_boundingBox;
 }
 
@@ -43,7 +43,7 @@ void KCOrientedBoxCollider::tick()
 		m_vertices[3] = Vec2f(-origin.x, -origin.y + m_size.y);
 	}
 	m_orientation.setOrientation(m_pTransform->getRotation());
-	//Vec2f pA = m_pTransform->getTransform().transformPoint(0, 0);
+	//Vec2f pA = m_pTransform->m_pTransform.transformPoint(0, 0);
 	//Vec2f pB = m_orientation* Vec2f(0, 0) + m_pTransform->getTranslation();
 }
 

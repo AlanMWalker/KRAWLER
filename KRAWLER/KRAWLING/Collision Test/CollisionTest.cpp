@@ -157,10 +157,10 @@ public:
 			auto const testBox = pScene->addEntityToScene();
 			m_pBox = testBox;
 			testBox->addComponent(new KCSprite(testBox, BOX_BOUNDS));
-			auto& trans = *testBox->getTransform();
+			auto& trans = *testBox->m_pTransform;
 
 			const Vec2f RandPos(Maths::RandFloat(0, 250), Maths::RandFloat(0, 250));
-			trans.setTranslation(RandPos);
+			trans.setPosition(RandPos);
 			trans.setOrigin(BOX_BOUNDS * 0.5f);
 			trans.setRotation(Maths::RandFloat(0, 359));
 			//auto collider = new KCBoxCollider(testBox, Vec2f(BOX_BOUNDS));
@@ -199,7 +199,7 @@ public:
 			//b->getComponent<KCSprite>()->setColour(Colour::White);
 		}
 
-		m_boxes[0]->getTransform()->setTranslation(KInput::GetMouseWorldPosition());
+		m_boxes[0]->m_pTransform->setPosition(KInput::GetMouseWorldPosition());
 	}
 
 private:

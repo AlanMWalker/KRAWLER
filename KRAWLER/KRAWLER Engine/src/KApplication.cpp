@@ -115,8 +115,12 @@ void KApplication::runApplication()
 
 			if (sfmlEvent.type == Event::Resized)
 			{
-				//Rectf v{ 0, 0, (float)sfmlEvent.size.width , (float)sfmlEvent.size.height };
-				//m_pRenderWindow->setView(View(v));
+				sf::View v(m_pRenderWindow->getView());
+				v.setSize((float)sfmlEvent.size.width, (float)sfmlEvent.size.height);
+				//Rectf v{ 0, 0, };
+				m_pRenderWindow->setView(View(v));
+				v = (m_pRenderWindow->getView());
+
 			}
 
 			//if (m_bHasFocus)
@@ -226,6 +230,7 @@ void Krawler::KApplication::subscribeToEventQueue(std::function<void(const sf::E
 }
 
 KApplication::KApplication()
+	: m_gameFPS(0), m_physicsFPS(0)
 {
 }
 

@@ -10,9 +10,9 @@
 #include <unordered_set>
 
 class b2DynamicTree;
-class b2AABB;
 class b2BroadPhase;
-class b2RayCastInput;
+struct b2AABB;
+struct b2RayCastInput;
 
 namespace Krawler
 {

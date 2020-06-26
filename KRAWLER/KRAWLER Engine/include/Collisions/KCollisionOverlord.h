@@ -37,6 +37,9 @@ namespace Krawler
 
 			// Update proxy positions on tick
 			void tick();
+
+
+			void fixedTick();
 			
 			KRAWLER_API bool castRayInScene(const Vec2f& start, const Vec2f& end, const std::wstring& tagToQuitOn, KEntity* pCastingEntity = nullptr);
 

@@ -20,6 +20,7 @@
 //Highest FPS for Physics & Game: 80
 
 #define GET_SCENE() Krawler::KApplication::getApp()->getCurrentScene()
+#define GET_SCENE_NAMED(name) Krawler::KApplication::getApp()->getSceneDirector().getSceneByName(name)
 #define PROFILING_ENABLED 0
 
 namespace Krawler

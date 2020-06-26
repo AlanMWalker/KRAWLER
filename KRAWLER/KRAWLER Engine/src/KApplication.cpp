@@ -150,6 +150,7 @@ void KApplication::runApplication()
 			{
 				//previousState = currentState;
 				//Physics tick
+				m_overlord.fixedTick();
 				m_physicsWorld.stepWorld(m_physicsDelta);
 				m_sceneDirector.fixedTickActiveScene();
 				time += seconds(m_physicsDelta);
@@ -304,7 +305,7 @@ inline void Krawler::KApplication::updateFrameTime(Time& currentTime, Time& last
 
 void Krawler::KApplication::outputFPS(const sf::Time& currentTime, sf::Time& fpsLastTime)
 {
-	if (!m_bIsFirstUpdate)
+	if (m_bIsFirstUpdate)
 		return;
 
 	if (currentTime - fpsLastTime > seconds(0.25f) && m_frames > 50)

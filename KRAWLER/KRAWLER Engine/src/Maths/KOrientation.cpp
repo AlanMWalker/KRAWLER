@@ -20,11 +20,11 @@ KOrientation::KOrientation(float mat00, float mat01, float mat10, float mat11)
 void Krawler::KOrientation::setOrientation(float angleInDeg)
 {
 	//convert user passed angle into radians
-	const float theta = Maths::Radians(angleInDeg);
+	const float m_theta = Maths::Radians(angleInDeg);
 
 	//Fill out rotation matrix
-	m00 = cosf(theta); m01 = -sinf(theta);
-	m10 = sinf(theta); m11 = cosf(theta);
+	m00 = cosf(m_theta); m01 = -sinf(m_theta);
+	m10 = sinf(m_theta); m11 = cosf(m_theta);
 }
 
 KOrientation KOrientation::getAbsoluteOrientation() const

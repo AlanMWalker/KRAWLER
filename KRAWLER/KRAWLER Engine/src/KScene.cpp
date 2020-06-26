@@ -120,6 +120,8 @@ void KScene::onExitScene()
 KEntity* KScene::addEntityToScene()
 {
 	KEntity* const pEntity = getAllocatableEntity();
+	KCHECK(pEntity);
+
 	if (!pEntity)
 	{
 		return nullptr;

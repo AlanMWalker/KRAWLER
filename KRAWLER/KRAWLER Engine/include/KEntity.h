@@ -25,7 +25,7 @@ namespace Krawler
 		Dynamic,
 		Static
 	};
-	constexpr int32 CHUNK_POOL_SIZE{ 500 };
+	constexpr int32 CHUNK_POOL_SIZE{ 750 };
 
 	class KEntity
 	{

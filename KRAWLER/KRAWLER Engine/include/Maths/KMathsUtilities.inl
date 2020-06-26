@@ -6,14 +6,14 @@ namespace Krawler
 	namespace Maths
 	{
 		template<typename T>
-		inline T Degrees(T theta)
+		inline T Degrees(T m_theta)
 		{
-			return{ static_cast <T> (static_cast<double>(theta) * 180.0 / PI) };
+			return{ static_cast <T> (static_cast<double>(m_theta) * 180.0 / PI) };
 		}
 		template<typename T>
-		inline T Radians(T theta)
+		inline T Radians(T m_theta)
 		{
-			return{ static_cast <T> (static_cast<double>(theta) * PI / 180.0) };
+			return{ static_cast <T> (static_cast<double>(m_theta) * PI / 180.0) };
 		}
 
 		template<typename T>

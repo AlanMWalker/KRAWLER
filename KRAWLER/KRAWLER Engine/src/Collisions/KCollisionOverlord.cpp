@@ -66,9 +66,14 @@ void KCollisionOverlord::triggerSceneConstruct()
 
 void KCollisionOverlord::tick()
 {
+}
+
+void KCollisionOverlord::fixedTick()
+{
 	relocateProxies();
 	checkForProxyInteractions();
 	performNarrowPhaseForProxies();
+
 }
 
 bool KCollisionOverlord::doesTagMatchProxyId(const std::wstring& tag, int id) const
@@ -175,6 +180,7 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 {
 	// We need the narrow phase queue to be populated before we do in depth searches
 	generateNarrowPhaseQueue();
+	const float PPM = GET_APP()->getPhysicsWorld().getPPM();
 
 	for (auto pair : m_narrowPhaseQueue)
 	{
@@ -188,11 +194,11 @@ void KCollisionOverlord::performNarrowPhaseForProxies()
 		b2Transform transA = proxyA.pCollider->getB2Transform();
 		b2Transform transB = proxyB.pCollider->getB2Transform();
 
-		const b2Vec2 positionA = Vec2fTob2(proxyA.pEntity->m_pTransform->getTranslation());
+		const b2Vec2 positionA = Vec2fTob2(proxyA.pEntity->m_pTransform->getTranslation() / PPM);
 		const float rotationA = Maths::Radians(proxyA.pEntity->m_pTransform->getRotation());
 		transA.Set(positionA, rotationA);
 
-		const b2Vec2 positionB = Vec2fTob2(proxyB.pEntity->m_pTransform->getTranslation());
+		const b2Vec2 positionB = Vec2fTob2(proxyB.pEntity->m_pTransform->getTranslation() / PPM);
 		const float rotationB = Maths::Radians(proxyB.pEntity->m_pTransform->getRotation());
 		transB.Set(positionB, rotationB);
 
@@ -240,6 +246,11 @@ void KCollisionOverlord::generateNarrowPhaseQueue()
 		auto pColliderA = m_proxies[indexA].pCollider;
 		auto pColliderB = m_proxies[indexB].pCollider;
 
+		if (!pColliderA->getEntity()->isActive() || !pColliderB->getEntity()->isActive())
+		{
+			continue;
+		}
+
 		const KCColliderFilteringData& filterA = pColliderA->getCollisionFilteringData();
 		const KCColliderFilteringData& filterB = pColliderB->getCollisionFilteringData();
 
@@ -250,7 +261,6 @@ void KCollisionOverlord::generateNarrowPhaseQueue()
 		{
 			continue;
 		}
-
 
 		const auto result = std::find_if(m_narrowPhaseQueue.begin(), m_narrowPhaseQueue.end(), [pair](const ProxyPair& toCheckPair) -> bool
 			{
@@ -298,8 +308,8 @@ float KCollisionOverlord::RaycastCB::RayCastCallback(const b2RayCastInput& input
 			return 1.0f;
 		}
 	}
-	
-	if (pOverlord->doesTagMatchProxyId(tag,id))
+
+	if (pOverlord->doesTagMatchProxyId(tag, id))
 	{
 		bDidHit = true;
 		return 0.0f;

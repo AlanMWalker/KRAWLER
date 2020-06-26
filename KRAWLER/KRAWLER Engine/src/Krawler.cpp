@@ -7,13 +7,19 @@
 #include <future>
 #include <SFML\Graphics\VertexBuffer.hpp>
 
+#pragma comment(lib, "rpcrt4.lib")  // UuidCreate - Minimum supported OS Win 2000
+
 #define UUID_PREFIX L"18-5E-0F-45-8D-BA"
+
+#ifndef LINUX
+#include <Windows.h>	
+#endif
 
 using namespace Krawler;
 using namespace Krawler::Maths;
 
 
-KInitStatus Krawler::StartupEngine(KApplicationInitialise * windowInit)
+KInitStatus Krawler::StartupEngine(KApplicationInitialise* windowInit)
 {
 	KApplication* const app = KApplication::getApp();
 	app->setupApplication(*windowInit);
@@ -31,7 +37,7 @@ KRAWLER_API KInitStatus Krawler::InitialiseSubmodules()
 		KPRINTF("ERROR! VertexBuffers are not available on this machine!");
 		return KInitStatus::Failure;
 	}
-	
+
 	if (!sf::Shader::isAvailable())
 	{
 		KPRINTF("ERROR! Shaders are not available on this machine!");
@@ -62,8 +68,11 @@ void Krawler::RunApplication()
 
 std::wstring Krawler::GenerateUUID()
 {
-	const auto epochTime = std::chrono::system_clock::now().time_since_epoch(); // time since unix epoch
-	const sf::Int64 timeInMS = std::chrono::duration_cast<std::chrono::nanoseconds>(epochTime).count();
-	//std::this_thread::sleep_for(std::chrono::nanoseconds(5));//sleep to ensure time elapse
-	return UUID_PREFIX + std::wstring(L"-") + std::to_wstring(timeInMS);
+	UUID uuid;
+	UuidCreate(&uuid);
+	wchar_t* str = nullptr;
+	UuidToString(&uuid, (RPC_WSTR*)&str);
+	std::wstring a(str);
+	RpcStringFreeW((RPC_WSTR*)&str);
+	return a;
 }
